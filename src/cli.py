@@ -90,7 +90,10 @@ def build_features_cmd(season: int, upload_s3: bool, no_garbage: bool):
 @click.option("--reg-epochs", default=100, type=int, help="Regressor training epochs")
 @click.option("--cls-epochs", default=100, type=int, help="Classifier training epochs")
 @click.option("--no-garbage", is_flag=True, help="Use no-garbage-time features")
-def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool):
+@click.option("--min-date", default=None, type=str,
+              help="Earliest MM-DD within each season to include (e.g. '12-20')")
+def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
+          min_date: str | None):
     """Train MLPRegressor + MLPClassifier on historical features."""
     from .dataset import load_multi_season_features
     from .trainer import (
@@ -103,8 +106,11 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool):
     season_list = _parse_seasons(seasons)
     variant = " (no-garbage)" if no_garbage else ""
     click.echo(f"Loading features{variant} for seasons: {season_list}")
+    if min_date:
+        click.echo(f"  Training date filter: games on or after MM-DD={min_date}")
 
-    df = load_multi_season_features(season_list, no_garbage=no_garbage)
+    df = load_multi_season_features(season_list, no_garbage=no_garbage,
+                                    min_month_day=min_date)
 
     # Drop games with missing scores (unplayed)
     df = df.dropna(subset=["homeScore", "awayScore"])

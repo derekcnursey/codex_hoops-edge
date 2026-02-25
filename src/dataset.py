@@ -57,8 +57,20 @@ def load_season_features(season: int, no_garbage: bool = False) -> pd.DataFrame:
     return pd.read_parquet(path)
 
 
-def load_multi_season_features(seasons: list[int], no_garbage: bool = False) -> pd.DataFrame:
-    """Load and concatenate features for multiple seasons."""
+def load_multi_season_features(
+    seasons: list[int],
+    no_garbage: bool = False,
+    min_month_day: str | None = None,
+) -> pd.DataFrame:
+    """Load and concatenate features for multiple seasons.
+
+    Args:
+        seasons: List of season years to load.
+        no_garbage: Use no-garbage-time variant.
+        min_month_day: If set (e.g. "12-20"), exclude games before this date
+            within each season. For season S, the cutoff is (S-1)-MM-DD.
+            This filters out early-season noise from training data.
+    """
     dfs = []
     for s in seasons:
         try:
@@ -67,4 +79,50 @@ def load_multi_season_features(seasons: list[int], no_garbage: bool = False) -> 
             print(f"Warning: No features for season {s}, skipping.")
     if not dfs:
         raise FileNotFoundError(f"No feature files found for seasons {seasons}")
-    return pd.concat(dfs, ignore_index=True)
+    df = pd.concat(dfs, ignore_index=True)
+
+    if min_month_day is not None:
+        before = len(df)
+        df = _filter_by_min_date(df, min_month_day)
+        print(f"  Date filter ({min_month_day}): {before} → {len(df)} rows "
+              f"({before - len(df)} dropped)")
+
+    return df
+
+
+def _filter_by_min_date(df: pd.DataFrame, min_month_day: str) -> pd.DataFrame:
+    """Filter out games before a per-season cutoff date.
+
+    Season S spans fall (S-1) through spring S:
+      - Fall: (S-1)-Aug through (S-1)-Dec
+      - Spring: S-Jan through S-Jul
+
+    If cutoff month is 8-12 (fall), cutoff = (S-1)-MM-DD.
+    If cutoff month is 1-7 (spring), cutoff = S-MM-DD.
+
+    E.g. for season 2025 with min_month_day="12-20": cutoff = 2024-12-20.
+    For season 2025 with min_month_day="01-15": cutoff = 2025-01-15.
+    """
+    dates = pd.to_datetime(df["startDate"], errors="coerce", utc=True)
+    game_dates = dates.dt.tz_localize(None).dt.normalize()
+
+    month, day = (int(x) for x in min_month_day.split("-"))
+
+    # Determine season year for each game
+    game_years = game_dates.dt.year
+    game_months = game_dates.dt.month
+    # Season convention: games Aug-Dec belong to season=year+1, Jan-Jul to season=year
+    season_year = game_years.where(game_months <= 7, game_years + 1)
+
+    # Cutoff year depends on whether cutoff is in fall or spring of the season
+    if month >= 8:
+        cutoff_year = season_year - 1  # fall portion
+    else:
+        cutoff_year = season_year  # spring portion
+
+    cutoffs = pd.to_datetime(
+        cutoff_year.astype(int).astype(str) + f"-{month:02d}-{day:02d}",
+        errors="coerce",
+    )
+    mask = game_dates >= cutoffs
+    return df[mask].reset_index(drop=True)
