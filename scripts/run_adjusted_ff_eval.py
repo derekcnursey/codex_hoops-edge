@@ -205,19 +205,28 @@ def train_and_predict(feature_cols, train_df, holdout_df, hparams=None):
 
 
 def attach_book_spreads(preds):
-    """Attach book spreads from v2 holdout parquet."""
-    try:
-        from src.features import load_lines
-        lines = load_lines(HOLDOUT_SEASON)
-        if lines is not None and not lines.empty:
-            lines_dedup = lines.sort_values("provider").drop_duplicates(
-                subset=["gameId"], keep="first")
-            preds = preds.merge(
-                lines_dedup[["gameId", "spread"]].rename(columns={"spread": "book_spread"}),
-                on="gameId", how="left")
-            preds["model_spread"] = -preds["predicted_spread"]
-            preds["spread_diff"] = preds["model_spread"] - preds["book_spread"]
-    except Exception:
+    """Attach book spreads. Tries cached parquet first, then S3."""
+    lines = None
+    # Try cached lines first (works on GPU box without S3)
+    cache_path = config.FEATURES_DIR / f"lines_{HOLDOUT_SEASON}.parquet"
+    if cache_path.exists():
+        lines = pd.read_parquet(cache_path)
+    else:
+        try:
+            from src.features import load_lines
+            lines = load_lines(HOLDOUT_SEASON)
+        except Exception:
+            pass
+
+    if lines is not None and not lines.empty:
+        lines_dedup = lines.sort_values("provider").drop_duplicates(
+            subset=["gameId"], keep="first")
+        preds = preds.merge(
+            lines_dedup[["gameId", "spread"]].rename(columns={"spread": "book_spread"}),
+            on="gameId", how="left")
+        preds["model_spread"] = -preds["predicted_spread"]
+        preds["spread_diff"] = preds["model_spread"] - preds["book_spread"]
+    else:
         preds["book_spread"] = np.nan
     return preds
 
@@ -618,19 +627,12 @@ def task6(report_lines):
     for params in param_combos:
         alpha = params["alpha"]
         prior = params["prior"]
-        suffix = f"a{alpha}_p{prior}"
-        parquet_path = config.FEATURES_DIR / f"season_2025_no_garbage_adj_{suffix}_features.parquet"
+        is_default = (alpha == 1.0 and prior == 5)
+        suffix = "" if is_default else f"_a{alpha}_p{int(prior)}"
 
+        parquet_path = config.FEATURES_DIR / f"season_2025_no_garbage_adj{suffix}_features.parquet"
         if not parquet_path.exists():
-            # Check if default params match
-            if alpha == 1.0 and prior == 5:
-                parquet_path = config.FEATURES_DIR / "season_2025_no_garbage_adj_features.parquet"
-            else:
-                print(f"  Skipping alpha={alpha}, prior={prior} — parquet not found")
-                continue
-
-        if not parquet_path.exists():
-            print(f"  Skipping alpha={alpha}, prior={prior} — parquet not found")
+            print(f"  Skipping alpha={alpha}, prior={prior} — parquet not found: {parquet_path.name}")
             continue
 
         print(f"\n  Testing alpha={alpha}, prior={prior}...")
@@ -642,10 +644,7 @@ def task6(report_lines):
         # Load training data (same combo)
         train_dfs = []
         for s in TRAIN_SEASONS:
-            if alpha == 1.0 and prior == 5:
-                tp = config.FEATURES_DIR / f"season_{s}_no_garbage_adj_features.parquet"
-            else:
-                tp = config.FEATURES_DIR / f"season_{s}_no_garbage_adj_{suffix}_features.parquet"
+            tp = config.FEATURES_DIR / f"season_{s}_no_garbage_adj{suffix}_features.parquet"
             if tp.exists():
                 train_dfs.append(pd.read_parquet(tp))
         if not train_dfs:
@@ -655,11 +654,6 @@ def task6(report_lines):
         train_df = pd.concat(train_dfs, ignore_index=True)
         train_df = train_df.dropna(subset=["homeScore", "awayScore"])
 
-        r = evaluate_config(f"alpha={alpha},prior={prior}", best_features,
-                           train_df, holdout_df, hparams=DEFAULT_HP)
-        r = attach_book_spreads(r["preds"])  # This overwrites — need different approach
-
-        # Re-evaluate properly
         result = evaluate_config(f"alpha={alpha},prior={prior}", best_features,
                                 train_df, holdout_df, hparams=DEFAULT_HP)
         results.append({
@@ -739,10 +733,13 @@ def task7(results5, best_params, report_lines):
 # ── Report Generation ────────────────────────────────────────────
 
 
-def write_report(lines):
-    """Write report to file."""
+def write_report(lines, append=False):
+    """Write report to file. If append=True, add to existing report."""
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     content = "\n".join(lines)
+    if append and REPORT_PATH.exists():
+        existing = REPORT_PATH.read_text()
+        content = existing.rstrip() + "\n\n" + content
     with open(REPORT_PATH, "w") as f:
         f.write(content)
     print(f"\nReport saved to: {REPORT_PATH}")
@@ -758,9 +755,14 @@ def main():
     parser.add_argument("--prior", type=float, default=5.0)
     args = parser.parse_args()
 
-    report_lines = ["# Opponent-Adjusted Four-Factors — Season 2025\n"]
-
     tasks = [args.task] if args.task else [5, 6, 7]
+    single_task = args.task is not None
+
+    # When running all tasks, start a fresh report; when running one, append
+    if not single_task:
+        report_lines = ["# Opponent-Adjusted Four-Factors — Season 2025\n"]
+    else:
+        report_lines = []
 
     results5 = None
     best_params = {"alpha": args.alpha, "prior": args.prior}
@@ -781,9 +783,18 @@ def main():
                 with open(state5_path) as f:
                     state5 = json.load(f)
                 results5 = state5.get("results", {})
+
+        # Reload task6 best params if not from this run
+        if 6 not in tasks:
+            state6_path = STATE_DIR / "task6.json"
+            if state6_path.exists():
+                with open(state6_path) as f:
+                    state6 = json.load(f)
+                best_params = state6.get("best", best_params)
+
         task7(results5, best_params, report_lines)
 
-    write_report(report_lines)
+    write_report(report_lines, append=single_task)
     print("\nDone!")
 
 

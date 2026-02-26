@@ -46,8 +46,12 @@ def build_adjusted_parquets(alpha: float = 1.0, prior_weight: float = 5.0):
     print(f"Building adjusted features (alpha={alpha}, prior_weight={prior_weight})")
     print(f"{'='*70}\n")
 
+    # Use suffix for non-default params so different combos don't overwrite
+    is_default = (alpha == 1.0 and prior_weight == 5.0)
+    suffix = "" if is_default else f"_a{alpha}_p{int(prior_weight)}"
+
     for season in ALL_SEASONS:
-        out_path = config.FEATURES_DIR / f"season_{season}_no_garbage_adj_features.parquet"
+        out_path = config.FEATURES_DIR / f"season_{season}_no_garbage_adj{suffix}_features.parquet"
 
         t0 = time.time()
         print(f"  Building adjusted features for season {season}...")
@@ -246,6 +250,28 @@ def sanity_check():
     print("\n  Sanity checks complete.")
 
 
+# ── Cache lines for GPU box ───────────────────────────────────────
+
+
+def cache_lines():
+    """Cache book spread lines to parquet so GPU box doesn't need S3 access."""
+    from src.features import load_lines
+    for season in ALL_SEASONS:
+        out_path = config.FEATURES_DIR / f"lines_{season}.parquet"
+        if out_path.exists():
+            print(f"  Lines cache exists for {season}, skipping")
+            continue
+        try:
+            lines = load_lines(season)
+            if lines is not None and not lines.empty:
+                lines.to_parquet(out_path, index=False)
+                print(f"  Cached {len(lines)} lines for {season}")
+            else:
+                print(f"  No lines for {season}")
+        except Exception as e:
+            print(f"  Failed to cache lines for {season}: {e}")
+
+
 # ── Main ─────────────────────────────────────────────────────────
 
 
@@ -260,6 +286,9 @@ def main():
         build_adjusted_parquets(alpha=args.alpha, prior_weight=args.prior)
 
     sanity_check()
+
+    # Cache lines data for GPU box (no S3 access needed there)
+    cache_lines()
 
 
 if __name__ == "__main__":
