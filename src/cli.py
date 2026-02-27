@@ -395,7 +395,14 @@ def daily_run(season: int, game_date: str | None):
 
     # 1. Build features
     click.echo("Building features...")
-    df = build_features(season, game_date=game_date)
+    df = build_features(
+        season,
+        game_date=game_date,
+        extra_features=config.EXTRA_FEATURES,
+        adjust_ff=config.ADJUST_FF,
+        adjust_alpha=config.ADJUST_ALPHA,
+        adjust_prior_weight=config.ADJUST_PRIOR,
+    )
     if df.empty:
         click.echo(f"No games found for {game_date}.")
         return
@@ -516,7 +523,14 @@ def backfill_season(season: int, start_date: str, end_date: str | None,
                 continue
 
         # Build features for this date
-        df = build_features(season, game_date=game_date)
+        df = build_features(
+            season,
+            game_date=game_date,
+            extra_features=config.EXTRA_FEATURES,
+            adjust_ff=config.ADJUST_FF,
+            adjust_alpha=config.ADJUST_ALPHA,
+            adjust_prior_weight=config.ADJUST_PRIOR,
+        )
         if df.empty:
             continue
 

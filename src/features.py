@@ -187,6 +187,35 @@ def _get_asof_rating(
 # ── Extra feature helper functions ───────────────────────────────
 
 
+def _get_asof_rolling(
+    team_lookup: dict[int, pd.DataFrame],
+    team_id: int,
+    game_date: pd.Timestamp,
+    value_cols: list[str],
+) -> dict[str, float]:
+    """Look up a team's most recent rolling stats before game_date.
+
+    Falls back to the team's latest entry before the game date, using the same
+    pattern as _get_asof_rating() for efficiency ratings.
+    """
+    team_df = team_lookup.get(team_id)
+    if team_df is None or team_df.empty:
+        return {}
+    # Normalize both sides to tz-naive for comparison
+    if hasattr(game_date, 'tz') and game_date.tz is not None:
+        game_date = game_date.tz_localize(None)
+    cutoff = game_date.normalize()
+    dates = team_df["_date"]
+    if hasattr(dates.dtype, 'tz') and dates.dtype.tz is not None:
+        dates = dates.dt.tz_localize(None)
+    eligible = team_df[dates < cutoff]
+    if eligible.empty:
+        # Fall back to the very first entry if no prior data
+        eligible = team_df
+    row = eligible.iloc[-1]
+    return {col: row[col] for col in value_cols if col in row.index and pd.notna(row[col])}
+
+
 def _compute_rest_days(games: pd.DataFrame) -> dict[tuple[int, int], float]:
     """Compute days since previous game for each team in each game.
 
@@ -399,12 +428,19 @@ def build_features(
             )
         rolling_df = compute_rolling_averages(ff)
 
-    # Build rolling lookups: (gameid, teamid) -> {rolling_col: value}
+    # Build rolling lookups:
+    #   1. (gameid, teamid) -> row dict   (fast path for played games)
+    #   2. teamid -> DataFrame sorted by date (as-of fallback for future games)
     rolling_lookup: dict[tuple[int, int], dict[str, float]] = {}
+    rolling_team_lookup: dict[int, pd.DataFrame] = {}
     if not rolling_df.empty:
+        rolling_df["_date"] = pd.to_datetime(rolling_df["startdate"], errors="coerce")
         for _, row in rolling_df.iterrows():
             key = (int(row["gameid"]), int(row["teamid"]))
             rolling_lookup[key] = row.to_dict()
+        # Build per-team time-series for as-of fallback
+        for tid, group in rolling_df.groupby("teamid"):
+            rolling_team_lookup[int(tid)] = group.sort_values("_date").copy()
 
     # Build date-aware efficiency lookup: teamId -> DataFrame of dated ratings
     eff_lookup = _build_efficiency_lookup(eff_ratings, include_sos=need_sos)
@@ -415,22 +451,36 @@ def build_features(
     # ── Extra feature pre-computations ─────────────────────────────
     rest_lookup: dict[tuple[int, int], float] = {}
     if "rest_days" in extra:
-        rest_lookup = _compute_rest_days(games)
+        # Use ALL season games for rest computation (not just date-filtered)
+        # so future games can see prior games for rest day calculation
+        all_games_for_rest = load_games(season) if game_date is not None else games
+        rest_lookup = _compute_rest_days(all_games_for_rest)
 
     tov_lookup: dict[tuple[int, int], dict[str, float]] = {}
+    tov_team_lookup: dict[int, pd.DataFrame] = {}
     if "tov_rate" in extra and not boxscores.empty:
         tov_df = compute_rolling_turnovers(boxscores)
         if not tov_df.empty:
+            tov_df["_date"] = pd.to_datetime(tov_df["startdate"] if "startdate" in tov_df.columns else tov_df.get("_date"), errors="coerce")
             for _, row in tov_df.iterrows():
                 key = (int(row["gameid"]), int(row["teamid"]))
                 tov_lookup[key] = row.to_dict()
+            for tid, group in tov_df.groupby("teamid"):
+                tov_team_lookup[int(tid)] = group.sort_values("_date").copy()
 
     form_lookup: dict[tuple[int, int], float] = {}
+    form_team_lookup: dict[int, pd.DataFrame] = {}
     if "form_delta" in extra and not ff.empty:
         form_df = compute_form_delta(ff)
         if not form_df.empty:
+            # form_df has gameid, teamid, form_delta — need dates from ff
+            ff_dates = ff[["gameid", "teamid", "startdate"]].drop_duplicates(["gameid", "teamid"])
+            form_df = form_df.merge(ff_dates, on=["gameid", "teamid"], how="left")
+            form_df["_date"] = pd.to_datetime(form_df["startdate"], errors="coerce")
             for _, row in form_df.iterrows():
                 form_lookup[(int(row["gameid"]), int(row["teamid"]))] = float(row["form_delta"])
+            for tid, group in form_df.groupby("teamid"):
+                form_team_lookup[int(tid)] = group.sort_values("_date").copy()
 
     conf_lookup: dict[tuple[str, str], float] = {}
     team_conf: dict[int, str] = {}
@@ -444,8 +494,26 @@ def build_features(
         conf_lookup = _build_conf_strength_lookup(eff_ratings, list(unique_dates))
 
     margin_std_lookup: dict[tuple[int, int], float] = {}
+    margin_std_team_lookup: dict[int, pd.DataFrame] = {}
     if "margin_std" in extra:
-        margin_std_lookup = _compute_scoring_variance(games)
+        # Use ALL season games for margin_std (not just date-filtered)
+        all_games_for_margin = load_games(season) if game_date is not None else games
+        margin_std_lookup = _compute_scoring_variance(all_games_for_margin)
+        # Build per-team as-of lookup for future games
+        if margin_std_lookup:
+            _ms_rows = []
+            for (gid_key, tid_key), val in margin_std_lookup.items():
+                _ms_rows.append({"gameid": gid_key, "teamid": tid_key, "margin_std": val})
+            _ms_df = pd.DataFrame(_ms_rows)
+            # Get dates from all_games_for_margin
+            _dates_df = all_games_for_margin[["gameId", "startDate"]].copy()
+            _dates_df["_date"] = pd.to_datetime(_dates_df["startDate"], errors="coerce")
+            _ms_df = _ms_df.merge(
+                _dates_df.rename(columns={"gameId": "gameid"}),
+                on="gameid", how="left",
+            )
+            for tid, group in _ms_df.groupby("teamid"):
+                margin_std_team_lookup[int(tid)] = group.sort_values("_date").copy()
 
     # ── Assemble features per game ─────────────────────────────────
     records = []
@@ -482,11 +550,21 @@ def build_features(
 
         # Group 2: Rolling four-factor averages (away team)
         away_rolling = rolling_lookup.get((gid, away_tid), {})
+        if not away_rolling and not pd.isna(game_dt):
+            away_rolling = _get_asof_rolling(
+                rolling_team_lookup, away_tid, game_dt,
+                list(AWAY_ROLLING_MAP.values()),
+            )
         for feat_name, rolling_col in AWAY_ROLLING_MAP.items():
             feat[feat_name] = away_rolling.get(rolling_col)
 
         # Group 2: Rolling four-factor averages (home team)
         home_rolling = rolling_lookup.get((gid, home_tid), {})
+        if not home_rolling and not pd.isna(game_dt):
+            home_rolling = _get_asof_rolling(
+                rolling_team_lookup, home_tid, game_dt,
+                list(HOME_ROLLING_MAP.values()),
+            )
         for feat_name, rolling_col in HOME_ROLLING_MAP.items():
             feat[feat_name] = home_rolling.get(rolling_col)
 
@@ -519,20 +597,46 @@ def build_features(
                 feat["away_conf_strength"] = None
 
         if "form_delta" in extra:
-            feat["home_form_delta"] = form_lookup.get((gid, home_tid))
-            feat["away_form_delta"] = form_lookup.get((gid, away_tid))
+            h_form = form_lookup.get((gid, home_tid))
+            a_form = form_lookup.get((gid, away_tid))
+            if h_form is None and not pd.isna(game_dt):
+                h_asof = _get_asof_rolling(form_team_lookup, home_tid, game_dt, ["form_delta"])
+                h_form = h_asof.get("form_delta")
+            if a_form is None and not pd.isna(game_dt):
+                a_asof = _get_asof_rolling(form_team_lookup, away_tid, game_dt, ["form_delta"])
+                a_form = a_asof.get("form_delta")
+            feat["home_form_delta"] = h_form
+            feat["away_form_delta"] = a_form
 
         if "tov_rate" in extra:
             away_tov = tov_lookup.get((gid, away_tid), {})
+            if not away_tov and not pd.isna(game_dt):
+                away_tov = _get_asof_rolling(
+                    tov_team_lookup, away_tid, game_dt,
+                    list(AWAY_TOV_MAP.values()),
+                )
             home_tov = tov_lookup.get((gid, home_tid), {})
+            if not home_tov and not pd.isna(game_dt):
+                home_tov = _get_asof_rolling(
+                    tov_team_lookup, home_tid, game_dt,
+                    list(HOME_TOV_MAP.values()),
+                )
             for feat_name, tov_col in AWAY_TOV_MAP.items():
                 feat[feat_name] = away_tov.get(tov_col)
             for feat_name, tov_col in HOME_TOV_MAP.items():
                 feat[feat_name] = home_tov.get(tov_col)
 
         if "margin_std" in extra:
-            feat["home_margin_std"] = margin_std_lookup.get((gid, home_tid))
-            feat["away_margin_std"] = margin_std_lookup.get((gid, away_tid))
+            h_ms = margin_std_lookup.get((gid, home_tid))
+            a_ms = margin_std_lookup.get((gid, away_tid))
+            if h_ms is None and not pd.isna(game_dt):
+                h_asof = _get_asof_rolling(margin_std_team_lookup, home_tid, game_dt, ["margin_std"])
+                h_ms = h_asof.get("margin_std")
+            if a_ms is None and not pd.isna(game_dt):
+                a_asof = _get_asof_rolling(margin_std_team_lookup, away_tid, game_dt, ["margin_std"])
+                a_ms = a_asof.get("margin_std")
+            feat["home_margin_std"] = h_ms
+            feat["away_margin_std"] = a_ms
 
         # Metadata (not part of features)
         feat["gameId"] = gid
