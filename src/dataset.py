@@ -48,9 +48,21 @@ class HoopsDataset(Dataset):
         return x
 
 
-def load_season_features(season: int, no_garbage: bool = False) -> pd.DataFrame:
-    """Load pre-built features from local parquet file."""
+def load_season_features(
+    season: int,
+    no_garbage: bool = False,
+    adj_suffix: str | None = None,
+) -> pd.DataFrame:
+    """Load pre-built features from local parquet file.
+
+    Args:
+        season: Season year.
+        no_garbage: Use no-garbage-time variant.
+        adj_suffix: Optional adjustment suffix (e.g. "adj_a0.85_p10").
+    """
     suffix = "_no_garbage" if no_garbage else ""
+    if adj_suffix:
+        suffix += f"_{adj_suffix}"
     path = config.FEATURES_DIR / f"season_{season}{suffix}_features.parquet"
     if not path.exists():
         raise FileNotFoundError(f"Features file not found: {path}")
@@ -60,6 +72,7 @@ def load_season_features(season: int, no_garbage: bool = False) -> pd.DataFrame:
 def load_multi_season_features(
     seasons: list[int],
     no_garbage: bool = False,
+    adj_suffix: str | None = None,
     min_month_day: str | None = None,
 ) -> pd.DataFrame:
     """Load and concatenate features for multiple seasons.
@@ -67,6 +80,7 @@ def load_multi_season_features(
     Args:
         seasons: List of season years to load.
         no_garbage: Use no-garbage-time variant.
+        adj_suffix: Optional adjustment suffix (e.g. "adj_a0.85_p10").
         min_month_day: If set (e.g. "12-20"), exclude games before this date
             within each season. For season S, the cutoff is (S-1)-MM-DD.
             This filters out early-season noise from training data.
@@ -74,7 +88,8 @@ def load_multi_season_features(
     dfs = []
     for s in seasons:
         try:
-            dfs.append(load_season_features(s, no_garbage=no_garbage))
+            dfs.append(load_season_features(s, no_garbage=no_garbage,
+                                            adj_suffix=adj_suffix))
         except FileNotFoundError:
             print(f"Warning: No features for season {s}, skipping.")
     if not dfs:

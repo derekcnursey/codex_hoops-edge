@@ -27,11 +27,27 @@ TABLE_FCT_LINES = "fct_lines"
 ROLLING_WINDOW = 15  # number of games for exponential decay
 EWM_SPAN = 15  # span parameter for pandas ewm (matches ROLLING_WINDOW)
 
-# The 37 features in EXACT order expected by the model
+# Production four-factor adjustment parameters (a0.85_p10 config)
+ADJUST_FF = True
+ADJUST_ALPHA = 0.85
+ADJUST_PRIOR = 10
+
+# Extra feature groups included in the 54-feature production model
+EXTRA_FEATURES = [
+    "rest_days",
+    "sos",
+    "conf_strength",
+    "form_delta",
+    "tov_rate",
+    "margin_std",
+]
+
+# The 53 features in EXACT order expected by the model
+# (V2 minus away_team_home which is always 0)
 FEATURE_ORDER: list[str] = json.loads(
     (ARTIFACTS_DIR / "feature_order.json").read_text()
 )
-assert len(FEATURE_ORDER) == 37, f"Expected 37 features, got {len(FEATURE_ORDER)}"
+assert len(FEATURE_ORDER) == 53, f"Expected 53 features, got {len(FEATURE_ORDER)}"
 
 # ── Column mappings from S3 Parquet schemas ──────────────────────────
 

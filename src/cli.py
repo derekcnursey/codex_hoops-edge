@@ -35,12 +35,23 @@ def _parse_seasons(seasons_str: str) -> list[int]:
 @click.option("--season", required=True, type=int, help="Season year (e.g. 2026)")
 @click.option("--upload-s3", is_flag=True, help="Also upload to S3 gold layer")
 @click.option("--no-garbage", is_flag=True, help="Use no-garbage-time efficiency ratings")
-def build_features_cmd(season: int, upload_s3: bool, no_garbage: bool):
-    """Build the 37-feature matrix for all games in a season."""
+@click.option("--adjusted/--no-adjusted", default=True,
+              help="Use opponent-adjusted four-factors (default: True)")
+def build_features_cmd(season: int, upload_s3: bool, no_garbage: bool, adjusted: bool):
+    """Build the 54-feature matrix for all games in a season."""
     variant = " (no-garbage)" if no_garbage else ""
+    if adjusted:
+        variant += f" (adj a={config.ADJUST_ALPHA} p={config.ADJUST_PRIOR})"
     click.echo(f"Building features{variant} for season {season}...")
 
-    df = build_features(season, no_garbage=no_garbage)
+    df = build_features(
+        season,
+        no_garbage=no_garbage,
+        extra_features=config.EXTRA_FEATURES if adjusted else None,
+        adjust_ff=adjusted and config.ADJUST_FF,
+        adjust_alpha=config.ADJUST_ALPHA,
+        adjust_prior_weight=config.ADJUST_PRIOR,
+    )
     if df.empty:
         click.echo("No games found. Check S3 data.")
         return
@@ -66,6 +77,8 @@ def build_features_cmd(season: int, upload_s3: bool, no_garbage: bool):
 
     # Save locally
     suffix = "_no_garbage" if no_garbage else ""
+    if adjusted:
+        suffix += f"_adj_a{config.ADJUST_ALPHA}_p{config.ADJUST_PRIOR}"
     out_path = config.FEATURES_DIR / f"season_{season}{suffix}_features.parquet"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(out_path, index=False)
@@ -90,10 +103,12 @@ def build_features_cmd(season: int, upload_s3: bool, no_garbage: bool):
 @click.option("--reg-epochs", default=100, type=int, help="Regressor training epochs")
 @click.option("--cls-epochs", default=100, type=int, help="Classifier training epochs")
 @click.option("--no-garbage", is_flag=True, help="Use no-garbage-time features")
+@click.option("--adj-suffix", default=None, type=str,
+              help="Adjustment suffix (e.g. 'adj_a0.85_p10')")
 @click.option("--min-date", default=None, type=str,
               help="Earliest MM-DD within each season to include (e.g. '12-20')")
 def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
-          min_date: str | None):
+          adj_suffix: str | None, min_date: str | None):
     """Train MLPRegressor + MLPClassifier on historical features."""
     from .dataset import load_multi_season_features
     from .trainer import (
@@ -105,11 +120,14 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
 
     season_list = _parse_seasons(seasons)
     variant = " (no-garbage)" if no_garbage else ""
+    if adj_suffix:
+        variant += f" ({adj_suffix})"
     click.echo(f"Loading features{variant} for seasons: {season_list}")
     if min_date:
         click.echo(f"  Training date filter: games on or after MM-DD={min_date}")
 
     df = load_multi_season_features(season_list, no_garbage=no_garbage,
+                                    adj_suffix=adj_suffix,
                                     min_month_day=min_date)
 
     # Drop games with missing scores (unplayed)
@@ -202,7 +220,14 @@ def predict_today(season: int, game_date: str | None):
         game_date = date.today().isoformat()
 
     click.echo(f"Building features for {game_date}...")
-    df = build_features(season, game_date=game_date)
+    df = build_features(
+        season,
+        game_date=game_date,
+        extra_features=config.EXTRA_FEATURES,
+        adjust_ff=config.ADJUST_FF,
+        adjust_alpha=config.ADJUST_ALPHA,
+        adjust_prior_weight=config.ADJUST_PRIOR,
+    )
     if df.empty:
         click.echo(f"No games found for {game_date}.")
         return
@@ -256,7 +281,13 @@ def predict_season(season: int):
     from .infer import predict, save_predictions
 
     click.echo(f"Building features for full season {season}...")
-    df = build_features(season)
+    df = build_features(
+        season,
+        extra_features=config.EXTRA_FEATURES,
+        adjust_ff=config.ADJUST_FF,
+        adjust_alpha=config.ADJUST_ALPHA,
+        adjust_prior_weight=config.ADJUST_PRIOR,
+    )
     if df.empty:
         click.echo("No games found.")
         return
@@ -281,7 +312,13 @@ def predict_season(season: int):
 def validate_features(season: int, n_samples: int):
     """Spot-check features for random games in a season."""
     click.echo(f"Building features for season {season}...")
-    df = build_features(season)
+    df = build_features(
+        season,
+        extra_features=config.EXTRA_FEATURES,
+        adjust_ff=config.ADJUST_FF,
+        adjust_alpha=config.ADJUST_ALPHA,
+        adjust_prior_weight=config.ADJUST_PRIOR,
+    )
     if df.empty:
         click.echo("No games found.")
         return
@@ -325,7 +362,7 @@ def validate_features(season: int, n_samples: int):
             null_cols = [c for c in config.FEATURE_ORDER if pd.isnull(feats[c])]
             click.echo(f"    Null columns: {null_cols}")
         else:
-            click.echo("    All 37 features present.")
+            click.echo(f"    All {len(config.FEATURE_ORDER)} features present.")
 
         # Flag outliers (values > 5 std from mean)
         for col in config.FEATURE_ORDER:
