@@ -16,6 +16,13 @@
       "home_team": "Duquesne"
     },
     {
+      "away_score": 80,
+      "away_team": "Cal State Northridge",
+      "game_id": "2025_12_27_cal_state_northridge_stanford",
+      "home_score": 88,
+      "home_team": "Stanford"
+    },
+    {
       "away_score": 56,
       "away_team": "Columbia College (SC)",
       "game_id": "2025_12_27_columbia_college_sc_unc_wilmington",
@@ -28,7 +35,14 @@
       "game_id": "2025_12_27_cleary_university_duquesne",
       "home_score": 99,
       "home_team": "Duquesne"
+    },
+    {
+      "away_score": 80,
+      "away_team": "Cal State Northridge",
+      "game_id": "2025_12_27_cal_state_northridge_stanford",
+      "home_score": 88,
+      "home_team": "Stanford"
     }
   ],
-  "generated_at": "2026-02-27T18:38:39.580166Z"
+  "generated_at": "2026-02-27T20:02:22.709325Z"
 }

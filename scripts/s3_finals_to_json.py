@@ -18,6 +18,10 @@ import re
 import sys
 from datetime import date, datetime, timedelta, timezone
 
+from zoneinfo import ZoneInfo
+
+_ET = ZoneInfo("America/New_York")
+
 # Allow running as standalone script
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -26,6 +30,25 @@ from src.s3_reader import get_column, read_silver_table
 
 
 PREDICTIONS_RE = re.compile(r"^predictions_(\d{4}-\d{2}-\d{2})\.json$")
+
+
+def _to_eastern_date(raw_date: str) -> str | None:
+    """Convert an S3 startDate string to YYYY-MM-DD in US/Eastern.
+
+    This matches the timezone logic in build_features() so that prediction
+    dates and final-score dates are consistent.
+    """
+    if not raw_date:
+        return None
+    try:
+        dt = datetime.fromisoformat(raw_date.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(_ET).strftime("%Y-%m-%d")
+    except (ValueError, TypeError):
+        # Fall back to regex extraction if not a valid ISO string
+        match = re.search(r"(\d{4})-(\d{2})-(\d{2})", raw_date)
+        return match.group(0) if match else None
 
 
 def slugify(text: str) -> str:
@@ -91,13 +114,8 @@ def fetch_scores_for_date(pred_date: str, season: int) -> dict[str, dict]:
     scores = {}
     for i in range(tbl.num_rows):
         raw_date = str(start_dates[i] or "")
-        # Normalize date to YYYY-MM-DD
-        match = re.search(r"(\d{4})-(\d{2})-(\d{2})", raw_date)
-        if not match:
-            continue
-        game_date = match.group(0)
-
-        if game_date != pred_date:
+        game_date = _to_eastern_date(raw_date)
+        if not game_date or game_date != pred_date:
             continue
 
         home = str(home_teams[i] or "")
@@ -106,6 +124,9 @@ def fetch_scores_for_date(pred_date: str, season: int) -> dict[str, dict]:
         a_score = away_scores[i]
 
         if h_score is None or a_score is None:
+            continue
+        # S3 has duplicate rows with 0-0 scores for unfinished games
+        if int(h_score) == 0 and int(a_score) == 0:
             continue
 
         # Create lookup key
@@ -178,11 +199,8 @@ def fetch_all_scores_for_date(target_date: str, season: int) -> list[dict]:
     games = []
     for i in range(tbl.num_rows):
         raw_date = str(start_dates[i] or "")
-        match = re.search(r"(\d{4})-(\d{2})-(\d{2})", raw_date)
-        if not match:
-            continue
-        game_date = match.group(0)
-        if game_date != target_date:
+        game_date = _to_eastern_date(raw_date)
+        if not game_date or game_date != target_date:
             continue
 
         home = str(home_teams[i] or "")
@@ -191,6 +209,8 @@ def fetch_all_scores_for_date(target_date: str, season: int) -> list[dict]:
         a_score = away_scores[i]
 
         if h_score is None or a_score is None:
+            continue
+        if int(h_score) == 0 and int(a_score) == 0:
             continue
 
         game_id = slugify(f"{target_date}_{away}_{home}")
@@ -326,8 +346,8 @@ def run_backfill(start_str: str, end_str: str) -> int:
         games = []
         for i in range(cached["num_rows"]):
             raw_date = str(cached["start_dates"][i] or "")
-            match = re.search(r"(\d{4})-(\d{2})-(\d{2})", raw_date)
-            if not match or match.group(0) != d:
+            game_date = _to_eastern_date(raw_date)
+            if not game_date or game_date != d:
                 continue
 
             home = str(cached["home_teams"][i] or "")
@@ -336,6 +356,8 @@ def run_backfill(start_str: str, end_str: str) -> int:
             a_score = cached["away_scores"][i]
 
             if h_score is None or a_score is None:
+                continue
+            if int(h_score) == 0 and int(a_score) == 0:
                 continue
 
             game_id = slugify(f"{d}_{away}_{home}")
