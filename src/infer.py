@@ -12,7 +12,7 @@ import pandas as pd
 import torch
 
 from . import config
-from .architecture import MLPClassifier, MLPRegressor
+from .architecture import MLPClassifier, MLPRegressor, MLPRegressorSplit
 from .trainer import load_scaler
 
 
@@ -60,19 +60,23 @@ def prob_to_american(p):
     return out
 
 
-def load_regressor(path: Path | None = None) -> tuple[MLPRegressor, dict, list[str]]:
-    """Load MLPRegressor from checkpoint.
+def load_regressor(path: Path | None = None) -> tuple[MLPRegressor | MLPRegressorSplit, dict, list[str], str]:
+    """Load regressor from checkpoint, auto-detecting architecture type.
 
     Returns:
-        (model, hparams, feature_order) — feature_order from the checkpoint
-        so inference uses the same features the model was trained on.
+        (model, hparams, feature_order, sigma_param) where sigma_param is
+        "exp" (new) or "softplus" (legacy).
     """
     if path is None:
         path = config.CHECKPOINTS_DIR / "regressor.pt"
     ckpt = torch.load(path, map_location="cpu", weights_only=False)
     hp = ckpt.get("hparams", {})
     feature_order = ckpt.get("feature_order", config.FEATURE_ORDER)
-    model = MLPRegressor(
+    arch_type = ckpt.get("arch_type", "shared")
+    sigma_param = ckpt.get("sigma_param", "softplus")
+
+    ModelClass = MLPRegressorSplit if arch_type == "split" else MLPRegressor
+    model = ModelClass(
         input_dim=len(feature_order),
         hidden1=hp.get("hidden1", 256),
         hidden2=hp.get("hidden2", 128),
@@ -80,7 +84,7 @@ def load_regressor(path: Path | None = None) -> tuple[MLPRegressor, dict, list[s
     )
     model.load_state_dict(ckpt["state_dict"])
     model.eval()
-    return model, hp, feature_order
+    return model, hp, feature_order, sigma_param
 
 
 def load_classifier(path: Path | None = None) -> tuple[MLPClassifier, dict, list[str]]:
@@ -119,7 +123,7 @@ def predict(
         DataFrame with predictions: mu, sigma, home_win_prob, plus edge metrics.
     """
     scaler = load_scaler()
-    regressor, _, reg_feature_order = load_regressor()
+    regressor, _, reg_feature_order, sigma_param = load_regressor()
     classifier, _, _ = load_classifier()
 
     # Use the feature order embedded in the checkpoint — ensures compatibility
@@ -137,10 +141,14 @@ def predict(
     X_scaled = scaler.transform(X)
     X_tensor = torch.tensor(X_scaled, dtype=torch.float32)
 
-    # Regressor: (mu, raw_sigma)
+    # Regressor: (mu, log_sigma)
     mu_raw, log_sigma_raw = regressor(X_tensor)
-    sigma = torch.nn.functional.softplus(log_sigma_raw) + 1e-3
-    sigma = sigma.clamp(min=0.5, max=30.0)
+    if sigma_param == "exp":
+        sigma = torch.exp(log_sigma_raw).clamp(min=0.5, max=30.0)
+    else:
+        # Legacy softplus parameterization
+        sigma = torch.nn.functional.softplus(log_sigma_raw) + 1e-3
+        sigma = sigma.clamp(min=0.5, max=30.0)
 
     mu = mu_raw.numpy()
     sigma = sigma.numpy()

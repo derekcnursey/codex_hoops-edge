@@ -1,17 +1,22 @@
 {
   "regressor": {
-    "hidden1": 128,
-    "hidden2": 128,
-    "dropout": 0.45,
-    "lr": 0.0073,
-    "weight_decay": 0.00018,
-    "batch_size": 128
+    "hidden1": 384,
+    "hidden2": 256,
+    "dropout": 0.2,
+    "batch_size": 4096,
+    "lr": 0.003,
+    "loss": "gaussian",
+    "arch_type": "shared",
+    "sigma_param": "exp",
+    "lr_variant": "V2",
+    "best_epoch": 16,
+    "book_spread_mae": 9.12895679473877,
+    "overall_mae": 10.00253677368164,
+    "cal_score": 0.06592316627502441,
+    "sigma_std": 2.4854366779327393
   },
   "classifier": {
-    "hidden1": 128,
-    "dropout": 0.46797797309873074,
-    "lr": 0.0009988822771390294,
-    "weight_decay": 3.9687562191399185e-06,
-    "batch_size": 128
+    "hidden1": 384,
+    "dropout": 0.2
   }
 }

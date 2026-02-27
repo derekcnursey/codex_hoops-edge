@@ -1,6 +1,7 @@
 """MLP model architectures for spread regression and win probability classification.
 
-MLPRegressor: predicts (mu, log_sigma) for a Gaussian distribution over the home spread.
+MLPRegressor: shared backbone → (mu, log_sigma) heads.
+MLPRegressorSplit: shared first layer → separate mu/sigma pathways.
 MLPClassifier: predicts home win probability via logit.
 """
 
@@ -11,16 +12,18 @@ import torch.nn as nn
 
 
 class MLPRegressor(nn.Module):
-    """MLP that outputs (mu, log_sigma) for Gaussian NLL loss.
+    """Shared-backbone MLP that outputs (mu, log_sigma) via exp() parameterization.
 
     Architecture:
         input_dim → hidden1 → BN → ReLU → Dropout →
-        hidden2 → BN → ReLU → Linear(2) [mu, log_sigma]
+        hidden2 → BN → ReLU → mu_head(1) + sigma_head(1)
+
+    Sigma = exp(log_sigma).clamp(0.5, 30.0), initialized near empirical residual std.
     """
 
     def __init__(
         self,
-        input_dim: int = 37,
+        input_dim: int = 50,
         hidden1: int = 256,
         hidden2: int = 128,
         dropout: float = 0.3,
@@ -35,14 +38,67 @@ class MLPRegressor(nn.Module):
             nn.BatchNorm1d(hidden2),
             nn.ReLU(),
         )
-        self.head = nn.Linear(hidden2, 2)  # [mu, log_sigma]
+        self.mu_head = nn.Linear(hidden2, 1)
+        self.sigma_head = nn.Linear(hidden2, 1)
+
+        # Initialize sigma bias to log(12) ≈ 2.48 so sigma starts near
+        # the empirical residual std (~12 points)
+        nn.init.constant_(self.sigma_head.bias, 2.48)
 
     def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        """Returns (mu, raw_sigma) where raw_sigma needs softplus + clamp."""
+        """Returns (mu, log_sigma) — caller applies exp() + clamp for sigma."""
         h = self.net(x)
-        out = self.head(h)
-        mu = out[:, 0]
-        log_sigma = out[:, 1]
+        mu = self.mu_head(h).squeeze(-1)
+        log_sigma = self.sigma_head(h).squeeze(-1)
+        return mu, log_sigma
+
+
+class MLPRegressorSplit(nn.Module):
+    """Split-head MLP: shared first layer, then separate mu/sigma pathways.
+
+    This prevents mu gradient updates from killing sigma neurons.
+
+    Architecture:
+        input_dim → hidden1 → BN → ReLU → Dropout →
+        ├── mu_path:    hidden2 → BN → ReLU → Linear(1) [mu]
+        └── sigma_path: hidden2 → BN → ReLU → Linear(1) [log_sigma]
+    """
+
+    def __init__(
+        self,
+        input_dim: int = 50,
+        hidden1: int = 256,
+        hidden2: int = 128,
+        dropout: float = 0.3,
+    ):
+        super().__init__()
+        self.shared = nn.Sequential(
+            nn.Linear(input_dim, hidden1),
+            nn.BatchNorm1d(hidden1),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+        )
+        self.mu_head = nn.Sequential(
+            nn.Linear(hidden1, hidden2),
+            nn.BatchNorm1d(hidden2),
+            nn.ReLU(),
+            nn.Linear(hidden2, 1),
+        )
+        self.sigma_head = nn.Sequential(
+            nn.Linear(hidden1, hidden2),
+            nn.BatchNorm1d(hidden2),
+            nn.ReLU(),
+            nn.Linear(hidden2, 1),
+        )
+
+        # Initialize sigma output bias to log(12) ≈ 2.48
+        nn.init.constant_(self.sigma_head[-1].bias, 2.48)
+
+    def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        """Returns (mu, log_sigma) — caller applies exp() + clamp for sigma."""
+        h = self.shared(x)
+        mu = self.mu_head(h).squeeze(-1)
+        log_sigma = self.sigma_head(h).squeeze(-1)
         return mu, log_sigma
 
 
@@ -56,7 +112,7 @@ class MLPClassifier(nn.Module):
 
     def __init__(
         self,
-        input_dim: int = 37,
+        input_dim: int = 50,
         hidden1: int = 256,
         dropout: float = 0.3,
     ):
@@ -81,17 +137,33 @@ class MLPClassifier(nn.Module):
 
 def gaussian_nll_loss(
     mu: torch.Tensor,
-    raw_sigma: torch.Tensor,
+    log_sigma: torch.Tensor,
     target: torch.Tensor,
     sigma_min: float = 0.5,
     sigma_max: float = 30.0,
-    eps: float = 1e-3,
 ) -> torch.Tensor:
-    """Gaussian negative log-likelihood loss with clamped sigma.
+    """Gaussian NLL with exp() sigma parameterization.
 
-    sigma = softplus(raw_sigma) + eps, then clamped to [sigma_min, sigma_max].
+    sigma = exp(log_sigma).clamp(sigma_min, sigma_max)
+    loss = 0.5 * log(2π σ²) + (y - μ)² / (2σ²)
     """
-    sigma = torch.nn.functional.softplus(raw_sigma) + eps
-    sigma = sigma.clamp(min=sigma_min, max=sigma_max)
+    sigma = torch.exp(log_sigma).clamp(min=sigma_min, max=sigma_max)
     nll = 0.5 * torch.log(2 * torch.pi * sigma**2) + (target - mu) ** 2 / (2 * sigma**2)
-    return nll.mean()
+    return nll, sigma
+
+
+def laplacian_nll_loss(
+    mu: torch.Tensor,
+    log_sigma: torch.Tensor,
+    target: torch.Tensor,
+    sigma_min: float = 0.5,
+    sigma_max: float = 30.0,
+) -> torch.Tensor:
+    """Laplacian NLL with exp() sigma parameterization.
+
+    sigma = exp(log_sigma).clamp(sigma_min, sigma_max)
+    loss = log(2σ) + |y - μ| / σ
+    """
+    sigma = torch.exp(log_sigma).clamp(min=sigma_min, max=sigma_max)
+    nll = torch.log(2 * sigma) + torch.abs(target - mu) / sigma
+    return nll, sigma

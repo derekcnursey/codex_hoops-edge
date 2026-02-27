@@ -13,7 +13,7 @@ from torch.amp import GradScaler, autocast
 from torch.utils.data import DataLoader
 
 from . import config
-from .architecture import MLPClassifier, MLPRegressor, gaussian_nll_loss
+from .architecture import MLPClassifier, MLPRegressor, MLPRegressorSplit, gaussian_nll_loss
 from .dataset import HoopsDataset
 
 
@@ -110,8 +110,9 @@ def train_regressor(
             x, spread, _ = [b.to(device) for b in batch]
             optimizer.zero_grad()
             with autocast(device.type, enabled=use_amp):
-                mu, raw_sigma = model(x)
-                loss = gaussian_nll_loss(mu, raw_sigma, spread)
+                mu, log_sigma = model(x)
+                nll, _sigma = gaussian_nll_loss(mu, log_sigma, spread)
+                loss = nll.mean()
             amp_scaler.scale(loss).backward()
             amp_scaler.step(optimizer)
             amp_scaler.update()
@@ -193,15 +194,21 @@ def save_checkpoint(
     subdir: str | None = None,
     feature_order: list[str] | None = None,
 ) -> Path:
-    """Save model checkpoint with feature_order and hparams embedded."""
+    """Save model checkpoint with feature_order, hparams, and architecture metadata."""
     base = config.CHECKPOINTS_DIR / subdir if subdir else config.CHECKPOINTS_DIR
     path = base / f"{name}.pt"
     path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Auto-detect architecture type
+    arch_type = "split" if isinstance(model, MLPRegressorSplit) else "shared"
+
     torch.save(
         {
             "state_dict": model.state_dict(),
             "feature_order": feature_order or config.FEATURE_ORDER,
             "hparams": hparams or {},
+            "arch_type": arch_type,
+            "sigma_param": "exp",
         },
         path,
     )

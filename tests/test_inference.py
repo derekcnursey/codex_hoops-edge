@@ -56,30 +56,31 @@ class TestGaussianNLL:
     def test_loss_is_positive(self):
         from src.architecture import gaussian_nll_loss
         mu = torch.tensor([1.0, 2.0, 3.0])
-        raw_sigma = torch.tensor([0.5, 0.5, 0.5])
+        log_sigma = torch.tensor([0.5, 0.5, 0.5])
         target = torch.tensor([1.5, 2.5, 3.5])
-        loss = gaussian_nll_loss(mu, raw_sigma, target)
-        assert loss.item() > 0
+        nll, sigma = gaussian_nll_loss(mu, log_sigma, target)
+        assert nll.mean().item() > 0
 
     def test_perfect_prediction_lower_loss(self):
         from src.architecture import gaussian_nll_loss
         mu_good = torch.tensor([1.0, 2.0, 3.0])
         mu_bad = torch.tensor([10.0, 20.0, 30.0])
-        raw_sigma = torch.tensor([0.5, 0.5, 0.5])
+        log_sigma = torch.tensor([0.5, 0.5, 0.5])
         target = torch.tensor([1.0, 2.0, 3.0])
-        loss_good = gaussian_nll_loss(mu_good, raw_sigma, target)
-        loss_bad = gaussian_nll_loss(mu_bad, raw_sigma, target)
-        assert loss_good < loss_bad
+        nll_good, _ = gaussian_nll_loss(mu_good, log_sigma, target)
+        nll_bad, _ = gaussian_nll_loss(mu_bad, log_sigma, target)
+        assert nll_good.mean() < nll_bad.mean()
 
     def test_sigma_clamping(self):
-        """Very negative raw_sigma should still produce valid loss."""
+        """Very negative log_sigma should still produce valid loss (clamped to 0.5)."""
         from src.architecture import gaussian_nll_loss
         mu = torch.tensor([1.0])
-        raw_sigma = torch.tensor([-100.0])  # After softplus, almost 0 -> clamped to 0.5
+        log_sigma = torch.tensor([-100.0])  # exp(-100) ≈ 0 -> clamped to 0.5
         target = torch.tensor([1.0])
-        loss = gaussian_nll_loss(mu, raw_sigma, target)
-        assert not torch.isnan(loss)
-        assert not torch.isinf(loss)
+        nll, sigma = gaussian_nll_loss(mu, log_sigma, target)
+        assert not torch.isnan(nll).any()
+        assert not torch.isinf(nll).any()
+        assert sigma.item() >= 0.5
 
 
 class TestCheckpointRoundtrip:
