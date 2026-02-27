@@ -1,10 +1,10 @@
 {
   "regressor": {
-    "hidden1": 512,
+    "hidden1": 128,
     "hidden2": 128,
-    "dropout": 0.34710672204238735,
-    "lr": 0.0009082297049061073,
-    "weight_decay": 1.3539944284917058e-05,
+    "dropout": 0.45,
+    "lr": 0.0073,
+    "weight_decay": 0.00018,
     "batch_size": 128
   },
   "classifier": {
