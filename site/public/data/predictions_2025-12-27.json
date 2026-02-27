@@ -1,0 +1,57 @@
+{
+  "date": "2025-12-27",
+  "games": [
+    {
+      "away_team": "Columbia College (SC)",
+      "edge_home_points": null,
+      "game_id": "2025_12_27_columbia_college_sc_unc_wilmington",
+      "home_team": "UNC Wilmington",
+      "market_spread_home": null,
+      "model_mu_home": -9.862652,
+      "neutral_site": null,
+      "pick_cover_prob": null,
+      "pick_ev_per_1": null,
+      "pick_fair_odds": null,
+      "pick_prob_edge": null,
+      "pick_side": "AWAY",
+      "pick_spread_odds": -110,
+      "pred_home_win_prob": 0.78557444,
+      "pred_sigma": 11.421596
+    },
+    {
+      "away_team": "Cleary University",
+      "edge_home_points": null,
+      "game_id": "2025_12_27_cleary_university_duquesne",
+      "home_team": "Duquesne",
+      "market_spread_home": null,
+      "model_mu_home": -13.722851,
+      "neutral_site": null,
+      "pick_cover_prob": null,
+      "pick_ev_per_1": null,
+      "pick_fair_odds": null,
+      "pick_prob_edge": null,
+      "pick_side": "AWAY",
+      "pick_spread_odds": -110,
+      "pred_home_win_prob": 0.9414694,
+      "pred_sigma": 11.687408
+    },
+    {
+      "away_team": "Cal State Northridge",
+      "edge_home_points": -6.1453447341918945,
+      "game_id": "2025_12_27_cal_state_northridge_stanford",
+      "home_team": "Stanford",
+      "market_spread_home": -16.0,
+      "model_mu_home": -9.854655,
+      "neutral_site": null,
+      "pick_cover_prob": 0.7061124413799763,
+      "pick_ev_per_1": 0.3480328426345002,
+      "pick_fair_odds": -240.26619047624638,
+      "pick_prob_edge": 0.18230291757045247,
+      "pick_side": "AWAY",
+      "pick_spread_odds": -110,
+      "pred_home_win_prob": 0.8519117,
+      "pred_sigma": 11.336957
+    }
+  ],
+  "generated_at": "2026-02-27T14:52:27.569948Z"
+}
