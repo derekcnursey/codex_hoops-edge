@@ -60,8 +60,13 @@ def prob_to_american(p):
     return out
 
 
-def load_regressor(path: Path | None = None) -> tuple[MLPRegressor, dict]:
-    """Load MLPRegressor from checkpoint."""
+def load_regressor(path: Path | None = None) -> tuple[MLPRegressor, dict, list[str]]:
+    """Load MLPRegressor from checkpoint.
+
+    Returns:
+        (model, hparams, feature_order) — feature_order from the checkpoint
+        so inference uses the same features the model was trained on.
+    """
     if path is None:
         path = config.CHECKPOINTS_DIR / "regressor.pt"
     ckpt = torch.load(path, map_location="cpu", weights_only=False)
@@ -75,11 +80,15 @@ def load_regressor(path: Path | None = None) -> tuple[MLPRegressor, dict]:
     )
     model.load_state_dict(ckpt["state_dict"])
     model.eval()
-    return model, hp
+    return model, hp, feature_order
 
 
-def load_classifier(path: Path | None = None) -> tuple[MLPClassifier, dict]:
-    """Load MLPClassifier from checkpoint."""
+def load_classifier(path: Path | None = None) -> tuple[MLPClassifier, dict, list[str]]:
+    """Load MLPClassifier from checkpoint.
+
+    Returns:
+        (model, hparams, feature_order) — feature_order from the checkpoint.
+    """
     if path is None:
         path = config.CHECKPOINTS_DIR / "classifier.pt"
     ckpt = torch.load(path, map_location="cpu", weights_only=False)
@@ -92,7 +101,7 @@ def load_classifier(path: Path | None = None) -> tuple[MLPClassifier, dict]:
     )
     model.load_state_dict(ckpt["state_dict"])
     model.eval()
-    return model, hp
+    return model, hp, feature_order
 
 
 @torch.no_grad()
@@ -110,10 +119,13 @@ def predict(
         DataFrame with predictions: mu, sigma, home_win_prob, plus edge metrics.
     """
     scaler = load_scaler()
-    regressor, _ = load_regressor()
-    classifier, _ = load_classifier()
+    regressor, _, reg_feature_order = load_regressor()
+    classifier, _, _ = load_classifier()
 
-    X = features_df[config.FEATURE_ORDER].values.astype(np.float32)
+    # Use the feature order embedded in the checkpoint — ensures compatibility
+    # even if config.FEATURE_ORDER has changed since the model was trained.
+    feature_order = reg_feature_order
+    X = features_df[feature_order].values.astype(np.float32)
 
     # Handle NaN: fill with column means (from scaler)
     nan_mask = np.isnan(X)

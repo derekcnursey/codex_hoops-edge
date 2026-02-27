@@ -109,14 +109,15 @@ def build_features_cmd(season: int, upload_s3: bool, no_garbage: bool, adjusted:
 @click.option("--no-garbage", is_flag=True, help="Use no-garbage-time features")
 @click.option("--adj-suffix", default=None, type=str,
               help="Adjustment suffix (e.g. 'adj_a0.85_p10')")
-@click.option("--min-date", default=None, type=str,
-              help="Earliest MM-DD within each season to include (e.g. '12-20')")
+@click.option("--min-date", default="12-01", type=str,
+              help="Earliest MM-DD within each season to include (default: 12-01)")
 def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
           adj_suffix: str | None, min_date: str | None):
     """Train MLPRegressor + MLPClassifier on historical features."""
     from .dataset import load_multi_season_features
     from .trainer import (
         fit_scaler,
+        impute_column_means,
         save_checkpoint,
         train_classifier,
         train_regressor,
@@ -136,6 +137,13 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
 
     # Drop games with missing scores (unplayed)
     df = df.dropna(subset=["homeScore", "awayScore"])
+    n_before_zero = len(df)
+
+    # Remove 0-0 games — data errors where scores are recorded as 0 instead of NULL
+    df = df[(df["homeScore"] != 0) | (df["awayScore"] != 0)]
+    n_removed_zero = n_before_zero - len(df)
+    if n_removed_zero > 0:
+        click.echo(f"  Removed {n_removed_zero} bogus 0-0 games")
     click.echo(f"  Training samples: {len(df)}")
 
     X = get_feature_matrix(df).values.astype(np.float32)
@@ -143,8 +151,11 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
     y_spread = targets["spread_home"].values.astype(np.float32)
     y_win = targets["home_win"].values.astype(np.float32)
 
-    # Fill NaN features with 0 before scaling
-    X = np.nan_to_num(X, nan=0.0)
+    # Impute NaN with column means (not zero — zero-fill distorts the scaler)
+    n_nan = np.isnan(X).sum()
+    X = impute_column_means(X)
+    if n_nan > 0:
+        click.echo(f"  Imputed {n_nan:,} NaN values with column means")
 
     # Subdirectory for no-garbage variant
     ckpt_subdir = "no_garbage" if no_garbage else None
@@ -175,17 +186,22 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
 @cli.command()
 @click.option("--seasons", required=True, help="Training seasons (e.g. '2015-2025')")
 @click.option("--trials", default=50, type=int, help="Number of Optuna trials")
-def tune(seasons: str, trials: int):
+@click.option("--min-date", default="12-01", type=str,
+              help="Earliest MM-DD within each season to include (default: 12-01)")
+def tune(seasons: str, trials: int, min_date: str | None):
     """Optuna hyperparameter search for both models."""
     from .dataset import load_multi_season_features
-    from .trainer import fit_scaler
+    from .trainer import fit_scaler, impute_column_means
     from .tuner import tune_classifier, tune_regressor
 
     season_list = _parse_seasons(seasons)
     click.echo(f"Loading features for seasons: {season_list}")
+    if min_date:
+        click.echo(f"  Tuning date filter: games on or after MM-DD={min_date}")
 
-    df = load_multi_season_features(season_list)
+    df = load_multi_season_features(season_list, min_month_day=min_date)
     df = df.dropna(subset=["homeScore", "awayScore"])
+    df = df[(df["homeScore"] != 0) | (df["awayScore"] != 0)]
     click.echo(f"  Tuning samples: {len(df)}")
 
     X = get_feature_matrix(df).values.astype(np.float32)
@@ -193,7 +209,7 @@ def tune(seasons: str, trials: int):
     y_spread = targets["spread_home"].values.astype(np.float32)
     y_win = targets["home_win"].values.astype(np.float32)
 
-    X = np.nan_to_num(X, nan=0.0)
+    X = impute_column_means(X)
     scaler = fit_scaler(X)
     X_scaled = scaler.transform(X)
 
