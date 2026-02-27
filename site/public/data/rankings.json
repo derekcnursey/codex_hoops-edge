@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-27T15:03:30.200516Z",
+  "generated_at": "2026-02-27T17:44:21.174949Z",
   "as_of_date": "2026-01-27",
   "season": 2026,
   "teams": [
@@ -3180,8 +3180,8 @@
       "team": "Grambling",
       "team_id": 103,
       "conference": "SWAC",
-      "record": "13-17",
-      "conf_record": "7-10",
+      "record": "14-17",
+      "conf_record": "8-10",
       "adj_oe": 100.7,
       "adj_de": 107.5,
       "adj_margin": -6.8,
@@ -4740,8 +4740,8 @@
       "team": "Mississippi Valley State",
       "team_id": 175,
       "conference": "SWAC",
-      "record": "5-26",
-      "conf_record": "4-13",
+      "record": "5-27",
+      "conf_record": "4-14",
       "adj_oe": 83.8,
       "adj_de": 122.3,
       "adj_margin": -38.5,
