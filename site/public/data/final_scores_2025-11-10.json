@@ -1,0 +1,188 @@
+{
+  "date": "2025-11-10",
+  "games": [
+    {
+      "away_score": 42,
+      "away_team": "Kentucky Christian",
+      "game_id": "2025_11_10_kentucky_christian_ut_martin",
+      "home_score": 97,
+      "home_team": "UT Martin"
+    },
+    {
+      "away_score": 69,
+      "away_team": "Washington",
+      "game_id": "2025_11_10_washington_baylor",
+      "home_score": 78,
+      "home_team": "Baylor"
+    },
+    {
+      "away_score": 74,
+      "away_team": "East Texas A&M",
+      "game_id": "2025_11_10_east_texas_a_m_hawai_i",
+      "home_score": 100,
+      "home_team": "Hawai'i"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Molloy",
+      "game_id": "2025_11_10_molloy_hofstra",
+      "home_score": 95,
+      "home_team": "Hofstra"
+    },
+    {
+      "away_score": 39,
+      "away_team": "Reinhardt",
+      "game_id": "2025_11_10_reinhardt_jacksonville_state",
+      "home_score": 114,
+      "home_team": "Jacksonville State"
+    },
+    {
+      "away_score": 51,
+      "away_team": "Ecclesia",
+      "game_id": "2025_11_10_ecclesia_southern",
+      "home_score": 115,
+      "home_team": "Southern"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Ripon",
+      "game_id": "2025_11_10_ripon_green_bay",
+      "home_score": 83,
+      "home_team": "Green Bay"
+    },
+    {
+      "away_score": 73,
+      "away_team": "New Haven",
+      "game_id": "2025_11_10_new_haven_umass_lowell",
+      "home_score": 67,
+      "home_team": "UMass Lowell"
+    },
+    {
+      "away_score": 53,
+      "away_team": "Penn State-Shenango",
+      "game_id": "2025_11_10_penn_state_shenango_youngstown_state",
+      "home_score": 115,
+      "home_team": "Youngstown State"
+    },
+    {
+      "away_score": 59,
+      "away_team": "Columbia International",
+      "game_id": "2025_11_10_columbia_international_furman",
+      "home_score": 89,
+      "home_team": "Furman"
+    },
+    {
+      "away_score": 62,
+      "away_team": "Columbia",
+      "game_id": "2025_11_10_columbia_uconn",
+      "home_score": 89,
+      "home_team": "UConn"
+    },
+    {
+      "away_score": 60,
+      "away_team": "Maine",
+      "game_id": "2025_11_10_maine_rutgers",
+      "home_score": 72,
+      "home_team": "Rutgers"
+    },
+    {
+      "away_score": 57,
+      "away_team": "Delaware State",
+      "game_id": "2025_11_10_delaware_state_niagara",
+      "home_score": 68,
+      "home_team": "Niagara"
+    },
+    {
+      "away_score": 42,
+      "away_team": "Kentucky Christian",
+      "game_id": "2025_11_10_kentucky_christian_ut_martin",
+      "home_score": 97,
+      "home_team": "UT Martin"
+    },
+    {
+      "away_score": 69,
+      "away_team": "Washington",
+      "game_id": "2025_11_10_washington_baylor",
+      "home_score": 78,
+      "home_team": "Baylor"
+    },
+    {
+      "away_score": 74,
+      "away_team": "East Texas A&M",
+      "game_id": "2025_11_10_east_texas_a_m_hawai_i",
+      "home_score": 100,
+      "home_team": "Hawai'i"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Molloy",
+      "game_id": "2025_11_10_molloy_hofstra",
+      "home_score": 95,
+      "home_team": "Hofstra"
+    },
+    {
+      "away_score": 39,
+      "away_team": "Reinhardt",
+      "game_id": "2025_11_10_reinhardt_jacksonville_state",
+      "home_score": 114,
+      "home_team": "Jacksonville State"
+    },
+    {
+      "away_score": 51,
+      "away_team": "Ecclesia",
+      "game_id": "2025_11_10_ecclesia_southern",
+      "home_score": 115,
+      "home_team": "Southern"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Ripon",
+      "game_id": "2025_11_10_ripon_green_bay",
+      "home_score": 83,
+      "home_team": "Green Bay"
+    },
+    {
+      "away_score": 73,
+      "away_team": "New Haven",
+      "game_id": "2025_11_10_new_haven_umass_lowell",
+      "home_score": 67,
+      "home_team": "UMass Lowell"
+    },
+    {
+      "away_score": 53,
+      "away_team": "Penn State-Shenango",
+      "game_id": "2025_11_10_penn_state_shenango_youngstown_state",
+      "home_score": 115,
+      "home_team": "Youngstown State"
+    },
+    {
+      "away_score": 59,
+      "away_team": "Columbia International",
+      "game_id": "2025_11_10_columbia_international_furman",
+      "home_score": 89,
+      "home_team": "Furman"
+    },
+    {
+      "away_score": 62,
+      "away_team": "Columbia",
+      "game_id": "2025_11_10_columbia_uconn",
+      "home_score": 89,
+      "home_team": "UConn"
+    },
+    {
+      "away_score": 60,
+      "away_team": "Maine",
+      "game_id": "2025_11_10_maine_rutgers",
+      "home_score": 72,
+      "home_team": "Rutgers"
+    },
+    {
+      "away_score": 57,
+      "away_team": "Delaware State",
+      "game_id": "2025_11_10_delaware_state_niagara",
+      "home_score": 68,
+      "home_team": "Niagara"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:15.962268Z"
+}

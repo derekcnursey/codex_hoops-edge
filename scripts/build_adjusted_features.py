@@ -46,9 +46,7 @@ def build_adjusted_parquets(alpha: float = 1.0, prior_weight: float = 5.0):
     print(f"Building adjusted features (alpha={alpha}, prior_weight={prior_weight})")
     print(f"{'='*70}\n")
 
-    # Use suffix for non-default params so different combos don't overwrite
-    is_default = (alpha == 1.0 and prior_weight == 5.0)
-    suffix = "" if is_default else f"_a{alpha}_p{int(prior_weight)}"
+    suffix = _adj_suffix(alpha, prior_weight)
 
     for season in ALL_SEASONS:
         out_path = config.FEATURES_DIR / f"season_{season}_no_garbage_adj{suffix}_features.parquet"
@@ -77,8 +75,16 @@ def build_adjusted_parquets(alpha: float = 1.0, prior_weight: float = 5.0):
 # ── Step 2: Sanity checks ────────────────────────────────────────
 
 
-def load_adj_features(season: int) -> pd.DataFrame:
-    path = config.FEATURES_DIR / f"season_{season}_no_garbage_adj_features.parquet"
+def _adj_suffix(alpha: float, prior_weight: float) -> str:
+    """Return parquet filename suffix for the given alpha/prior combo."""
+    if alpha == 1.0 and prior_weight == 5.0:
+        return ""
+    return f"_a{alpha}_p{int(prior_weight)}"
+
+
+def load_adj_features(season: int, alpha: float = 1.0, prior_weight: float = 5.0) -> pd.DataFrame:
+    suffix = _adj_suffix(alpha, prior_weight)
+    path = config.FEATURES_DIR / f"season_{season}_no_garbage_adj{suffix}_features.parquet"
     if not path.exists():
         raise FileNotFoundError(f"Adjusted features not found: {path}")
     return pd.read_parquet(path)
@@ -91,13 +97,15 @@ def load_raw_features(season: int) -> pd.DataFrame:
     return pd.read_parquet(path)
 
 
-def sanity_check():
+def sanity_check(alpha: float = 1.0, prior_weight: float = 5.0):
     """Run sanity checks on 2025 adjusted vs raw features."""
+    suffix = _adj_suffix(alpha, prior_weight)
+    label = f"alpha={alpha}, prior={prior_weight}" if suffix else "default"
     print(f"\n{'='*70}")
-    print("SANITY CHECKS — Season 2025")
+    print(f"SANITY CHECKS — Season 2025 ({label})")
     print(f"{'='*70}\n")
 
-    adj_df = load_adj_features(2025)
+    adj_df = load_adj_features(2025, alpha=alpha, prior_weight=prior_weight)
     raw_df = load_raw_features(2025)
 
     # Merge on gameId to align rows
@@ -285,7 +293,7 @@ def main():
     if not args.skip_build:
         build_adjusted_parquets(alpha=args.alpha, prior_weight=args.prior)
 
-    sanity_check()
+    sanity_check(alpha=args.alpha, prior_weight=args.prior)
 
     # Cache lines data for GPU box (no S3 access needed there)
     cache_lines()

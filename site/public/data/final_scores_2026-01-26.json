@@ -1,0 +1,34 @@
+{
+  "date": "2026-01-26",
+  "games": [
+    {
+      "away_score": 87,
+      "away_team": "Le Moyne",
+      "game_id": "2026_01_26_le_moyne_fairleigh_dickinson",
+      "home_score": 74,
+      "home_team": "Fairleigh Dickinson"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Delaware State",
+      "game_id": "2026_01_26_delaware_state_south_carolina_state",
+      "home_score": 70,
+      "home_team": "South Carolina State"
+    },
+    {
+      "away_score": 87,
+      "away_team": "Le Moyne",
+      "game_id": "2026_01_26_le_moyne_fairleigh_dickinson",
+      "home_score": 74,
+      "home_team": "Fairleigh Dickinson"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Delaware State",
+      "game_id": "2026_01_26_delaware_state_south_carolina_state",
+      "home_score": 70,
+      "home_team": "South Carolina State"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.697276Z"
+}

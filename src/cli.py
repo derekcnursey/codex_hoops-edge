@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import json
 import random
-from datetime import date
+import subprocess
+import sys
+from datetime import date, datetime, timedelta
+from pathlib import Path
 
 import click
 import numpy as np
@@ -335,6 +338,226 @@ def validate_features(season: int, n_samples: int):
                 col_std = feat_matrix[col].std()
                 if col_std > 0 and abs(val - col_mean) > 5 * col_std:
                     click.echo(f"    OUTLIER: {col} = {val:.4f} (mean={col_mean:.4f}, std={col_std:.4f})")
+
+
+# ── 7. daily-run ──────────────────────────────────────────────────
+
+
+@cli.command("daily-run")
+@click.option("--season", required=True, type=int, help="Season year (e.g. 2026)")
+@click.option("--date", "game_date", default=None, help="Date override (YYYY-MM-DD)")
+def daily_run(season: int, game_date: str | None):
+    """Full daily pipeline: build features → predict → CSV → JSON → final scores."""
+    from .infer import predict, save_predictions
+
+    if game_date is None:
+        game_date = date.today().isoformat()
+
+    click.echo(f"=== Daily run for {game_date} (season {season}) ===")
+
+    # 1. Build features
+    click.echo("Building features...")
+    df = build_features(season, game_date=game_date)
+    if df.empty:
+        click.echo(f"No games found for {game_date}.")
+        return
+
+    click.echo(f"  Games: {len(df)}")
+
+    # 2. Predict with edge calculations
+    lines = load_lines(season)
+    preds = predict(df, lines_df=lines)
+
+    # 3. Save predictions
+    json_path, csv_path = save_predictions(preds, game_date=game_date)
+    click.echo(f"  JSON: {json_path}")
+    click.echo(f"  CSV:  {csv_path}")
+
+    # 4. Build rankings
+    rankings_script = config.PROJECT_ROOT / "scripts" / "build_rankings_json.py"
+    if rankings_script.exists():
+        click.echo("Building rankings...")
+        subprocess.run(
+            [sys.executable, str(rankings_script)],
+            check=True,
+            cwd=config.PROJECT_ROOT,
+        )
+        click.echo("Rankings complete.")
+
+    # 5. Run publish pipeline (csv_to_json + s3_finals_to_json)
+    script_dir = config.PROJECT_ROOT / "scripts"
+    publish_sh = script_dir / "publish_daily.sh"
+    if publish_sh.exists():
+        click.echo("Running publish pipeline...")
+        csv_dir = config.PREDICTIONS_DIR / "csv"
+        latest_csv = sorted(csv_dir.glob("*.csv"), key=lambda p: p.stat().st_mtime)
+        csv_arg = str(latest_csv[-1]) if latest_csv else str(csv_path)
+        subprocess.run(
+            ["bash", str(publish_sh), csv_arg, game_date],
+            check=True,
+            cwd=config.PROJECT_ROOT,
+        )
+        click.echo("Publish pipeline complete.")
+
+    # Print summary
+    if "pick_side" in preds.columns and "pick_prob_edge" in preds.columns:
+        preds = preds.copy()
+        preds["_abs_edge"] = preds["pick_prob_edge"].abs()
+        preds = preds.sort_values("_abs_edge", ascending=False).drop(columns=["_abs_edge"])
+        click.echo(f"\n{'MATCHUP':>44} | {'PICK':>6} | {'EDGE':>7} | {'MODEL':>7} | {'BOOK':>7}")
+        click.echo("-" * 85)
+        for _, row in preds.iterrows():
+            away = str(row.get("awayTeam", ""))[:16]
+            home = str(row.get("homeTeam", ""))[:16]
+            matchup = f"{away:>16} @ {home:<16}"
+            pick = str(row.get("pick_side", ""))
+            edge_pct = row.get("pick_prob_edge", 0)
+            model = row.get("model_spread", 0)
+            book = row.get("book_spread", 0)
+            if pd.notna(edge_pct) and pd.notna(model) and pd.notna(book):
+                click.echo(
+                    f"  {matchup} | {pick:>6} | {edge_pct:+.1%} | {model:+.1f} | {book:+.1f}"
+                )
+
+
+# ── 8. build-rankings ─────────────────────────────────────────────
+
+
+@cli.command("build-rankings")
+@click.option("--season", default=2026, type=int, help="Season year (e.g. 2026)")
+def build_rankings(season: int):
+    """Build power rankings JSON from S3 efficiency ratings."""
+    script = config.PROJECT_ROOT / "scripts" / "build_rankings_json.py"
+    subprocess.run(
+        [sys.executable, str(script)],
+        check=True,
+        cwd=config.PROJECT_ROOT,
+    )
+
+
+# ── 9. backfill-season ────────────────────────────────────────────
+
+
+@cli.command("backfill-season")
+@click.option("--season", required=True, type=int, help="Season year (e.g. 2026)")
+@click.option("--start-date", required=True, help="Start date (YYYY-MM-DD)")
+@click.option("--end-date", default=None, help="End date (YYYY-MM-DD, default: yesterday)")
+@click.option("--skip-existing/--no-skip-existing", default=True,
+              help="Skip dates that already have predictions JSON")
+def backfill_season(season: int, start_date: str, end_date: str | None,
+                    skip_existing: bool):
+    """Backfill predictions for a date range."""
+    from .infer import predict, save_predictions
+
+    start = datetime.strptime(start_date, "%Y-%m-%d").date()
+    end = (
+        datetime.strptime(end_date, "%Y-%m-%d").date()
+        if end_date
+        else date.today() - timedelta(days=1)
+    )
+
+    click.echo(f"=== Backfill season {season}: {start} → {end} ===")
+
+    lines = load_lines(season)
+    script_dir = config.PROJECT_ROOT / "scripts"
+    csv_to_json = script_dir / "csv_to_json.py"
+
+    processed = 0
+    current = start
+    while current <= end:
+        game_date = current.isoformat()
+        current += timedelta(days=1)
+
+        # Check if already exists
+        if skip_existing:
+            existing_json = (
+                config.PROJECT_ROOT / "site" / "public" / "data"
+                / f"predictions_{game_date}.json"
+            )
+            if existing_json.exists():
+                continue
+
+        # Build features for this date
+        df = build_features(season, game_date=game_date)
+        if df.empty:
+            continue
+
+        # Predict
+        preds = predict(df, lines_df=lines)
+
+        # Save
+        json_path, csv_path = save_predictions(preds, game_date=game_date)
+
+        # Convert CSV to site JSON
+        if csv_to_json.exists():
+            csv_dir = config.PREDICTIONS_DIR / "csv"
+            latest_csv = sorted(csv_dir.glob("*.csv"), key=lambda p: p.stat().st_mtime)
+            csv_arg = str(latest_csv[-1]) if latest_csv else str(csv_path)
+            subprocess.run(
+                [sys.executable, str(csv_to_json), csv_arg, game_date],
+                check=True,
+                cwd=config.PROJECT_ROOT,
+            )
+
+        processed += 1
+        click.echo(f"  {game_date}: {len(preds)} games")
+
+    click.echo(f"\nProcessed {processed} dates.")
+
+    # Run s3_finals_to_json once at end
+    s3_finals = script_dir / "s3_finals_to_json.py"
+    if s3_finals.exists():
+        click.echo("Fetching final scores from S3...")
+        subprocess.run(
+            [sys.executable, str(s3_finals)],
+            check=True,
+            cwd=config.PROJECT_ROOT,
+        )
+        click.echo("Final scores complete.")
+
+
+# ── 9. publish-site ───────────────────────────────────────────────
+
+
+@cli.command("publish-site")
+@click.option("--message", default=None, help="Custom commit message")
+def publish_site(message: str | None):
+    """Git commit and push site/public/data/ to deploy via Vercel."""
+    import subprocess
+
+    today_str = date.today().isoformat()
+    msg = message or f"Update predictions {today_str}"
+
+    click.echo("Staging site data files...")
+    subprocess.run(
+        ["git", "add", "site/public/data/"],
+        check=True,
+        cwd=config.PROJECT_ROOT,
+    )
+
+    # Check if there are staged changes
+    result = subprocess.run(
+        ["git", "diff", "--cached", "--quiet"],
+        cwd=config.PROJECT_ROOT,
+    )
+    if result.returncode == 0:
+        click.echo("No changes to commit.")
+        return
+
+    click.echo(f"Committing: {msg}")
+    subprocess.run(
+        ["git", "commit", "-m", msg],
+        check=True,
+        cwd=config.PROJECT_ROOT,
+    )
+
+    click.echo("Pushing to origin main...")
+    subprocess.run(
+        ["git", "push", "origin", "main"],
+        check=True,
+        cwd=config.PROJECT_ROOT,
+    )
+    click.echo("Published.")
 
 
 if __name__ == "__main__":

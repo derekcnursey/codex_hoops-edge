@@ -1,0 +1,34 @@
+{
+  "date": "2025-12-27",
+  "games": [
+    {
+      "away_score": 56,
+      "away_team": "Columbia College (SC)",
+      "game_id": "2025_12_27_columbia_college_sc_unc_wilmington",
+      "home_score": 100,
+      "home_team": "UNC Wilmington"
+    },
+    {
+      "away_score": 49,
+      "away_team": "Cleary University",
+      "game_id": "2025_12_27_cleary_university_duquesne",
+      "home_score": 99,
+      "home_team": "Duquesne"
+    },
+    {
+      "away_score": 56,
+      "away_team": "Columbia College (SC)",
+      "game_id": "2025_12_27_columbia_college_sc_unc_wilmington",
+      "home_score": 100,
+      "home_team": "UNC Wilmington"
+    },
+    {
+      "away_score": 49,
+      "away_team": "Cleary University",
+      "game_id": "2025_12_27_cleary_university_duquesne",
+      "home_score": 99,
+      "home_team": "Duquesne"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.402495Z"
+}

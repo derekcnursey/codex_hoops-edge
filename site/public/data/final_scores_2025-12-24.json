@@ -1,0 +1,34 @@
+{
+  "date": "2025-12-24",
+  "games": [
+    {
+      "away_score": 52,
+      "away_team": "WVU Tech",
+      "game_id": "2025_12_24_wvu_tech_marshall",
+      "home_score": 102,
+      "home_team": "Marshall"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Villanova",
+      "game_id": "2025_12_24_villanova_seton_hall",
+      "home_score": 56,
+      "home_team": "Seton Hall"
+    },
+    {
+      "away_score": 52,
+      "away_team": "WVU Tech",
+      "game_id": "2025_12_24_wvu_tech_marshall",
+      "home_score": 102,
+      "home_team": "Marshall"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Villanova",
+      "game_id": "2025_12_24_villanova_seton_hall",
+      "home_score": 56,
+      "home_team": "Seton Hall"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.378589Z"
+}

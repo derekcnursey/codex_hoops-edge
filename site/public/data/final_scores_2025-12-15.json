@@ -1,0 +1,48 @@
+{
+  "date": "2025-12-15",
+  "games": [
+    {
+      "away_score": 75,
+      "away_team": "Jacksonville",
+      "game_id": "2025_12_15_jacksonville_texas_a_m",
+      "home_score": 112,
+      "home_team": "Texas A&M"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Washington State",
+      "game_id": "2025_12_15_washington_state_usc",
+      "home_score": 68,
+      "home_team": "USC"
+    },
+    {
+      "away_score": 51,
+      "away_team": "Bryan (TN)",
+      "game_id": "2025_12_15_bryan_tn_samford",
+      "home_score": 106,
+      "home_team": "Samford"
+    },
+    {
+      "away_score": 75,
+      "away_team": "Jacksonville",
+      "game_id": "2025_12_15_jacksonville_texas_a_m",
+      "home_score": 112,
+      "home_team": "Texas A&M"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Washington State",
+      "game_id": "2025_12_15_washington_state_usc",
+      "home_score": 68,
+      "home_team": "USC"
+    },
+    {
+      "away_score": 51,
+      "away_team": "Bryan (TN)",
+      "game_id": "2025_12_15_bryan_tn_samford",
+      "home_score": 106,
+      "home_team": "Samford"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.295700Z"
+}

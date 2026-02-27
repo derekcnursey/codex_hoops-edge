@@ -1,0 +1,76 @@
+{
+  "date": "2025-11-17",
+  "games": [
+    {
+      "away_score": 82,
+      "away_team": "Illinois State",
+      "game_id": "2025_11_17_illinois_state_long_beach_state",
+      "home_score": 80,
+      "home_team": "Long Beach State"
+    },
+    {
+      "away_score": 79,
+      "away_team": "Akron",
+      "game_id": "2025_11_17_akron_purdue",
+      "home_score": 97,
+      "home_team": "Purdue"
+    },
+    {
+      "away_score": 85,
+      "away_team": "Troy",
+      "game_id": "2025_11_17_troy_cal_state_northridge",
+      "home_score": 94,
+      "home_team": "Cal State Northridge"
+    },
+    {
+      "away_score": 68,
+      "away_team": "Miami",
+      "game_id": "2025_11_17_miami_florida",
+      "home_score": 82,
+      "home_team": "Florida"
+    },
+    {
+      "away_score": 57,
+      "away_team": "Florida A&M",
+      "game_id": "2025_11_17_florida_a_m_georgia",
+      "home_score": 87,
+      "home_team": "Georgia"
+    },
+    {
+      "away_score": 82,
+      "away_team": "Illinois State",
+      "game_id": "2025_11_17_illinois_state_long_beach_state",
+      "home_score": 80,
+      "home_team": "Long Beach State"
+    },
+    {
+      "away_score": 79,
+      "away_team": "Akron",
+      "game_id": "2025_11_17_akron_purdue",
+      "home_score": 97,
+      "home_team": "Purdue"
+    },
+    {
+      "away_score": 85,
+      "away_team": "Troy",
+      "game_id": "2025_11_17_troy_cal_state_northridge",
+      "home_score": 94,
+      "home_team": "Cal State Northridge"
+    },
+    {
+      "away_score": 68,
+      "away_team": "Miami",
+      "game_id": "2025_11_17_miami_florida",
+      "home_score": 82,
+      "home_team": "Florida"
+    },
+    {
+      "away_score": 57,
+      "away_team": "Florida A&M",
+      "game_id": "2025_11_17_florida_a_m_georgia",
+      "home_score": 87,
+      "home_team": "Georgia"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.029956Z"
+}

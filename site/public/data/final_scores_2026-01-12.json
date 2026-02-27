@@ -1,0 +1,20 @@
+{
+  "date": "2026-01-12",
+  "games": [
+    {
+      "away_score": 89,
+      "away_team": "North Carolina Central",
+      "game_id": "2026_01_12_north_carolina_central_morgan_state",
+      "home_score": 78,
+      "home_team": "Morgan State"
+    },
+    {
+      "away_score": 89,
+      "away_team": "North Carolina Central",
+      "game_id": "2026_01_12_north_carolina_central_morgan_state",
+      "home_score": 78,
+      "home_team": "Morgan State"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.566667Z"
+}

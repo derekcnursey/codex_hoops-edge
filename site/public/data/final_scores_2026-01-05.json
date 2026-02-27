@@ -1,0 +1,146 @@
+{
+  "date": "2026-01-05",
+  "games": [
+    {
+      "away_score": 70,
+      "away_team": "San Diego",
+      "game_id": "2026_01_05_san_diego_santa_clara",
+      "home_score": 98,
+      "home_team": "Santa Clara"
+    },
+    {
+      "away_score": 69,
+      "away_team": "Pepperdine",
+      "game_id": "2026_01_05_pepperdine_pacific",
+      "home_score": 74,
+      "home_team": "Pacific"
+    },
+    {
+      "away_score": 68,
+      "away_team": "Portland",
+      "game_id": "2026_01_05_portland_san_francisco",
+      "home_score": 73,
+      "home_team": "San Francisco"
+    },
+    {
+      "away_score": 67,
+      "away_team": "Oregon State",
+      "game_id": "2026_01_05_oregon_state_washington_state",
+      "home_score": 81,
+      "home_team": "Washington State"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Seattle U",
+      "game_id": "2026_01_05_seattle_u_saint_mary_s",
+      "home_score": 93,
+      "home_team": "Saint Mary's"
+    },
+    {
+      "away_score": 80,
+      "away_team": "Washington",
+      "game_id": "2026_01_05_washington_indiana",
+      "home_score": 90,
+      "home_team": "Indiana"
+    },
+    {
+      "away_score": 47,
+      "away_team": "Loyola Marymount",
+      "game_id": "2026_01_05_loyola_marymount_gonzaga",
+      "home_score": 82,
+      "home_team": "Gonzaga"
+    },
+    {
+      "away_score": 104,
+      "away_team": "Columbia",
+      "game_id": "2026_01_05_columbia_cornell",
+      "home_score": 99,
+      "home_team": "Cornell"
+    },
+    {
+      "away_score": 79,
+      "away_team": "Alabama State",
+      "game_id": "2026_01_05_alabama_state_arkansas_pine_bluff",
+      "home_score": 90,
+      "home_team": "Arkansas-Pine Bluff"
+    },
+    {
+      "away_score": 72,
+      "away_team": "Nebraska",
+      "game_id": "2026_01_05_nebraska_ohio_state",
+      "home_score": 69,
+      "home_team": "Ohio State"
+    },
+    {
+      "away_score": 70,
+      "away_team": "San Diego",
+      "game_id": "2026_01_05_san_diego_santa_clara",
+      "home_score": 98,
+      "home_team": "Santa Clara"
+    },
+    {
+      "away_score": 69,
+      "away_team": "Pepperdine",
+      "game_id": "2026_01_05_pepperdine_pacific",
+      "home_score": 74,
+      "home_team": "Pacific"
+    },
+    {
+      "away_score": 68,
+      "away_team": "Portland",
+      "game_id": "2026_01_05_portland_san_francisco",
+      "home_score": 73,
+      "home_team": "San Francisco"
+    },
+    {
+      "away_score": 67,
+      "away_team": "Oregon State",
+      "game_id": "2026_01_05_oregon_state_washington_state",
+      "home_score": 81,
+      "home_team": "Washington State"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Seattle U",
+      "game_id": "2026_01_05_seattle_u_saint_mary_s",
+      "home_score": 93,
+      "home_team": "Saint Mary's"
+    },
+    {
+      "away_score": 80,
+      "away_team": "Washington",
+      "game_id": "2026_01_05_washington_indiana",
+      "home_score": 90,
+      "home_team": "Indiana"
+    },
+    {
+      "away_score": 47,
+      "away_team": "Loyola Marymount",
+      "game_id": "2026_01_05_loyola_marymount_gonzaga",
+      "home_score": 82,
+      "home_team": "Gonzaga"
+    },
+    {
+      "away_score": 104,
+      "away_team": "Columbia",
+      "game_id": "2026_01_05_columbia_cornell",
+      "home_score": 99,
+      "home_team": "Cornell"
+    },
+    {
+      "away_score": 79,
+      "away_team": "Alabama State",
+      "game_id": "2026_01_05_alabama_state_arkansas_pine_bluff",
+      "home_score": 90,
+      "home_team": "Arkansas-Pine Bluff"
+    },
+    {
+      "away_score": 72,
+      "away_team": "Nebraska",
+      "game_id": "2026_01_05_nebraska_ohio_state",
+      "home_score": 69,
+      "home_team": "Ohio State"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.488655Z"
+}

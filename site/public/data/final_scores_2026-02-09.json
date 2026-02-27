@@ -1,0 +1,62 @@
+{
+  "date": "2026-02-09",
+  "games": [
+    {
+      "away_score": 75,
+      "away_team": "St. Francis (PA)",
+      "game_id": "2026_02_09_st_francis_pa_chicago_state",
+      "home_score": 80,
+      "home_team": "Chicago State"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Navy",
+      "game_id": "2026_02_09_navy_bucknell",
+      "home_score": 60,
+      "home_team": "Bucknell"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Jackson State",
+      "game_id": "2026_02_09_jackson_state_arkansas_pine_bluff",
+      "home_score": 84,
+      "home_team": "Arkansas-Pine Bluff"
+    },
+    {
+      "away_score": 82,
+      "away_team": "Xavier",
+      "game_id": "2026_02_09_xavier_st_john_s",
+      "home_score": 87,
+      "home_team": "St. John's"
+    },
+    {
+      "away_score": 75,
+      "away_team": "St. Francis (PA)",
+      "game_id": "2026_02_09_st_francis_pa_chicago_state",
+      "home_score": 80,
+      "home_team": "Chicago State"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Navy",
+      "game_id": "2026_02_09_navy_bucknell",
+      "home_score": 60,
+      "home_team": "Bucknell"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Jackson State",
+      "game_id": "2026_02_09_jackson_state_arkansas_pine_bluff",
+      "home_score": 84,
+      "home_team": "Arkansas-Pine Bluff"
+    },
+    {
+      "away_score": 82,
+      "away_team": "Xavier",
+      "game_id": "2026_02_09_xavier_st_john_s",
+      "home_score": 87,
+      "home_team": "St. John's"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.826297Z"
+}

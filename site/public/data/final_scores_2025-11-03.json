@@ -1,0 +1,272 @@
+{
+  "date": "2025-11-03",
+  "games": [
+    {
+      "away_score": 74,
+      "away_team": "Queens University",
+      "game_id": "2025_11_03_queens_university_winthrop",
+      "home_score": 81,
+      "home_team": "Winthrop"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Bradley",
+      "game_id": "2025_11_03_bradley_st_bonaventure",
+      "home_score": 69,
+      "home_team": "St. Bonaventure"
+    },
+    {
+      "away_score": 60,
+      "away_team": "Arlington Baptist",
+      "game_id": "2025_11_03_arlington_baptist_east_texas_a_m",
+      "home_score": 119,
+      "home_team": "East Texas A&M"
+    },
+    {
+      "away_score": 53,
+      "away_team": "Texas A&M-San Antonio",
+      "game_id": "2025_11_03_texas_a_m_san_antonio_lamar",
+      "home_score": 93,
+      "home_team": "Lamar"
+    },
+    {
+      "away_score": 48,
+      "away_team": "College Of Biblical Studies",
+      "game_id": "2025_11_03_college_of_biblical_studies_prairie_view_a_m",
+      "home_score": 95,
+      "home_team": "Prairie View A&M"
+    },
+    {
+      "away_score": 77,
+      "away_team": "Omaha",
+      "game_id": "2025_11_03_omaha_murray_state",
+      "home_score": 85,
+      "home_team": "Murray State"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Millsaps",
+      "game_id": "2025_11_03_millsaps_stephen_f_austin",
+      "home_score": 103,
+      "home_team": "Stephen F. Austin"
+    },
+    {
+      "away_score": 71,
+      "away_team": "Northern Arizona",
+      "game_id": "2025_11_03_northern_arizona_drake",
+      "home_score": 77,
+      "home_team": "Drake"
+    },
+    {
+      "away_score": 48,
+      "away_team": "Thomas (ME)",
+      "game_id": "2025_11_03_thomas_me_stonehill",
+      "home_score": 100,
+      "home_team": "Stonehill"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Johnson & Wales (NC)",
+      "game_id": "2025_11_03_johnson_wales_nc_vmi",
+      "home_score": 122,
+      "home_team": "VMI"
+    },
+    {
+      "away_score": 59,
+      "away_team": "Widener",
+      "game_id": "2025_11_03_widener_drexel",
+      "home_score": 93,
+      "home_team": "Drexel"
+    },
+    {
+      "away_score": 49,
+      "away_team": "Georgia State",
+      "game_id": "2025_11_03_georgia_state_eastern_michigan",
+      "home_score": 71,
+      "home_team": "Eastern Michigan"
+    },
+    {
+      "away_score": 74,
+      "away_team": "Quinnipiac",
+      "game_id": "2025_11_03_quinnipiac_st_john_s",
+      "home_score": 108,
+      "home_team": "St. John's"
+    },
+    {
+      "away_score": 71,
+      "away_team": "Furman",
+      "game_id": "2025_11_03_furman_high_point",
+      "home_score": 97,
+      "home_team": "High Point"
+    },
+    {
+      "away_score": 59,
+      "away_team": "Farmingdale State",
+      "game_id": "2025_11_03_farmingdale_state_stony_brook",
+      "home_score": 66,
+      "home_team": "Stony Brook"
+    },
+    {
+      "away_score": 70,
+      "away_team": "Morgan State",
+      "game_id": "2025_11_03_morgan_state_georgetown",
+      "home_score": 87,
+      "home_team": "Georgetown"
+    },
+    {
+      "away_score": 102,
+      "away_team": "IU Indianapolis",
+      "game_id": "2025_11_03_iu_indianapolis_ohio_state",
+      "home_score": 118,
+      "home_team": "Ohio State"
+    },
+    {
+      "away_score": 79,
+      "away_team": "Southern Miss",
+      "game_id": "2025_11_03_southern_miss_buffalo",
+      "home_score": 85,
+      "home_team": "Buffalo"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Coppin State",
+      "game_id": "2025_11_03_coppin_state_maryland",
+      "home_score": 83,
+      "home_team": "Maryland"
+    },
+    {
+      "away_score": 74,
+      "away_team": "Queens University",
+      "game_id": "2025_11_03_queens_university_winthrop",
+      "home_score": 81,
+      "home_team": "Winthrop"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Bradley",
+      "game_id": "2025_11_03_bradley_st_bonaventure",
+      "home_score": 69,
+      "home_team": "St. Bonaventure"
+    },
+    {
+      "away_score": 60,
+      "away_team": "Arlington Baptist",
+      "game_id": "2025_11_03_arlington_baptist_east_texas_a_m",
+      "home_score": 119,
+      "home_team": "East Texas A&M"
+    },
+    {
+      "away_score": 53,
+      "away_team": "Texas A&M-San Antonio",
+      "game_id": "2025_11_03_texas_a_m_san_antonio_lamar",
+      "home_score": 93,
+      "home_team": "Lamar"
+    },
+    {
+      "away_score": 48,
+      "away_team": "College Of Biblical Studies",
+      "game_id": "2025_11_03_college_of_biblical_studies_prairie_view_a_m",
+      "home_score": 95,
+      "home_team": "Prairie View A&M"
+    },
+    {
+      "away_score": 77,
+      "away_team": "Omaha",
+      "game_id": "2025_11_03_omaha_murray_state",
+      "home_score": 85,
+      "home_team": "Murray State"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Millsaps",
+      "game_id": "2025_11_03_millsaps_stephen_f_austin",
+      "home_score": 103,
+      "home_team": "Stephen F. Austin"
+    },
+    {
+      "away_score": 71,
+      "away_team": "Northern Arizona",
+      "game_id": "2025_11_03_northern_arizona_drake",
+      "home_score": 77,
+      "home_team": "Drake"
+    },
+    {
+      "away_score": 48,
+      "away_team": "Thomas (ME)",
+      "game_id": "2025_11_03_thomas_me_stonehill",
+      "home_score": 100,
+      "home_team": "Stonehill"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Johnson & Wales (NC)",
+      "game_id": "2025_11_03_johnson_wales_nc_vmi",
+      "home_score": 122,
+      "home_team": "VMI"
+    },
+    {
+      "away_score": 59,
+      "away_team": "Widener",
+      "game_id": "2025_11_03_widener_drexel",
+      "home_score": 93,
+      "home_team": "Drexel"
+    },
+    {
+      "away_score": 49,
+      "away_team": "Georgia State",
+      "game_id": "2025_11_03_georgia_state_eastern_michigan",
+      "home_score": 71,
+      "home_team": "Eastern Michigan"
+    },
+    {
+      "away_score": 74,
+      "away_team": "Quinnipiac",
+      "game_id": "2025_11_03_quinnipiac_st_john_s",
+      "home_score": 108,
+      "home_team": "St. John's"
+    },
+    {
+      "away_score": 71,
+      "away_team": "Furman",
+      "game_id": "2025_11_03_furman_high_point",
+      "home_score": 97,
+      "home_team": "High Point"
+    },
+    {
+      "away_score": 59,
+      "away_team": "Farmingdale State",
+      "game_id": "2025_11_03_farmingdale_state_stony_brook",
+      "home_score": 66,
+      "home_team": "Stony Brook"
+    },
+    {
+      "away_score": 70,
+      "away_team": "Morgan State",
+      "game_id": "2025_11_03_morgan_state_georgetown",
+      "home_score": 87,
+      "home_team": "Georgetown"
+    },
+    {
+      "away_score": 102,
+      "away_team": "IU Indianapolis",
+      "game_id": "2025_11_03_iu_indianapolis_ohio_state",
+      "home_score": 118,
+      "home_team": "Ohio State"
+    },
+    {
+      "away_score": 79,
+      "away_team": "Southern Miss",
+      "game_id": "2025_11_03_southern_miss_buffalo",
+      "home_score": 85,
+      "home_team": "Buffalo"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Coppin State",
+      "game_id": "2025_11_03_coppin_state_maryland",
+      "home_score": 83,
+      "home_team": "Maryland"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:15.891941Z"
+}

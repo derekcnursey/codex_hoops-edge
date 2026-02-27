@@ -1,0 +1,62 @@
+{
+  "date": "2026-02-02",
+  "games": [
+    {
+      "away_score": 86,
+      "away_team": "East Tennessee State",
+      "game_id": "2026_02_02_east_tennessee_state_wofford",
+      "home_score": 72,
+      "home_team": "Wofford"
+    },
+    {
+      "away_score": 84,
+      "away_team": "Iowa",
+      "game_id": "2026_02_02_iowa_oregon",
+      "home_score": 66,
+      "home_team": "Oregon"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Maryland Eastern Shore",
+      "game_id": "2026_02_02_maryland_eastern_shore_north_carolina_central",
+      "home_score": 65,
+      "home_team": "North Carolina Central"
+    },
+    {
+      "away_score": 72,
+      "away_team": "Howard",
+      "game_id": "2026_02_02_howard_coppin_state",
+      "home_score": 53,
+      "home_team": "Coppin State"
+    },
+    {
+      "away_score": 86,
+      "away_team": "East Tennessee State",
+      "game_id": "2026_02_02_east_tennessee_state_wofford",
+      "home_score": 72,
+      "home_team": "Wofford"
+    },
+    {
+      "away_score": 84,
+      "away_team": "Iowa",
+      "game_id": "2026_02_02_iowa_oregon",
+      "home_score": 66,
+      "home_team": "Oregon"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Maryland Eastern Shore",
+      "game_id": "2026_02_02_maryland_eastern_shore_north_carolina_central",
+      "home_score": 65,
+      "home_team": "North Carolina Central"
+    },
+    {
+      "away_score": 72,
+      "away_team": "Howard",
+      "game_id": "2026_02_02_howard_coppin_state",
+      "home_score": 53,
+      "home_team": "Coppin State"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.762112Z"
+}

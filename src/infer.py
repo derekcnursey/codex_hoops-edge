@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from datetime import date
 from pathlib import Path
 
@@ -13,6 +14,50 @@ import torch
 from . import config
 from .architecture import MLPClassifier, MLPRegressor
 from .trainer import load_scaler
+
+
+# ── Betting math helpers ──────────────────────────────────────────────
+
+
+def normal_cdf(z):
+    """Standard normal CDF using math.erf."""
+    z = np.asarray(z, dtype=float)
+    erf_vec = np.vectorize(math.erf)
+    return 0.5 * (1.0 + erf_vec(z / math.sqrt(2.0)))
+
+
+def american_to_breakeven(odds):
+    """Convert American odds to break-even probability. -110 → 0.5238."""
+    o = np.asarray(odds, dtype=float)
+    out = np.full_like(o, np.nan, dtype=float)
+    neg = o < 0
+    pos = o > 0
+    out[neg] = (-o[neg]) / ((-o[neg]) + 100.0)
+    out[pos] = 100.0 / (o[pos] + 100.0)
+    return out
+
+
+def american_profit_per_1(odds):
+    """Profit per $1 staked if the bet wins. -110 → 0.9091."""
+    o = np.asarray(odds, dtype=float)
+    out = np.full_like(o, np.nan, dtype=float)
+    neg = o < 0
+    pos = o > 0
+    out[neg] = 100.0 / (-o[neg])
+    out[pos] = o[pos] / 100.0
+    return out
+
+
+def prob_to_american(p):
+    """Convert probability to fair American odds (no vig)."""
+    p = np.asarray(p, dtype=float)
+    p = np.clip(p, 1e-9, 1 - 1e-9)
+    out = np.full_like(p, np.nan, dtype=float)
+    fav = p >= 0.5
+    dog = ~fav
+    out[fav] = -100.0 * (p[fav] / (1.0 - p[fav]))
+    out[dog] = 100.0 * ((1.0 - p[dog]) / p[dog])
+    return out
 
 
 def load_regressor(path: Path | None = None) -> tuple[MLPRegressor, dict]:
@@ -99,7 +144,11 @@ def predict(
     if "awayTeam" in features_df.columns:
         meta_cols.append("awayTeam")
     meta_cols.append("startDate")
+    if "neutralSite" in features_df.columns:
+        meta_cols.append("neutralSite")
     out = features_df[meta_cols].copy()
+    if "neutralSite" in out.columns:
+        out = out.rename(columns={"neutralSite": "neutral_site"})
     out["predicted_spread"] = mu
     out["spread_sigma"] = sigma
     out["home_win_prob"] = home_win_prob
@@ -127,11 +176,39 @@ def predict(
             out["model_spread"] = -out["predicted_spread"]
             out["spread_diff"] = out["model_spread"] - out["book_spread"]
 
+            # Edge calculations (sign: predicted_spread positive=home, book_spread negative=home)
+            out["edge_home_points"] = out["predicted_spread"] + out["book_spread"]
+
+            sigma_safe = out["spread_sigma"].clip(lower=0.5)
+            edge_z = out["edge_home_points"] / sigma_safe
+            home_cover_prob = normal_cdf(edge_z)
+            away_cover_prob = 1.0 - home_cover_prob
+
+            out["pick_side"] = np.where(out["edge_home_points"] >= 0, "HOME", "AWAY")
+            out["pick_cover_prob"] = np.where(
+                out["edge_home_points"] >= 0, home_cover_prob, away_cover_prob
+            )
+
+            # Default -110 spread odds
+            pick_spread_odds = -110
+            pick_breakeven = float(american_to_breakeven(np.array([pick_spread_odds]))[0])
+            pick_profit = float(american_profit_per_1(np.array([pick_spread_odds]))[0])
+
+            out["pick_spread_odds"] = pick_spread_odds
+            out["pick_prob_edge"] = out["pick_cover_prob"] - pick_breakeven
+            out["pick_ev_per_1"] = out["pick_cover_prob"] * pick_profit - (1.0 - out["pick_cover_prob"])
+            out["pick_fair_odds"] = prob_to_american(out["pick_cover_prob"].values)
+
     return out
 
 
 def save_predictions(preds: pd.DataFrame, game_date: str | None = None) -> tuple[Path, Path]:
     """Save predictions as JSON and CSV.
+
+    Saves to:
+      - predictions/json/{game_date}.json
+      - predictions/preds_today.csv
+      - predictions/csv/preds_YYYY_M_D_edge.csv (dated, bball convention)
 
     Returns:
         (json_path, csv_path)
@@ -142,9 +219,22 @@ def save_predictions(preds: pd.DataFrame, game_date: str | None = None) -> tuple
     config.PREDICTIONS_DIR.mkdir(parents=True, exist_ok=True)
     json_dir = config.PREDICTIONS_DIR / "json"
     json_dir.mkdir(parents=True, exist_ok=True)
+    csv_dir = config.PREDICTIONS_DIR / "csv"
+    csv_dir.mkdir(parents=True, exist_ok=True)
 
     json_path = json_dir / f"{game_date}.json"
     csv_path = config.PREDICTIONS_DIR / "preds_today.csv"
+
+    # Dated CSV path: preds_YYYY_M_D_edge.csv
+    try:
+        parts = game_date.split("-")
+        if len(parts) == 3:
+            y, m, d = int(parts[0]), int(parts[1]), int(parts[2])
+            dated_csv_path = csv_dir / f"preds_{y}_{m}_{d}_edge.csv"
+        else:
+            dated_csv_path = csv_dir / f"preds_{game_date}_edge.csv"
+    except (ValueError, IndexError):
+        dated_csv_path = csv_dir / f"preds_{game_date}_edge.csv"
 
     # JSON output
     records = preds.to_dict(orient="records")
@@ -162,5 +252,6 @@ def save_predictions(preds: pd.DataFrame, game_date: str | None = None) -> tuple
 
     # CSV output
     preds.to_csv(csv_path, index=False)
+    preds.to_csv(dated_csv_path, index=False)
 
     return json_path, csv_path

@@ -1,0 +1,160 @@
+{
+  "date": "2025-12-05",
+  "games": [
+    {
+      "away_score": 63,
+      "away_team": "The Citadel",
+      "game_id": "2025_12_05_the_citadel_davidson",
+      "home_score": 79,
+      "home_team": "Davidson"
+    },
+    {
+      "away_score": 80,
+      "away_team": "Robert Morris",
+      "game_id": "2025_12_05_robert_morris_green_bay",
+      "home_score": 78,
+      "home_team": "Green Bay"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Warren Wilson",
+      "game_id": "2025_12_05_warren_wilson_charleston_southern",
+      "home_score": 124,
+      "home_team": "Charleston Southern"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Utah State",
+      "game_id": "2025_12_05_utah_state_south_florida",
+      "home_score": 74,
+      "home_team": "South Florida"
+    },
+    {
+      "away_score": 66,
+      "away_team": "Rider",
+      "game_id": "2025_12_05_rider_merrimack",
+      "home_score": 68,
+      "home_team": "Merrimack"
+    },
+    {
+      "away_score": 77,
+      "away_team": "Long Beach State",
+      "game_id": "2025_12_05_long_beach_state_uc_santa_barbara",
+      "home_score": 84,
+      "home_team": "UC Santa Barbara"
+    },
+    {
+      "away_score": 94,
+      "away_team": "Cal Poly",
+      "game_id": "2025_12_05_cal_poly_cal_state_fullerton",
+      "home_score": 91,
+      "home_team": "Cal State Fullerton"
+    },
+    {
+      "away_score": 66,
+      "away_team": "Cal State Bakersfield",
+      "game_id": "2025_12_05_cal_state_bakersfield_cal_state_northridge",
+      "home_score": 87,
+      "home_team": "Cal State Northridge"
+    },
+    {
+      "away_score": 60,
+      "away_team": "UC Riverside",
+      "game_id": "2025_12_05_uc_riverside_uc_irvine",
+      "home_score": 73,
+      "home_team": "UC Irvine"
+    },
+    {
+      "away_score": 69,
+      "away_team": "UC Davis",
+      "game_id": "2025_12_05_uc_davis_hawai_i",
+      "home_score": 75,
+      "home_team": "Hawai'i"
+    },
+    {
+      "away_score": 0,
+      "away_team": "Barber Scotia",
+      "game_id": "2025_12_05_barber_scotia_florida_a_m",
+      "home_score": 0,
+      "home_team": "Florida A&M"
+    },
+    {
+      "away_score": 63,
+      "away_team": "The Citadel",
+      "game_id": "2025_12_05_the_citadel_davidson",
+      "home_score": 79,
+      "home_team": "Davidson"
+    },
+    {
+      "away_score": 80,
+      "away_team": "Robert Morris",
+      "game_id": "2025_12_05_robert_morris_green_bay",
+      "home_score": 78,
+      "home_team": "Green Bay"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Warren Wilson",
+      "game_id": "2025_12_05_warren_wilson_charleston_southern",
+      "home_score": 124,
+      "home_team": "Charleston Southern"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Utah State",
+      "game_id": "2025_12_05_utah_state_south_florida",
+      "home_score": 74,
+      "home_team": "South Florida"
+    },
+    {
+      "away_score": 66,
+      "away_team": "Rider",
+      "game_id": "2025_12_05_rider_merrimack",
+      "home_score": 68,
+      "home_team": "Merrimack"
+    },
+    {
+      "away_score": 77,
+      "away_team": "Long Beach State",
+      "game_id": "2025_12_05_long_beach_state_uc_santa_barbara",
+      "home_score": 84,
+      "home_team": "UC Santa Barbara"
+    },
+    {
+      "away_score": 94,
+      "away_team": "Cal Poly",
+      "game_id": "2025_12_05_cal_poly_cal_state_fullerton",
+      "home_score": 91,
+      "home_team": "Cal State Fullerton"
+    },
+    {
+      "away_score": 66,
+      "away_team": "Cal State Bakersfield",
+      "game_id": "2025_12_05_cal_state_bakersfield_cal_state_northridge",
+      "home_score": 87,
+      "home_team": "Cal State Northridge"
+    },
+    {
+      "away_score": 60,
+      "away_team": "UC Riverside",
+      "game_id": "2025_12_05_uc_riverside_uc_irvine",
+      "home_score": 73,
+      "home_team": "UC Irvine"
+    },
+    {
+      "away_score": 69,
+      "away_team": "UC Davis",
+      "game_id": "2025_12_05_uc_davis_hawai_i",
+      "home_score": 75,
+      "home_team": "Hawai'i"
+    },
+    {
+      "away_score": 0,
+      "away_team": "Barber Scotia",
+      "game_id": "2025_12_05_barber_scotia_florida_a_m",
+      "home_score": 0,
+      "home_team": "Florida A&M"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.201543Z"
+}

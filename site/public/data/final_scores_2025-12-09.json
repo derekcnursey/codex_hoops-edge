@@ -1,0 +1,188 @@
+{
+  "date": "2025-12-09",
+  "games": [
+    {
+      "away_score": 44,
+      "away_team": "South Carolina State",
+      "game_id": "2025_12_09_south_carolina_state_charleston_southern",
+      "home_score": 84,
+      "home_team": "Charleston Southern"
+    },
+    {
+      "away_score": 69,
+      "away_team": "Southern",
+      "game_id": "2025_12_09_southern_texas",
+      "home_score": 95,
+      "home_team": "Texas"
+    },
+    {
+      "away_score": 49,
+      "away_team": "Mississippi Valley State",
+      "game_id": "2025_12_09_mississippi_valley_state_kansas_state",
+      "home_score": 108,
+      "home_team": "Kansas State"
+    },
+    {
+      "away_score": 83,
+      "away_team": "Incarnate Word",
+      "game_id": "2025_12_09_incarnate_word_new_orleans",
+      "home_score": 84,
+      "home_team": "New Orleans"
+    },
+    {
+      "away_score": 60,
+      "away_team": "Grambling",
+      "game_id": "2025_12_09_grambling_southern_miss",
+      "home_score": 68,
+      "home_team": "Southern Miss"
+    },
+    {
+      "away_score": 69,
+      "away_team": "Arkansas Baptist",
+      "game_id": "2025_12_09_arkansas_baptist_ul_monroe",
+      "home_score": 79,
+      "home_team": "UL Monroe"
+    },
+    {
+      "away_score": 83,
+      "away_team": "Buffalo",
+      "game_id": "2025_12_09_buffalo_umbc",
+      "home_score": 79,
+      "home_team": "UMBC"
+    },
+    {
+      "away_score": 47,
+      "away_team": "Regis",
+      "game_id": "2025_12_09_regis_holy_cross",
+      "home_score": 69,
+      "home_team": "Holy Cross"
+    },
+    {
+      "away_score": 70,
+      "away_team": "Loyola Maryland",
+      "game_id": "2025_12_09_loyola_maryland_vmi",
+      "home_score": 86,
+      "home_team": "VMI"
+    },
+    {
+      "away_score": 57,
+      "away_team": "Bob Jones",
+      "game_id": "2025_12_09_bob_jones_furman",
+      "home_score": 105,
+      "home_team": "Furman"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Clemson",
+      "game_id": "2025_12_09_clemson_byu",
+      "home_score": 67,
+      "home_team": "BYU"
+    },
+    {
+      "away_score": 62,
+      "away_team": "Toccoa Falls",
+      "game_id": "2025_12_09_toccoa_falls_winthrop",
+      "home_score": 111,
+      "home_team": "Winthrop"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Villanova",
+      "game_id": "2025_12_09_villanova_michigan",
+      "home_score": 89,
+      "home_team": "Michigan"
+    },
+    {
+      "away_score": 44,
+      "away_team": "South Carolina State",
+      "game_id": "2025_12_09_south_carolina_state_charleston_southern",
+      "home_score": 84,
+      "home_team": "Charleston Southern"
+    },
+    {
+      "away_score": 69,
+      "away_team": "Southern",
+      "game_id": "2025_12_09_southern_texas",
+      "home_score": 95,
+      "home_team": "Texas"
+    },
+    {
+      "away_score": 49,
+      "away_team": "Mississippi Valley State",
+      "game_id": "2025_12_09_mississippi_valley_state_kansas_state",
+      "home_score": 108,
+      "home_team": "Kansas State"
+    },
+    {
+      "away_score": 83,
+      "away_team": "Incarnate Word",
+      "game_id": "2025_12_09_incarnate_word_new_orleans",
+      "home_score": 84,
+      "home_team": "New Orleans"
+    },
+    {
+      "away_score": 60,
+      "away_team": "Grambling",
+      "game_id": "2025_12_09_grambling_southern_miss",
+      "home_score": 68,
+      "home_team": "Southern Miss"
+    },
+    {
+      "away_score": 69,
+      "away_team": "Arkansas Baptist",
+      "game_id": "2025_12_09_arkansas_baptist_ul_monroe",
+      "home_score": 79,
+      "home_team": "UL Monroe"
+    },
+    {
+      "away_score": 83,
+      "away_team": "Buffalo",
+      "game_id": "2025_12_09_buffalo_umbc",
+      "home_score": 79,
+      "home_team": "UMBC"
+    },
+    {
+      "away_score": 47,
+      "away_team": "Regis",
+      "game_id": "2025_12_09_regis_holy_cross",
+      "home_score": 69,
+      "home_team": "Holy Cross"
+    },
+    {
+      "away_score": 70,
+      "away_team": "Loyola Maryland",
+      "game_id": "2025_12_09_loyola_maryland_vmi",
+      "home_score": 86,
+      "home_team": "VMI"
+    },
+    {
+      "away_score": 57,
+      "away_team": "Bob Jones",
+      "game_id": "2025_12_09_bob_jones_furman",
+      "home_score": 105,
+      "home_team": "Furman"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Clemson",
+      "game_id": "2025_12_09_clemson_byu",
+      "home_score": 67,
+      "home_team": "BYU"
+    },
+    {
+      "away_score": 62,
+      "away_team": "Toccoa Falls",
+      "game_id": "2025_12_09_toccoa_falls_winthrop",
+      "home_score": 111,
+      "home_team": "Winthrop"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Villanova",
+      "game_id": "2025_12_09_villanova_michigan",
+      "home_score": 89,
+      "home_team": "Michigan"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.239729Z"
+}

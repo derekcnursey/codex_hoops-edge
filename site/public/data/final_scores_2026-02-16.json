@@ -1,0 +1,90 @@
+{
+  "date": "2026-02-16",
+  "games": [
+    {
+      "away_score": 71,
+      "away_team": "Towson",
+      "game_id": "2026_02_16_towson_monmouth",
+      "home_score": 72,
+      "home_team": "Monmouth"
+    },
+    {
+      "away_score": 50,
+      "away_team": "Oregon State",
+      "game_id": "2026_02_16_oregon_state_seattle_u",
+      "home_score": 60,
+      "home_team": "Seattle U"
+    },
+    {
+      "away_score": 53,
+      "away_team": "SE Louisiana",
+      "game_id": "2026_02_16_se_louisiana_east_texas_a_m",
+      "home_score": 70,
+      "home_team": "East Texas A&M"
+    },
+    {
+      "away_score": 59,
+      "away_team": "Coppin State",
+      "game_id": "2026_02_16_coppin_state_south_carolina_state",
+      "home_score": 57,
+      "home_team": "South Carolina State"
+    },
+    {
+      "away_score": 72,
+      "away_team": "Louisiana",
+      "game_id": "2026_02_16_louisiana_old_dominion",
+      "home_score": 83,
+      "home_team": "Old Dominion"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Colgate",
+      "game_id": "2026_02_16_colgate_boston_university",
+      "home_score": 85,
+      "home_team": "Boston University"
+    },
+    {
+      "away_score": 71,
+      "away_team": "Towson",
+      "game_id": "2026_02_16_towson_monmouth",
+      "home_score": 72,
+      "home_team": "Monmouth"
+    },
+    {
+      "away_score": 50,
+      "away_team": "Oregon State",
+      "game_id": "2026_02_16_oregon_state_seattle_u",
+      "home_score": 60,
+      "home_team": "Seattle U"
+    },
+    {
+      "away_score": 53,
+      "away_team": "SE Louisiana",
+      "game_id": "2026_02_16_se_louisiana_east_texas_a_m",
+      "home_score": 70,
+      "home_team": "East Texas A&M"
+    },
+    {
+      "away_score": 59,
+      "away_team": "Coppin State",
+      "game_id": "2026_02_16_coppin_state_south_carolina_state",
+      "home_score": 57,
+      "home_team": "South Carolina State"
+    },
+    {
+      "away_score": 72,
+      "away_team": "Louisiana",
+      "game_id": "2026_02_16_louisiana_old_dominion",
+      "home_score": 83,
+      "home_team": "Old Dominion"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Colgate",
+      "game_id": "2026_02_16_colgate_boston_university",
+      "home_score": 85,
+      "home_team": "Boston University"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.892069Z"
+}

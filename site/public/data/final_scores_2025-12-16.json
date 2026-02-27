@@ -1,0 +1,300 @@
+{
+  "date": "2025-12-16",
+  "games": [
+    {
+      "away_score": 76,
+      "away_team": "Rhodes",
+      "game_id": "2025_12_16_rhodes_stetson",
+      "home_score": 95,
+      "home_team": "Stetson"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Niagara",
+      "game_id": "2025_12_16_niagara_vcu",
+      "home_score": 84,
+      "home_team": "VCU"
+    },
+    {
+      "away_score": 83,
+      "away_team": "Wofford",
+      "game_id": "2025_12_16_wofford_gardner_webb",
+      "home_score": 57,
+      "home_team": "Gardner-Webb"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Ecclesia",
+      "game_id": "2025_12_16_ecclesia_arkansas_pine_bluff",
+      "home_score": 114,
+      "home_team": "Arkansas-Pine Bluff"
+    },
+    {
+      "away_score": 70,
+      "away_team": "East Texas A&M",
+      "game_id": "2025_12_16_east_texas_a_m_se_louisiana",
+      "home_score": 69,
+      "home_team": "SE Louisiana"
+    },
+    {
+      "away_score": 59,
+      "away_team": "Campbellsville",
+      "game_id": "2025_12_16_campbellsville_western_kentucky",
+      "home_score": 102,
+      "home_team": "Western Kentucky"
+    },
+    {
+      "away_score": 87,
+      "away_team": "Wyoming",
+      "game_id": "2025_12_16_wyoming_south_dakota_state",
+      "home_score": 72,
+      "home_team": "South Dakota State"
+    },
+    {
+      "away_score": 60,
+      "away_team": "North Alabama",
+      "game_id": "2025_12_16_north_alabama_alabama_a_m",
+      "home_score": 68,
+      "home_team": "Alabama A&M"
+    },
+    {
+      "away_score": 78,
+      "away_team": "McNeese",
+      "game_id": "2025_12_16_mcneese_houston_christian",
+      "home_score": 68,
+      "home_team": "Houston Christian"
+    },
+    {
+      "away_score": 65,
+      "away_team": "Incarnate Word",
+      "game_id": "2025_12_16_incarnate_word_tcu",
+      "home_score": 69,
+      "home_team": "TCU"
+    },
+    {
+      "away_score": 0,
+      "away_team": "East-West University",
+      "game_id": "2025_12_16_east_west_university_southern_indiana",
+      "home_score": 0,
+      "home_team": "Southern Indiana"
+    },
+    {
+      "away_score": 67,
+      "away_team": "Minnesota Crookston",
+      "game_id": "2025_12_16_minnesota_crookston_north_dakota_state",
+      "home_score": 101,
+      "home_team": "North Dakota State"
+    },
+    {
+      "away_score": 74,
+      "away_team": "Howard",
+      "game_id": "2025_12_16_howard_drexel",
+      "home_score": 66,
+      "home_team": "Drexel"
+    },
+    {
+      "away_score": 73,
+      "away_team": "Lipscomb",
+      "game_id": "2025_12_16_lipscomb_duke",
+      "home_score": 97,
+      "home_team": "Duke"
+    },
+    {
+      "away_score": 82,
+      "away_team": "Sacred Heart",
+      "game_id": "2025_12_16_sacred_heart_umass_lowell",
+      "home_score": 87,
+      "home_team": "UMass Lowell"
+    },
+    {
+      "away_score": 89,
+      "away_team": "Dartmouth",
+      "game_id": "2025_12_16_dartmouth_holy_cross",
+      "home_score": 64,
+      "home_team": "Holy Cross"
+    },
+    {
+      "away_score": 78,
+      "away_team": "South Carolina Upstate",
+      "game_id": "2025_12_16_south_carolina_upstate_south_carolina_state",
+      "home_score": 72,
+      "home_team": "South Carolina State"
+    },
+    {
+      "away_score": 57,
+      "away_team": "Midway University",
+      "game_id": "2025_12_16_midway_university_liberty",
+      "home_score": 95,
+      "home_team": "Liberty"
+    },
+    {
+      "away_score": 69,
+      "away_team": "Toledo",
+      "game_id": "2025_12_16_toledo_michigan_state",
+      "home_score": 92,
+      "home_team": "Michigan State"
+    },
+    {
+      "away_score": 73,
+      "away_team": "Kentucky Christian",
+      "game_id": "2025_12_16_kentucky_christian_unc_asheville",
+      "home_score": 83,
+      "home_team": "UNC Asheville"
+    },
+    {
+      "away_score": 73,
+      "away_team": "Miami (OH)-Middletown",
+      "game_id": "2025_12_16_miami_oh_middletown_iu_indianapolis",
+      "home_score": 126,
+      "home_team": "IU Indianapolis"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Rhodes",
+      "game_id": "2025_12_16_rhodes_stetson",
+      "home_score": 95,
+      "home_team": "Stetson"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Niagara",
+      "game_id": "2025_12_16_niagara_vcu",
+      "home_score": 84,
+      "home_team": "VCU"
+    },
+    {
+      "away_score": 83,
+      "away_team": "Wofford",
+      "game_id": "2025_12_16_wofford_gardner_webb",
+      "home_score": 57,
+      "home_team": "Gardner-Webb"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Ecclesia",
+      "game_id": "2025_12_16_ecclesia_arkansas_pine_bluff",
+      "home_score": 114,
+      "home_team": "Arkansas-Pine Bluff"
+    },
+    {
+      "away_score": 70,
+      "away_team": "East Texas A&M",
+      "game_id": "2025_12_16_east_texas_a_m_se_louisiana",
+      "home_score": 69,
+      "home_team": "SE Louisiana"
+    },
+    {
+      "away_score": 59,
+      "away_team": "Campbellsville",
+      "game_id": "2025_12_16_campbellsville_western_kentucky",
+      "home_score": 102,
+      "home_team": "Western Kentucky"
+    },
+    {
+      "away_score": 87,
+      "away_team": "Wyoming",
+      "game_id": "2025_12_16_wyoming_south_dakota_state",
+      "home_score": 72,
+      "home_team": "South Dakota State"
+    },
+    {
+      "away_score": 60,
+      "away_team": "North Alabama",
+      "game_id": "2025_12_16_north_alabama_alabama_a_m",
+      "home_score": 68,
+      "home_team": "Alabama A&M"
+    },
+    {
+      "away_score": 78,
+      "away_team": "McNeese",
+      "game_id": "2025_12_16_mcneese_houston_christian",
+      "home_score": 68,
+      "home_team": "Houston Christian"
+    },
+    {
+      "away_score": 65,
+      "away_team": "Incarnate Word",
+      "game_id": "2025_12_16_incarnate_word_tcu",
+      "home_score": 69,
+      "home_team": "TCU"
+    },
+    {
+      "away_score": 0,
+      "away_team": "East-West University",
+      "game_id": "2025_12_16_east_west_university_southern_indiana",
+      "home_score": 0,
+      "home_team": "Southern Indiana"
+    },
+    {
+      "away_score": 67,
+      "away_team": "Minnesota Crookston",
+      "game_id": "2025_12_16_minnesota_crookston_north_dakota_state",
+      "home_score": 101,
+      "home_team": "North Dakota State"
+    },
+    {
+      "away_score": 74,
+      "away_team": "Howard",
+      "game_id": "2025_12_16_howard_drexel",
+      "home_score": 66,
+      "home_team": "Drexel"
+    },
+    {
+      "away_score": 73,
+      "away_team": "Lipscomb",
+      "game_id": "2025_12_16_lipscomb_duke",
+      "home_score": 97,
+      "home_team": "Duke"
+    },
+    {
+      "away_score": 82,
+      "away_team": "Sacred Heart",
+      "game_id": "2025_12_16_sacred_heart_umass_lowell",
+      "home_score": 87,
+      "home_team": "UMass Lowell"
+    },
+    {
+      "away_score": 89,
+      "away_team": "Dartmouth",
+      "game_id": "2025_12_16_dartmouth_holy_cross",
+      "home_score": 64,
+      "home_team": "Holy Cross"
+    },
+    {
+      "away_score": 78,
+      "away_team": "South Carolina Upstate",
+      "game_id": "2025_12_16_south_carolina_upstate_south_carolina_state",
+      "home_score": 72,
+      "home_team": "South Carolina State"
+    },
+    {
+      "away_score": 57,
+      "away_team": "Midway University",
+      "game_id": "2025_12_16_midway_university_liberty",
+      "home_score": 95,
+      "home_team": "Liberty"
+    },
+    {
+      "away_score": 69,
+      "away_team": "Toledo",
+      "game_id": "2025_12_16_toledo_michigan_state",
+      "home_score": 92,
+      "home_team": "Michigan State"
+    },
+    {
+      "away_score": 73,
+      "away_team": "Kentucky Christian",
+      "game_id": "2025_12_16_kentucky_christian_unc_asheville",
+      "home_score": 83,
+      "home_team": "UNC Asheville"
+    },
+    {
+      "away_score": 73,
+      "away_team": "Miami (OH)-Middletown",
+      "game_id": "2025_12_16_miami_oh_middletown_iu_indianapolis",
+      "home_score": 126,
+      "home_team": "IU Indianapolis"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.303904Z"
+}

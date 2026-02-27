@@ -1,0 +1,48 @@
+{
+  "date": "2025-12-01",
+  "games": [
+    {
+      "away_score": 48,
+      "away_team": "Louisiana Christian",
+      "game_id": "2025_12_01_louisiana_christian_southern",
+      "home_score": 101,
+      "home_team": "Southern"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Central State (OH)",
+      "game_id": "2025_12_01_central_state_oh_toledo",
+      "home_score": 102,
+      "home_team": "Toledo"
+    },
+    {
+      "away_score": 56,
+      "away_team": "Temple",
+      "game_id": "2025_12_01_temple_villanova",
+      "home_score": 74,
+      "home_team": "Villanova"
+    },
+    {
+      "away_score": 48,
+      "away_team": "Louisiana Christian",
+      "game_id": "2025_12_01_louisiana_christian_southern",
+      "home_score": 101,
+      "home_team": "Southern"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Central State (OH)",
+      "game_id": "2025_12_01_central_state_oh_toledo",
+      "home_score": 102,
+      "home_team": "Toledo"
+    },
+    {
+      "away_score": 56,
+      "away_team": "Temple",
+      "game_id": "2025_12_01_temple_villanova",
+      "home_score": 74,
+      "home_team": "Villanova"
+    }
+  ],
+  "generated_at": "2026-02-26T23:13:16.164727Z"
+}
