@@ -27,6 +27,7 @@ FIELD_MAP = {
     "pick_ev_per_1": ["pick_ev_per_1"],
     "pick_spread_odds": ["pick_spread_odds"],
     "pick_fair_odds": ["pick_fair_odds"],
+    "start_time": ["startDate", "start_time", "startTime"],
 }
 
 

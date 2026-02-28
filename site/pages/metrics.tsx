@@ -185,6 +185,12 @@ function monthSortKey(dateStr: string): number {
 
 /* -- helpers -- */
 
+function getSeasonFromDate(dateStr: string): number {
+  const month = Number(dateStr.slice(5, 7));
+  const year = Number(dateStr.slice(0, 4));
+  return month >= 11 ? year + 1 : year;
+}
+
 const mono: CSSProperties = {
   fontFamily: "'IBM Plex Mono', monospace"
 };
@@ -193,10 +199,25 @@ const mono: CSSProperties = {
 
 export default function Performance({
   games,
-  seasonLabel
+  seasonLabel: _serverSeasonLabel
 }: PerformanceProps) {
   const [edgeMin, setEdgeMin] = useState(0);
   const [startDate, setStartDate] = useState("");
+
+  const availableSeasons = useMemo(() => {
+    const set = new Set<number>();
+    for (const g of games) set.add(getSeasonFromDate(g.date));
+    return Array.from(set).sort((a, b) => b - a);
+  }, [games]);
+
+  const [seasonFilter, setSeasonFilter] = useState<number | "all">(() =>
+    availableSeasons.length > 0 ? availableSeasons[0] : "all"
+  );
+
+  const seasonLabel = useMemo(() => {
+    if (seasonFilter === "all") return "All Seasons";
+    return `${seasonFilter - 1}\u2013${String(seasonFilter).slice(2)} Season`;
+  }, [seasonFilter]);
 
   const maxEdge = useMemo(() => {
     if (!games.length) return 30;
@@ -210,9 +231,10 @@ export default function Performance({
   const filtered = useMemo(
     () =>
       games
+        .filter((g) => seasonFilter === "all" || getSeasonFromDate(g.date) === seasonFilter)
         .filter((g) => !startDate || g.date >= startDate)
         .filter((g) => g.edge >= edgeMin),
-    [games, startDate, edgeMin]
+    [games, seasonFilter, startDate, edgeMin]
   );
 
   /* stats */
@@ -361,6 +383,31 @@ export default function Performance({
             >
               Performance
             </h1>
+            {availableSeasons.length > 1 && (
+              <select
+                value={seasonFilter}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setSeasonFilter(v === "all" ? "all" : Number(v));
+                }}
+                style={{
+                  ...mono,
+                  padding: "4px 8px",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 6,
+                  fontSize: 13,
+                  background: "#fff",
+                  color: "#334155",
+                }}
+              >
+                {availableSeasons.map((s) => (
+                  <option key={s} value={s}>
+                    {s - 1}&ndash;{String(s).slice(2)}
+                  </option>
+                ))}
+                <option value="all">All Seasons</option>
+              </select>
+            )}
             <span style={{ ...mono, fontSize: 13, color: "#64748b" }}>
               {seasonLabel}
             </span>

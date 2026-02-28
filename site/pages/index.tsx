@@ -187,6 +187,22 @@ function getPickTeam(row: PredictionRow): string {
   return side === "HOME" ? str(row.home_team) : str(row.away_team);
 }
 
+function formatGameTime(row: PredictionRow): string | null {
+  const raw = row.start_time ?? row.startDate;
+  if (!raw || typeof raw !== "string") return null;
+  try {
+    const d = new Date(raw);
+    if (isNaN(d.getTime())) return null;
+    return d.toLocaleTimeString("en-US", {
+      timeZone: "America/New_York",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  } catch {
+    return null;
+  }
+}
+
 function hasBook(row: PredictionRow): boolean {
   return row.market_spread_home !== null && row.market_spread_home !== undefined && row.market_spread_home !== "";
 }
@@ -448,6 +464,11 @@ export default function Home({ date, rows, stats }: HomeProps) {
                       style={{ fontSize: 12, color: "#64748b", marginBottom: 6 }}
                     >
                       {str(game.away_team)} @ {str(game.home_team)}
+                      {formatGameTime(game) && (
+                        <span style={{ ...mono, marginLeft: 6, fontSize: 11, color: "#94a3b8" }}>
+                          {formatGameTime(game)}
+                        </span>
+                      )}
                     </div>
                     <div
                       style={{
@@ -634,6 +655,11 @@ export default function Home({ date, rows, stats }: HomeProps) {
                             }}
                           >
                             {str(row.away_team)} @ {str(row.home_team)}
+                            {formatGameTime(row) && (
+                              <span style={{ ...mono, marginLeft: 6, fontSize: 11, color: "#94a3b8" }}>
+                                {formatGameTime(row)}
+                              </span>
+                            )}
                           </td>
 
                           {/* HOME SPREAD */}

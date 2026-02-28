@@ -12,6 +12,7 @@ Outputs:
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from datetime import datetime
@@ -248,29 +249,52 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
     return payload
 
 
-def save_rankings(payload: dict) -> tuple[Path, Path]:
-    """Write rankings JSON to both output locations."""
+def save_rankings(payload: dict, season: int = CURRENT_SEASON) -> list[Path]:
+    """Write rankings JSON to both output locations.
+
+    Writes rankings_{season}.json. When season == CURRENT_SEASON also
+    writes rankings.json as a backward-compatible alias.
+    """
     json_dir = config.PREDICTIONS_DIR / "json"
     json_dir.mkdir(parents=True, exist_ok=True)
-    json_path = json_dir / "rankings.json"
 
     site_dir = config.PROJECT_ROOT / "site" / "public" / "data"
     site_dir.mkdir(parents=True, exist_ok=True)
-    site_path = site_dir / "rankings.json"
 
     blob = json.dumps(payload, indent=2)
-    json_path.write_text(blob)
-    site_path.write_text(blob)
+    written: list[Path] = []
 
-    return json_path, site_path
+    # Always write the season-specific file
+    for base_dir in (json_dir, site_dir):
+        p = base_dir / f"rankings_{season}.json"
+        p.write_text(blob)
+        written.append(p)
+
+    # Also write the generic alias for the current season
+    if season == CURRENT_SEASON:
+        for base_dir in (json_dir, site_dir):
+            p = base_dir / "rankings.json"
+            p.write_text(blob)
+            written.append(p)
+
+    return written
 
 
 def main():
-    payload = build_rankings()
-    json_path, site_path = save_rankings(payload)
-    print(f"\nRankings built: {len(payload['teams'])} teams")
-    print(f"  {json_path}")
-    print(f"  {site_path}")
+    parser = argparse.ArgumentParser(description="Build power rankings JSON")
+    parser.add_argument(
+        "--season",
+        type=int,
+        default=CURRENT_SEASON,
+        help=f"Season year (default: {CURRENT_SEASON})",
+    )
+    args = parser.parse_args()
+
+    payload = build_rankings(season=args.season)
+    written = save_rankings(payload, season=args.season)
+    print(f"\nRankings built: {len(payload['teams'])} teams (season {args.season})")
+    for p in written:
+        print(f"  {p}")
 
     # Print top 10
     print(f"\nTop 10 (as of {payload['as_of_date']}):")

@@ -16,7 +16,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.3440023,
-      "pred_sigma": 11.028837
+      "pred_sigma": 11.028837,
+      "start_time": "2026-02-28T17:00:00.000Z"
     },
     {
       "away_team": "Iowa",
@@ -33,7 +34,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.037228283,
-      "pred_sigma": 12.042203
+      "pred_sigma": 12.042203,
+      "start_time": "2026-02-28T17:00:00.000Z"
     },
     {
       "away_team": "NC State",
@@ -50,7 +52,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0057255025,
-      "pred_sigma": 10.54258
+      "pred_sigma": 10.54258,
+      "start_time": "2026-02-28T17:00:00.000Z"
     },
     {
       "away_team": "Florida State",
@@ -67,7 +70,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.7582209,
-      "pred_sigma": 10.129702
+      "pred_sigma": 10.129702,
+      "start_time": "2026-02-28T17:00:00.000Z"
     },
     {
       "away_team": "Seton Hall",
@@ -84,7 +88,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.97514194,
-      "pred_sigma": 10.690644
+      "pred_sigma": 10.690644,
+      "start_time": "2026-02-28T17:00:00.000Z"
     },
     {
       "away_team": "Colorado",
@@ -101,7 +106,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.6022771,
-      "pred_sigma": 12.894728
+      "pred_sigma": 12.894728,
+      "start_time": "2026-02-28T17:00:00.000Z"
     },
     {
       "away_team": "Virginia",
@@ -118,7 +124,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.51006174,
-      "pred_sigma": 13.311772
+      "pred_sigma": 13.311772,
+      "start_time": "2026-02-28T17:00:00.000Z"
     },
     {
       "away_team": "Fordham",
@@ -135,7 +142,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.99940705,
-      "pred_sigma": 11.352748
+      "pred_sigma": 11.352748,
+      "start_time": "2026-02-28T17:30:00.000Z"
     },
     {
       "away_team": "Le Moyne",
@@ -152,7 +160,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.3531835,
-      "pred_sigma": 12.014778
+      "pred_sigma": 12.014778,
+      "start_time": "2026-02-28T18:00:00.000Z"
     },
     {
       "away_team": "New Mexico State",
@@ -169,7 +178,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.41187084,
-      "pred_sigma": 11.181377
+      "pred_sigma": 11.181377,
+      "start_time": "2026-02-28T18:00:00.000Z"
     },
     {
       "away_team": "Missouri",
@@ -186,7 +196,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.23646306,
-      "pred_sigma": 12.004965
+      "pred_sigma": 12.004965,
+      "start_time": "2026-02-28T18:00:00.000Z"
     },
     {
       "away_team": "Cleveland State",
@@ -203,7 +214,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.6999306,
-      "pred_sigma": 13.150796
+      "pred_sigma": 13.150796,
+      "start_time": "2026-02-28T18:00:00.000Z"
     },
     {
       "away_team": "St. Francis (PA)",
@@ -220,7 +232,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.51121914,
-      "pred_sigma": 9.526105
+      "pred_sigma": 9.526105,
+      "start_time": "2026-02-28T18:00:00.000Z"
     },
     {
       "away_team": "Chicago State",
@@ -237,7 +250,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.35075948,
-      "pred_sigma": 9.013606
+      "pred_sigma": 9.013606,
+      "start_time": "2026-02-28T18:00:00.000Z"
     },
     {
       "away_team": "Army",
@@ -254,7 +268,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9492704,
-      "pred_sigma": 11.957706
+      "pred_sigma": 11.957706,
+      "start_time": "2026-02-28T18:00:00.000Z"
     },
     {
       "away_team": "Georgetown",
@@ -271,7 +286,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.880073,
-      "pred_sigma": 11.329657
+      "pred_sigma": 11.329657,
+      "start_time": "2026-02-28T18:30:00.000Z"
     },
     {
       "away_team": "Loyola Maryland",
@@ -288,7 +304,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.8749131,
-      "pred_sigma": 11.439478
+      "pred_sigma": 11.439478,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Boston College",
@@ -305,7 +322,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9993007,
-      "pred_sigma": 13.937413
+      "pred_sigma": 13.937413,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Tennessee State",
@@ -322,7 +340,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.02712668,
-      "pred_sigma": 10.613825
+      "pred_sigma": 10.613825,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Louisville",
@@ -339,7 +358,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.64903885,
-      "pred_sigma": 11.983595
+      "pred_sigma": 11.983595,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "UCLA",
@@ -356,7 +376,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.02012513,
-      "pred_sigma": 9.643974
+      "pred_sigma": 9.643974,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Boston University",
@@ -373,7 +394,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.24212684,
-      "pred_sigma": 11.879627
+      "pred_sigma": 11.879627,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Charleston Southern",
@@ -390,7 +412,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.7871615,
-      "pred_sigma": 11.614201
+      "pred_sigma": 11.614201,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "New Hampshire",
@@ -407,7 +430,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.90962595,
-      "pred_sigma": 10.63867
+      "pred_sigma": 10.63867,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "The Citadel",
@@ -424,7 +448,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.98791426,
-      "pred_sigma": 12.329374
+      "pred_sigma": 12.329374,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "VMI",
@@ -441,7 +466,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9513247,
-      "pred_sigma": 10.585901
+      "pred_sigma": 10.585901,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Florida Gulf Coast",
@@ -458,7 +484,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0101473145,
-      "pred_sigma": 10.946724
+      "pred_sigma": 10.946724,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Youngstown State",
@@ -475,7 +502,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.15197037,
-      "pred_sigma": 11.469995
+      "pred_sigma": 11.469995,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Austin Peay",
@@ -492,7 +520,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.59887946,
-      "pred_sigma": 11.003534
+      "pred_sigma": 11.003534,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "South Dakota State",
@@ -509,7 +538,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0493478,
-      "pred_sigma": 10.8633175
+      "pred_sigma": 10.8633175,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "North Alabama",
@@ -526,7 +556,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.65648574,
-      "pred_sigma": 10.524201
+      "pred_sigma": 10.524201,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Queens University",
@@ -543,7 +574,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.25242054,
-      "pred_sigma": 11.346197
+      "pred_sigma": 11.346197,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Vanderbilt",
@@ -560,7 +592,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.15936993,
-      "pred_sigma": 11.155625
+      "pred_sigma": 11.155625,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Purdue Fort Wayne",
@@ -577,7 +610,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.7464815,
-      "pred_sigma": 8.633675
+      "pred_sigma": 8.633675,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Bucknell",
@@ -594,7 +628,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.08424187,
-      "pred_sigma": 9.403941
+      "pred_sigma": 9.403941,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "St. Bonaventure",
@@ -611,7 +646,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.5422731,
-      "pred_sigma": 11.140927
+      "pred_sigma": 11.140927,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Gardner-Webb",
@@ -628,7 +664,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.68699336,
-      "pred_sigma": 10.102648
+      "pred_sigma": 10.102648,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "San Diego State",
@@ -645,7 +682,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.73921967,
-      "pred_sigma": 9.098839
+      "pred_sigma": 9.098839,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Massachusetts",
@@ -662,7 +700,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.95679104,
-      "pred_sigma": 11.350823
+      "pred_sigma": 11.350823,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Central Michigan",
@@ -679,7 +718,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.8363192,
-      "pred_sigma": 9.909343
+      "pred_sigma": 9.909343,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Mercyhurst",
@@ -696,7 +736,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.08807874,
-      "pred_sigma": 10.926109
+      "pred_sigma": 10.926109,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "UMBC",
@@ -713,7 +754,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.075920716,
-      "pred_sigma": 11.7547455
+      "pred_sigma": 11.7547455,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Maine",
@@ -730,7 +772,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.07861081,
-      "pred_sigma": 9.986362
+      "pred_sigma": 9.986362,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "William & Mary",
@@ -747,7 +790,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0048055477,
-      "pred_sigma": 13.039406
+      "pred_sigma": 13.039406,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Campbell",
@@ -764,7 +808,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.29440168,
-      "pred_sigma": 11.420457
+      "pred_sigma": 11.420457,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Oklahoma State",
@@ -781,7 +826,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.30984667,
-      "pred_sigma": 12.68992
+      "pred_sigma": 12.68992,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Oregon",
@@ -798,7 +844,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.07093028,
-      "pred_sigma": 10.54404
+      "pred_sigma": 10.54404,
+      "start_time": "2026-02-28T19:00:00.000Z"
     },
     {
       "away_team": "Radford",
@@ -815,7 +862,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.47545174,
-      "pred_sigma": 10.078191
+      "pred_sigma": 10.078191,
+      "start_time": "2026-02-28T20:00:00.000Z"
     },
     {
       "away_team": "Detroit Mercy",
@@ -832,7 +880,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.8580484,
-      "pred_sigma": 10.265794
+      "pred_sigma": 10.265794,
+      "start_time": "2026-02-28T20:00:00.000Z"
     },
     {
       "away_team": "Elon",
@@ -849,7 +898,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.057968035,
-      "pred_sigma": 11.475118
+      "pred_sigma": 11.475118,
+      "start_time": "2026-02-28T20:00:00.000Z"
     },
     {
       "away_team": "UTEP",
@@ -866,7 +916,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.6386327,
-      "pred_sigma": 11.343952
+      "pred_sigma": 11.343952,
+      "start_time": "2026-02-28T20:00:00.000Z"
     },
     {
       "away_team": "Sacramento State",
@@ -883,7 +934,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.96050954,
-      "pred_sigma": 10.010826
+      "pred_sigma": 10.010826,
+      "start_time": "2026-02-28T20:00:00.000Z"
     },
     {
       "away_team": "Florida International",
@@ -900,7 +952,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.055242546,
-      "pred_sigma": 10.657612
+      "pred_sigma": 10.657612,
+      "start_time": "2026-02-28T20:00:00.000Z"
     },
     {
       "away_team": "Utah",
@@ -917,7 +970,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.28857952,
-      "pred_sigma": 11.648777
+      "pred_sigma": 11.648777,
+      "start_time": "2026-02-28T20:30:00.000Z"
     },
     {
       "away_team": "South Carolina",
@@ -934,7 +988,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.6843367,
-      "pred_sigma": 10.825442
+      "pred_sigma": 10.825442,
+      "start_time": "2026-02-28T20:30:00.000Z"
     },
     {
       "away_team": "Bethune-Cookman",
@@ -951,7 +1006,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.5236895,
-      "pred_sigma": 9.664478
+      "pred_sigma": 9.664478,
+      "start_time": "2026-02-28T20:30:00.000Z"
     },
     {
       "away_team": "Northern Colorado",
@@ -968,7 +1024,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.33046985,
-      "pred_sigma": 12.678289
+      "pred_sigma": 12.678289,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Toledo",
@@ -985,7 +1042,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.03794026,
-      "pred_sigma": 10.989767
+      "pred_sigma": 10.989767,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Ball State",
@@ -1002,7 +1060,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.10822544,
-      "pred_sigma": 11.787862
+      "pred_sigma": 11.787862,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Northeastern",
@@ -1019,7 +1078,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.021475486,
-      "pred_sigma": 11.373188
+      "pred_sigma": 11.373188,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "SE Louisiana",
@@ -1036,7 +1096,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.33168918,
-      "pred_sigma": 10.597629
+      "pred_sigma": 10.597629,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Fairleigh Dickinson",
@@ -1053,7 +1114,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.46534383,
-      "pred_sigma": 10.8106575
+      "pred_sigma": 10.8106575,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Presbyterian",
@@ -1070,7 +1132,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.37867314,
-      "pred_sigma": 8.949065
+      "pred_sigma": 8.949065,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Richmond",
@@ -1087,7 +1150,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.06085369,
-      "pred_sigma": 12.834593
+      "pred_sigma": 12.834593,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Howard",
@@ -1104,7 +1168,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0067235427,
-      "pred_sigma": 10.803518
+      "pred_sigma": 10.803518,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "San Diego",
@@ -1121,7 +1186,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.24676412,
-      "pred_sigma": 11.832567
+      "pred_sigma": 11.832567,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Portland State",
@@ -1138,7 +1204,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.6041634,
-      "pred_sigma": 10.567087
+      "pred_sigma": 10.567087,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Northern Arizona",
@@ -1155,7 +1222,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.40692154,
-      "pred_sigma": 11.193318
+      "pred_sigma": 11.193318,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Texas",
@@ -1172,7 +1240,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0210138,
-      "pred_sigma": 10.057464
+      "pred_sigma": 10.057464,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Lipscomb",
@@ -1189,7 +1258,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.31897298,
-      "pred_sigma": 10.779135
+      "pred_sigma": 10.779135,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Southern Indiana",
@@ -1206,7 +1276,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9386376,
-      "pred_sigma": 9.939682
+      "pred_sigma": 9.939682,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Valparaiso",
@@ -1223,7 +1294,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.01728632,
-      "pred_sigma": 9.859556
+      "pred_sigma": 9.859556,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Air Force",
@@ -1240,7 +1312,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9833875,
-      "pred_sigma": 12.682322
+      "pred_sigma": 12.682322,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Wisconsin",
@@ -1257,7 +1330,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.07851338,
-      "pred_sigma": 10.598344
+      "pred_sigma": 10.598344,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Nebraska",
@@ -1274,7 +1348,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.38319895,
-      "pred_sigma": 10.400393
+      "pred_sigma": 10.400393,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Abilene Christian",
@@ -1291,7 +1366,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.84086484,
-      "pred_sigma": 9.874914
+      "pred_sigma": 9.874914,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Texas Tech",
@@ -1308,7 +1384,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.041704744,
-      "pred_sigma": 11.742636
+      "pred_sigma": 11.742636,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Kansas",
@@ -1325,7 +1402,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.54963213,
-      "pred_sigma": 10.216803
+      "pred_sigma": 10.216803,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Pittsburgh",
@@ -1342,7 +1420,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.07309893,
-      "pred_sigma": 10.308475
+      "pred_sigma": 10.308475,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "Colgate",
@@ -1359,7 +1438,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.8680751,
-      "pred_sigma": 12.074238
+      "pred_sigma": 12.074238,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "NJIT",
@@ -1376,7 +1456,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.6872546,
-      "pred_sigma": 13.393665
+      "pred_sigma": 13.393665,
+      "start_time": "2026-02-28T21:00:00.000Z"
     },
     {
       "away_team": "South Carolina State",
@@ -1393,7 +1474,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.40105233,
-      "pred_sigma": 9.218446
+      "pred_sigma": 9.218446,
+      "start_time": "2026-02-28T21:30:00.000Z"
     },
     {
       "away_team": "East Tennessee State",
@@ -1410,7 +1492,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.253965,
-      "pred_sigma": 8.502527
+      "pred_sigma": 8.502527,
+      "start_time": "2026-02-28T21:30:00.000Z"
     },
     {
       "away_team": "Stephen F. Austin",
@@ -1427,7 +1510,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.5322389,
-      "pred_sigma": 10.947394
+      "pred_sigma": 10.947394,
+      "start_time": "2026-02-28T21:30:00.000Z"
     },
     {
       "away_team": "Eastern Illinois",
@@ -1444,7 +1528,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.017441634,
-      "pred_sigma": 9.600854
+      "pred_sigma": 9.600854,
+      "start_time": "2026-02-28T21:30:00.000Z"
     },
     {
       "away_team": "Lindenwood",
@@ -1461,7 +1546,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.03401285,
-      "pred_sigma": 10.615153
+      "pred_sigma": 10.615153,
+      "start_time": "2026-02-28T21:30:00.000Z"
     },
     {
       "away_team": "Norfolk State",
@@ -1478,7 +1564,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.015597341,
-      "pred_sigma": 9.091215
+      "pred_sigma": 9.091215,
+      "start_time": "2026-02-28T21:30:00.000Z"
     },
     {
       "away_team": "North Carolina Central",
@@ -1495,7 +1582,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0022739822,
-      "pred_sigma": 9.904911
+      "pred_sigma": 9.904911,
+      "start_time": "2026-02-28T21:30:00.000Z"
     },
     {
       "away_team": "Tennessee Tech",
@@ -1512,7 +1600,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.85839725,
-      "pred_sigma": 9.082716
+      "pred_sigma": 9.082716,
+      "start_time": "2026-02-28T21:45:00.000Z"
     },
     {
       "away_team": "Delaware",
@@ -1529,7 +1618,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9320778,
-      "pred_sigma": 10.326176
+      "pred_sigma": 10.326176,
+      "start_time": "2026-02-28T22:00:00.000Z"
     },
     {
       "away_team": "Jackson State",
@@ -1546,7 +1636,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.86107904,
-      "pred_sigma": 11.44539
+      "pred_sigma": 11.44539,
+      "start_time": "2026-02-28T22:00:00.000Z"
     },
     {
       "away_team": "Lamar",
@@ -1563,7 +1654,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.74817747,
-      "pred_sigma": 12.96693
+      "pred_sigma": 12.96693,
+      "start_time": "2026-02-28T22:00:00.000Z"
     },
     {
       "away_team": "Colorado State",
@@ -1580,7 +1672,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0022339395,
-      "pred_sigma": 9.360084
+      "pred_sigma": 9.360084,
+      "start_time": "2026-02-28T22:00:00.000Z"
     },
     {
       "away_team": "Alabama State",
@@ -1597,7 +1690,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.42180136,
-      "pred_sigma": 11.27622
+      "pred_sigma": 11.27622,
+      "start_time": "2026-02-28T22:00:00.000Z"
     },
     {
       "away_team": "Missouri State",
@@ -1614,7 +1708,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.84753036,
-      "pred_sigma": 10.88747
+      "pred_sigma": 10.88747,
+      "start_time": "2026-02-28T22:30:00.000Z"
     },
     {
       "away_team": "East Texas A&M",
@@ -1631,7 +1726,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9267379,
-      "pred_sigma": 12.772639
+      "pred_sigma": 12.772639,
+      "start_time": "2026-02-28T22:30:00.000Z"
     },
     {
       "away_team": "Providence",
@@ -1648,7 +1744,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.39417875,
-      "pred_sigma": 11.311988
+      "pred_sigma": 11.311988,
+      "start_time": "2026-02-28T22:30:00.000Z"
     },
     {
       "away_team": "BYU",
@@ -1665,7 +1762,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.036999192,
-      "pred_sigma": 11.75062
+      "pred_sigma": 11.75062,
+      "start_time": "2026-02-28T22:30:00.000Z"
     },
     {
       "away_team": "Alcorn State",
@@ -1682,7 +1780,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.18284553,
-      "pred_sigma": 10.100706
+      "pred_sigma": 10.100706,
+      "start_time": "2026-02-28T22:30:00.000Z"
     },
     {
       "away_team": "Furman",
@@ -1699,7 +1798,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.2698423,
-      "pred_sigma": 13.671127
+      "pred_sigma": 13.671127,
+      "start_time": "2026-02-28T22:30:00.000Z"
     },
     {
       "away_team": "Syracuse",
@@ -1716,7 +1816,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.87047315,
-      "pred_sigma": 12.706653
+      "pred_sigma": 12.706653,
+      "start_time": "2026-02-28T22:45:00.000Z"
     },
     {
       "away_team": "Brown",
@@ -1733,7 +1834,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.24715856,
-      "pred_sigma": 12.702539
+      "pred_sigma": 12.702539,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "Dartmouth",
@@ -1750,7 +1852,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.53247947,
-      "pred_sigma": 13.399815
+      "pred_sigma": 13.399815,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "Oklahoma",
@@ -1767,7 +1870,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.6442368,
-      "pred_sigma": 11.558552
+      "pred_sigma": 11.558552,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "Weber State",
@@ -1784,7 +1888,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.042756125,
-      "pred_sigma": 11.793375
+      "pred_sigma": 11.793375,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "McNeese",
@@ -1801,7 +1906,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.00072116917,
-      "pred_sigma": 9.458095
+      "pred_sigma": 9.458095,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "Yale",
@@ -1818,7 +1924,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.2125165,
-      "pred_sigma": 9.931228
+      "pred_sigma": 9.931228,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "UNC Greensboro",
@@ -1835,7 +1942,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.8217729,
-      "pred_sigma": 10.400938
+      "pred_sigma": 10.400938,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "San Francisco",
@@ -1852,7 +1960,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.5300322,
-      "pred_sigma": 12.879967
+      "pred_sigma": 12.879967,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "Alabama",
@@ -1869,7 +1978,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.008631275,
-      "pred_sigma": 11.714167
+      "pred_sigma": 11.714167,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "Harvard",
@@ -1886,7 +1996,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.020539543,
-      "pred_sigma": 9.720042
+      "pred_sigma": 9.720042,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "SMU",
@@ -1903,7 +2014,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0067722686,
-      "pred_sigma": 11.067928
+      "pred_sigma": 11.067928,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "Liberty",
@@ -1920,7 +2032,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.06007425,
-      "pred_sigma": 10.275204
+      "pred_sigma": 10.275204,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "Jacksonville",
@@ -1937,7 +2050,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.6533792,
-      "pred_sigma": 9.64437
+      "pred_sigma": 9.64437,
+      "start_time": "2026-02-28T23:00:00.000Z"
     },
     {
       "away_team": "Northwestern State",
@@ -1954,7 +2068,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.03593479,
-      "pred_sigma": 9.397822
+      "pred_sigma": 9.397822,
+      "start_time": "2026-02-28T23:30:00.000Z"
     },
     {
       "away_team": "Mississippi Valley State",
@@ -1971,7 +2086,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.5808233,
-      "pred_sigma": 9.959701
+      "pred_sigma": 9.959701,
+      "start_time": "2026-02-28T23:30:00.000Z"
     },
     {
       "away_team": "TCU",
@@ -1988,7 +2104,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.029139848,
-      "pred_sigma": 10.807774
+      "pred_sigma": 10.807774,
+      "start_time": "2026-02-28T23:30:00.000Z"
     },
     {
       "away_team": "Hawai'i",
@@ -2005,7 +2122,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.24578424,
-      "pred_sigma": 12.294446
+      "pred_sigma": 12.294446,
+      "start_time": "2026-03-01T00:00:00.000Z"
     },
     {
       "away_team": "North Dakota",
@@ -2022,7 +2140,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.83807987,
-      "pred_sigma": 13.907767
+      "pred_sigma": 13.907767,
+      "start_time": "2026-03-01T00:00:00.000Z"
     },
     {
       "away_team": "Wright State",
@@ -2039,7 +2158,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.06570119,
-      "pred_sigma": 9.692876
+      "pred_sigma": 9.692876,
+      "start_time": "2026-03-01T00:00:00.000Z"
     },
     {
       "away_team": "Stony Brook",
@@ -2056,7 +2176,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.041246556,
-      "pred_sigma": 10.863656
+      "pred_sigma": 10.863656,
+      "start_time": "2026-03-01T00:00:00.000Z"
     },
     {
       "away_team": "Florida A&M",
@@ -2073,7 +2194,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.050716817,
-      "pred_sigma": 9.650785
+      "pred_sigma": 9.650785,
+      "start_time": "2026-03-01T00:30:00.000Z"
     },
     {
       "away_team": "Boise State",
@@ -2090,7 +2212,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.05009036,
-      "pred_sigma": 11.044849
+      "pred_sigma": 11.044849,
+      "start_time": "2026-03-01T00:30:00.000Z"
     },
     {
       "away_team": "Villanova",
@@ -2107,7 +2230,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.7015179,
-      "pred_sigma": 10.534552
+      "pred_sigma": 10.534552,
+      "start_time": "2026-03-01T01:00:00.000Z"
     },
     {
       "away_team": "Baylor",
@@ -2124,7 +2248,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.072011635,
-      "pred_sigma": 11.489422
+      "pred_sigma": 11.489422,
+      "start_time": "2026-03-01T01:00:00.000Z"
     },
     {
       "away_team": "Cal State Northridge",
@@ -2141,7 +2266,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.026467776,
-      "pred_sigma": 9.394785
+      "pred_sigma": 9.394785,
+      "start_time": "2026-03-01T01:00:00.000Z"
     },
     {
       "away_team": "Duquesne",
@@ -2158,7 +2284,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.5582976,
-      "pred_sigma": 11.924365
+      "pred_sigma": 11.924365,
+      "start_time": "2026-03-01T01:00:00.000Z"
     },
     {
       "away_team": "Washington State",
@@ -2175,7 +2302,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.016460098,
-      "pred_sigma": 11.350445
+      "pred_sigma": 11.350445,
+      "start_time": "2026-03-01T01:00:00.000Z"
     },
     {
       "away_team": "Oregon State",
@@ -2192,7 +2320,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.92984235,
-      "pred_sigma": 11.585665
+      "pred_sigma": 11.585665,
+      "start_time": "2026-03-01T01:00:00.000Z"
     },
     {
       "away_team": "Oral Roberts",
@@ -2209,7 +2338,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.2482394,
-      "pred_sigma": 9.5482
+      "pred_sigma": 9.5482,
+      "start_time": "2026-03-01T01:00:00.000Z"
     },
     {
       "away_team": "Utah Tech",
@@ -2226,7 +2356,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.19714318,
-      "pred_sigma": 11.539478
+      "pred_sigma": 11.539478,
+      "start_time": "2026-03-01T01:30:00.000Z"
     },
     {
       "away_team": "Virginia Tech",
@@ -2243,7 +2374,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.15162013,
-      "pred_sigma": 12.237388
+      "pred_sigma": 12.237388,
+      "start_time": "2026-03-01T01:30:00.000Z"
     },
     {
       "away_team": "Ole Miss",
@@ -2260,7 +2392,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.8328496,
-      "pred_sigma": 10.145509
+      "pred_sigma": 10.145509,
+      "start_time": "2026-03-01T01:30:00.000Z"
     },
     {
       "away_team": "Arkansas",
@@ -2277,7 +2410,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.8382173,
-      "pred_sigma": 11.903006
+      "pred_sigma": 11.903006,
+      "start_time": "2026-03-01T01:30:00.000Z"
     },
     {
       "away_team": "Seattle U",
@@ -2294,7 +2428,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.3609537,
-      "pred_sigma": 11.234717
+      "pred_sigma": 11.234717,
+      "start_time": "2026-03-01T02:00:00.000Z"
     },
     {
       "away_team": "Omaha",
@@ -2311,7 +2446,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.95485073,
-      "pred_sigma": 10.193324
+      "pred_sigma": 10.193324,
+      "start_time": "2026-03-01T02:00:00.000Z"
     },
     {
       "away_team": "Tarleton State",
@@ -2328,7 +2464,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.95354956,
-      "pred_sigma": 10.767969
+      "pred_sigma": 10.767969,
+      "start_time": "2026-03-01T02:00:00.000Z"
     },
     {
       "away_team": "Long Beach State",
@@ -2345,7 +2482,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0856778,
-      "pred_sigma": 9.023334
+      "pred_sigma": 9.023334,
+      "start_time": "2026-03-01T02:30:00.000Z"
     },
     {
       "away_team": "Nevada",
@@ -2362,7 +2500,8 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.11490929,
-      "pred_sigma": 10.278027
+      "pred_sigma": 10.278027,
+      "start_time": "2026-03-01T03:00:00.000Z"
     },
     {
       "away_team": "Grand Canyon",
@@ -2379,7 +2518,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9648143,
-      "pred_sigma": 10.405852
+      "pred_sigma": 10.405852,
+      "start_time": "2026-03-01T03:00:00.000Z"
     },
     {
       "away_team": "Cal Poly",
@@ -2396,7 +2536,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9432138,
-      "pred_sigma": 11.588808
+      "pred_sigma": 11.588808,
+      "start_time": "2026-03-01T03:00:00.000Z"
     },
     {
       "away_team": "UC Santa Barbara",
@@ -2413,7 +2554,8 @@
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.22603025,
-      "pred_sigma": 10.80392
+      "pred_sigma": 10.80392,
+      "start_time": "2026-03-01T03:30:00.000Z"
     },
     {
       "away_team": "Gonzaga",
@@ -2430,8 +2572,9 @@
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.23341203,
-      "pred_sigma": 9.149887
+      "pred_sigma": 9.149887,
+      "start_time": "2026-03-01T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-02-28T14:36:50.327504Z"
+  "generated_at": "2026-02-28T17:03:57.863581Z"
 }
