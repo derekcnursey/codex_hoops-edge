@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import { CSSProperties, useMemo, useState } from "react";
 import Layout from "../components/Layout";
-import { PredictionRow, normalizeRows } from "../lib/data";
+import { PredictionRow, normalizeRows, displayTeam } from "../lib/data";
 import {
   getLatestPredictionFile,
   getPredictionRowsByFilename,
@@ -184,7 +184,7 @@ function num(v: unknown): number | null {
 
 function getPickTeam(row: PredictionRow): string {
   const side = str(row.pick_side).toUpperCase();
-  return side === "HOME" ? str(row.home_team) : str(row.away_team);
+  return displayTeam(side === "HOME" ? str(row.home_team) : str(row.away_team));
 }
 
 function formatGameTime(row: PredictionRow): string | null {
@@ -246,7 +246,7 @@ type SortState = { key: SortKey; dir: "asc" | "desc" };
 function sortVal(row: PredictionRow, key: SortKey): string | number {
   switch (key) {
     case "matchup":
-      return `${str(row.away_team)} @ ${str(row.home_team)}`;
+      return `${displayTeam(str(row.away_team))} @ ${displayTeam(str(row.home_team))}`;
     case "book":
       return bookSpread(row) ?? -Infinity;
     case "pick":
@@ -463,7 +463,7 @@ export default function Home({ date, rows, stats }: HomeProps) {
                     <div
                       style={{ fontSize: 12, color: "#64748b", marginBottom: 6 }}
                     >
-                      {str(game.away_team)} @ {str(game.home_team)}
+                      {displayTeam(str(game.away_team))} @ {displayTeam(str(game.home_team))}
                       {formatGameTime(game) && (
                         <span style={{ ...mono, marginLeft: 6, fontSize: 11, color: "#94a3b8" }}>
                           {formatGameTime(game)}
@@ -654,7 +654,7 @@ export default function Home({ date, rows, stats }: HomeProps) {
                               borderBottom: "1px solid #f1f5f9"
                             }}
                           >
-                            {str(row.away_team)} @ {str(row.home_team)}
+                            {displayTeam(str(row.away_team))} @ {displayTeam(str(row.home_team))}
                             {formatGameTime(row) && (
                               <span style={{ ...mono, marginLeft: 6, fontSize: 11, color: "#94a3b8" }}>
                                 {formatGameTime(row)}

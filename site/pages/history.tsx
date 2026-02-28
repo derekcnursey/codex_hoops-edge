@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { CSSProperties, useMemo, useState } from "react";
 import Layout from "../components/Layout";
-import { normalizeRows } from "../lib/data";
+import { normalizeRows, displayTeam } from "../lib/data";
 import { listFinalScoreFiles, readJsonFile, todayET } from "../lib/server-data";
 
 /* -- types -- */
@@ -708,7 +708,7 @@ export default function History({
                             opacity: dimmed ? 0.4 : 1
                           }}
                         >
-                          {g.away_team} @ {g.home_team}
+                          {displayTeam(g.away_team)} @ {displayTeam(g.home_team)}
                         </td>
 
                         {/* SCORE */}
@@ -741,7 +741,7 @@ export default function History({
                             opacity: dimmed ? 0.4 : 1
                           }}
                         >
-                          {g.pick_team}
+                          {displayTeam(g.pick_team)}
                         </td>
 
                         {/* BOOK LINE */}

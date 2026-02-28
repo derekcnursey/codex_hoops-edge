@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { CSSProperties, useMemo, useState } from "react";
 import Layout from "../components/Layout";
+import { displayTeam } from "../lib/data";
 import { listRankingsSeasons, readJsonFile } from "../lib/server-data";
 
 /* -- types -- */
@@ -417,7 +418,7 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
                           borderBottom: "1px solid #f1f5f9",
                         }}
                       >
-                        {t.team}
+                        {displayTeam(t.team)}
                       </td>
 
                       {/* CONFERENCE */}
