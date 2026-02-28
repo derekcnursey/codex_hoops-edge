@@ -7,7 +7,7 @@
       "game_id": "2025_12_27_columbia_college_sc_unc_wilmington",
       "home_team": "UNC Wilmington",
       "market_spread_home": null,
-      "model_mu_home": -11.6739235,
+      "model_mu_home": 11.6739235,
       "neutral_site": null,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
@@ -24,7 +24,7 @@
       "game_id": "2025_12_27_cleary_university_duquesne",
       "home_team": "Duquesne",
       "market_spread_home": null,
-      "model_mu_home": -42.94399,
+      "model_mu_home": 42.94399,
       "neutral_site": null,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
@@ -41,7 +41,7 @@
       "game_id": "2025_12_27_cal_state_northridge_stanford",
       "home_team": "Stanford",
       "market_spread_home": -16.0,
-      "model_mu_home": -11.418916,
+      "model_mu_home": 11.418916,
       "neutral_site": null,
       "pick_cover_prob": 0.6684358358982698,
       "pick_ev_per_1": 0.2761047776239697,
@@ -53,5 +53,5 @@
       "pred_sigma": 10.5167675
     }
   ],
-  "generated_at": "2026-02-28T01:43:16.523895Z"
+  "generated_at": "2026-02-28T03:30:38.157261Z"
 }

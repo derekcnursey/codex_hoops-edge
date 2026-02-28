@@ -17,7 +17,7 @@ FIELD_MAP = {
     "home_team": ["home_team_name", "home_team", "homeTeam"],
     "neutral_site": ["neutral_site", "neutralSite"],
     "market_spread_home": ["home_spread_num", "market_spread_home", "book_spread"],
-    "model_mu_home": ["model_home_spread", "pred_margin", "model_mu_home", "model_spread"],
+    "model_mu_home": ["predicted_spread", "model_home_spread", "pred_margin", "model_mu_home"],
     "pred_sigma": ["pred_sigma", "spread_sigma"],
     "edge_home_points": ["edge_points", "edge_home_points"],
     "pred_home_win_prob": ["pred_home_win_prob", "home_win_prob"],
