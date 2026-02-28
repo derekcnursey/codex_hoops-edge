@@ -22,6 +22,7 @@ predictions/
 # Environment
 .env
 *.env
+aws_creds.txt
 
 # OS
 .DS_Store
