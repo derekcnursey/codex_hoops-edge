@@ -1,0 +1,9 @@
+{
+  "production_model": "c2v2_nn",
+  "architecture": "384\u2192256, d=0.20, lr=3e-3, Gaussian NLL",
+  "walkforward_pooled_mae": 9.202,
+  "lgb_pooled_mae": 9.229203063169447,
+  "lgb_val_mae": 9.08,
+  "delta": 0.02720306316944665,
+  "note": "LGB beats on val (9.080 vs 9.129) but loses walk-forward"
+}
