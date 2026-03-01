@@ -111,16 +111,16 @@
     },
     {
       "away_team": "Wichita State",
-      "edge_home_points": 15.168446,
+      "edge_home_points": 11.168446,
       "game_id": "2015_11_26_wichita_state_usc",
       "home_team": "USC",
-      "market_spread_home": 2.0,
+      "market_spread_home": -2.0,
       "model_mu_home": 13.168446,
       "neutral_site": null,
-      "pick_cover_prob": 0.9228018520071777,
-      "pick_ev_per_1": 0.7617126265591574,
-      "pick_fair_odds": -1195.367863090417,
-      "pick_prob_edge": 0.39899232819765384,
+      "pick_cover_prob": 0.8528214633773044,
+      "pick_ev_per_1": 0.6281137028112174,
+      "pick_fair_odds": -579.446896909692,
+      "pick_prob_edge": 0.3290119395677805,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9814074,
@@ -435,16 +435,16 @@
     },
     {
       "away_team": "San Diego State",
-      "edge_home_points": 12.005913,
+      "edge_home_points": 9.005913,
       "game_id": "2015_11_26_san_diego_state_california",
       "home_team": "California",
-      "market_spread_home": 1.5,
+      "market_spread_home": -1.5,
       "model_mu_home": 10.505913,
       "neutral_site": null,
-      "pick_cover_prob": 0.8295751847781028,
-      "pick_ev_per_1": 0.5837344436672871,
-      "pick_fair_odds": -486.7690093710683,
-      "pick_prob_edge": 0.30576566096857893,
+      "pick_cover_prob": 0.7625357659984905,
+      "pick_ev_per_1": 0.4557500987243909,
+      "pick_fair_odds": -321.11604899356894,
+      "pick_prob_edge": 0.23872624218896665,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.96058375,
@@ -470,5 +470,5 @@
       "start_time": "2015-11-27T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:28:11.534197Z"
+  "generated_at": "2026-03-01T02:43:25.791257Z"
 }

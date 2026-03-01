@@ -291,17 +291,17 @@
     },
     {
       "away_team": "Delaware State",
-      "edge_home_points": -16.5108821,
+      "edge_home_points": 9.4891179,
       "game_id": "2021_11_27_delaware_state_long_island_university",
       "home_team": "Long Island University",
-      "market_spread_home": -13.0,
+      "market_spread_home": 13.0,
       "model_mu_home": -3.5108821,
       "neutral_site": null,
-      "pick_cover_prob": 0.9284973672526982,
-      "pick_ev_per_1": 0.7725858829369692,
-      "pick_fair_odds": -1298.5499016995777,
-      "pick_prob_edge": 0.4046878434431743,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.8000460463461838,
+      "pick_ev_per_1": 0.5273606339336236,
+      "pick_fair_odds": -400.1151423748878,
+      "pick_prob_edge": 0.27623652253666,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.88102025,
       "pred_sigma": 11.272605,
@@ -1388,5 +1388,5 @@
       "start_time": "2021-11-28T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:01.119880Z"
+  "generated_at": "2026-03-01T02:43:34.303933Z"
 }

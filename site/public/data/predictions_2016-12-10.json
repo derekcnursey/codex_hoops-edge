@@ -1947,16 +1947,16 @@
     },
     {
       "away_team": "Valparaiso",
-      "edge_home_points": 10.521734,
+      "edge_home_points": 6.521734,
       "game_id": "2016_12_10_valparaiso_missouri_state",
       "home_team": "Missouri State",
-      "market_spread_home": 2.0,
+      "market_spread_home": -2.0,
       "model_mu_home": 8.521734,
       "neutral_site": null,
-      "pick_cover_prob": 0.8235150100907307,
-      "pick_ev_per_1": 0.5721650192641222,
-      "pick_fair_odds": -466.62042506509965,
-      "pick_prob_edge": 0.29970548628120686,
+      "pick_cover_prob": 0.7176009939041623,
+      "pick_ev_per_1": 0.3699655338170371,
+      "pick_fair_odds": -254.108895008161,
+      "pick_prob_edge": 0.19379147009463848,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9442067,
@@ -2288,5 +2288,5 @@
       "start_time": "2016-12-11T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:58.384482Z"
+  "generated_at": "2026-03-01T02:43:26.772693Z"
 }

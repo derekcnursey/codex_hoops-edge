@@ -93,16 +93,16 @@
     },
     {
       "away_team": "Drexel",
-      "edge_home_points": -10.606699500000001,
+      "edge_home_points": -3.6066995000000004,
       "game_id": "2023_01_14_drexel_northeastern",
       "home_team": "Northeastern",
-      "market_spread_home": -3.5,
+      "market_spread_home": 3.5,
       "model_mu_home": -7.1066995,
       "neutral_site": null,
-      "pick_cover_prob": 0.8259064648010948,
-      "pick_ev_per_1": 0.5767305237111808,
-      "pick_fair_odds": -474.4038679308112,
-      "pick_prob_edge": 0.3020969409915709,
+      "pick_cover_prob": 0.6251349360168563,
+      "pick_ev_per_1": 0.1934394233049075,
+      "pick_fair_odds": -166.76265570721907,
+      "pick_prob_edge": 0.10132541220733249,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.020197531,
@@ -489,16 +489,16 @@
     },
     {
       "away_team": "UCF",
-      "edge_home_points": -9.4397693,
+      "edge_home_points": -4.4397693,
       "game_id": "2023_01_14_ucf_tulane",
       "home_team": "Tulane",
-      "market_spread_home": -2.5,
+      "market_spread_home": 2.5,
       "model_mu_home": -6.9397693,
       "neutral_site": null,
-      "pick_cover_prob": 0.8283087275984238,
-      "pick_ev_per_1": 0.581316661778809,
-      "pick_fair_odds": -482.44078805651594,
-      "pick_prob_edge": 0.30449920378889994,
+      "pick_cover_prob": 0.6720696525509496,
+      "pick_ev_per_1": 0.2830420639609038,
+      "pick_fair_odds": -204.94280501299662,
+      "pick_prob_edge": 0.1482601287414258,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.10688446,
@@ -2738,5 +2738,5 @@
       "start_time": "2023-01-15T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:13.538650Z"
+  "generated_at": "2026-03-01T02:43:39.038881Z"
 }

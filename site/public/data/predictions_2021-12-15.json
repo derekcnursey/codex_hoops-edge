@@ -309,17 +309,17 @@
     },
     {
       "away_team": "Middle Tennessee",
-      "edge_home_points": -11.86766833,
+      "edge_home_points": 11.13233167,
       "game_id": "2021_12_15_middle_tennessee_ole_miss",
       "home_team": "Ole Miss",
-      "market_spread_home": -11.5,
+      "market_spread_home": 11.5,
       "model_mu_home": -0.36766833,
       "neutral_site": null,
-      "pick_cover_prob": 0.8728565843061034,
-      "pick_ev_per_1": 0.6663625700389245,
-      "pick_fair_odds": -686.5133987020955,
-      "pick_prob_edge": 0.3490470604965795,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.857546905641239,
+      "pick_ev_per_1": 0.637135001678729,
+      "pick_fair_odds": -601.9854531776966,
+      "pick_prob_edge": 0.3337373818317152,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.24801531,
       "pred_sigma": 10.410247,
@@ -668,5 +668,5 @@
       "start_time": "2021-12-16T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:22:14.569962Z"
+  "generated_at": "2026-03-01T02:43:34.539320Z"
 }

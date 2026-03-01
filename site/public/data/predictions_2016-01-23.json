@@ -1839,16 +1839,16 @@
     },
     {
       "away_team": "Long Beach State",
-      "edge_home_points": 11.136510999999999,
+      "edge_home_points": 3.1365109999999996,
       "game_id": "2016_01_23_long_beach_state_uc_riverside",
       "home_team": "UC Riverside",
-      "market_spread_home": 4.0,
+      "market_spread_home": -4.0,
       "model_mu_home": 7.136511,
       "neutral_site": null,
-      "pick_cover_prob": 0.7988060068935654,
-      "pick_ev_per_1": 0.5249932858877158,
-      "pick_fair_odds": -397.0327317232504,
-      "pick_prob_edge": 0.27499648308404157,
+      "pick_cover_prob": 0.5932204255181576,
+      "pick_ev_per_1": 0.13251172144375534,
+      "pick_fair_odds": -145.8333856299949,
+      "pick_prob_edge": 0.06941090170863373,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.48674873,
@@ -2468,5 +2468,5 @@
       "start_time": "2016-01-24T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:06.545328Z"
+  "generated_at": "2026-03-01T02:43:27.291580Z"
 }

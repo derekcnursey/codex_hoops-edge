@@ -345,17 +345,17 @@
     },
     {
       "away_team": "Texas State",
-      "edge_home_points": 12.89434683,
+      "edge_home_points": -12.10565317,
       "game_id": "2022_12_01_texas_state_lamar",
       "home_team": "Lamar",
-      "market_spread_home": 12.5,
+      "market_spread_home": -12.5,
       "model_mu_home": 0.39434683,
       "neutral_site": null,
-      "pick_cover_prob": 0.8882491689629498,
-      "pick_ev_per_1": 0.6957484134747224,
-      "pick_fair_odds": -794.8479315276476,
-      "pick_prob_edge": 0.364439645153426,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.8734421414193201,
+      "pick_ev_per_1": 0.6674804518005202,
+      "pick_fair_odds": -690.15243400512,
+      "pick_prob_edge": 0.34963261760979625,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0017458193,
       "pred_sigma": 10.592844,
@@ -542,5 +542,5 @@
       "start_time": "2022-12-02T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:12.883706Z"
+  "generated_at": "2026-03-01T02:43:36.898378Z"
 }

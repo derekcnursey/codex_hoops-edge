@@ -21,17 +21,17 @@
     },
     {
       "away_team": "Brown",
-      "edge_home_points": -9.62199455499649,
+      "edge_home_points": 9.378005445,
       "game_id": "2021_12_27_brown_syracuse",
       "home_team": "Syracuse",
-      "market_spread_home": -9.5,
+      "market_spread_home": 9.5,
       "model_mu_home": -0.121994555,
       "neutral_site": null,
-      "pick_cover_prob": 0.8224570489922813,
-      "pick_ev_per_1": 0.5701452753489007,
-      "pick_fair_odds": -463.2439893130565,
-      "pick_prob_edge": 0.2986475251827575,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.8162907778070082,
+      "pick_ev_per_1": 0.5583733030861066,
+      "pick_fair_odds": -444.33848669255775,
+      "pick_prob_edge": 0.29248125399748437,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.6129348,
       "pred_sigma": 10.404751,
@@ -56,5 +56,5 @@
       "start_time": "2021-12-28T01:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T00:50:20.409918Z"
+  "generated_at": "2026-03-01T02:43:34.771345Z"
 }

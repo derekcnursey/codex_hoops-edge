@@ -237,16 +237,16 @@
     },
     {
       "away_team": "Minnesota",
-      "edge_home_points": -11.308596,
+      "edge_home_points": -7.308596,
       "game_id": "2016_03_05_minnesota_rutgers",
       "home_team": "Rutgers",
-      "market_spread_home": -2.0,
+      "market_spread_home": 2.0,
       "model_mu_home": -9.308596,
       "neutral_site": null,
-      "pick_cover_prob": 0.844140597494061,
-      "pick_ev_per_1": 0.61154114067048,
-      "pick_fair_odds": -541.6038967953153,
-      "pick_prob_edge": 0.32033107368453717,
+      "pick_cover_prob": 0.7433790032309207,
+      "pick_ev_per_1": 0.4191780970772121,
+      "pick_fair_odds": -289.67972714245633,
+      "pick_prob_edge": 0.21956947942139682,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.14605325,
@@ -2018,5 +2018,5 @@
       "start_time": "2016-03-06T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:07.653460Z"
+  "generated_at": "2026-03-01T02:43:27.581257Z"
 }

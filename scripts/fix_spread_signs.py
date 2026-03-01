@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Fix flipped spread signs in existing prediction CSVs.
 
-Uses cross-provider majority vote: when multiple providers report spreads
-for the same game and the selected provider's sign disagrees with the
-majority, flip it. Only applies to spreads >= 5 pts to avoid flipping
-legitimate near-pick'em disagreements. Falls back to moneyline cross-check
-for single-provider games.
+Three layers of spread-sign correction:
+1. Cross-provider majority vote: when the selected provider's sign disagrees
+   with the majority of providers, flip it (>= 3 pts only).
+2. Moneyline cross-check: for single-provider games, flip when moneyline
+   strongly contradicts the spread sign.
+3. Model-based cross-check: when book_spread and predicted_spread both say
+   home wins with large magnitude (edge > 9 pts), flip the spread — this
+   catches games where ALL providers have the wrong sign.
 """
 import math
 import subprocess
@@ -25,6 +28,7 @@ CSV_DIR = PROJECT_ROOT / "predictions" / "csv"
 CSV_TO_JSON = PROJECT_ROOT / "scripts" / "csv_to_json.py"
 
 MIN_SPREAD_FOR_FLIP = 3  # only flip spreads with abs >= this
+MIN_PHANTOM_EDGE = 9  # model-based fix: flip when edge exceeds this
 
 
 def normal_cdf(z):
@@ -167,6 +171,27 @@ def main():
                 df.at[idx, "book_spread"] = target
                 n_fix += 1
 
+        # Layer 3: Model-based cross-check for phantom edges.
+        # When book_spread and predicted_spread both say home wins (or both
+        # say away wins) with combined edge > 9 pts, the spread sign is wrong.
+        # This catches games where ALL providers agree on the wrong sign.
+        n_model_fix = 0
+        if "predicted_spread" in df.columns:
+            bs = pd.to_numeric(df["book_spread"], errors="coerce")
+            ps = pd.to_numeric(df["predicted_spread"], errors="coerce")
+            phantom_edge = bs + ps
+            mask_phantom = (
+                bs.notna() & ps.notna()
+                & (
+                    ((bs > 0) & (ps > 0) & (phantom_edge >= MIN_PHANTOM_EDGE))
+                    | ((bs < 0) & (ps < 0) & (phantom_edge <= -MIN_PHANTOM_EDGE))
+                )
+            )
+            for idx in df.index[mask_phantom]:
+                df.at[idx, "book_spread"] = -bs[idx]
+                n_model_fix += 1
+            n_fix += n_model_fix
+
         if n_fix == 0:
             continue
 
@@ -185,7 +210,10 @@ def main():
                 cwd=PROJECT_ROOT,
                 capture_output=True,
             )
-            print(f"  Fixed {n_fix} rows in {csv_path.name} → {date_str}")
+            provider_lbl = f"{n_fix - n_model_fix} provider" if n_fix > n_model_fix else ""
+            model_lbl = f"{n_model_fix} model" if n_model_fix else ""
+            detail = " + ".join(filter(None, [provider_lbl, model_lbl]))
+            print(f"  Fixed {n_fix} rows ({detail}) in {csv_path.name} → {date_str}")
 
     print(f"\nDone: {total_fixed} total rows fixed across {files_changed} files")
 

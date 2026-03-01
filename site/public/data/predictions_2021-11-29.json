@@ -39,16 +39,16 @@
     },
     {
       "away_team": "Lafayette",
-      "edge_home_points": 13.345533,
+      "edge_home_points": 10.345533,
       "game_id": "2021_11_29_lafayette_columbia",
       "home_team": "Columbia",
-      "market_spread_home": 1.5,
+      "market_spread_home": -1.5,
       "model_mu_home": 11.845533,
       "neutral_site": null,
-      "pick_cover_prob": 0.8487283371960003,
-      "pick_ev_per_1": 0.6202995528287277,
-      "pick_fair_odds": -561.062344039732,
-      "pick_prob_edge": 0.32491881338647643,
+      "pick_cover_prob": 0.7879223151921588,
+      "pick_ev_per_1": 0.5042153290032123,
+      "pick_fair_odds": -371.52532851633003,
+      "pick_prob_edge": 0.264112791382635,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9390618,
@@ -507,16 +507,16 @@
     },
     {
       "away_team": "Grand Canyon",
-      "edge_home_points": -12.669952,
+      "edge_home_points": -5.669952,
       "game_id": "2021_11_29_grand_canyon_loyola_marymount",
       "home_team": "Loyola Marymount",
-      "market_spread_home": -3.5,
+      "market_spread_home": 3.5,
       "model_mu_home": -9.169952,
       "neutral_site": null,
-      "pick_cover_prob": 0.8674277299220974,
-      "pick_ev_per_1": 0.6559983934876404,
-      "pick_fair_odds": -654.3055568199717,
-      "pick_prob_edge": 0.34361820611257354,
+      "pick_cover_prob": 0.6909935426630702,
+      "pick_ev_per_1": 0.31916949053858856,
+      "pick_fair_odds": -223.61783265572188,
+      "pick_prob_edge": 0.1671840188535464,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0012039234,
@@ -560,5 +560,5 @@
       "start_time": "2021-11-30T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:01.152889Z"
+  "generated_at": "2026-03-01T02:43:34.366692Z"
 }

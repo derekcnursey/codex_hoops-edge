@@ -129,17 +129,17 @@
     },
     {
       "away_team": "Valparaiso",
-      "edge_home_points": 9.1227164,
+      "edge_home_points": -1.8772836000000002,
       "game_id": "2016_12_30_valparaiso_uic",
       "home_team": "UIC",
-      "market_spread_home": 5.5,
+      "market_spread_home": -5.5,
       "model_mu_home": 3.6227164,
       "neutral_site": null,
-      "pick_cover_prob": 0.7710902748918879,
-      "pick_ev_per_1": 0.4720814338845132,
-      "pick_fair_odds": -336.8534362302468,
-      "pick_prob_edge": 0.24728075108236403,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.5607143734798391,
+      "pick_ev_per_1": 0.07045471300696549,
+      "pick_fair_odds": -127.642321903766,
+      "pick_prob_edge": 0.036904849670315265,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.29223204,
       "pred_sigma": 12.287443,
@@ -758,5 +758,5 @@
       "start_time": "2016-12-31T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:28:12.004224Z"
+  "generated_at": "2026-03-01T02:43:27.084556Z"
 }

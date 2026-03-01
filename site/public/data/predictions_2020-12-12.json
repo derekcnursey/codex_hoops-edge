@@ -147,16 +147,16 @@
     },
     {
       "away_team": "Wofford",
-      "edge_home_points": -19.104296,
+      "edge_home_points": -13.104296000000001,
       "game_id": "2020_12_12_wofford_south_florida",
       "home_team": "South Florida",
-      "market_spread_home": -3.0,
+      "market_spread_home": 3.0,
       "model_mu_home": -16.104296,
       "neutral_site": null,
-      "pick_cover_prob": 0.9339990602571837,
-      "pick_ev_per_1": 0.7830891150364416,
-      "pick_fair_odds": -1415.1299419321413,
-      "pick_prob_edge": 0.4101895364476599,
+      "pick_cover_prob": 0.8492429438900027,
+      "pick_ev_per_1": 0.621281983790005,
+      "pick_fair_odds": -563.3188693140618,
+      "pick_prob_edge": 0.3254334200804788,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9945596,
@@ -1191,16 +1191,16 @@
     },
     {
       "away_team": "Sacramento State",
-      "edge_home_points": -18.326679,
+      "edge_home_points": -5.326679,
       "game_id": "2020_12_12_sacramento_state_santa_clara",
       "home_team": "Santa Clara",
-      "market_spread_home": -6.5,
+      "market_spread_home": 6.5,
       "model_mu_home": -11.826679,
       "neutral_site": null,
-      "pick_cover_prob": 0.9115036799981704,
-      "pick_ev_per_1": 0.7401433890874162,
-      "pick_fair_odds": -1029.9904899766743,
-      "pick_prob_edge": 0.38769415618864655,
+      "pick_cover_prob": 0.6526189686440976,
+      "pick_ev_per_1": 0.24590894013873177,
+      "pick_fair_odds": -187.8683375706458,
+      "pick_prob_edge": 0.1288094448345738,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.79608494,
@@ -1784,5 +1784,5 @@
       "start_time": "2020-12-13T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:11.042478Z"
+  "generated_at": "2026-03-01T02:43:32.409610Z"
 }

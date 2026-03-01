@@ -1317,17 +1317,17 @@
     },
     {
       "away_team": "Howard",
-      "edge_home_points": 10.22719777,
+      "edge_home_points": -8.77280223,
       "game_id": "2023_02_11_howard_delaware_state",
       "home_team": "Delaware State",
-      "market_spread_home": 9.5,
+      "market_spread_home": -9.5,
       "model_mu_home": 0.72719777,
       "neutral_site": null,
-      "pick_cover_prob": 0.8396597019558372,
-      "pick_ev_per_1": 0.602986703733871,
-      "pick_fair_odds": -523.6735319804433,
-      "pick_prob_edge": 0.31585017814631333,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.802848141539223,
+      "pick_ev_per_1": 0.5327100883930621,
+      "pick_fair_odds": -407.2232175782143,
+      "pick_prob_edge": 0.2790386177296992,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.040061057,
       "pred_sigma": 10.298668,
@@ -2774,5 +2774,5 @@
       "start_time": "2023-02-12T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:13.900008Z"
+  "generated_at": "2026-03-01T02:43:39.241010Z"
 }

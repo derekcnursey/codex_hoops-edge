@@ -525,17 +525,17 @@
     },
     {
       "away_team": "Mississippi State",
-      "edge_home_points": 11.8462086,
+      "edge_home_points": -1.1537914000000002,
       "game_id": "2025_11_21_mississippi_state_new_mexico",
       "home_team": "New Mexico",
-      "market_spread_home": 6.5,
+      "market_spread_home": -6.5,
       "model_mu_home": 5.3462086,
       "neutral_site": null,
-      "pick_cover_prob": 0.8465879582644529,
-      "pick_ev_per_1": 0.6162133748685009,
-      "pick_fair_odds": -551.8393137116367,
-      "pick_prob_edge": 0.32277843445492904,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.5396418148750701,
+      "pick_ev_per_1": 0.030225282943315668,
+      "pick_fair_odds": -117.2221614195096,
+      "pick_prob_edge": 0.01583229106554629,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.10431974,
       "pred_sigma": 11.592237,
@@ -1316,5 +1316,5 @@
       "start_time": "2025-11-22T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:22:17.717116Z"
+  "generated_at": "2026-03-01T02:43:41.490606Z"
 }

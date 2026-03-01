@@ -57,16 +57,16 @@
     },
     {
       "away_team": "Quinnipiac",
-      "edge_home_points": -18.632719,
+      "edge_home_points": -4.632719,
       "game_id": "2020_12_03_quinnipiac_drexel",
       "home_team": "Drexel",
-      "market_spread_home": -7.0,
+      "market_spread_home": 7.0,
       "model_mu_home": -11.632719,
       "neutral_site": null,
-      "pick_cover_prob": 0.9308522288429095,
-      "pick_ev_per_1": 0.777081527791009,
-      "pick_fair_odds": -1346.1782111938096,
-      "pick_prob_edge": 0.4070427050333857,
+      "pick_cover_prob": 0.6437560168537996,
+      "pick_ev_per_1": 0.22898875944816277,
+      "pick_fair_odds": -180.70649535422635,
+      "pick_prob_edge": 0.11994649304427574,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.03322365,
@@ -471,16 +471,16 @@
     },
     {
       "away_team": "North Carolina A&T",
-      "edge_home_points": 23.186665,
+      "edge_home_points": 21.186665,
       "game_id": "2020_12_03_north_carolina_a_t_the_citadel",
       "home_team": "The Citadel",
-      "market_spread_home": 1.0,
+      "market_spread_home": -1.0,
       "model_mu_home": 22.186665,
       "neutral_site": null,
-      "pick_cover_prob": 0.8880054751254125,
-      "pick_ev_per_1": 0.6952831797848784,
-      "pick_fair_odds": -792.9007923555274,
-      "pick_prob_edge": 0.36419595131588867,
+      "pick_cover_prob": 0.8667378248330587,
+      "pick_ev_per_1": 0.6546813019540212,
+      "pick_fair_odds": -650.4004784157784,
+      "pick_prob_edge": 0.3429283010235349,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9990182,
@@ -848,5 +848,5 @@
       "start_time": "2020-12-04T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:11.230761Z"
+  "generated_at": "2026-03-01T02:43:32.923753Z"
 }

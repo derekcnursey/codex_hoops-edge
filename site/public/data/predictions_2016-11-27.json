@@ -417,17 +417,17 @@
     },
     {
       "away_team": "La Salle",
-      "edge_home_points": 10.471022,
+      "edge_home_points": -1.5289780000000004,
       "game_id": "2016_11_27_la_salle_drexel",
       "home_team": "Drexel",
-      "market_spread_home": 6.0,
+      "market_spread_home": -6.0,
       "model_mu_home": 4.471022,
       "neutral_site": null,
-      "pick_cover_prob": 0.7981880547813216,
-      "pick_ev_per_1": 0.5238135591279776,
-      "pick_fair_odds": -395.5108078049716,
-      "pick_prob_edge": 0.27437853097179776,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.5485310805150815,
+      "pick_ev_per_1": 0.047195699165155536,
+      "pick_fair_odds": -121.49919005297227,
+      "pick_prob_edge": 0.024721556705557646,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.99500835,
       "pred_sigma": 12.537644,
@@ -848,5 +848,5 @@
       "start_time": "2016-11-28T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:22:07.866930Z"
+  "generated_at": "2026-03-01T02:43:26.698930Z"
 }

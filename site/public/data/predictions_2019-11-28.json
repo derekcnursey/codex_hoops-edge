@@ -3,16 +3,16 @@
   "games": [
     {
       "away_team": "Iowa",
-      "edge_home_points": 15.493971,
+      "edge_home_points": 1.4939710000000002,
       "game_id": "2019_11_28_iowa_texas_tech",
       "home_team": "Texas Tech",
-      "market_spread_home": 7.0,
+      "market_spread_home": -7.0,
       "model_mu_home": 8.493971,
       "neutral_site": null,
-      "pick_cover_prob": 0.9449315893215053,
-      "pick_ev_per_1": 0.8039603068865102,
-      "pick_fair_odds": -1715.9231175896646,
-      "pick_prob_edge": 0.4211220655119815,
+      "pick_cover_prob": 0.5612120368260761,
+      "pick_ev_per_1": 0.07140479757705442,
+      "pick_fair_odds": -127.90050865721369,
+      "pick_prob_edge": 0.037402513016552286,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.16182758,
@@ -309,16 +309,16 @@
     },
     {
       "away_team": "Alabama",
-      "edge_home_points": 11.1136265,
+      "edge_home_points": 6.1136265000000005,
       "game_id": "2019_11_28_alabama_iowa_state",
       "home_team": "Iowa State",
-      "market_spread_home": 2.5,
+      "market_spread_home": -2.5,
       "model_mu_home": 8.6136265,
       "neutral_site": null,
-      "pick_cover_prob": 0.8617593532152796,
-      "pick_ev_per_1": 0.645176947047352,
-      "pick_fair_odds": -623.3762451627427,
-      "pick_prob_edge": 0.3379498294057558,
+      "pick_cover_prob": 0.7252977325170146,
+      "pick_ev_per_1": 0.38465930753248234,
+      "pick_fair_odds": -264.0304862288544,
+      "pick_prob_edge": 0.20148820870749073,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.8255022,
@@ -326,5 +326,5 @@
       "start_time": "2019-11-28T23:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:28:13.209445Z"
+  "generated_at": "2026-03-01T02:43:31.173651Z"
 }

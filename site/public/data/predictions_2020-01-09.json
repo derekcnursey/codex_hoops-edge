@@ -669,16 +669,16 @@
     },
     {
       "away_team": "Tennessee State",
-      "edge_home_points": 13.21763,
+      "edge_home_points": 9.21763,
       "game_id": "2020_01_09_tennessee_state_ut_martin",
       "home_team": "UT Martin",
-      "market_spread_home": 2.0,
+      "market_spread_home": -2.0,
       "model_mu_home": 11.21763,
       "neutral_site": null,
-      "pick_cover_prob": 0.695646756114035,
-      "pick_ev_per_1": 0.328052898035885,
-      "pick_fair_odds": -228.56557966396437,
-      "pick_prob_edge": 0.1718372323045112,
+      "pick_cover_prob": 0.639454153425135,
+      "pick_ev_per_1": 0.22077611108434858,
+      "pick_fair_odds": -177.35723750526037,
+      "pick_prob_edge": 0.11564462961561117,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9998023,
@@ -1010,5 +1010,5 @@
       "start_time": "2020-01-10T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:11.480880Z"
+  "generated_at": "2026-03-01T02:43:33.400148Z"
 }

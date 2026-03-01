@@ -57,17 +57,17 @@
     },
     {
       "away_team": "UAB",
-      "edge_home_points": -10.4388294,
+      "edge_home_points": 2.5611706,
       "game_id": "2026_02_22_uab_memphis",
       "home_team": "Memphis",
-      "market_spread_home": -6.5,
+      "market_spread_home": 6.5,
       "model_mu_home": -3.9388294,
       "neutral_site": null,
-      "pick_cover_prob": 0.8355656674259806,
-      "pick_ev_per_1": 0.5951708196314175,
-      "pick_fair_odds": -508.1455036464811,
-      "pick_prob_edge": 0.31175614361645676,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.5946638909551439,
+      "pick_ev_per_1": 0.13526742818709292,
+      "pick_fair_odds": -146.7088368604575,
+      "pick_prob_edge": 0.0708543671456201,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.2741423,
       "pred_sigma": 10.691193,
@@ -380,5 +380,5 @@
       "start_time": "2026-02-22T21:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:15.045900Z"
+  "generated_at": "2026-03-01T02:43:43.262093Z"
 }

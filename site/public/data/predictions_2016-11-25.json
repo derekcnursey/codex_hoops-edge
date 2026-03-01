@@ -435,16 +435,16 @@
     },
     {
       "away_team": "North Florida",
-      "edge_home_points": 18.38453,
+      "edge_home_points": 16.38453,
       "game_id": "2016_11_25_north_florida_north_dakota",
       "home_team": "North Dakota",
-      "market_spread_home": 1.0,
+      "market_spread_home": -1.0,
       "model_mu_home": 17.38453,
       "neutral_site": null,
-      "pick_cover_prob": 0.9145088114045303,
-      "pick_ev_per_1": 0.7458804581359215,
-      "pick_fair_odds": -1069.7111906255468,
-      "pick_prob_edge": 0.3906992875950065,
+      "pick_cover_prob": 0.8887900439007701,
+      "pick_ev_per_1": 0.6967809929014701,
+      "pick_fair_odds": -799.2000672203527,
+      "pick_prob_edge": 0.36498052009124626,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.97144777,
@@ -453,16 +453,16 @@
     },
     {
       "away_team": "UIC",
-      "edge_home_points": -10.068158,
+      "edge_home_points": -6.068158,
       "game_id": "2016_11_25_uic_cal_poly",
       "home_team": "Cal Poly",
-      "market_spread_home": -2.0,
+      "market_spread_home": 2.0,
       "model_mu_home": -8.068158,
       "neutral_site": null,
-      "pick_cover_prob": 0.8037642523319416,
-      "pick_ev_per_1": 0.5344590271791612,
-      "pick_fair_odds": -409.5911483424238,
-      "pick_prob_edge": 0.27995472852241776,
+      "pick_cover_prob": 0.6968639135951651,
+      "pick_ev_per_1": 0.33037656231804247,
+      "pick_fair_odds": -229.8848421050442,
+      "pick_prob_edge": 0.17305438978564125,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.13946305,
@@ -1460,5 +1460,5 @@
       "start_time": "2016-11-26T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:05.852433Z"
+  "generated_at": "2026-03-01T02:43:26.631264Z"
 }

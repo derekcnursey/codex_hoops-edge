@@ -3,17 +3,17 @@
   "games": [
     {
       "away_team": "SE Louisiana",
-      "edge_home_points": 9.3936582,
+      "edge_home_points": -4.6063418,
       "game_id": "2022_01_06_se_louisiana_houston_christian",
       "home_team": "Houston Christian",
-      "market_spread_home": 7.0,
+      "market_spread_home": -7.0,
       "model_mu_home": 2.3936582,
       "neutral_site": null,
-      "pick_cover_prob": 0.7675309386841713,
-      "pick_ev_per_1": 0.46528633748796344,
-      "pick_fair_odds": -330.164768739448,
-      "pick_prob_edge": 0.2437214148746475,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.6399521167696179,
+      "pick_ev_per_1": 0.22172676837836147,
+      "pick_fair_odds": -177.74083575437518,
+      "pick_prob_edge": 0.1161425929600941,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.010144196,
       "pred_sigma": 12.854998,
@@ -183,16 +183,16 @@
     },
     {
       "away_team": "St. Francis (PA)",
-      "edge_home_points": 10.3586855,
+      "edge_home_points": 6.3586855,
       "game_id": "2022_01_06_st_francis_pa_st_francis_brooklyn",
       "home_team": "St. Francis Brooklyn",
-      "market_spread_home": 2.0,
+      "market_spread_home": -2.0,
       "model_mu_home": 8.3586855,
       "neutral_site": null,
-      "pick_cover_prob": 0.8060042701438923,
-      "pick_ev_per_1": 0.538735424820158,
-      "pick_fair_odds": -415.4752636780867,
-      "pick_prob_edge": 0.2821947463343685,
+      "pick_cover_prob": 0.7019149537733891,
+      "pick_ev_per_1": 0.3400194572037428,
+      "pick_fair_odds": -235.47472865840362,
+      "pick_prob_edge": 0.17810542996386525,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.77041394,
@@ -1028,5 +1028,5 @@
       "start_time": "2022-01-07T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:01.699582Z"
+  "generated_at": "2026-03-01T02:43:37.541180Z"
 }

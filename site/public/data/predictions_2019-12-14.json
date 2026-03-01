@@ -867,17 +867,17 @@
     },
     {
       "away_team": "Sacramento State",
-      "edge_home_points": -11.1247787,
+      "edge_home_points": 0.8752212999999998,
       "game_id": "2019_12_14_sacramento_state_santa_clara",
       "home_team": "Santa Clara",
-      "market_spread_home": -6.0,
+      "market_spread_home": 6.0,
       "model_mu_home": -5.1247787,
       "neutral_site": null,
-      "pick_cover_prob": 0.8422245139715803,
-      "pick_ev_per_1": 0.6078831630366532,
-      "pick_fair_odds": -533.8120231300522,
-      "pick_prob_edge": 0.31841499016205643,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.5314676642264712,
+      "pick_ev_per_1": 0.014620086250535902,
+      "pick_fair_odds": -113.43244076186087,
+      "pick_prob_edge": 0.0076581404169473455,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.25490326,
       "pred_sigma": 11.084404,
@@ -1496,5 +1496,5 @@
       "start_time": "2019-12-15T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:10.368618Z"
+  "generated_at": "2026-03-01T02:43:31.455968Z"
 }

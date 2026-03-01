@@ -453,16 +453,16 @@
     },
     {
       "away_team": "James Madison",
-      "edge_home_points": -15.594099,
+      "edge_home_points": -11.594099,
       "game_id": "2021_01_16_james_madison_towson",
       "home_team": "Towson",
-      "market_spread_home": -2.0,
+      "market_spread_home": 2.0,
       "model_mu_home": -13.594099,
       "neutral_site": null,
-      "pick_cover_prob": 0.9368092303171104,
-      "pick_ev_per_1": 0.7884539851508471,
-      "pick_fair_odds": -1482.5096054665933,
-      "pick_prob_edge": 0.41299970650758655,
+      "pick_cover_prob": 0.8721157147053201,
+      "pick_ev_per_1": 0.6649481826192475,
+      "pick_fair_odds": -681.9569055695392,
+      "pick_prob_edge": 0.3483061908957963,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.006065212,
@@ -2468,5 +2468,5 @@
       "start_time": "2021-01-17T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:11.897638Z"
+  "generated_at": "2026-03-01T02:43:35.201212Z"
 }

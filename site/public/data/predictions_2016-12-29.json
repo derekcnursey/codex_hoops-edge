@@ -975,16 +975,16 @@
     },
     {
       "away_team": "North Dakota",
-      "edge_home_points": 14.083227,
+      "edge_home_points": 11.083227,
       "game_id": "2016_12_29_north_dakota_portland_state",
       "home_team": "Portland State",
-      "market_spread_home": 1.5,
+      "market_spread_home": -1.5,
       "model_mu_home": 12.583227,
       "neutral_site": null,
-      "pick_cover_prob": 0.7914542605274343,
-      "pick_ev_per_1": 0.5109581337341927,
-      "pick_fair_odds": -379.51111469795836,
-      "pick_prob_edge": 0.26764473671791045,
+      "pick_cover_prob": 0.7384639804986309,
+      "pick_ev_per_1": 0.4097948718610227,
+      "pick_fair_odds": -282.3565113159357,
+      "pick_prob_edge": 0.2146544566891071,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.91870016,
@@ -1010,5 +1010,5 @@
       "start_time": "2016-12-30T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:06.135199Z"
+  "generated_at": "2026-03-01T02:43:27.022324Z"
 }

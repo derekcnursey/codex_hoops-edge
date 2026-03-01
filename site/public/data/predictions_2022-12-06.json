@@ -291,17 +291,17 @@
     },
     {
       "away_team": "Vermont",
-      "edge_home_points": 10.299902,
+      "edge_home_points": -0.7000979999999997,
       "game_id": "2022_12_06_vermont_dartmouth",
       "home_team": "Dartmouth",
-      "market_spread_home": 5.5,
+      "market_spread_home": -5.5,
       "model_mu_home": 4.799902,
       "neutral_site": null,
-      "pick_cover_prob": 0.8042929949725479,
-      "pick_ev_per_1": 0.5354684449475915,
-      "pick_fair_odds": -410.96791341716596,
-      "pick_prob_edge": 0.2804834711630241,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.5232273335155395,
+      "pick_ev_per_1": -0.0011114541976063874,
+      "pick_fair_odds": -109.74356759451376,
+      "pick_prob_edge": -0.0005821902939843193,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.801963,
       "pred_sigma": 12.017772,
@@ -1100,5 +1100,5 @@
       "start_time": "2022-12-07T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:13.135862Z"
+  "generated_at": "2026-03-01T02:43:37.202611Z"
 }

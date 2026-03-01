@@ -129,17 +129,17 @@
     },
     {
       "away_team": "North Texas",
-      "edge_home_points": -10.5352578,
+      "edge_home_points": 3.4647422,
       "game_id": "2016_12_31_north_texas_charlotte",
       "home_team": "Charlotte",
-      "market_spread_home": -7.0,
+      "market_spread_home": 7.0,
       "model_mu_home": -3.5352578,
       "neutral_site": null,
-      "pick_cover_prob": 0.8348147927227363,
-      "pick_ev_per_1": 0.5937373315615875,
-      "pick_fair_odds": -505.3810849548397,
-      "pick_prob_edge": 0.31100526891321245,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.6255585335532424,
+      "pick_ev_per_1": 0.19424810951073557,
+      "pick_fair_odds": -167.06443853279578,
+      "pick_prob_edge": 0.10174900974371859,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.05443682,
       "pred_sigma": 10.823509,
@@ -1622,5 +1622,5 @@
       "start_time": "2017-01-01T02:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:06.202877Z"
+  "generated_at": "2026-03-01T02:43:27.118796Z"
 }

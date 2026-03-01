@@ -111,17 +111,17 @@
     },
     {
       "away_team": "Saint Peter's",
-      "edge_home_points": 13.470710799999999,
+      "edge_home_points": -3.5292892,
       "game_id": "2022_12_13_saint_peter_s_hartford",
       "home_team": "Hartford",
-      "market_spread_home": 8.5,
+      "market_spread_home": -8.5,
       "model_mu_home": 4.9707108,
       "neutral_site": null,
-      "pick_cover_prob": 0.9050899498635951,
-      "pick_ev_per_1": 0.7278989951941361,
-      "pick_fair_odds": -953.6291979224524,
-      "pick_prob_edge": 0.3812804260540713,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.6343916899513842,
+      "pick_ev_per_1": 0.21111140808900608,
+      "pick_fair_odds": -173.51675892351233,
+      "pick_prob_edge": 0.11058216614186034,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.22522293,
       "pred_sigma": 10.274268,
@@ -704,5 +704,5 @@
       "start_time": "2022-12-14T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:12.782914Z"
+  "generated_at": "2026-03-01T02:43:36.817161Z"
 }

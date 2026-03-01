@@ -489,17 +489,17 @@
     },
     {
       "away_team": "Oakland",
-      "edge_home_points": -9.5255027,
+      "edge_home_points": 5.4744972999999995,
       "game_id": "2015_11_22_oakland_colorado_state",
       "home_team": "Colorado State",
-      "market_spread_home": -7.5,
+      "market_spread_home": 7.5,
       "model_mu_home": -2.0255027,
       "neutral_site": null,
-      "pick_cover_prob": 0.8556516021776347,
-      "pick_ev_per_1": 0.6335166950663935,
-      "pick_fair_odds": -592.7683404083202,
-      "pick_prob_edge": 0.33184207836811086,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.7289926611821078,
+      "pick_ev_per_1": 0.3917132622567513,
+      "pick_fair_odds": -268.99369749981804,
+      "pick_prob_edge": 0.20518313737258398,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9986393,
       "pred_sigma": 8.977982,
@@ -992,5 +992,5 @@
       "start_time": "2015-11-23T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:05.038460Z"
+  "generated_at": "2026-03-01T02:43:25.661895Z"
 }

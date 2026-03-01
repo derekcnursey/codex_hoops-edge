@@ -687,16 +687,16 @@
     },
     {
       "away_team": "Bradley",
-      "edge_home_points": -9.068831,
+      "edge_home_points": -4.068831,
       "game_id": "2020_01_15_bradley_missouri_state",
       "home_team": "Missouri State",
-      "market_spread_home": -2.5,
+      "market_spread_home": 2.5,
       "model_mu_home": -6.568831,
       "neutral_site": null,
-      "pick_cover_prob": 0.8264394795061369,
-      "pick_ev_per_1": 0.5777480972389887,
-      "pick_fair_odds": -476.1678964516352,
-      "pick_prob_edge": 0.3026299556966131,
+      "pick_cover_prob": 0.6634239114130341,
+      "pick_ev_per_1": 0.26653655815215604,
+      "pick_fair_odds": -197.10963847677374,
+      "pick_prob_edge": 0.1396143876035103,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.5346725,
@@ -1046,5 +1046,5 @@
       "start_time": "2020-01-16T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:11.314388Z"
+  "generated_at": "2026-03-01T02:43:33.184897Z"
 }

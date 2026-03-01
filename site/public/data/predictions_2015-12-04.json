@@ -21,16 +21,16 @@
     },
     {
       "away_team": "Kansas State",
-      "edge_home_points": -9.143186,
+      "edge_home_points": -0.14318600000000004,
       "game_id": "2015_12_04_kansas_state_georgia",
       "home_team": "Georgia",
-      "market_spread_home": -4.5,
+      "market_spread_home": 4.5,
       "model_mu_home": -4.643186,
       "neutral_site": null,
-      "pick_cover_prob": 0.8089237032674719,
-      "pick_ev_per_1": 0.5443088880560827,
-      "pick_fair_odds": -423.3511519222173,
-      "pick_prob_edge": 0.28511417945794804,
+      "pick_cover_prob": 0.5054598361458317,
+      "pick_ev_per_1": -0.03503122190341229,
+      "pick_fair_odds": -102.20804559260901,
+      "pick_prob_edge": -0.01834968766369216,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0060316636,
@@ -345,16 +345,16 @@
     },
     {
       "away_team": "Northern Illinois",
-      "edge_home_points": -15.892277,
+      "edge_home_points": -7.892277,
       "game_id": "2015_12_04_northern_illinois_missouri",
       "home_team": "Missouri",
-      "market_spread_home": -4.0,
+      "market_spread_home": 4.0,
       "model_mu_home": -11.892277,
       "neutral_site": null,
-      "pick_cover_prob": 0.9376043971045589,
-      "pick_ev_per_1": 0.789972030835976,
-      "pick_fair_odds": -1502.6770374760883,
-      "pick_prob_edge": 0.41379487329503506,
+      "pick_cover_prob": 0.777054357814803,
+      "pick_ev_per_1": 0.4834674103737149,
+      "pick_fair_odds": -348.5398280040468,
+      "pick_prob_edge": 0.2532448340052792,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.060070127,
@@ -488,5 +488,5 @@
       "start_time": "2015-12-05T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:05.490678Z"
+  "generated_at": "2026-03-01T02:43:26.037292Z"
 }

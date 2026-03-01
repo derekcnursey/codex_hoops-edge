@@ -651,16 +651,16 @@
     },
     {
       "away_team": "Elon",
-      "edge_home_points": 16.401287,
+      "edge_home_points": 11.401287,
       "game_id": "2017_11_19_elon_milwaukee",
       "home_team": "Milwaukee",
-      "market_spread_home": 2.5,
+      "market_spread_home": -2.5,
       "model_mu_home": 13.901287,
       "neutral_site": null,
-      "pick_cover_prob": 0.9399941071412501,
-      "pick_ev_per_1": 0.7945342045423865,
-      "pick_fair_odds": -1566.502992221009,
-      "pick_prob_edge": 0.41618458333172625,
+      "pick_cover_prob": 0.8600980713511835,
+      "pick_ev_per_1": 0.6420054089431686,
+      "pick_fair_odds": -614.7864290779095,
+      "pick_prob_edge": 0.3362885475416597,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.7842261,
@@ -669,16 +669,16 @@
     },
     {
       "away_team": "Illinois State",
-      "edge_home_points": 17.90385,
+      "edge_home_points": 13.90385,
       "game_id": "2017_11_19_illinois_state_tulsa",
       "home_team": "Tulsa",
-      "market_spread_home": 2.0,
+      "market_spread_home": -2.0,
       "model_mu_home": 15.90385,
       "neutral_site": null,
-      "pick_cover_prob": 0.8404619131355308,
-      "pick_ev_per_1": 0.604518197804195,
-      "pick_fair_odds": -526.8095723433864,
-      "pick_prob_edge": 0.3166523893260069,
+      "pick_cover_prob": 0.780462492702459,
+      "pick_ev_per_1": 0.4899738497046945,
+      "pick_fair_odds": -355.5030310354631,
+      "pick_prob_edge": 0.2566529688929352,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.75914425,
@@ -1046,5 +1046,5 @@
       "start_time": "2017-11-20T03:10:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:22:09.994778Z"
+  "generated_at": "2026-03-01T02:43:27.955431Z"
 }

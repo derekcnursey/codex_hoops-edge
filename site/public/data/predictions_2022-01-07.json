@@ -3,17 +3,17 @@
   "games": [
     {
       "away_team": "Houston Christian",
-      "edge_home_points": -9.51382804,
+      "edge_home_points": 8.48617196,
       "game_id": "2022_01_07_houston_christian_new_orleans",
       "home_team": "New Orleans",
-      "market_spread_home": -9.0,
+      "market_spread_home": 9.0,
       "model_mu_home": -0.51382804,
       "neutral_site": null,
-      "pick_cover_prob": 0.8002794012250478,
-      "pick_ev_per_1": 0.5278061296114549,
-      "pick_fair_odds": -400.69948024080037,
-      "pick_prob_edge": 0.276469877415524,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.7738548768517016,
+      "pick_ev_per_1": 0.4773593103532485,
+      "pick_fair_odds": -342.1939266601976,
+      "pick_prob_edge": 0.2500453530421778,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.22199187,
       "pred_sigma": 11.290774,
@@ -452,5 +452,5 @@
       "start_time": "2022-01-08T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:01.730307Z"
+  "generated_at": "2026-03-01T02:43:37.572001Z"
 }

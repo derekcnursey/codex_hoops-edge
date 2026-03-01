@@ -218,6 +218,7 @@ export default function Performance({
   seasonLabel: _serverSeasonLabel
 }: PerformanceProps) {
   const [edgeMin, setEdgeMin] = useState(0);
+  const [edgeMax, setEdgeMax] = useState(50);
   const [startMonth, setStartMonth] = useState<number | "">("");
 
   const availableSeasons = useMemo(() => {
@@ -251,8 +252,8 @@ export default function Performance({
       games
         .filter((g) => seasonFilter === "all" || getSeasonFromDate(g.date) === seasonFilter)
         .filter((g) => startMonth === "" || seasonMonthOrd(Number(g.date.slice(5, 7))) >= seasonMonthOrd(startMonth as number))
-        .filter((g) => g.edge >= edgeMin),
-    [games, seasonFilter, startMonth, edgeMin]
+        .filter((g) => g.edge >= edgeMin && g.edge <= edgeMax),
+    [games, seasonFilter, startMonth, edgeMin, edgeMax]
   );
 
   /* stats */
@@ -471,38 +472,76 @@ export default function Performance({
           </div>
 
           <div
-            style={{ display: "flex", alignItems: "center", gap: 8 }}
+            style={{ display: "flex", alignItems: "center", gap: 12 }}
           >
-            <span
-              style={{
-                ...mono,
-                fontSize: 11,
-                fontWeight: 600,
-                color: "#64748b"
-              }}
-            >
-              EDGE
-            </span>
-            <input
-              type="range"
-              min={minEdge}
-              max={maxEdge}
-              step={1}
-              value={edgeMin}
-              onChange={(e) => setEdgeMin(Number(e.target.value))}
-              style={{ width: 120, accentColor: "#0f172a" }}
-            />
-            <span
-              style={{
-                ...mono,
-                fontSize: 14,
-                fontWeight: 700,
-                color: "#0f172a",
-                minWidth: 30
-              }}
-            >
-              {edgeMin}%
-            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span
+                style={{
+                  ...mono,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#64748b"
+                }}
+              >
+                EDGE
+              </span>
+              <span
+                style={{
+                  ...mono,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: "#0f172a",
+                  minWidth: 28,
+                  textAlign: "right"
+                }}
+              >
+                {edgeMin}%
+              </span>
+              <input
+                type="range"
+                min={minEdge}
+                max={maxEdge}
+                step={1}
+                value={edgeMin}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  setEdgeMin(Math.min(v, edgeMax));
+                }}
+                style={{ width: 100, accentColor: "#0f172a" }}
+              />
+              <span
+                style={{
+                  ...mono,
+                  fontSize: 11,
+                  color: "#94a3b8"
+                }}
+              >
+                &ndash;
+              </span>
+              <input
+                type="range"
+                min={minEdge}
+                max={maxEdge}
+                step={1}
+                value={edgeMax}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  setEdgeMax(Math.max(v, edgeMin));
+                }}
+                style={{ width: 100, accentColor: "#0f172a" }}
+              />
+              <span
+                style={{
+                  ...mono,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: "#0f172a",
+                  minWidth: 28
+                }}
+              >
+                {edgeMax}%
+              </span>
+            </div>
           </div>
         </div>
 

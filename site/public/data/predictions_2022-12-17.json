@@ -975,16 +975,16 @@
     },
     {
       "away_team": "St. Francis Brooklyn",
-      "edge_home_points": 13.592452999999999,
+      "edge_home_points": 0.5924529999999999,
       "game_id": "2022_12_17_st_francis_brooklyn_hartford",
       "home_team": "Hartford",
-      "market_spread_home": 6.5,
+      "market_spread_home": -6.5,
       "model_mu_home": 7.092453,
       "neutral_site": null,
-      "pick_cover_prob": 0.8587734003921655,
-      "pick_ev_per_1": 0.6394764916577705,
-      "pick_fair_odds": -608.0819072163837,
-      "pick_prob_edge": 0.3349638765826417,
+      "pick_cover_prob": 0.5186829282768893,
+      "pick_ev_per_1": -0.009787136925938578,
+      "pick_fair_odds": -107.76325186638596,
+      "pick_prob_edge": -0.005126595532634504,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.062118843,
@@ -1713,16 +1713,16 @@
     },
     {
       "away_team": "NC State",
-      "edge_home_points": -15.324499,
+      "edge_home_points": -4.324498999999999,
       "game_id": "2022_12_17_nc_state_vanderbilt",
       "home_team": "Vanderbilt",
-      "market_spread_home": -5.5,
+      "market_spread_home": 5.5,
       "model_mu_home": -9.824499,
       "neutral_site": null,
-      "pick_cover_prob": 0.8909289889932255,
-      "pick_ev_per_1": 0.7008644335325214,
-      "pick_fair_odds": -816.8338963483972,
-      "pick_prob_edge": 0.36711946518370164,
+      "pick_cover_prob": 0.635899161680803,
+      "pick_ev_per_1": 0.21398930866335109,
+      "pick_fair_odds": -174.64918911373886,
+      "pick_prob_edge": 0.11208963787127912,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.02666186,
@@ -1748,5 +1748,5 @@
       "start_time": "2022-12-18T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:28:14.507790Z"
+  "generated_at": "2026-03-01T02:43:36.859467Z"
 }

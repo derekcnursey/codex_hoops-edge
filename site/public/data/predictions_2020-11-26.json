@@ -363,16 +363,16 @@
     },
     {
       "away_team": "Northern Iowa",
-      "edge_home_points": 9.373842,
+      "edge_home_points": 4.373842,
       "game_id": "2020_11_26_northern_iowa_saint_mary_s",
       "home_team": "Saint Mary's",
-      "market_spread_home": 2.5,
+      "market_spread_home": -2.5,
       "model_mu_home": 6.873842,
       "neutral_site": null,
-      "pick_cover_prob": 0.740409206654153,
-      "pick_ev_per_1": 0.41350848543065566,
-      "pick_fair_odds": -285.221674124522,
-      "pick_prob_edge": 0.21659968284462916,
+      "pick_cover_prob": 0.6182067168331096,
+      "pick_ev_per_1": 0.1802128230450274,
+      "pick_fair_odds": -161.92184202540764,
+      "pick_prob_edge": 0.09439719302358573,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.016531618,
@@ -560,5 +560,5 @@
       "start_time": "2020-11-27T02:41:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:28:13.688169Z"
+  "generated_at": "2026-03-01T02:43:32.245995Z"
 }

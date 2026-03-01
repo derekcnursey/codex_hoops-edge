@@ -21,16 +21,16 @@
     },
     {
       "away_team": "Central Connecticut",
-      "edge_home_points": 9.91014,
+      "edge_home_points": 6.91014,
       "game_id": "2023_02_02_central_connecticut_st_francis_brooklyn",
       "home_team": "St. Francis Brooklyn",
-      "market_spread_home": 1.5,
+      "market_spread_home": -1.5,
       "model_mu_home": 8.41014,
       "neutral_site": null,
-      "pick_cover_prob": 0.7974079484844411,
-      "pick_ev_per_1": 0.5223242652884784,
-      "pick_fair_odds": -393.60278081946404,
-      "pick_prob_edge": 0.27359842467491724,
+      "pick_cover_prob": 0.7191824540698909,
+      "pick_ev_per_1": 0.3729846850425189,
+      "pick_fair_odds": -256.103104842631,
+      "pick_prob_edge": 0.19537293026036706,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9467861,
@@ -1370,5 +1370,5 @@
       "start_time": "2023-02-03T04:15:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:14.129692Z"
+  "generated_at": "2026-03-01T02:43:39.316710Z"
 }

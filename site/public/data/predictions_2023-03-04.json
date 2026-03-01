@@ -237,16 +237,16 @@
     },
     {
       "away_team": "Tennessee",
-      "edge_home_points": -9.407873,
+      "edge_home_points": -4.407873,
       "game_id": "2023_03_04_tennessee_auburn",
       "home_team": "Auburn",
-      "market_spread_home": -2.5,
+      "market_spread_home": 2.5,
       "model_mu_home": -6.907873,
       "neutral_site": null,
-      "pick_cover_prob": 0.8053717079313538,
-      "pick_ev_per_1": 0.5375278060507663,
-      "pick_fair_odds": -413.7999154035097,
-      "pick_prob_edge": 0.28156218412183,
+      "pick_cover_prob": 0.6566688745929061,
+      "pick_ev_per_1": 0.2536405787682753,
+      "pick_fair_odds": -191.26400899839246,
+      "pick_prob_edge": 0.1328593507833823,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.20460519,
@@ -1694,5 +1694,5 @@
       "start_time": "2023-03-05T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:14.379171Z"
+  "generated_at": "2026-03-01T02:43:39.470461Z"
 }

@@ -993,16 +993,16 @@
     },
     {
       "away_team": "Long Beach State",
-      "edge_home_points": 10.8961167,
+      "edge_home_points": 0.8961167000000003,
       "game_id": "2016_01_06_long_beach_state_cal_state_northridge",
       "home_team": "Cal State Northridge",
-      "market_spread_home": 5.0,
+      "market_spread_home": -5.0,
       "model_mu_home": 5.8961167,
       "neutral_site": null,
-      "pick_cover_prob": 0.7473582462160252,
-      "pick_ev_per_1": 0.426774833685139,
-      "pick_fair_odds": -295.817391631577,
-      "pick_prob_edge": 0.22354872240650137,
+      "pick_cover_prob": 0.521846910995379,
+      "pick_ev_per_1": -0.0037468062815491088,
+      "pick_fair_odds": -109.1380403045636,
+      "pick_prob_edge": -0.001962612814144782,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.30711538,
@@ -1046,5 +1046,5 @@
       "start_time": "2016-01-07T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:06.779103Z"
+  "generated_at": "2026-03-01T02:43:27.354364Z"
 }

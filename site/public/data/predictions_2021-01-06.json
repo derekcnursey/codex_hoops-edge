@@ -273,17 +273,17 @@
     },
     {
       "away_team": "Incarnate Word",
-      "edge_home_points": -10.2884853,
+      "edge_home_points": 3.7115147,
       "game_id": "2021_01_06_incarnate_word_northwestern_state",
       "home_team": "Northwestern State",
-      "market_spread_home": -7.0,
+      "market_spread_home": 7.0,
       "model_mu_home": -3.2884853,
       "neutral_site": null,
-      "pick_cover_prob": 0.8164603502244471,
-      "pick_ev_per_1": 0.5586970322466717,
-      "pick_fair_odds": -444.8414014208268,
-      "pick_prob_edge": 0.29265082641492324,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.6275518641875053,
+      "pick_ev_per_1": 0.19805355890341925,
+      "pick_fair_odds": -168.49375895478775,
+      "pick_prob_edge": 0.10374234037798147,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.522956,
       "pred_sigma": 11.406837,
@@ -578,5 +578,5 @@
       "start_time": "2021-01-07T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:12.048250Z"
+  "generated_at": "2026-03-01T02:43:35.579860Z"
 }

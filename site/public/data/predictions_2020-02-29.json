@@ -1011,16 +1011,16 @@
     },
     {
       "away_team": "Elon",
-      "edge_home_points": -15.350040400000001,
+      "edge_home_points": -0.35004040000000014,
       "game_id": "2020_02_29_elon_william_mary",
       "home_team": "William & Mary",
-      "market_spread_home": -7.5,
+      "market_spread_home": 7.5,
       "model_mu_home": -7.8500404,
       "neutral_site": null,
-      "pick_cover_prob": 0.8904823226091041,
-      "pick_ev_per_1": 0.7000117067991987,
-      "pick_fair_odds": -813.0946015507163,
-      "pick_prob_edge": 0.36667279879958026,
+      "pick_cover_prob": 0.5111801619385639,
+      "pick_ev_per_1": -0.02411059993546899,
+      "pick_fair_odds": -104.57434869374458,
+      "pick_prob_edge": -0.012629361870959976,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.0074401842,
@@ -2468,5 +2468,5 @@
       "start_time": "2020-03-01T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:27:11.667630Z"
+  "generated_at": "2026-03-01T02:43:33.552596Z"
 }
