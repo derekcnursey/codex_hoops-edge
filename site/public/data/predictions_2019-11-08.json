@@ -1029,17 +1029,17 @@
     },
     {
       "away_team": "Pacific",
-      "edge_home_points": -10.336051000000001,
+      "edge_home_points": 0.6639489999999997,
       "game_id": "2019_11_08_pacific_south_dakota",
       "home_team": "South Dakota",
-      "market_spread_home": -5.5,
+      "market_spread_home": 5.5,
       "model_mu_home": -4.836051,
       "neutral_site": null,
-      "pick_cover_prob": 0.7203088138132601,
-      "pick_ev_per_1": 0.37513500818895096,
-      "pick_fair_odds": -257.5371872220297,
-      "pick_prob_edge": 0.19649929000373623,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.5149562276332773,
+      "pick_ev_per_1": -0.016901747245561538,
+      "pick_fair_odds": -106.16695996746846,
+      "pick_prob_edge": -0.008853296176246528,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9948513,
       "pred_sigma": 17.70602,
@@ -1172,5 +1172,5 @@
       "start_time": "2019-11-09T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:59.694824Z"
+  "generated_at": "2026-03-01T02:22:12.854653Z"
 }

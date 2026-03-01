@@ -165,16 +165,16 @@
     },
     {
       "away_team": "James Madison",
-      "edge_home_points": 4.187067000000001,
+      "edge_home_points": 20.187067,
       "game_id": "2017_11_17_james_madison_northern_kentucky",
       "home_team": "Northern Kentucky",
-      "market_spread_home": -8.0,
+      "market_spread_home": 8.0,
       "model_mu_home": 12.187067,
       "neutral_site": null,
-      "pick_cover_prob": 0.6605430042461163,
-      "pick_ev_per_1": 0.2610366444698584,
-      "pick_fair_odds": -194.5881253026317,
-      "pick_prob_edge": 0.1367334804365925,
+      "pick_cover_prob": 0.9770195251451654,
+      "pick_ev_per_1": 0.8652190934589522,
+      "pick_fair_odds": -4251.520176658242,
+      "pick_prob_edge": 0.4532100013356416,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9998894,
@@ -1046,5 +1046,5 @@
       "start_time": "2017-11-18T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:58.620524Z"
+  "generated_at": "2026-03-01T02:22:09.926402Z"
 }

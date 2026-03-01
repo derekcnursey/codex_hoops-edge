@@ -363,16 +363,16 @@
     },
     {
       "away_team": "Dayton",
-      "edge_home_points": -6.1559992,
+      "edge_home_points": -0.15599920000000012,
       "game_id": "2019_12_08_dayton_saint_mary_s",
       "home_team": "Saint Mary's",
-      "market_spread_home": -3.0,
+      "market_spread_home": 3.0,
       "model_mu_home": -3.1559992,
       "neutral_site": null,
-      "pick_cover_prob": 0.7133391124176208,
-      "pick_ev_per_1": 0.3618292146154579,
-      "pick_fair_odds": -248.84424186143113,
-      "pick_prob_edge": 0.189529588608097,
+      "pick_cover_prob": 0.5056931897078152,
+      "pick_ev_per_1": -0.034585728739625565,
+      "pick_fair_odds": -102.30350445888048,
+      "pick_prob_edge": -0.018116334101708653,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.49099314,
@@ -632,5 +632,5 @@
       "start_time": "2019-12-09T02:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:59.992958Z"
+  "generated_at": "2026-03-01T02:22:13.213856Z"
 }

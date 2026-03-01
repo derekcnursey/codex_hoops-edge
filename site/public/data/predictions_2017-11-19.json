@@ -1029,22 +1029,22 @@
     },
     {
       "away_team": "Miami (OH)",
-      "edge_home_points": 6.46184427,
+      "edge_home_points": -7.53815573,
       "game_id": "2017_11_19_miami_oh_hartford",
       "home_team": "Hartford",
-      "market_spread_home": 7.0,
+      "market_spread_home": -7.0,
       "model_mu_home": -0.53815573,
       "neutral_site": null,
-      "pick_cover_prob": 0.6896334725593736,
-      "pick_ev_per_1": 0.316572993067895,
-      "pick_fair_odds": -222.19969345479805,
-      "pick_prob_edge": 0.16582394874984974,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.7181078055448682,
+      "pick_ev_per_1": 0.3709330833129302,
+      "pick_fair_odds": -254.74554445641732,
+      "pick_prob_edge": 0.19429828173534436,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.65224296,
       "pred_sigma": 13.059199,
       "start_time": "2017-11-20T03:10:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:58.685086Z"
+  "generated_at": "2026-03-01T02:22:09.994778Z"
 }

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Fix flipped spread signs in existing prediction CSVs.
 
-Some games in the CBBD API have spread signs that disagree with moneyline
-(e.g. spread says home is 23-pt underdog while moneyline says massive
-home favorite). This script detects and fixes those, then recalculates
-all edge metrics and regenerates site JSONs.
+Uses cross-provider majority vote: when multiple providers report spreads
+for the same game and the selected provider's sign disagrees with the
+majority, flip it. Falls back to moneyline cross-check for single-provider
+games.
 """
 import math
 import subprocess
@@ -13,6 +13,11 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+# Allow importing project modules
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from src.features import load_lines  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CSV_DIR = PROJECT_ROOT / "predictions" / "csv"
@@ -36,32 +41,59 @@ def prob_to_american(p):
     return out
 
 
-def fix_csv(csv_path: Path) -> int:
-    """Fix spread signs in a single CSV. Returns number of rows fixed."""
-    df = pd.read_csv(csv_path)
+def build_correct_signs() -> dict[int, float]:
+    """Build gameId → correct spread sign from multi-provider majority vote."""
+    correct_sign: dict[int, float] = {}
 
-    if "book_spread" not in df.columns or "home_moneyline" not in df.columns:
-        return 0
+    for season in range(2016, 2027):
+        lines_df = load_lines(season)
+        if lines_df.empty:
+            continue
 
-    sp = pd.to_numeric(df["book_spread"], errors="coerce")
-    ml = pd.to_numeric(df["home_moneyline"], errors="coerce")
-
-    mask = (
-        sp.notna() & ml.notna()
-        & (
-            ((sp > 3) & (ml < -150))
-            | ((sp < -3) & (ml > 150))
+        lines_df = lines_df.copy()
+        lines_df["spread"] = pd.to_numeric(lines_df["spread"], errors="coerce")
+        lines_df["homeMoneyline"] = pd.to_numeric(
+            lines_df["homeMoneyline"], errors="coerce"
         )
-    )
 
-    n_fix = mask.sum()
-    if n_fix == 0:
-        return 0
+        # Majority vote from providers with non-zero spread
+        has_spread = lines_df["spread"].notna() & (lines_df["spread"] != 0)
+        if not has_spread.any():
+            continue
 
-    # Flip the spread sign
-    df.loc[mask, "book_spread"] = -sp[mask]
+        spread_sign = np.sign(lines_df.loc[has_spread, "spread"])
+        majority = (
+            spread_sign.groupby(lines_df.loc[has_spread, "gameId"]).sum()
+        )
 
-    # Recalculate edge metrics
+        # Only store where majority is decisive (net sign != 0)
+        for gid, net in majority.items():
+            if net != 0:
+                correct_sign[int(gid)] = float(np.sign(net))
+
+        # For single-provider games, use moneyline as cross-check
+        provider_count = (
+            lines_df.loc[has_spread]
+            .groupby("gameId")["provider"]
+            .nunique()
+        )
+        single_provider_games = set(provider_count[provider_count == 1].index)
+
+        for gid in single_provider_games:
+            if gid in correct_sign:
+                continue  # already have majority
+            row = lines_df[lines_df["gameId"] == gid].iloc[0]
+            sp = row["spread"]
+            ml = row["homeMoneyline"]
+            if pd.notna(sp) and pd.notna(ml) and abs(sp) > 3:
+                if (sp > 0 and ml < -150) or (sp < 0 and ml > 150):
+                    correct_sign[int(gid)] = float(-np.sign(sp))
+
+    return correct_sign
+
+
+def recalc_edges(df: pd.DataFrame) -> None:
+    """Recalculate all edge metrics in-place after spread fix."""
     df["model_spread"] = -df["predicted_spread"]
     df["spread_diff"] = df["model_spread"] - df["book_spread"]
     df["edge_home_points"] = df["predicted_spread"] + df["book_spread"]
@@ -80,36 +112,59 @@ def fix_csv(csv_path: Path) -> int:
     pick_profit = 100 / 110  # -110 odds profit per $1
 
     df["pick_prob_edge"] = df["pick_cover_prob"] - pick_breakeven
-    df["pick_ev_per_1"] = df["pick_cover_prob"] * pick_profit - (1.0 - df["pick_cover_prob"])
+    df["pick_ev_per_1"] = (
+        df["pick_cover_prob"] * pick_profit - (1.0 - df["pick_cover_prob"])
+    )
     df["pick_fair_odds"] = prob_to_american(df["pick_cover_prob"].values)
-
-    df.to_csv(csv_path, index=False)
-    return n_fix
 
 
 def main():
+    print("Loading multi-provider lines from S3...")
+    correct_signs = build_correct_signs()
+    print(f"Built correct signs for {len(correct_signs)} games\n")
+
     csv_files = sorted(CSV_DIR.glob("preds_*_edge.csv"))
     total_fixed = 0
     files_changed = 0
 
     for csv_path in csv_files:
-        n = fix_csv(csv_path)
-        if n > 0:
-            total_fixed += n
-            files_changed += 1
+        df = pd.read_csv(csv_path)
+        if "book_spread" not in df.columns or "gameId" not in df.columns:
+            continue
 
-            # Extract date from filename and regenerate JSON
-            parts = csv_path.stem.replace("preds_", "").replace("_edge", "").split("_")
-            if len(parts) >= 3:
-                date_str = f"{parts[0]}-{int(parts[1]):02d}-{int(parts[2]):02d}"
-                subprocess.run(
-                    [sys.executable, str(CSV_TO_JSON), str(csv_path), date_str],
-                    check=True,
-                    cwd=PROJECT_ROOT,
-                    capture_output=True,
-                )
+        sp = pd.to_numeric(df["book_spread"], errors="coerce")
+        n_fix = 0
 
-            print(f"  Fixed {n} rows in {csv_path.name} → {date_str}")
+        for idx, row in df.iterrows():
+            gid = int(row["gameId"]) if pd.notna(row["gameId"]) else None
+            spread = sp[idx]
+            if gid is None or pd.isna(spread) or spread == 0:
+                continue
+
+            target_sign = correct_signs.get(gid)
+            if target_sign is not None and np.sign(spread) != target_sign:
+                df.at[idx, "book_spread"] = -spread
+                n_fix += 1
+
+        if n_fix == 0:
+            continue
+
+        recalc_edges(df)
+        df.to_csv(csv_path, index=False)
+        total_fixed += n_fix
+        files_changed += 1
+
+        # Regenerate site JSON
+        parts = csv_path.stem.replace("preds_", "").replace("_edge", "").split("_")
+        if len(parts) >= 3:
+            date_str = f"{parts[0]}-{int(parts[1]):02d}-{int(parts[2]):02d}"
+            subprocess.run(
+                [sys.executable, str(CSV_TO_JSON), str(csv_path), date_str],
+                check=True,
+                cwd=PROJECT_ROOT,
+                capture_output=True,
+            )
+            print(f"  Fixed {n_fix} rows in {csv_path.name} → {date_str}")
 
     print(f"\nDone: {total_fixed} total rows fixed across {files_changed} files")
 

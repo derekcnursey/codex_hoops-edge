@@ -453,17 +453,17 @@
     },
     {
       "away_team": "Oklahoma State",
-      "edge_home_points": 0.36368129999999965,
+      "edge_home_points": -8.6363187,
       "game_id": "2021_11_17_oklahoma_state_nc_state",
       "home_team": "NC State",
-      "market_spread_home": 4.5,
+      "market_spread_home": -4.5,
       "model_mu_home": -4.1363187,
       "neutral_site": null,
-      "pick_cover_prob": 0.5117528691602719,
-      "pick_ev_per_1": -0.02301724978493558,
-      "pick_fair_odds": -104.81431161307935,
-      "pick_prob_edge": -0.012056654649251985,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.7579388809585107,
+      "pick_ev_per_1": 0.4469742272844295,
+      "pick_fair_odds": -313.11880402758936,
+      "pick_prob_edge": 0.23412935714898686,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.98157334,
       "pred_sigma": 12.3431015,
@@ -812,5 +812,5 @@
       "start_time": "2021-11-18T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:00.817675Z"
+  "generated_at": "2026-03-01T02:22:14.323628Z"
 }

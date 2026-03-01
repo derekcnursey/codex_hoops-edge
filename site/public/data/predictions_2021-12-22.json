@@ -1389,16 +1389,16 @@
     },
     {
       "away_team": "Missouri",
-      "edge_home_points": 2.5900299999999987,
+      "edge_home_points": 31.59003,
       "game_id": "2021_12_22_missouri_illinois",
       "home_team": "Illinois",
-      "market_spread_home": -14.5,
+      "market_spread_home": 14.5,
       "model_mu_home": 17.09003,
       "neutral_site": null,
-      "pick_cover_prob": 0.588291224456978,
-      "pick_ev_per_1": 0.12310142850877615,
-      "pick_fair_odds": -142.89013482431926,
-      "pick_prob_edge": 0.06448170064745418,
+      "pick_cover_prob": 0.9967529491709226,
+      "pick_ev_per_1": 0.9028919938717613,
+      "pick_fair_odds": -30697.17727375821,
+      "pick_prob_edge": 0.4729434253613988,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9999715,
@@ -1532,5 +1532,5 @@
       "start_time": "2021-12-23T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:01.381068Z"
+  "generated_at": "2026-03-01T02:22:14.614442Z"
 }

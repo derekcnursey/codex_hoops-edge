@@ -1137,17 +1137,17 @@
     },
     {
       "away_team": "North Dakota",
-      "edge_home_points": 7.706065,
+      "edge_home_points": -20.293935,
       "game_id": "2017_11_13_north_dakota_arkansas_pine_bluff",
       "home_team": "Arkansas-Pine Bluff",
-      "market_spread_home": 14.0,
+      "market_spread_home": -14.0,
       "model_mu_home": -6.293935,
       "neutral_site": null,
-      "pick_cover_prob": 0.7881006086361304,
-      "pick_ev_per_1": 0.5045557073962489,
-      "pick_fair_odds": -371.9220728118181,
-      "pick_prob_edge": 0.26429108482660657,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.9824152513988162,
+      "pick_ev_per_1": 0.8755200253977401,
+      "pick_fair_odds": -5586.74607001594,
+      "pick_prob_edge": 0.4586057275892924,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.30255875,
       "pred_sigma": 9.63441,
@@ -1298,5 +1298,5 @@
       "start_time": "2017-11-14T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:58.586219Z"
+  "generated_at": "2026-03-01T02:22:09.855649Z"
 }

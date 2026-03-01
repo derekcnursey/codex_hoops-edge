@@ -3,17 +3,17 @@
   "games": [
     {
       "away_team": "UTSA",
-      "edge_home_points": -8.8292207,
+      "edge_home_points": 6.1707792999999995,
       "game_id": "2017_11_18_utsa_bradley",
       "home_team": "Bradley",
-      "market_spread_home": -7.5,
+      "market_spread_home": 7.5,
       "model_mu_home": -1.3292207,
       "neutral_site": null,
-      "pick_cover_prob": 0.7692079019653373,
-      "pick_ev_per_1": 0.46848781284291663,
-      "pick_fair_odds": -333.290397944998,
-      "pick_prob_edge": 0.24539837815581345,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.6965703475894232,
+      "pick_ev_per_1": 0.32981611812526235,
+      "pick_fair_odds": -229.56568089359956,
+      "pick_prob_edge": 0.17276082377989932,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.28919715,
       "pred_sigma": 11.992301,
@@ -1442,5 +1442,5 @@
       "start_time": "2017-11-19T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:58.652615Z"
+  "generated_at": "2026-03-01T02:22:09.960693Z"
 }

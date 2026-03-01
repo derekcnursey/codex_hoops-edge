@@ -3,16 +3,16 @@
   "games": [
     {
       "away_team": "Fresno State",
-      "edge_home_points": 6.545858000000001,
+      "edge_home_points": 19.545858000000003,
       "game_id": "2021_11_25_fresno_state_santa_clara",
       "home_team": "Santa Clara",
-      "market_spread_home": -6.5,
+      "market_spread_home": 6.5,
       "model_mu_home": 13.045858,
       "neutral_site": null,
-      "pick_cover_prob": 0.7056710321776223,
-      "pick_ev_per_1": 0.3471901523390971,
-      "pick_fair_odds": -239.75588858908446,
-      "pick_prob_edge": 0.18186150836809845,
+      "pick_cover_prob": 0.9468195893503828,
+      "pick_ev_per_1": 0.8075646705780035,
+      "pick_fair_odds": -1780.3916475722026,
+      "pick_prob_edge": 0.42301006554085896,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9999293,
@@ -147,17 +147,17 @@
     },
     {
       "away_team": "VMI",
-      "edge_home_points": 1.3420924999999997,
+      "edge_home_points": -17.6579075,
       "game_id": "2021_11_25_vmi_central_arkansas",
       "home_team": "Central Arkansas",
-      "market_spread_home": 9.5,
+      "market_spread_home": -9.5,
       "model_mu_home": -8.1579075,
       "neutral_site": null,
-      "pick_cover_prob": 0.5427181619635456,
-      "pick_ev_per_1": 0.036098309203132506,
-      "pick_fair_odds": -118.68351568344602,
-      "pick_prob_edge": 0.018908638154021773,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.9209565869430781,
+      "pick_ev_per_1": 0.7581898478004219,
+      "pick_fair_odds": -1165.1275562707115,
+      "pick_prob_edge": 0.3971470631335543,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.2663107,
       "pred_sigma": 12.509717,
@@ -380,5 +380,5 @@
       "start_time": "2021-11-26T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:01.060637Z"
+  "generated_at": "2026-03-01T02:22:14.516936Z"
 }

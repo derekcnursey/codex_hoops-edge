@@ -183,16 +183,16 @@
     },
     {
       "away_team": "Northwestern",
-      "edge_home_points": 11.896531,
+      "edge_home_points": 1.8965310000000004,
       "game_id": "2025_11_21_northwestern_virginia",
       "home_team": "Virginia",
-      "market_spread_home": 5.0,
+      "market_spread_home": -5.0,
       "model_mu_home": 6.896531,
       "neutral_site": null,
-      "pick_cover_prob": 0.8408366684799389,
-      "pick_ev_per_1": 0.6052336398253378,
-      "pick_fair_odds": -528.2854162762727,
-      "pick_prob_edge": 0.31702714467041504,
+      "pick_cover_prob": 0.5631988251686898,
+      "pick_ev_per_1": 0.07519775714022592,
+      "pick_fair_odds": -128.93711318111576,
+      "pick_prob_edge": 0.03938930135916596,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.68796074,
@@ -1316,5 +1316,5 @@
       "start_time": "2025-11-22T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:02.204133Z"
+  "generated_at": "2026-03-01T02:22:17.717116Z"
 }

@@ -417,17 +417,17 @@
     },
     {
       "away_team": "Georgetown",
-      "edge_home_points": -1.1299552999999998,
+      "edge_home_points": 11.870044700000001,
       "game_id": "2019_11_21_georgetown_texas",
       "home_team": "Texas",
-      "market_spread_home": -6.5,
+      "market_spread_home": 6.5,
       "model_mu_home": 5.3700447,
       "neutral_site": null,
-      "pick_cover_prob": 0.5382038632102489,
-      "pick_ev_per_1": 0.02748010249229338,
-      "pick_fair_odds": -116.54576994767827,
-      "pick_prob_edge": 0.014394339400725098,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.8431575490496154,
+      "pick_ev_per_1": 0.6096644118219929,
+      "pick_fair_odds": -537.58248735627,
+      "pick_prob_edge": 0.31934802524009154,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.95744854,
       "pred_sigma": 11.781447,
@@ -830,5 +830,5 @@
       "start_time": "2019-11-22T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:59.422456Z"
+  "generated_at": "2026-03-01T02:22:12.568071Z"
 }

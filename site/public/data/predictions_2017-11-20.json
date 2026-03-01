@@ -3,17 +3,17 @@
   "games": [
     {
       "away_team": "Manhattan",
-      "edge_home_points": 5.181013999999999,
+      "edge_home_points": -9.818986,
       "game_id": "2017_11_20_manhattan_kansas_city",
       "home_team": "Kansas City",
-      "market_spread_home": 7.5,
+      "market_spread_home": -7.5,
       "model_mu_home": -2.318986,
       "neutral_site": null,
-      "pick_cover_prob": 0.6722633173998741,
-      "pick_ev_per_1": 0.28341178776339604,
-      "pick_fair_odds": -205.1230005949953,
-      "pick_prob_edge": 0.14845379359035027,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.8011059145651624,
+      "pick_ev_per_1": 0.5293840187153102,
+      "pick_fair_odds": -402.78015950736943,
+      "pick_prob_edge": 0.2772963907556386,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.1037778,
       "pred_sigma": 11.612158,
@@ -974,5 +974,5 @@
       "start_time": "2017-11-21T04:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:58.716446Z"
+  "generated_at": "2026-03-01T02:22:10.027116Z"
 }

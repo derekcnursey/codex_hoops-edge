@@ -543,16 +543,16 @@
     },
     {
       "away_team": "South Florida",
-      "edge_home_points": 1.2208290000000002,
+      "edge_home_points": 17.220829000000002,
       "game_id": "2019_12_18_south_florida_utah_state",
       "home_team": "Utah State",
-      "market_spread_home": -8.0,
+      "market_spread_home": 8.0,
       "model_mu_home": 9.220829,
       "neutral_site": null,
-      "pick_cover_prob": 0.5450392657685426,
-      "pick_ev_per_1": 0.040529507376308505,
-      "pick_fair_odds": -119.79918809680363,
-      "pick_prob_edge": 0.021229741959018722,
+      "pick_cover_prob": 0.9447446409273738,
+      "pick_ev_per_1": 0.8036034054068044,
+      "pick_fair_odds": -1709.7792083580985,
+      "pick_prob_edge": 0.4209351171178499,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.34757215,
@@ -1064,5 +1064,5 @@
       "start_time": "2019-12-19T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:59.769106Z"
+  "generated_at": "2026-03-01T02:22:12.996589Z"
 }

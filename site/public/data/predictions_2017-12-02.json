@@ -3,16 +3,16 @@
   "games": [
     {
       "away_team": "La Salle",
-      "edge_home_points": -2.8626210000000007,
+      "edge_home_points": -22.862621,
       "game_id": "2017_12_02_la_salle_holy_cross",
       "home_team": "Holy Cross",
-      "market_spread_home": 10.0,
+      "market_spread_home": -10.0,
       "model_mu_home": -12.862621,
       "neutral_site": null,
-      "pick_cover_prob": 0.6012496024098342,
-      "pick_ev_per_1": 0.14784015005513795,
-      "pick_fair_odds": -150.78344900555967,
-      "pick_prob_edge": 0.07744007860031032,
+      "pick_cover_prob": 0.9797799840987044,
+      "pick_ev_per_1": 0.870489060552072,
+      "pick_fair_odds": -4845.594528122619,
+      "pick_prob_edge": 0.45597046028918053,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.007489104,
@@ -2144,5 +2144,5 @@
       "start_time": "2017-12-03T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:58.925666Z"
+  "generated_at": "2026-03-01T02:22:10.299735Z"
 }

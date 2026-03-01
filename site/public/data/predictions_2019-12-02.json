@@ -39,17 +39,17 @@
     },
     {
       "away_team": "San Diego",
-      "edge_home_points": -4.9224125,
+      "edge_home_points": 1.0775875,
       "game_id": "2019_12_02_san_diego_uic",
       "home_team": "UIC",
-      "market_spread_home": -3.0,
+      "market_spread_home": 3.0,
       "model_mu_home": -1.9224125,
       "neutral_site": null,
-      "pick_cover_prob": 0.6743166670406346,
-      "pick_ev_per_1": 0.287331818895757,
-      "pick_fair_odds": -207.04672262880806,
-      "pick_prob_edge": 0.1505071432311108,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.5393989759348246,
+      "pick_ev_per_1": 0.029761681330119583,
+      "pick_fair_odds": -117.10763714205272,
+      "pick_prob_edge": 0.015589452125300718,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.19607246,
       "pred_sigma": 10.893561,
@@ -380,5 +380,5 @@
       "start_time": "2019-12-03T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:59.955933Z"
+  "generated_at": "2026-03-01T02:22:13.138438Z"
 }

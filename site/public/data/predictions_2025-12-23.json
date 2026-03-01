@@ -57,17 +57,17 @@
     },
     {
       "away_team": "Florida Atlantic",
-      "edge_home_points": 16.784765999999998,
+      "edge_home_points": -0.2152340000000006,
       "game_id": "2025_12_23_florida_atlantic_ucf",
       "home_team": "UCF",
-      "market_spread_home": 8.5,
+      "market_spread_home": -8.5,
       "model_mu_home": 8.284766,
       "neutral_site": null,
-      "pick_cover_prob": 0.9233586483890529,
-      "pick_ev_per_1": 0.7627756014700101,
-      "pick_fair_odds": -1204.7786592755817,
-      "pick_prob_edge": 0.39954912457952907,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.5073049838772963,
+      "pick_ev_per_1": -0.031508667143343494,
+      "pick_fair_odds": -102.96531673276638,
+      "pick_prob_edge": -0.016504539932227558,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.07465448,
       "pred_sigma": 11.753776,
@@ -218,5 +218,5 @@
       "start_time": "2025-12-24T00:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:02.385694Z"
+  "generated_at": "2026-03-01T02:22:17.921633Z"
 }

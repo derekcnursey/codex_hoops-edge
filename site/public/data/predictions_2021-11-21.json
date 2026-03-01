@@ -777,16 +777,16 @@
     },
     {
       "away_team": "Missouri",
-      "edge_home_points": 3.3780800000000006,
+      "edge_home_points": 17.37808,
       "game_id": "2021_11_21_missouri_smu",
       "home_team": "SMU",
-      "market_spread_home": -7.0,
+      "market_spread_home": 7.0,
       "model_mu_home": 10.37808,
       "neutral_site": null,
-      "pick_cover_prob": 0.6165704138804198,
-      "pick_ev_per_1": 0.17708897195352868,
-      "pick_fair_odds": -160.80407881934545,
-      "pick_prob_edge": 0.09276089007089594,
+      "pick_cover_prob": 0.9363992615666025,
+      "pick_ev_per_1": 0.7876713175362411,
+      "pick_fair_odds": -1472.3087885955858,
+      "pick_prob_edge": 0.41258973775707863,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.99219465,
@@ -849,16 +849,16 @@
     },
     {
       "away_team": "Michigan",
-      "edge_home_points": 12.627416,
+      "edge_home_points": 5.627416,
       "game_id": "2021_11_21_michigan_arizona",
       "home_team": "Arizona",
-      "market_spread_home": 3.5,
+      "market_spread_home": -3.5,
       "model_mu_home": 9.127416,
       "neutral_site": null,
-      "pick_cover_prob": 0.8405966780202544,
-      "pick_ev_per_1": 0.6047754762204857,
-      "pick_fair_odds": -527.3394980608144,
-      "pick_prob_edge": 0.31678715421073056,
+      "pick_cover_prob": 0.671578114532715,
+      "pick_ev_per_1": 0.28210367319881946,
+      "pick_fair_odds": -204.48640734681268,
+      "pick_prob_edge": 0.14776859072319115,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.89980245,
@@ -902,5 +902,5 @@
       "start_time": "2021-11-22T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:00.937411Z"
+  "generated_at": "2026-03-01T02:22:14.389560Z"
 }

@@ -75,17 +75,17 @@
     },
     {
       "away_team": "Jacksonville",
-      "edge_home_points": -3.1568103,
+      "edge_home_points": 16.8431897,
       "game_id": "2019_11_11_jacksonville_bowling_green",
       "home_team": "Bowling Green",
-      "market_spread_home": -10.0,
+      "market_spread_home": 10.0,
       "model_mu_home": 6.8431897,
       "neutral_site": null,
-      "pick_cover_prob": 0.6130725280058102,
-      "pick_ev_per_1": 0.17041118982927406,
-      "pick_fair_odds": -158.44636847471415,
-      "pick_prob_edge": 0.08926300419628641,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.937372496465359,
+      "pick_ev_per_1": 0.7895293114338672,
+      "pick_fair_odds": -1496.7425548854471,
+      "pick_prob_edge": 0.4135629726558352,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.5676798,
       "pred_sigma": 10.986471,
@@ -506,5 +506,5 @@
       "start_time": "2019-11-12T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:10:59.236494Z"
+  "generated_at": "2026-03-01T02:22:12.399573Z"
 }

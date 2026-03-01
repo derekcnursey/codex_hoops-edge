@@ -1245,17 +1245,17 @@
     },
     {
       "away_team": "Utah",
-      "edge_home_points": 20.298088,
+      "edge_home_points": -0.7019120000000001,
       "game_id": "2025_11_26_utah_ole_miss",
       "home_team": "Ole Miss",
-      "market_spread_home": 10.5,
+      "market_spread_home": -10.5,
       "model_mu_home": 9.798088,
       "neutral_site": null,
-      "pick_cover_prob": 0.9747424785258795,
-      "pick_ev_per_1": 0.8608720044584971,
-      "pick_fair_odds": -3859.2166674969453,
-      "pick_prob_edge": 0.45093295471635564,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.5269576197955774,
+      "pick_ev_per_1": 0.006010001427920519,
+      "pick_fair_odds": -111.39754953200085,
+      "pick_prob_edge": 0.0031480959860535895,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.9960181,
       "pred_sigma": 10.379592,
@@ -1298,5 +1298,5 @@
       "start_time": "2025-11-27T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:02.296358Z"
+  "generated_at": "2026-03-01T02:22:17.815443Z"
 }

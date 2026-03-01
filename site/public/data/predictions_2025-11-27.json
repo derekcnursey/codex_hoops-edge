@@ -111,16 +111,16 @@
     },
     {
       "away_team": "Saint Mary's",
-      "edge_home_points": -9.7221932,
+      "edge_home_points": -0.7221932000000004,
       "game_id": "2025_11_27_saint_mary_s_virginia_tech",
       "home_team": "Virginia Tech",
-      "market_spread_home": -4.5,
+      "market_spread_home": 4.5,
       "model_mu_home": -5.2221932,
       "neutral_site": null,
-      "pick_cover_prob": 0.7887941699972727,
-      "pick_ev_per_1": 0.5058797790857024,
-      "pick_fair_odds": -373.4717786848436,
-      "pick_prob_edge": 0.26498464618774886,
+      "pick_cover_prob": 0.523760132380864,
+      "pick_ev_per_1": -9.429272744138073e-05,
+      "pick_fair_odds": -109.97822063895994,
+      "pick_prob_edge": -4.9391428659784076e-05,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.5769711,
@@ -362,5 +362,5 @@
       "start_time": "2025-11-28T03:51:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:02.327164Z"
+  "generated_at": "2026-03-01T02:22:17.845162Z"
 }

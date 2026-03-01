@@ -177,25 +177,55 @@ def predict(
 
     # Attach lines if available
     if lines_df is not None and not lines_df.empty:
-        # Use first provider per game (alphabetical)
-        lines_dedup = lines_df.sort_values("provider").drop_duplicates(subset=["gameId"], keep="first")
+        # Fix flipped spread signs using cross-provider majority vote.
+        # ~1-2% of games have one provider with a flipped spread sign.
+        # When multiple providers exist, use the majority sign as truth.
+        lines_fixed = lines_df.copy()
+        lines_fixed["spread"] = pd.to_numeric(lines_fixed["spread"], errors="coerce")
+        lines_fixed["homeMoneyline"] = pd.to_numeric(
+            lines_fixed["homeMoneyline"], errors="coerce"
+        )
 
-        # Fix flipped spread signs: ~1-2% of games in the CBBD API have
-        # spread and moneyline signs that disagree (e.g. spread says home is
-        # a 23-pt underdog while moneyline says massive home favorite).
-        # When the moneyline is strong and clearly contradicts the spread
-        # sign, flip the spread to match.
-        _sp = pd.to_numeric(lines_dedup["spread"], errors="coerce")
-        _ml = pd.to_numeric(lines_dedup["homeMoneyline"], errors="coerce")
-        mask_fix = (
-            _sp.notna() & _ml.notna()
+        # Compute majority spread sign per game (positive count vs negative)
+        has_spread = lines_fixed["spread"].notna() & (lines_fixed["spread"] != 0)
+        spread_sign = np.sign(lines_fixed.loc[has_spread, "spread"])
+        majority_sign = (
+            spread_sign.groupby(lines_fixed.loc[has_spread, "gameId"])
+            .sum()  # net sign: positive if more providers say positive
+            .rename("_majority_sign")
+        )
+
+        # Pick first provider alphabetically
+        lines_dedup = (
+            lines_fixed.sort_values("provider")
+            .drop_duplicates(subset=["gameId"], keep="first")
+            .copy()
+        )
+
+        # Merge majority sign and flip when the selected provider disagrees
+        lines_dedup = lines_dedup.merge(majority_sign, on="gameId", how="left")
+        _sp = lines_dedup["spread"]
+        _maj = lines_dedup["_majority_sign"]
+        mask_majority_flip = (
+            _sp.notna() & _maj.notna() & (_maj != 0)
+            & (np.sign(_sp) != np.sign(_maj))
+        )
+        lines_dedup.loc[mask_majority_flip, "spread"] = -_sp[mask_majority_flip]
+
+        # Fallback: for single-provider games, use moneyline as cross-check
+        _sp2 = lines_dedup["spread"]
+        _ml = lines_dedup["homeMoneyline"]
+        mask_ml_fix = (
+            _sp2.notna() & _ml.notna()
+            & (~mask_majority_flip)  # not already fixed by majority
+            & _maj.isna()  # single provider (no majority available) or no spread
             & (
-                ((_sp > 3) & (_ml < -150))   # spread: home underdog, ML: strong home fav
-                | ((_sp < -3) & (_ml > 150))  # spread: home favorite, ML: strong home dog
+                ((_sp2 > 3) & (_ml < -150))
+                | ((_sp2 < -3) & (_ml > 150))
             )
         )
-        lines_dedup = lines_dedup.copy()
-        lines_dedup.loc[mask_fix, "spread"] = -_sp[mask_fix]
+        lines_dedup.loc[mask_ml_fix, "spread"] = -_sp2[mask_ml_fix]
+        lines_dedup = lines_dedup.drop(columns=["_majority_sign"])
 
         lines_dedup = lines_dedup.rename(columns={
             "spread": "book_spread",

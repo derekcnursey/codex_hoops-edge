@@ -273,17 +273,17 @@
     },
     {
       "away_team": "Gardner-Webb",
-      "edge_home_points": -8.4692935,
+      "edge_home_points": 6.5307065,
       "game_id": "2021_12_15_gardner_webb_north_carolina_central",
       "home_team": "North Carolina Central",
-      "market_spread_home": -7.5,
+      "market_spread_home": 7.5,
       "model_mu_home": -0.9692935,
       "neutral_site": null,
-      "pick_cover_prob": 0.7759717957439789,
-      "pick_ev_per_1": 0.4814007009657779,
-      "pick_fair_odds": -346.37236785471555,
-      "pick_prob_edge": 0.25216227193445506,
-      "pick_side": "AWAY",
+      "pick_cover_prob": 0.7207279008380099,
+      "pick_ev_per_1": 0.37593508341801884,
+      "pick_fair_odds": -258.07372200828263,
+      "pick_prob_edge": 0.19691837702848602,
+      "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.747217,
       "pred_sigma": 11.163501,
@@ -668,5 +668,5 @@
       "start_time": "2021-12-16T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:01.249367Z"
+  "generated_at": "2026-03-01T02:22:14.569962Z"
 }

@@ -903,17 +903,17 @@
     },
     {
       "away_team": "NC State",
-      "edge_home_points": 5.883434000000001,
+      "edge_home_points": -47.116566,
       "game_id": "2021_11_16_nc_state_central_connecticut",
       "home_team": "Central Connecticut",
-      "market_spread_home": 26.5,
+      "market_spread_home": -26.5,
       "model_mu_home": -20.616566,
       "neutral_site": null,
-      "pick_cover_prob": 0.6324780689957573,
-      "pick_ev_per_1": 0.20745813171917304,
-      "pick_fair_odds": -172.0926060840859,
-      "pick_prob_edge": 0.10866854518623348,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.9966380109400856,
+      "pick_ev_per_1": 0.9026725663401635,
+      "pick_fair_odds": -29644.296670182284,
+      "pick_prob_edge": 0.4728284871305618,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 4.546556e-06,
       "pred_sigma": 17.384813,
@@ -1316,5 +1316,5 @@
       "start_time": "2021-11-17T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:00.788384Z"
+  "generated_at": "2026-03-01T02:22:14.292179Z"
 }

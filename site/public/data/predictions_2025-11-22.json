@@ -327,17 +327,17 @@
     },
     {
       "away_team": "Northeastern",
-      "edge_home_points": 10.073223,
+      "edge_home_points": -4.9267769999999995,
       "game_id": "2025_11_22_northeastern_duquesne",
       "home_team": "Duquesne",
-      "market_spread_home": 7.5,
+      "market_spread_home": -7.5,
       "model_mu_home": 2.573223,
       "neutral_site": null,
-      "pick_cover_prob": 0.8469114368255017,
-      "pick_ev_per_1": 0.6168309248486851,
-      "pick_fair_odds": -553.2166605157489,
-      "pick_prob_edge": 0.3231019130159779,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.6916317304853725,
+      "pick_ev_per_1": 0.3203878491084384,
+      "pick_fair_odds": -224.2875804225911,
+      "pick_prob_edge": 0.16782220667584868,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.43076327,
       "pred_sigma": 9.844087,
@@ -812,5 +812,5 @@
       "start_time": "2025-11-23T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:02.233999Z"
+  "generated_at": "2026-03-01T02:22:17.749127Z"
 }

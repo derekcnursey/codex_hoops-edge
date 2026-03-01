@@ -777,16 +777,16 @@
     },
     {
       "away_team": "Drexel",
-      "edge_home_points": 20.3032875,
+      "edge_home_points": 9.3032875,
       "game_id": "2020_12_02_drexel_quinnipiac",
       "home_team": "Quinnipiac",
-      "market_spread_home": 5.5,
+      "market_spread_home": -5.5,
       "model_mu_home": 14.8032875,
       "neutral_site": null,
-      "pick_cover_prob": 0.9420893069494831,
-      "pick_ev_per_1": 0.7985341314490132,
-      "pick_fair_odds": -1626.7968095765596,
-      "pick_prob_edge": 0.4182797831399593,
+      "pick_cover_prob": 0.7644131204092277,
+      "pick_ev_per_1": 0.45933413896307107,
+      "pick_fair_odds": -324.4718558762935,
+      "pick_prob_edge": 0.24060359659970387,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.33863544,
@@ -1226,5 +1226,5 @@
       "start_time": "2020-12-03T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-01T02:11:00.522842Z"
+  "generated_at": "2026-03-01T02:22:13.687410Z"
 }
