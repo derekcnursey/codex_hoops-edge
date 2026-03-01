@@ -177,8 +177,26 @@ def predict(
 
     # Attach lines if available
     if lines_df is not None and not lines_df.empty:
-        # Use first provider per game
+        # Use first provider per game (alphabetical)
         lines_dedup = lines_df.sort_values("provider").drop_duplicates(subset=["gameId"], keep="first")
+
+        # Fix flipped spread signs: ~1-2% of games in the CBBD API have
+        # spread and moneyline signs that disagree (e.g. spread says home is
+        # a 23-pt underdog while moneyline says massive home favorite).
+        # When the moneyline is strong and clearly contradicts the spread
+        # sign, flip the spread to match.
+        _sp = pd.to_numeric(lines_dedup["spread"], errors="coerce")
+        _ml = pd.to_numeric(lines_dedup["homeMoneyline"], errors="coerce")
+        mask_fix = (
+            _sp.notna() & _ml.notna()
+            & (
+                ((_sp > 3) & (_ml < -150))   # spread: home underdog, ML: strong home fav
+                | ((_sp < -3) & (_ml > 150))  # spread: home favorite, ML: strong home dog
+            )
+        )
+        lines_dedup = lines_dedup.copy()
+        lines_dedup.loc[mask_fix, "spread"] = -_sp[mask_fix]
+
         lines_dedup = lines_dedup.rename(columns={
             "spread": "book_spread",
             "overUnder": "book_total",
