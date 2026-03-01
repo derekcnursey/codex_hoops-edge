@@ -275,7 +275,9 @@ export default function Performance({
 
     return {
       record: bets > 0 ? `${wins}-${losses}` : "\u2014",
-      bets: String(bets || "\u2014"),
+      winPct:
+        bets > 0 ? `${((wins / bets) * 100).toFixed(1)}%` : "\u2014",
+      winPctNum: bets > 0 ? (wins / bets) * 100 : 50,
       units:
         bets > 0
           ? `${units >= 0 ? "+" : ""}${units.toFixed(1)}u`
@@ -523,9 +525,9 @@ export default function Performance({
               color: "#0f172a"
             },
             {
-              label: "BETS",
-              value: stats.bets,
-              color: "#0f172a"
+              label: "WIN %",
+              value: stats.winPct,
+              color: stats.winPctNum >= 55 ? "#16a34a" : stats.winPctNum >= 50 ? "#0f172a" : "#dc2626"
             },
             {
               label: "UNITS",
