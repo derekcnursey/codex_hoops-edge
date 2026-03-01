@@ -235,6 +235,11 @@ export default function Performance({
     return `${seasonFilter - 1}\u2013${String(seasonFilter).slice(2)} Season`;
   }, [seasonFilter]);
 
+  const minEdge = useMemo(() => {
+    if (!games.length) return -10;
+    return Math.floor(Math.min(...games.map((g) => g.edge)));
+  }, [games]);
+
   const maxEdge = useMemo(() => {
     if (!games.length) return 30;
     return Math.ceil(Math.max(...games.map((g) => g.edge)));
@@ -478,7 +483,7 @@ export default function Performance({
             </span>
             <input
               type="range"
-              min={0}
+              min={minEdge}
               max={maxEdge}
               step={1}
               value={edgeMin}

@@ -235,6 +235,13 @@ export default function History({
     dir: "desc"
   });
 
+  const minEdge = useMemo(() => {
+    if (!games.length) return -10;
+    return Math.floor(
+      Math.min(...games.map((g) => g.pick_prob_edge * 100))
+    );
+  }, [games]);
+
   const maxEdge = useMemo(() => {
     if (!games.length) return 30;
     return Math.ceil(
@@ -565,7 +572,7 @@ export default function History({
             </span>
             <input
               type="range"
-              min={0}
+              min={minEdge}
               max={maxEdge}
               step={1}
               value={edgeMin}
