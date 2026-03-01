@@ -77,8 +77,9 @@ def _load_records(season: int) -> pd.DataFrame:
                 break
     games = games.rename(columns=rename)
 
-    # Only completed games
+    # Only completed games (drop missing scores and 0-0 placeholders for future games)
     games = games.dropna(subset=["homeScore", "awayScore"])
+    games = games[~((games["homeScore"] == 0) & (games["awayScore"] == 0))]
     games = games.drop_duplicates(subset=["gameId"], keep="last")
 
     has_conf = "homeConference" in games.columns and "awayConference" in games.columns
