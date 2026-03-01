@@ -1,153 +1,24 @@
 import { GetServerSideProps } from "next";
 import { CSSProperties, useMemo, useState } from "react";
 import Layout from "../components/Layout";
-import { PredictionRow, normalizeRows, displayTeam } from "../lib/data";
+import { PredictionRow, displayTeam } from "../lib/data";
 import {
   getLatestPredictionFile,
   getPredictionRowsByFilename,
-  listPredictionFiles,
-  listFinalScoreFiles,
-  readJsonFile,
-  todayET
 } from "../lib/server-data";
-
-type SeasonStats = {
-  wins: number;
-  losses: number;
-  pushes: number;
-  units: number;
-  roi: number;
-  last30Wins: number;
-  last30Losses: number;
-  streak: string;
-};
 
 type HomeProps = {
   date: string | null;
   rows: PredictionRow[];
-  stats: SeasonStats;
 };
-
-function pn(v: unknown): number | null {
-  if (typeof v === "number" && Number.isFinite(v)) return v;
-  if (typeof v === "string" && v.trim() !== "") {
-    const n = Number(v);
-    return Number.isNaN(n) ? null : n;
-  }
-  return null;
-}
-
-function computeSeasonStats(): SeasonStats {
-  const predFiles = listPredictionFiles();
-  const finalFiles = listFinalScoreFiles();
-  const finalByDate = new Map(finalFiles.map((f) => [f.date, f.filename]));
-
-  type Result = { date: string; outcome: "win" | "loss" | "push" };
-  const results: Result[] = [];
-
-  for (const pf of predFiles) {
-    const ff = finalByDate.get(pf.date);
-    if (!ff) continue;
-
-    const predRows = normalizeRows(readJsonFile(pf.filename));
-    const finalRows = normalizeRows(readJsonFile(ff));
-
-    const finalMap = new Map<string, PredictionRow>();
-    for (const fr of finalRows) {
-      const gid = typeof fr.game_id === "string" ? fr.game_id : "";
-      if (gid) finalMap.set(gid, fr);
-    }
-
-    for (const pred of predRows) {
-      const marketSpread = pn(pred.market_spread_home);
-      if (marketSpread === null) continue; // no book line = skip
-
-      const hasBk = pred.has_book;
-      if (hasBk === false || hasBk === "false" || hasBk === 0) continue;
-
-      const pickSide = String(pred.pick_side || "").toUpperCase();
-      if (!pickSide) continue;
-
-      const gid = typeof pred.game_id === "string" ? pred.game_id : "";
-      const fin = finalMap.get(gid);
-      if (!fin) continue;
-
-      const homeScore = pn(fin.home_score);
-      const awayScore = pn(fin.away_score);
-      if (homeScore === null || awayScore === null) continue;
-
-      const cover = homeScore - awayScore + marketSpread;
-      let outcome: "win" | "loss" | "push";
-      if (cover === 0) {
-        outcome = "push";
-      } else if (pickSide === "HOME") {
-        outcome = cover > 0 ? "win" : "loss";
-      } else {
-        outcome = cover < 0 ? "win" : "loss";
-      }
-
-      results.push({ date: pf.date, outcome });
-    }
-  }
-
-  // Sort by date for streak and last-30 calc
-  results.sort((a, b) => (a.date < b.date ? -1 : 1));
-
-  let wins = 0;
-  let losses = 0;
-  let pushes = 0;
-  let units = 0;
-  for (const r of results) {
-    if (r.outcome === "win") { wins++; units += 0.91; }
-    else if (r.outcome === "loss") { losses++; units -= 1.0; }
-    else { pushes++; }
-  }
-
-  const totalBets = wins + losses;
-  const roi = totalBets > 0 ? (units / totalBets) * 100 : 0;
-
-  // Last 30 days
-  const todayStr = todayET();
-  const todayDate = new Date(todayStr + "T12:00:00");
-  const thirtyDaysAgo = new Date(todayDate);
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const cutoff = thirtyDaysAgo.toISOString().slice(0, 10);
-
-  let last30Wins = 0;
-  let last30Losses = 0;
-  for (const r of results) {
-    if (r.date >= cutoff) {
-      if (r.outcome === "win") last30Wins++;
-      else if (r.outcome === "loss") last30Losses++;
-    }
-  }
-
-  // Streak (from most recent backwards)
-  let streak = "";
-  if (results.length > 0) {
-    const wlResults = results.filter((r) => r.outcome !== "push");
-    if (wlResults.length > 0) {
-      const lastOutcome = wlResults[wlResults.length - 1].outcome;
-      let count = 0;
-      for (let i = wlResults.length - 1; i >= 0; i--) {
-        if (wlResults[i].outcome === lastOutcome) count++;
-        else break;
-      }
-      streak = `${lastOutcome === "win" ? "W" : "L"}${count}`;
-    }
-  }
-
-  return { wins, losses, pushes, units, roi, last30Wins, last30Losses, streak };
-}
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   const latest = getLatestPredictionFile();
-  const stats = computeSeasonStats();
   if (!latest) {
-    return { props: { date: null, rows: [], stats } };
+    return { props: { date: null, rows: [] } };
   }
   const rows = getPredictionRowsByFilename(latest.filename);
-  return { props: { date: latest.date, rows, stats } };
+  return { props: { date: latest.date, rows } };
 };
 
 /* -- helpers -- */
@@ -276,7 +147,7 @@ const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
 
 /* -- component -- */
 
-export default function Home({ date, rows, stats }: HomeProps) {
+export default function Home({ date, rows }: HomeProps) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "edge10">("all");
   const [sort, setSort] = useState<SortState>({ key: "edge", dir: "desc" });
@@ -360,60 +231,6 @@ export default function Home({ date, rows, stats }: HomeProps) {
           <span style={{ ...mono, fontSize: 13, color: "#64748b" }}>
             {date ? formatDateDisplay(date) : ""} · {rows.length} games
           </span>
-        </div>
-
-        {/* -- Season Stats Strip -- */}
-        <div
-          style={{
-            display: "flex",
-            gap: 1,
-            borderRadius: 10,
-            overflow: "hidden",
-            background: "#e2e8f0",
-            marginBottom: 28
-          }}
-        >
-          {[
-            { label: "SEASON", value: `${stats.wins}-${stats.losses}`, color: "#0f172a" },
-            { label: "UNITS", value: `${stats.units >= 0 ? "+" : ""}${stats.units.toFixed(1)}u`, color: stats.units >= 0 ? "#16a34a" : "#dc2626" },
-            { label: "ROI", value: `${stats.roi >= 0 ? "+" : ""}${stats.roi.toFixed(1)}%`, color: stats.roi >= 0 ? "#16a34a" : "#dc2626" },
-            { label: "LAST 30D", value: `${stats.last30Wins}-${stats.last30Losses}`, color: "#0f172a" },
-            { label: "STREAK", value: stats.streak || "—", color: stats.streak.startsWith("W") ? "#16a34a" : "#dc2626" }
-          ].map((s) => (
-            <div
-              key={s.label}
-              style={{
-                flex: 1,
-                background: "#fff",
-                padding: "12px 8px",
-                textAlign: "center"
-              }}
-            >
-              <div
-                style={{
-                  ...mono,
-                  fontSize: 9,
-                  fontWeight: 500,
-                  letterSpacing: "0.1em",
-                  color: "#64748b",
-                  marginBottom: 4
-                }}
-              >
-                {s.label}
-              </div>
-              <div
-                style={{
-                  ...mono,
-                  fontSize: 16,
-                  fontWeight: 700,
-                  lineHeight: 1,
-                  color: s.color
-                }}
-              >
-                {s.value}
-              </div>
-            </div>
-          ))}
         </div>
 
         {/* -- All Games Table -- */}
