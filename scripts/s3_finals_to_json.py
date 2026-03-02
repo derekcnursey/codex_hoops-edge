@@ -2,10 +2,14 @@
 """Read game results from S3 fct_games and produce final_scores JSON.
 
 Usage:
-  s3_finals_to_json.py                        # match mode: process prediction files
-  s3_finals_to_json.py --backfill START END   # backfill mode: all games in date range
+  s3_finals_to_json.py --date YYYY-MM-DD      # daily mode: yesterday + recent (default)
+  s3_finals_to_json.py --all                   # match mode: process ALL prediction files
+  s3_finals_to_json.py --backfill START END    # backfill mode: all games in date range
 
-Match mode scans predictions/json/ for predictions_YYYY-MM-DD.json files.
+Daily mode (--date) fetches final scores for yesterday and any recent dates
+(last 7 days) that are missing. This is the mode used by the daily pipeline.
+
+Match mode (--all) scans predictions/json/ for predictions_YYYY-MM-DD.json files.
 For each date before today, loads actual game results from S3 and writes
 final_scores_{date}.json to both predictions/json/ and site/public/data/.
 
@@ -243,8 +247,53 @@ def write_final_scores(pred_date: str, payload: dict) -> None:
         print(f"Wrote {out_path}")
 
 
+def run_daily_mode(target_date: str) -> int:
+    """Daily mode: fetch final scores for recent dates only (last 7 days)."""
+    today_d = date.fromisoformat(target_date)
+    pred_dates = list_prediction_dates()
+
+    if not pred_dates:
+        print("No prediction files found in predictions/json/", file=sys.stderr)
+        return 1
+
+    # Only look at the last 7 days (covers yesterday + any recent gaps)
+    cutoff = (today_d - timedelta(days=7)).isoformat()
+    recent_dates = [d for d in pred_dates if cutoff <= d < target_date]
+    if not recent_dates:
+        print(f"No recent prediction dates to process (window: {cutoff} to {target_date}).")
+        return 0
+
+    print(f"Processing {len(recent_dates)} recent dates for final scores...")
+
+    for pred_date in recent_dates:
+        existing = config.PROJECT_ROOT / "site" / "public" / "data" / f"final_scores_{pred_date}.json"
+        if existing.exists():
+            continue
+
+        season = get_season_for_date(pred_date)
+        pred_games = load_prediction_games(pred_date)
+        if not pred_games:
+            print(f"  {pred_date}: no prediction games found, skipping")
+            continue
+
+        s3_scores = fetch_scores_for_date(pred_date, season)
+        if not s3_scores:
+            print(f"  {pred_date}: no S3 scores found for season {season}, skipping")
+            continue
+
+        payload = build_final_scores(pred_date, pred_games, s3_scores)
+        matched = len(payload["games"])
+        total = len(pred_games)
+        print(f"  {pred_date}: matched {matched}/{total} games")
+
+        if matched > 0:
+            write_final_scores(pred_date, payload)
+
+    return 0
+
+
 def run_match_mode() -> int:
-    """Original mode: match prediction files to S3 scores."""
+    """Full match mode: process ALL prediction files (use --all flag)."""
     today = date.today().isoformat()
     pred_dates = list_prediction_dates()
 
@@ -393,7 +442,14 @@ def main() -> int:
             print("  e.g.: s3_finals_to_json.py --backfill 2025-11-01 2026-02-25", file=sys.stderr)
             return 1
         return run_backfill(sys.argv[2], sys.argv[3])
-    return run_match_mode()
+    if len(sys.argv) >= 2 and sys.argv[1] == "--all":
+        return run_match_mode()
+    # Default: daily mode (--date DATE or today)
+    if len(sys.argv) >= 2 and sys.argv[1] == "--date":
+        target = sys.argv[2] if len(sys.argv) >= 3 else date.today().isoformat()
+    else:
+        target = date.today().isoformat()
+    return run_daily_mode(target)
 
 
 if __name__ == "__main__":

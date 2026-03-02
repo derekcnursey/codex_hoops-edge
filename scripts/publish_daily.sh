@@ -31,4 +31,4 @@ echo "=== build_rankings_json ==="
 poetry run python3 "$SCRIPT_DIR/build_rankings_json.py"
 
 echo "=== s3_finals_to_json ==="
-poetry run python3 "$SCRIPT_DIR/s3_finals_to_json.py"
+poetry run python3 "$SCRIPT_DIR/s3_finals_to_json.py" --date "${DATE_ARG:-$(date +%Y-%m-%d)}"

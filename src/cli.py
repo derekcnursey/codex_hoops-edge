@@ -470,7 +470,7 @@ def daily_run(season: int, game_date: str | None):
     if s3_finals.exists():
         click.echo("Fetching final scores...")
         subprocess.run(
-            [sys.executable, str(s3_finals)],
+            [sys.executable, str(s3_finals), "--date", game_date],
             check=True,
             cwd=config.PROJECT_ROOT,
         )
@@ -661,8 +661,15 @@ def _get_etl_root() -> Path:
 
 
 def _run(cmd: list[str], cwd: Path, label: str) -> None:
-    """Run a subprocess, abort on failure."""
-    result = subprocess.run(cmd, cwd=cwd)
+    """Run a subprocess, abort on failure.
+
+    Strips VIRTUAL_ENV from env when cwd is outside the project root so that
+    sibling repos (e.g. the ETL repo) use their own poetry virtualenv.
+    """
+    env = None
+    if not str(cwd).startswith(str(config.PROJECT_ROOT)):
+        env = {k: v for k, v in os.environ.items() if k != "VIRTUAL_ENV"}
+    result = subprocess.run(cmd, cwd=cwd, env=env)
     if result.returncode != 0:
         click.echo(f"FAILED: {label} (exit {result.returncode})", err=True)
         sys.exit(result.returncode)
@@ -764,11 +771,15 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
                 _run([sys.executable, str(csv_to_json), csv_arg, game_date],
                      cwd=config.PROJECT_ROOT, label="csv_to_json")
 
-        for script_name in ["build_rankings_json.py", "s3_finals_to_json.py"]:
-            script = script_dir / script_name
-            if script.exists():
-                _run([sys.executable, str(script)], cwd=config.PROJECT_ROOT,
-                     label=script_name)
+        rankings_script = script_dir / "build_rankings_json.py"
+        if rankings_script.exists():
+            _run([sys.executable, str(rankings_script)], cwd=config.PROJECT_ROOT,
+                 label="build_rankings_json")
+
+        finals_script = script_dir / "s3_finals_to_json.py"
+        if finals_script.exists():
+            _run([sys.executable, str(finals_script), "--date", game_date],
+                 cwd=config.PROJECT_ROOT, label="s3_finals_to_json")
         click.echo("  Publish pipeline complete.")
 
     # ── Step 6: Deploy ────────────────────────────────────────────
