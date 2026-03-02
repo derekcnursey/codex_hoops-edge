@@ -195,10 +195,16 @@ def predict(
             .rename("_majority_sign")
         )
 
-        # Pick first provider alphabetically
+        # Pick provider with most complete data (spread > total), then alphabetical
         lines_dedup = (
-            lines_fixed.sort_values("provider")
+            lines_fixed
+            .assign(
+                _has_spread=lines_fixed["spread"].notna().astype(int),
+                _has_total=lines_fixed["overUnder"].notna().astype(int),
+            )
+            .sort_values(["_has_spread", "_has_total", "provider"], ascending=[False, False, True])
             .drop_duplicates(subset=["gameId"], keep="first")
+            .drop(columns=["_has_spread", "_has_total"])
             .copy()
         )
 
