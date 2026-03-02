@@ -195,16 +195,22 @@ def predict(
             .rename("_majority_sign")
         )
 
-        # Pick provider with most complete data (spread > total), then alphabetical
+        # Pick preferred provider: Draft Kings > ESPN BET > Bovada,
+        # with completeness (has spread/total) as the top tiebreaker.
+        _provider_rank = {"Draft Kings": 0, "ESPN BET": 1, "Bovada": 2}
         lines_dedup = (
             lines_fixed
             .assign(
                 _has_spread=lines_fixed["spread"].notna().astype(int),
                 _has_total=lines_fixed["overUnder"].notna().astype(int),
+                _prov_rank=lines_fixed["provider"].map(_provider_rank).fillna(99),
             )
-            .sort_values(["_has_spread", "_has_total", "provider"], ascending=[False, False, True])
+            .sort_values(
+                ["_has_spread", "_has_total", "_prov_rank"],
+                ascending=[False, False, True],
+            )
             .drop_duplicates(subset=["gameId"], keep="first")
-            .drop(columns=["_has_spread", "_has_total"])
+            .drop(columns=["_has_spread", "_has_total", "_prov_rank"])
             .copy()
         )
 
