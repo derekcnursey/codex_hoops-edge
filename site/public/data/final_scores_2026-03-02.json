@@ -1,0 +1,132 @@
+{
+  "date": "2026-03-02",
+  "games": [
+    {
+      "away_score": 93,
+      "away_team": "IU Indianapolis",
+      "game_id": "2026_03_02_iu_indianapolis_cleveland_state",
+      "home_score": 101,
+      "home_team": "Cleveland State"
+    },
+    {
+      "away_score": 61,
+      "away_team": "South Carolina State",
+      "game_id": "2026_03_02_south_carolina_state_delaware_state",
+      "home_score": 59,
+      "home_team": "Delaware State"
+    },
+    {
+      "away_score": 84,
+      "away_team": "Norfolk State",
+      "game_id": "2026_03_02_norfolk_state_morgan_state",
+      "home_score": 90,
+      "home_team": "Morgan State"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Stephen F. Austin",
+      "game_id": "2026_03_02_stephen_f_austin_incarnate_word",
+      "home_score": 68,
+      "home_team": "Incarnate Word"
+    },
+    {
+      "away_score": 77,
+      "away_team": "North Carolina Central",
+      "game_id": "2026_03_02_north_carolina_central_maryland_eastern_shore",
+      "home_score": 73,
+      "home_team": "Maryland Eastern Shore"
+    },
+    {
+      "away_score": 70,
+      "away_team": "Coppin State",
+      "game_id": "2026_03_02_coppin_state_howard",
+      "home_score": 90,
+      "home_team": "Howard"
+    },
+    {
+      "away_score": 93,
+      "away_team": "Duke",
+      "game_id": "2026_03_02_duke_nc_state",
+      "home_score": 64,
+      "home_team": "NC State"
+    },
+    {
+      "away_score": 62,
+      "away_team": "Northwestern State",
+      "game_id": "2026_03_02_northwestern_state_ut_rio_grande_valley",
+      "home_score": 74,
+      "home_team": "UT Rio Grande Valley"
+    },
+    {
+      "away_score": 75,
+      "away_team": "McNeese",
+      "game_id": "2026_03_02_mcneese_nicholls",
+      "home_score": 65,
+      "home_team": "Nicholls"
+    },
+    {
+      "away_score": 82,
+      "away_team": "SE Louisiana",
+      "game_id": "2026_03_02_se_louisiana_new_orleans",
+      "home_score": 78,
+      "home_team": "New Orleans"
+    },
+    {
+      "away_score": 57,
+      "away_team": "Montana",
+      "game_id": "2026_03_02_montana_northern_colorado",
+      "home_score": 85,
+      "home_team": "Northern Colorado"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Montana State",
+      "game_id": "2026_03_02_montana_state_northern_arizona",
+      "home_score": 65,
+      "home_team": "Northern Arizona"
+    },
+    {
+      "away_score": 71,
+      "away_team": "East Texas A&M",
+      "game_id": "2026_03_02_east_texas_a_m_texas_a_m_corpus_christi",
+      "home_score": 84,
+      "home_team": "Texas A&M-Corpus Christi"
+    },
+    {
+      "away_score": 53,
+      "away_team": "Lamar",
+      "game_id": "2026_03_02_lamar_houston_christian",
+      "home_score": 75,
+      "home_team": "Houston Christian"
+    },
+    {
+      "away_score": 85,
+      "away_team": "Idaho",
+      "game_id": "2026_03_02_idaho_eastern_washington",
+      "home_score": 81,
+      "home_team": "Eastern Washington"
+    },
+    {
+      "away_score": 57,
+      "away_team": "Iowa State",
+      "game_id": "2026_03_02_iowa_state_arizona",
+      "home_score": 73,
+      "home_team": "Arizona"
+    },
+    {
+      "away_score": 65,
+      "away_team": "Idaho State",
+      "game_id": "2026_03_02_idaho_state_sacramento_state",
+      "home_score": 83,
+      "home_team": "Sacramento State"
+    },
+    {
+      "away_score": 60,
+      "away_team": "Weber State",
+      "game_id": "2026_03_02_weber_state_portland_state",
+      "home_score": 84,
+      "home_team": "Portland State"
+    }
+  ],
+  "generated_at": "2026-03-03T15:14:06.069687Z"
+}
