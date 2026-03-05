@@ -2,69 +2,187 @@
   "date": "2025-12-11",
   "games": [
     {
-      "away_score": 58,
-      "away_team": "UT Arlington",
-      "game_id": "2025_12_11_ut_arlington_ut_rio_grande_valley",
-      "home_score": 50,
-      "home_team": "UT Rio Grande Valley",
-      "neutral_site": 0
-    },
-    {
-      "away_score": 80,
-      "away_team": "North Dakota St.",
-      "game_id": "2025_12_11_north_dakota_st_cal_st_bakersfield",
-      "home_score": 69,
-      "home_team": "Cal St. Bakersfield",
-      "neutral_site": 0
-    },
-    {
-      "away_score": 63,
-      "away_team": "Saint Joseph's",
-      "game_id": "2025_12_11_saint_joseph_s_syracuse",
-      "home_score": 71,
-      "home_team": "Syracuse",
-      "neutral_site": 0
-    },
-    {
       "away_score": 85,
       "away_team": "Green Bay",
-      "game_id": "2025_12_11_green_bay_iu_indy",
+      "game_id": "2025_12_11_green_bay_iu_indianapolis",
       "home_score": 75,
-      "home_team": "IU Indy",
-      "neutral_site": 0
+      "home_team": "IU Indianapolis"
+    },
+    {
+      "away_score": 49,
+      "away_team": "Trinity Baptist",
+      "game_id": "2025_12_11_trinity_baptist_jacksonville",
+      "home_score": 122,
+      "home_team": "Jacksonville"
+    },
+    {
+      "away_score": 93,
+      "away_team": "Bloomfield",
+      "game_id": "2025_12_11_bloomfield_wagner",
+      "home_score": 95,
+      "home_team": "Wagner"
     },
     {
       "away_score": 74,
       "away_team": "Western Carolina",
       "game_id": "2025_12_11_western_carolina_virginia_tech",
       "home_score": 96,
-      "home_team": "Virginia Tech",
-      "neutral_site": 0
+      "home_team": "Virginia Tech"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Coastal Georgia",
+      "game_id": "2025_12_11_coastal_georgia_georgia_southern",
+      "home_score": 100,
+      "home_team": "Georgia Southern"
     },
     {
       "away_score": 67,
-      "away_team": "Appalachian St.",
-      "game_id": "2025_12_11_appalachian_st_east_carolina",
+      "away_team": "App State",
+      "game_id": "2025_12_11_app_state_east_carolina",
       "home_score": 54,
-      "home_team": "East Carolina",
-      "neutral_site": 0
+      "home_team": "East Carolina"
+    },
+    {
+      "away_score": 58,
+      "away_team": "UT Arlington",
+      "game_id": "2025_12_11_ut_arlington_ut_rio_grande_valley",
+      "home_score": 50,
+      "home_team": "UT Rio Grande Valley"
     },
     {
       "away_score": 77,
-      "away_team": "Alabama St.",
-      "game_id": "2025_12_11_alabama_st_missouri",
+      "away_team": "Alabama State",
+      "game_id": "2025_12_11_alabama_state_missouri",
       "home_score": 85,
-      "home_team": "Missouri",
-      "neutral_site": 0
+      "home_team": "Missouri"
     },
     {
       "away_score": 62,
       "away_team": "Iowa",
-      "game_id": "2025_12_11_iowa_iowa_st",
+      "game_id": "2025_12_11_iowa_iowa_state",
       "home_score": 66,
-      "home_team": "Iowa St.",
-      "neutral_site": 0
+      "home_team": "Iowa State"
+    },
+    {
+      "away_score": 56,
+      "away_team": "Saint John's (MN)",
+      "game_id": "2025_12_11_saint_john_s_mn_st_thomas_minnesota",
+      "home_score": 80,
+      "home_team": "St. Thomas-Minnesota"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Alaska Anchorage",
+      "game_id": "2025_12_11_alaska_anchorage_denver",
+      "home_score": 97,
+      "home_team": "Denver"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Saint Joseph's",
+      "game_id": "2025_12_11_saint_joseph_s_syracuse",
+      "home_score": 71,
+      "home_team": "Syracuse"
+    },
+    {
+      "away_score": 80,
+      "away_team": "North Dakota State",
+      "game_id": "2025_12_11_north_dakota_state_cal_state_bakersfield",
+      "home_score": 69,
+      "home_team": "Cal State Bakersfield"
+    },
+    {
+      "away_score": 85,
+      "away_team": "Green Bay",
+      "game_id": "2025_12_11_green_bay_iu_indianapolis",
+      "home_score": 75,
+      "home_team": "IU Indianapolis"
+    },
+    {
+      "away_score": 49,
+      "away_team": "Trinity Baptist",
+      "game_id": "2025_12_11_trinity_baptist_jacksonville",
+      "home_score": 122,
+      "home_team": "Jacksonville"
+    },
+    {
+      "away_score": 93,
+      "away_team": "Bloomfield",
+      "game_id": "2025_12_11_bloomfield_wagner",
+      "home_score": 95,
+      "home_team": "Wagner"
+    },
+    {
+      "away_score": 74,
+      "away_team": "Western Carolina",
+      "game_id": "2025_12_11_western_carolina_virginia_tech",
+      "home_score": 96,
+      "home_team": "Virginia Tech"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Coastal Georgia",
+      "game_id": "2025_12_11_coastal_georgia_georgia_southern",
+      "home_score": 100,
+      "home_team": "Georgia Southern"
+    },
+    {
+      "away_score": 67,
+      "away_team": "App State",
+      "game_id": "2025_12_11_app_state_east_carolina",
+      "home_score": 54,
+      "home_team": "East Carolina"
+    },
+    {
+      "away_score": 58,
+      "away_team": "UT Arlington",
+      "game_id": "2025_12_11_ut_arlington_ut_rio_grande_valley",
+      "home_score": 50,
+      "home_team": "UT Rio Grande Valley"
+    },
+    {
+      "away_score": 77,
+      "away_team": "Alabama State",
+      "game_id": "2025_12_11_alabama_state_missouri",
+      "home_score": 85,
+      "home_team": "Missouri"
+    },
+    {
+      "away_score": 62,
+      "away_team": "Iowa",
+      "game_id": "2025_12_11_iowa_iowa_state",
+      "home_score": 66,
+      "home_team": "Iowa State"
+    },
+    {
+      "away_score": 56,
+      "away_team": "Saint John's (MN)",
+      "game_id": "2025_12_11_saint_john_s_mn_st_thomas_minnesota",
+      "home_score": 80,
+      "home_team": "St. Thomas-Minnesota"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Alaska Anchorage",
+      "game_id": "2025_12_11_alaska_anchorage_denver",
+      "home_score": 97,
+      "home_team": "Denver"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Saint Joseph's",
+      "game_id": "2025_12_11_saint_joseph_s_syracuse",
+      "home_score": 71,
+      "home_team": "Syracuse"
+    },
+    {
+      "away_score": 80,
+      "away_team": "North Dakota State",
+      "game_id": "2025_12_11_north_dakota_state_cal_state_bakersfield",
+      "home_score": 69,
+      "home_team": "Cal State Bakersfield"
     }
   ],
-  "generated_at": "2026-03-05T18:20:24.789840Z"
+  "generated_at": "2026-02-27T20:02:22.327011Z"
 }

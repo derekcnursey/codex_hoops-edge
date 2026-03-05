@@ -2,61 +2,173 @@
   "date": "2025-12-15",
   "games": [
     {
+      "away_score": 51,
+      "away_team": "Bryan (TN)",
+      "game_id": "2025_12_15_bryan_tn_samford",
+      "home_score": 106,
+      "home_team": "Samford"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Rhodes",
+      "game_id": "2025_12_15_rhodes_stetson",
+      "home_score": 95,
+      "home_team": "Stetson"
+    },
+    {
       "away_score": 58,
       "away_team": "Niagara",
       "game_id": "2025_12_15_niagara_vcu",
       "home_score": 84,
-      "home_team": "VCU",
-      "neutral_site": 0
+      "home_team": "VCU"
     },
     {
       "away_score": 83,
       "away_team": "Wofford",
       "game_id": "2025_12_15_wofford_gardner_webb",
       "home_score": 57,
-      "home_team": "Gardner Webb",
-      "neutral_site": 0
+      "home_team": "Gardner-Webb"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Ecclesia",
+      "game_id": "2025_12_15_ecclesia_arkansas_pine_bluff",
+      "home_score": 114,
+      "home_team": "Arkansas-Pine Bluff"
     },
     {
       "away_score": 70,
       "away_team": "East Texas A&M",
-      "game_id": "2025_12_15_east_texas_a_m_southeastern_louisiana",
+      "game_id": "2025_12_15_east_texas_a_m_se_louisiana",
       "home_score": 69,
-      "home_team": "Southeastern Louisiana",
-      "neutral_site": 0
+      "home_team": "SE Louisiana"
     },
     {
-      "away_score": 72,
-      "away_team": "South Dakota St.",
-      "game_id": "2025_12_15_south_dakota_st_wyoming",
-      "home_score": 87,
-      "home_team": "Wyoming",
-      "neutral_site": 1
+      "away_score": 59,
+      "away_team": "Campbellsville",
+      "game_id": "2025_12_15_campbellsville_western_kentucky",
+      "home_score": 102,
+      "home_team": "Western Kentucky"
+    },
+    {
+      "away_score": 87,
+      "away_team": "Wyoming",
+      "game_id": "2025_12_15_wyoming_south_dakota_state",
+      "home_score": 72,
+      "home_team": "South Dakota State"
     },
     {
       "away_score": 60,
       "away_team": "North Alabama",
       "game_id": "2025_12_15_north_alabama_alabama_a_m",
       "home_score": 68,
-      "home_team": "Alabama A&M",
-      "neutral_site": 0
+      "home_team": "Alabama A&M"
+    },
+    {
+      "away_score": 78,
+      "away_team": "McNeese",
+      "game_id": "2025_12_15_mcneese_houston_christian",
+      "home_score": 68,
+      "home_team": "Houston Christian"
     },
     {
       "away_score": 65,
       "away_team": "Incarnate Word",
       "game_id": "2025_12_15_incarnate_word_tcu",
       "home_score": 69,
-      "home_team": "TCU",
-      "neutral_site": 0
+      "home_team": "TCU"
+    },
+    {
+      "away_score": 67,
+      "away_team": "Minnesota Crookston",
+      "game_id": "2025_12_15_minnesota_crookston_north_dakota_state",
+      "home_score": 101,
+      "home_team": "North Dakota State"
+    },
+    {
+      "away_score": 51,
+      "away_team": "Bryan (TN)",
+      "game_id": "2025_12_15_bryan_tn_samford",
+      "home_score": 106,
+      "home_team": "Samford"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Rhodes",
+      "game_id": "2025_12_15_rhodes_stetson",
+      "home_score": 95,
+      "home_team": "Stetson"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Niagara",
+      "game_id": "2025_12_15_niagara_vcu",
+      "home_score": 84,
+      "home_team": "VCU"
+    },
+    {
+      "away_score": 83,
+      "away_team": "Wofford",
+      "game_id": "2025_12_15_wofford_gardner_webb",
+      "home_score": 57,
+      "home_team": "Gardner-Webb"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Ecclesia",
+      "game_id": "2025_12_15_ecclesia_arkansas_pine_bluff",
+      "home_score": 114,
+      "home_team": "Arkansas-Pine Bluff"
+    },
+    {
+      "away_score": 70,
+      "away_team": "East Texas A&M",
+      "game_id": "2025_12_15_east_texas_a_m_se_louisiana",
+      "home_score": 69,
+      "home_team": "SE Louisiana"
+    },
+    {
+      "away_score": 59,
+      "away_team": "Campbellsville",
+      "game_id": "2025_12_15_campbellsville_western_kentucky",
+      "home_score": 102,
+      "home_team": "Western Kentucky"
+    },
+    {
+      "away_score": 87,
+      "away_team": "Wyoming",
+      "game_id": "2025_12_15_wyoming_south_dakota_state",
+      "home_score": 72,
+      "home_team": "South Dakota State"
+    },
+    {
+      "away_score": 60,
+      "away_team": "North Alabama",
+      "game_id": "2025_12_15_north_alabama_alabama_a_m",
+      "home_score": 68,
+      "home_team": "Alabama A&M"
     },
     {
       "away_score": 78,
-      "away_team": "McNeese St.",
-      "game_id": "2025_12_15_mcneese_st_houston_christian",
+      "away_team": "McNeese",
+      "game_id": "2025_12_15_mcneese_houston_christian",
       "home_score": 68,
-      "home_team": "Houston Christian",
-      "neutral_site": 0
+      "home_team": "Houston Christian"
+    },
+    {
+      "away_score": 65,
+      "away_team": "Incarnate Word",
+      "game_id": "2025_12_15_incarnate_word_tcu",
+      "home_score": 69,
+      "home_team": "TCU"
+    },
+    {
+      "away_score": 67,
+      "away_team": "Minnesota Crookston",
+      "game_id": "2025_12_15_minnesota_crookston_north_dakota_state",
+      "home_score": 101,
+      "home_team": "North Dakota State"
     }
   ],
-  "generated_at": "2026-03-05T18:20:24.802360Z"
+  "generated_at": "2026-02-27T20:02:22.423127Z"
 }
