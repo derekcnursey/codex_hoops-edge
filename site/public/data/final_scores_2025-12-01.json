@@ -2,243 +2,93 @@
   "date": "2025-12-01",
   "games": [
     {
-      "away_score": 48,
-      "away_team": "Louisiana Christian",
-      "game_id": "2025_12_01_louisiana_christian_southern",
-      "home_score": 101,
-      "home_team": "Southern"
-    },
-    {
-      "away_score": 58,
-      "away_team": "Central State (OH)",
-      "game_id": "2025_12_01_central_state_oh_toledo",
-      "home_score": 102,
-      "home_team": "Toledo"
-    },
-    {
-      "away_score": 56,
-      "away_team": "Temple",
-      "game_id": "2025_12_01_temple_villanova",
-      "home_score": 74,
-      "home_team": "Villanova"
-    },
-    {
-      "away_score": 93,
-      "away_team": "West Georgia",
-      "game_id": "2025_12_01_west_georgia_troy",
-      "home_score": 89,
-      "home_team": "Troy"
-    },
-    {
-      "away_score": 58,
-      "away_team": "Tarleton State",
-      "game_id": "2025_12_01_tarleton_state_cincinnati",
-      "home_score": 76,
-      "home_team": "Cincinnati"
-    },
-    {
-      "away_score": 74,
-      "away_team": "St. Francis (PA)",
-      "game_id": "2025_12_01_st_francis_pa_xavier",
-      "home_score": 96,
-      "home_team": "Xavier"
-    },
-    {
-      "away_score": 73,
-      "away_team": "North Alabama",
-      "game_id": "2025_12_01_north_alabama_jacksonville_state",
-      "home_score": 66,
-      "home_team": "Jacksonville State"
+      "away_score": 72,
+      "away_team": "Portland",
+      "game_id": "2025_12_01_portland_stanford",
+      "home_score": 94,
+      "home_team": "Stanford",
+      "neutral_site": 0
     },
     {
       "away_score": 89,
       "away_team": "Iona",
       "game_id": "2025_12_01_iona_delaware",
       "home_score": 66,
-      "home_team": "Delaware"
-    },
-    {
-      "away_score": 58,
-      "away_team": "Apprentice School",
-      "game_id": "2025_12_01_apprentice_school_hampton",
-      "home_score": 94,
-      "home_team": "Hampton"
-    },
-    {
-      "away_score": 67,
-      "away_team": "McNeese",
-      "game_id": "2025_12_01_mcneese_incarnate_word",
-      "home_score": 71,
-      "home_team": "Incarnate Word"
-    },
-    {
-      "away_score": 61,
-      "away_team": "UAB",
-      "game_id": "2025_12_01_uab_middle_tennessee",
-      "home_score": 76,
-      "home_team": "Middle Tennessee"
-    },
-    {
-      "away_score": 34,
-      "away_team": "Coe",
-      "game_id": "2025_12_01_coe_northern_iowa",
-      "home_score": 99,
-      "home_team": "Northern Iowa"
-    },
-    {
-      "away_score": 82,
-      "away_team": "Bowling Green",
-      "game_id": "2025_12_01_bowling_green_kansas_state",
-      "home_score": 66,
-      "home_team": "Kansas State"
-    },
-    {
-      "away_score": 59,
-      "away_team": "West Coast Baptist",
-      "game_id": "2025_12_01_west_coast_baptist_southern_utah",
-      "home_score": 124,
-      "home_team": "Southern Utah"
-    },
-    {
-      "away_score": 47,
-      "away_team": "New Mexico Highlands",
-      "game_id": "2025_12_01_new_mexico_highlands_new_mexico",
-      "home_score": 97,
-      "home_team": "New Mexico"
-    },
-    {
-      "away_score": 70,
-      "away_team": "California Baptist",
-      "game_id": "2025_12_01_california_baptist_colorado",
-      "home_score": 78,
-      "home_team": "Colorado"
-    },
-    {
-      "away_score": 72,
-      "away_team": "Portland",
-      "game_id": "2025_12_01_portland_stanford",
-      "home_score": 94,
-      "home_team": "Stanford"
-    },
-    {
-      "away_score": 48,
-      "away_team": "Louisiana Christian",
-      "game_id": "2025_12_01_louisiana_christian_southern",
-      "home_score": 101,
-      "home_team": "Southern"
-    },
-    {
-      "away_score": 58,
-      "away_team": "Central State (OH)",
-      "game_id": "2025_12_01_central_state_oh_toledo",
-      "home_score": 102,
-      "home_team": "Toledo"
-    },
-    {
-      "away_score": 56,
-      "away_team": "Temple",
-      "game_id": "2025_12_01_temple_villanova",
-      "home_score": 74,
-      "home_team": "Villanova"
+      "home_team": "Delaware",
+      "neutral_site": 0
     },
     {
       "away_score": 93,
       "away_team": "West Georgia",
       "game_id": "2025_12_01_west_georgia_troy",
       "home_score": 89,
-      "home_team": "Troy"
-    },
-    {
-      "away_score": 58,
-      "away_team": "Tarleton State",
-      "game_id": "2025_12_01_tarleton_state_cincinnati",
-      "home_score": 76,
-      "home_team": "Cincinnati"
-    },
-    {
-      "away_score": 74,
-      "away_team": "St. Francis (PA)",
-      "game_id": "2025_12_01_st_francis_pa_xavier",
-      "home_score": 96,
-      "home_team": "Xavier"
+      "home_team": "Troy",
+      "neutral_site": 0
     },
     {
       "away_score": 73,
       "away_team": "North Alabama",
-      "game_id": "2025_12_01_north_alabama_jacksonville_state",
+      "game_id": "2025_12_01_north_alabama_jacksonville_st",
       "home_score": 66,
-      "home_team": "Jacksonville State"
-    },
-    {
-      "away_score": 89,
-      "away_team": "Iona",
-      "game_id": "2025_12_01_iona_delaware",
-      "home_score": 66,
-      "home_team": "Delaware"
+      "home_team": "Jacksonville St.",
+      "neutral_site": 0
     },
     {
       "away_score": 58,
-      "away_team": "Apprentice School",
-      "game_id": "2025_12_01_apprentice_school_hampton",
-      "home_score": 94,
-      "home_team": "Hampton"
+      "away_team": "Tarleton St.",
+      "game_id": "2025_12_01_tarleton_st_cincinnati",
+      "home_score": 76,
+      "home_team": "Cincinnati",
+      "neutral_site": 0
     },
     {
       "away_score": 67,
-      "away_team": "McNeese",
-      "game_id": "2025_12_01_mcneese_incarnate_word",
+      "away_team": "McNeese St.",
+      "game_id": "2025_12_01_mcneese_st_incarnate_word",
       "home_score": 71,
-      "home_team": "Incarnate Word"
+      "home_team": "Incarnate Word",
+      "neutral_site": 0
+    },
+    {
+      "away_score": 82,
+      "away_team": "Bowling Green",
+      "game_id": "2025_12_01_bowling_green_kansas_st",
+      "home_score": 66,
+      "home_team": "Kansas St.",
+      "neutral_site": 0
+    },
+    {
+      "away_score": 70,
+      "away_team": "Cal Baptist",
+      "game_id": "2025_12_01_cal_baptist_colorado",
+      "home_score": 78,
+      "home_team": "Colorado",
+      "neutral_site": 0
     },
     {
       "away_score": 61,
       "away_team": "UAB",
       "game_id": "2025_12_01_uab_middle_tennessee",
       "home_score": 76,
-      "home_team": "Middle Tennessee"
+      "home_team": "Middle Tennessee",
+      "neutral_site": 0
     },
     {
-      "away_score": 34,
-      "away_team": "Coe",
-      "game_id": "2025_12_01_coe_northern_iowa",
-      "home_score": 99,
-      "home_team": "Northern Iowa"
+      "away_score": 56,
+      "away_team": "Temple",
+      "game_id": "2025_12_01_temple_villanova",
+      "home_score": 74,
+      "home_team": "Villanova",
+      "neutral_site": 0
     },
     {
-      "away_score": 82,
-      "away_team": "Bowling Green",
-      "game_id": "2025_12_01_bowling_green_kansas_state",
-      "home_score": 66,
-      "home_team": "Kansas State"
-    },
-    {
-      "away_score": 59,
-      "away_team": "West Coast Baptist",
-      "game_id": "2025_12_01_west_coast_baptist_southern_utah",
-      "home_score": 124,
-      "home_team": "Southern Utah"
-    },
-    {
-      "away_score": 47,
-      "away_team": "New Mexico Highlands",
-      "game_id": "2025_12_01_new_mexico_highlands_new_mexico",
-      "home_score": 97,
-      "home_team": "New Mexico"
-    },
-    {
-      "away_score": 70,
-      "away_team": "California Baptist",
-      "game_id": "2025_12_01_california_baptist_colorado",
-      "home_score": 78,
-      "home_team": "Colorado"
-    },
-    {
-      "away_score": 72,
-      "away_team": "Portland",
-      "game_id": "2025_12_01_portland_stanford",
-      "home_score": 94,
-      "home_team": "Stanford"
+      "away_score": 74,
+      "away_team": "Saint Francis",
+      "game_id": "2025_12_01_saint_francis_xavier",
+      "home_score": 96,
+      "home_team": "Xavier",
+      "neutral_site": 0
     }
   ],
-  "generated_at": "2026-02-27T20:02:22.083880Z"
+  "generated_at": "2026-03-05T18:20:24.754138Z"
 }
