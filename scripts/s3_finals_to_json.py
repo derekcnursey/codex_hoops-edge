@@ -80,6 +80,9 @@ def load_prediction_games(pred_date: str) -> list[dict]:
     """Load games from a predictions JSON file to get team names."""
     json_path = config.PREDICTIONS_DIR / "json" / f"predictions_{pred_date}.json"
     if not json_path.exists():
+        # Also try the non-prefixed filename (from walk-forward backfill)
+        json_path = config.PREDICTIONS_DIR / "json" / f"{pred_date}.json"
+    if not json_path.exists():
         return []
     with open(json_path) as f:
         data = json.load(f)
