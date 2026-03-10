@@ -1,0 +1,104 @@
+{
+  "date": "2026-03-09",
+  "games": [
+    {
+      "away_score": 77,
+      "away_team": "Alcorn State",
+      "game_id": "2026_03_09_alcorn_state_alabama_state",
+      "home_score": 65,
+      "home_team": "Alabama State"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Campbell",
+      "game_id": "2026_03_09_campbell_monmouth",
+      "home_score": 74,
+      "home_team": "Monmouth"
+    },
+    {
+      "away_score": 61,
+      "away_team": "New Orleans",
+      "game_id": "2026_03_09_new_orleans_texas_a_m_corpus_christi",
+      "home_score": 74,
+      "home_team": "Texas A&M-Corpus Christi"
+    },
+    {
+      "away_score": 90,
+      "away_team": "Northern Kentucky",
+      "game_id": "2026_03_09_northern_kentucky_wright_state",
+      "home_score": 103,
+      "home_team": "Wright State"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Furman",
+      "game_id": "2026_03_09_furman_east_tennessee_state",
+      "home_score": 61,
+      "home_team": "East Tennessee State"
+    },
+    {
+      "away_score": 61,
+      "away_team": "Georgia Southern",
+      "game_id": "2026_03_09_georgia_southern_troy",
+      "home_score": 77,
+      "home_team": "Troy"
+    },
+    {
+      "away_score": 89,
+      "away_team": "Northern Colorado",
+      "game_id": "2026_03_09_northern_colorado_montana",
+      "home_score": 95,
+      "home_team": "Montana"
+    },
+    {
+      "away_score": 65,
+      "away_team": "Towson",
+      "game_id": "2026_03_09_towson_hofstra",
+      "home_score": 68,
+      "home_team": "Hofstra"
+    },
+    {
+      "away_score": 68,
+      "away_team": "Nicholls",
+      "game_id": "2026_03_09_nicholls_ut_rio_grande_valley",
+      "home_score": 86,
+      "home_team": "UT Rio Grande Valley"
+    },
+    {
+      "away_score": 52,
+      "away_team": "Mississippi Valley State",
+      "game_id": "2026_03_09_mississippi_valley_state_grambling",
+      "home_score": 77,
+      "home_team": "Grambling"
+    },
+    {
+      "away_score": 56,
+      "away_team": "Oregon State",
+      "game_id": "2026_03_09_oregon_state_gonzaga",
+      "home_score": 65,
+      "home_team": "Gonzaga"
+    },
+    {
+      "away_score": 70,
+      "away_team": "Detroit Mercy",
+      "game_id": "2026_03_09_detroit_mercy_robert_morris",
+      "home_score": 64,
+      "home_team": "Robert Morris"
+    },
+    {
+      "away_score": 79,
+      "away_team": "Weber State",
+      "game_id": "2026_03_09_weber_state_eastern_washington",
+      "home_score": 84,
+      "home_team": "Eastern Washington"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Santa Clara",
+      "game_id": "2026_03_09_santa_clara_saint_mary_s",
+      "home_score": 71,
+      "home_team": "Saint Mary's"
+    }
+  ],
+  "generated_at": "2026-03-10T14:26:32.765557Z"
+}
