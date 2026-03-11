@@ -19,6 +19,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 # Allow running as standalone script
@@ -26,6 +27,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src import config, s3_reader
+from src.trainer import load_scaler, load_tree_regressor
 
 
 CURRENT_SEASON = 2026
@@ -37,6 +39,10 @@ PRIMARY_SOURCE_DESCRIPTION = (
 )
 PRIMARY_SOURCE_NOTE = (
     "Internal ratings source only. Torvik remains stronger on full-season pooled validation."
+)
+MODEL_INDEX_LABEL = "EDGE INDEX"
+MODEL_INDEX_DESCRIPTION = (
+    "Projected neutral-court spread vs an average D-I team from the current HGBR model."
 )
 
 
@@ -65,6 +71,107 @@ def _load_latest_ratings(season: int) -> tuple[pd.DataFrame, str]:
     idx = df.groupby("teamId")["rating_date"].idxmax()
     latest = df.loc[idx].copy()
     return latest, table_name
+
+
+def _compute_model_index(ratings: pd.DataFrame) -> pd.DataFrame:
+    """Score each team as a neutral-court matchup vs an average D-I team.
+
+    Uses the current production HGBR mean model with a symmetric home/away
+    construction to reduce slot bias:
+      1. team as home vs average away on a neutral floor
+      2. average home vs team as away on a neutral floor
+      index = (pred_home_team - pred_home_average) / 2
+    """
+    if ratings.empty:
+        return pd.DataFrame(columns=["teamId", "model_index"])
+
+    try:
+        model, feature_order, _ = load_tree_regressor()
+        scaler = load_scaler()
+    except Exception as exc:
+        print(f"WARNING: rankings model index unavailable; HGBR artifacts missing ({exc})")
+        return pd.DataFrame(columns=["teamId", "model_index"])
+
+    if len(feature_order) != len(scaler.mean_):
+        print("WARNING: rankings model index unavailable; feature contract mismatch")
+        return pd.DataFrame(columns=["teamId", "model_index"])
+
+    base = {name: float(scaler.mean_[i]) for i, name in enumerate(feature_order)}
+    avg_rest = float(
+        np.mean([base.get("home_rest_days", 5.0), base.get("away_rest_days", 5.0)])
+    )
+    base["neutral_site"] = 1.0
+    base["home_team_hca"] = 0.0
+    base["home_rest_days"] = avg_rest
+    base["away_rest_days"] = avg_rest
+    base["rest_advantage"] = 0.0
+
+    avg_eff = {
+        "adj_oe": float(ratings["adj_oe"].mean()),
+        "adj_de": float(ratings["adj_de"].mean()),
+        "adj_tempo": float(ratings["adj_tempo"].mean()),
+        "barthag": float(ratings["barthag"].mean()),
+    }
+    if "sos_oe" in ratings.columns:
+        avg_eff["sos_oe"] = float(ratings["sos_oe"].mean())
+    if "sos_de" in ratings.columns:
+        avg_eff["sos_de"] = float(ratings["sos_de"].mean())
+
+    def apply_home(vec: dict[str, float], row: pd.Series) -> None:
+        vec["home_team_adj_oe"] = float(row["adj_oe"])
+        vec["home_team_adj_de"] = float(row["adj_de"])
+        vec["home_team_adj_pace"] = float(row["adj_tempo"])
+        vec["home_team_BARTHAG"] = float(row["barthag"])
+        if "home_sos_oe" in vec and "sos_oe" in row.index and pd.notna(row["sos_oe"]):
+            vec["home_sos_oe"] = float(row["sos_oe"])
+        if "home_sos_de" in vec and "sos_de" in row.index and pd.notna(row["sos_de"]):
+            vec["home_sos_de"] = float(row["sos_de"])
+
+    def apply_away(vec: dict[str, float], row: pd.Series) -> None:
+        vec["away_team_adj_oe"] = float(row["adj_oe"])
+        vec["away_team_adj_de"] = float(row["adj_de"])
+        vec["away_team_adj_pace"] = float(row["adj_tempo"])
+        vec["away_team_BARTHAG"] = float(row["barthag"])
+        if "away_sos_oe" in vec and "sos_oe" in row.index and pd.notna(row["sos_oe"]):
+            vec["away_sos_oe"] = float(row["sos_oe"])
+        if "away_sos_de" in vec and "sos_de" in row.index and pd.notna(row["sos_de"]):
+            vec["away_sos_de"] = float(row["sos_de"])
+
+    def apply_avg_home(vec: dict[str, float]) -> None:
+        vec["home_team_adj_oe"] = avg_eff["adj_oe"]
+        vec["home_team_adj_de"] = avg_eff["adj_de"]
+        vec["home_team_adj_pace"] = avg_eff["adj_tempo"]
+        vec["home_team_BARTHAG"] = avg_eff["barthag"]
+        if "home_sos_oe" in vec and "sos_oe" in avg_eff:
+            vec["home_sos_oe"] = avg_eff["sos_oe"]
+        if "home_sos_de" in vec and "sos_de" in avg_eff:
+            vec["home_sos_de"] = avg_eff["sos_de"]
+
+    def apply_avg_away(vec: dict[str, float]) -> None:
+        vec["away_team_adj_oe"] = avg_eff["adj_oe"]
+        vec["away_team_adj_de"] = avg_eff["adj_de"]
+        vec["away_team_adj_pace"] = avg_eff["adj_tempo"]
+        vec["away_team_BARTHAG"] = avg_eff["barthag"]
+        if "away_sos_oe" in vec and "sos_oe" in avg_eff:
+            vec["away_sos_oe"] = avg_eff["sos_oe"]
+        if "away_sos_de" in vec and "sos_de" in avg_eff:
+            vec["away_sos_de"] = avg_eff["sos_de"]
+
+    rows: list[dict[str, float]] = []
+    for _, row in ratings.iterrows():
+        home_vec = dict(base)
+        away_vec = dict(base)
+        apply_home(home_vec, row)
+        apply_avg_away(home_vec)
+        apply_avg_home(away_vec)
+        apply_away(away_vec, row)
+
+        X = pd.DataFrame([home_vec, away_vec], columns=feature_order)
+        preds = model.predict(X.values.astype(np.float32))
+        model_index = float((preds[0] - preds[1]) / 2.0)
+        rows.append({"teamId": int(row["teamId"]), "model_index": model_index})
+
+    return pd.DataFrame(rows)
 
 
 def _load_records(season: int) -> pd.DataFrame:
@@ -192,6 +299,11 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
 
     print(f"  {len(ratings)} teams with ratings")
 
+    print("Computing model index...")
+    model_index = _compute_model_index(ratings)
+    if not model_index.empty:
+        print(f"  {len(model_index)} teams scored with HGBR")
+
     print("Loading game records...")
     records = _load_records(season)
     print(f"  {len(records)} teams with records")
@@ -203,6 +315,10 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
     # Merge ratings + records + team info
     df = ratings[["teamId", "rating_date", "adj_oe", "adj_de", "adj_tempo", "barthag"]].copy()
     df["adj_margin"] = df["adj_oe"] - df["adj_de"]
+    if not model_index.empty:
+        df = df.merge(model_index, on="teamId", how="left")
+    else:
+        df["model_index"] = pd.NA
 
     if not records.empty:
         df = df.merge(records, on="teamId", how="left")
@@ -224,8 +340,11 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
     df["team"] = df["team"].fillna(df["teamId"].astype(str))
     df["conference"] = df["conference"].fillna("")
 
-    # Sort by adj_margin descending
-    df = df.sort_values("adj_margin", ascending=False).reset_index(drop=True)
+    # Sort by model-driven neutral spread vs average team when available.
+    if df["model_index"].notna().any():
+        df = df.sort_values(["model_index", "adj_margin"], ascending=[False, False]).reset_index(drop=True)
+    else:
+        df = df.sort_values("adj_margin", ascending=False).reset_index(drop=True)
 
     # Determine as_of_date from the latest rating_date
     as_of = df["rating_date"].max()
@@ -238,7 +357,11 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
         adj_de = round(float(row["adj_de"]), 1)
         adj_margin = round(float(row["adj_margin"]), 1)
         adj_tempo = round(float(row["adj_tempo"]), 1)
-        edge_index = round(float(row["barthag"]), 4) if pd.notna(row["barthag"]) else None
+        model_index_value = (
+            round(float(row["model_index"]), 1)
+            if pd.notna(row["model_index"])
+            else None
+        )
 
         record = f"{row['W']}-{row['L']}"
         conf_record = f"{row['conf_W']}-{row['conf_L']}"
@@ -254,7 +377,7 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
             "adj_de": adj_de,
             "adj_margin": adj_margin,
             "adj_tempo": adj_tempo,
-            "edge_index": edge_index,
+            "model_index": model_index_value,
         })
 
     payload = {
@@ -266,6 +389,8 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
         "source_table": table_name,
         "source_description": PRIMARY_SOURCE_DESCRIPTION,
         "source_note": PRIMARY_SOURCE_NOTE,
+        "model_index_label": MODEL_INDEX_LABEL,
+        "model_index_description": MODEL_INDEX_DESCRIPTION,
         "teams": teams,
     }
     return payload
@@ -324,9 +449,10 @@ def main():
         print(
             f"  {t['rank']:>3}. {t['team']:<22} "
             f"{t['record']:>6}  "
+            f"Model: {t['model_index']:+.1f}  "
             f"Net: {t['adj_margin']:+.1f}  "
             f"O: {t['adj_oe']:.1f}  D: {t['adj_de']:.1f}  "
-            f"Edge: {t['edge_index']:.3f}"
+            f"Tempo: {t['adj_tempo']:.1f}"
         )
 
 

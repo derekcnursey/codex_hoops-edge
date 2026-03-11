@@ -18,7 +18,7 @@ type RankedTeam = {
   adj_de: number;
   adj_margin: number;
   adj_tempo: number;
-  edge_index: number | null;
+  model_index: number | null;
 };
 
 type RankingsData = {
@@ -29,6 +29,8 @@ type RankingsData = {
   source_table?: string;
   source_description?: string;
   source_note?: string;
+  model_index_label?: string;
+  model_index_description?: string;
   teams: RankedTeam[];
 };
 
@@ -74,7 +76,7 @@ type SortKey =
   | "adj_de"
   | "adj_margin"
   | "adj_tempo"
-  | "edge_index";
+  | "model_index";
 
 type SortState = { key: SortKey; dir: "asc" | "desc" };
 
@@ -98,8 +100,8 @@ function sortVal(t: RankedTeam, key: SortKey): string | number {
       return t.adj_margin;
     case "adj_tempo":
       return t.adj_tempo;
-    case "edge_index":
-      return t.edge_index ?? 0;
+    case "model_index":
+      return t.model_index ?? Number.NEGATIVE_INFINITY;
   }
 }
 
@@ -140,11 +142,11 @@ const columns: {
   { key: "team", label: "TEAM", align: "left", defaultDir: "asc" },
   { key: "conference", label: "CONF", align: "center", defaultDir: "asc" },
   { key: "record", label: "RECORD", align: "center", defaultDir: "desc" },
+  { key: "model_index", label: "EDGE INDEX", align: "center", defaultDir: "desc" },
   { key: "adj_oe", label: "ADJ O", align: "center", defaultDir: "desc" },
   { key: "adj_de", label: "ADJ D", align: "center", defaultDir: "asc" },
   { key: "adj_margin", label: "NET RATING", align: "center", defaultDir: "desc" },
   { key: "adj_tempo", label: "TEMPO", align: "center", defaultDir: "desc" },
-  { key: "edge_index", label: "EDGE INDEX", align: "center", defaultDir: "desc" },
 ];
 
 /* -- component -- */
@@ -157,7 +159,7 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [confFilter, setConfFilter] = useState("all");
-  const [sort, setSort] = useState<SortState>({ key: "rank", dir: "asc" });
+  const [sort, setSort] = useState<SortState>({ key: "model_index", dir: "desc" });
 
   const conferences = useMemo(() => {
     if (!data) return [];
@@ -243,7 +245,7 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
           </span>
         </div>
 
-        {(data.source_label || data.source_description || data.source_note) && (
+        {(data.source_label || data.source_description || data.source_note || data.model_index_description) && (
           <div
             style={{
               marginBottom: 16,
@@ -276,6 +278,11 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
             {data.source_note && (
               <div style={{ ...mono, fontSize: 12, color: "#64748b" }}>
                 {data.source_note}
+              </div>
+            )}
+            {data.model_index_description && (
+              <div style={{ ...mono, fontSize: 12, color: "#64748b", marginTop: 4 }}>
+                {data.model_index_label || "EDGE INDEX"}: {data.model_index_description}
               </div>
             )}
           </div>
@@ -568,13 +575,14 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
                           padding: "10px 14px",
                           textAlign: "center",
                           fontSize: 13,
-                          fontWeight: 600,
-                          color: "#0f172a",
+                          fontWeight: 700,
+                          color: netTextColor(t.model_index ?? 0),
+                          background: netColor(t.model_index ?? 0),
                           borderBottom: "1px solid #f1f5f9",
                         }}
                       >
-                        {t.edge_index !== null
-                          ? `${(t.edge_index * 100).toFixed(1)}%`
+                        {t.model_index !== null
+                          ? `${t.model_index > 0 ? "+" : ""}${t.model_index.toFixed(1)}`
                           : "\u2014"}
                       </td>
                     </tr>
