@@ -1,6 +1,9 @@
 {
   "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2020-02-08",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "LSU",
@@ -2502,7 +2505,7 @@
       "start_time": "2020-02-09T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:33:27.838334Z",
+  "generated_at": "2026-03-11T19:50:42.121550Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

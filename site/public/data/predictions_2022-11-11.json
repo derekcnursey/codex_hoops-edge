@@ -1,6 +1,9 @@
 {
   "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2022-11-11",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "Detroit Mercy",
@@ -1414,7 +1417,7 @@
       "start_time": "2022-11-12T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:33:28.538367Z",
+  "generated_at": "2026-03-11T19:50:42.972859Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,5 +1,9 @@
 {
+  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2025-12-27",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "Columbia College (SC)",
@@ -7,15 +11,15 @@
       "game_id": "2025_12_27_columbia_college_sc_unc_wilmington",
       "home_team": "UNC Wilmington",
       "market_spread_home": null,
-      "model_mu_home": 26.765396118164062,
+      "model_mu_home": 30.86908721923828,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
-      "pick_side": "AWAY",
-      "pick_spread_odds": -110,
-      "pred_home_win_prob": 0.9962050318717957,
-      "pred_sigma": 14.328031539916992,
+      "pick_side": null,
+      "pick_spread_odds": null,
+      "pred_home_win_prob": 0.9503856670452882,
+      "pred_sigma": 18.72437286376953,
       "start_time": "2025-12-27T17:00:00.000Z"
     },
     {
@@ -24,34 +28,38 @@
       "game_id": "2025_12_27_cleary_university_duquesne",
       "home_team": "Duquesne",
       "market_spread_home": null,
-      "model_mu_home": 42.7962760925293,
+      "model_mu_home": 40.24348449707031,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
-      "pick_side": "AWAY",
-      "pick_spread_odds": -110,
-      "pred_home_win_prob": 0.9992029070854187,
-      "pred_sigma": 17.542924880981445,
+      "pick_side": null,
+      "pick_spread_odds": null,
+      "pred_home_win_prob": 0.9989356965264313,
+      "pred_sigma": 13.10147476196289,
       "start_time": "2025-12-27T19:00:00.000Z"
     },
     {
       "away_team": "Cal State Northridge",
-      "edge_home_points": -1.5673627853393555,
+      "edge_home_points": -1.0734796524047852,
       "game_id": "2025_12_27_cal_state_northridge_stanford",
       "home_team": "Stanford",
       "market_spread_home": -16.5,
-      "model_mu_home": 14.932637214660645,
-      "pick_cover_prob": 0.5564513522584023,
-      "pick_ev_per_1": 0.0623162179478588,
-      "pick_fair_odds": -125.45441296950573,
-      "pick_prob_edge": 0.03264182844887842,
+      "model_mu_home": 15.426520347595215,
+      "pick_cover_prob": 0.5347662282144946,
+      "pick_ev_per_1": 0.020917344773126012,
+      "pick_fair_odds": -114.94570270815312,
+      "pick_prob_edge": 0.010956704404970763,
       "pick_side": "AWAY",
-      "pick_spread_odds": -110,
-      "pred_home_win_prob": 0.9711432456970215,
-      "pred_sigma": 11.039467811584473,
+      "pick_spread_odds": -110.0,
+      "pred_home_win_prob": 0.8950658536919939,
+      "pred_sigma": 12.302559852600098,
       "start_time": "2025-12-28T01:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T18:57:47.347203Z"
+  "generated_at": "2026-03-11T19:50:45.026092Z",
+  "mu_model": "HistGradientBoosting",
+  "sigma_mode": "raw",
+  "sigma_model": "CurrentMLP",
+  "source": "true_walkforward_historical"
 }

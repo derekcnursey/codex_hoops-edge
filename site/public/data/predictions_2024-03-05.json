@@ -1,6 +1,9 @@
 {
   "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2024-03-05",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "Holy Cross",
@@ -734,7 +737,7 @@
       "start_time": "2024-03-06T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:33:29.523750Z",
+  "generated_at": "2026-03-11T19:50:44.049015Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

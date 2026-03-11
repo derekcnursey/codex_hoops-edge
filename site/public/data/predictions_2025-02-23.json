@@ -1,6 +1,9 @@
 {
   "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2025-02-23",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "Army",
@@ -479,7 +482,7 @@
       "start_time": "2025-02-23T23:15:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:33:30.047857Z",
+  "generated_at": "2026-03-11T19:50:44.637186Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

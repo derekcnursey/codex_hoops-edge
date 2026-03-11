@@ -1,6 +1,9 @@
 {
   "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2020-01-02",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "UTEP",
@@ -1261,7 +1264,7 @@
       "start_time": "2020-01-03T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:33:27.682730Z",
+  "generated_at": "2026-03-11T19:50:41.959198Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

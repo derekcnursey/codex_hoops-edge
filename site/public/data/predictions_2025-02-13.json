@@ -1,6 +1,9 @@
 {
   "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2025-02-13",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "Monmouth",
@@ -1006,7 +1009,7 @@
       "start_time": "2025-02-14T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:33:30.004757Z",
+  "generated_at": "2026-03-11T19:50:44.593305Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

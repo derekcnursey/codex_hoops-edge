@@ -1,6 +1,9 @@
 {
   "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2025-02-26",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "Mercer",
@@ -921,7 +924,7 @@
       "start_time": "2025-02-27T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:33:30.057716Z",
+  "generated_at": "2026-03-11T19:50:44.649361Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

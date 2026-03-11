@@ -1,6 +1,9 @@
 {
   "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2025-03-14",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "St. Bonaventure",
@@ -649,7 +652,7 @@
       "start_time": "2025-03-15T03:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:33:30.117380Z",
+  "generated_at": "2026-03-11T19:50:44.715029Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

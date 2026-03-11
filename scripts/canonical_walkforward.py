@@ -120,6 +120,24 @@ def _default_output_dir() -> Path:
 
 
 def _folds(selected_holdout: int | None = None) -> list[dict]:
+    if selected_holdout is not None and selected_holdout not in HOLDOUT_SEASONS:
+        if selected_holdout < TRAIN_START:
+            raise ValueError(
+                f"holdout season {selected_holdout} is before TRAIN_START={TRAIN_START}"
+            )
+        if selected_holdout in EXCLUDE_SEASONS:
+            raise ValueError(
+                f"holdout season {selected_holdout} is excluded by config: {EXCLUDE_SEASONS}"
+            )
+        train_seasons = [
+            season for season in range(TRAIN_START, selected_holdout)
+            if season not in EXCLUDE_SEASONS
+        ]
+        return [{
+            "holdout_season": selected_holdout,
+            "train_seasons": train_seasons,
+        }]
+
     folds = []
     for holdout in HOLDOUT_SEASONS:
         if selected_holdout is not None and holdout != selected_holdout:

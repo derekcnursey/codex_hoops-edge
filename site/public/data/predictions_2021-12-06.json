@@ -1,6 +1,9 @@
 {
   "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2021-12-06",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "Millersville",
@@ -241,7 +244,7 @@
       "start_time": "2021-12-07T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:33:28.090669Z",
+  "generated_at": "2026-03-11T19:50:42.408628Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

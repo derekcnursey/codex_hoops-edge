@@ -42,6 +42,13 @@ def _parse_args() -> argparse.Namespace:
         help=f"Benchmark artifact directory (default: {DEFAULT_BENCHMARK_DIR}).",
     )
     parser.add_argument(
+        "--extra-benchmark-dir",
+        type=Path,
+        action="append",
+        default=[],
+        help="Additional benchmark directories to merge into the true walk-forward archive.",
+    )
+    parser.add_argument(
         "--site-data-dir",
         type=Path,
         default=config.SITE_DATA_DIR,
@@ -94,14 +101,21 @@ def _to_native(value):
     return value
 
 
-def _load_predictions(benchmark_dir: Path, model_name: str) -> pd.DataFrame:
-    pred_dir = benchmark_dir / "predictions" / model_name
+def _load_predictions(benchmark_dirs: list[Path], model_name: str) -> pd.DataFrame:
     frames = []
-    for path in sorted(pred_dir.glob("season_*.parquet")):
-        frames.append(pd.read_parquet(path))
+    for benchmark_dir in benchmark_dirs:
+        pred_dir = benchmark_dir / "predictions" / model_name
+        for path in sorted(pred_dir.glob("season_*.parquet")):
+            frames.append(pd.read_parquet(path))
     if not frames:
-        raise FileNotFoundError(f"No prediction parquet files found for {model_name} in {pred_dir}")
-    return pd.concat(frames, ignore_index=True)
+        raise FileNotFoundError(f"No prediction parquet files found for {model_name} in {benchmark_dirs}")
+    out = pd.concat(frames, ignore_index=True)
+    dedupe_cols = ["holdout_season", "gameId", "startDate", "homeTeam", "awayTeam"]
+    out = out.sort_values(dedupe_cols, kind="mergesort").drop_duplicates(
+        subset=dedupe_cols,
+        keep="last",
+    )
+    return out.reset_index(drop=True)
 
 
 def _apply_sigma_mode(df: pd.DataFrame, args: argparse.Namespace) -> pd.Series:
@@ -200,9 +214,10 @@ def _clear_historical_predictions(site_data_dir: Path, keep_current_season: bool
 def main() -> int:
     args = _parse_args()
     args.site_data_dir.mkdir(parents=True, exist_ok=True)
+    benchmark_dirs = [args.benchmark_dir, *args.extra_benchmark_dir]
 
-    mu_df = _load_predictions(args.benchmark_dir, MU_MODEL)
-    sigma_df = _load_predictions(args.benchmark_dir, SIGMA_MODEL)
+    mu_df = _load_predictions(benchmark_dirs, MU_MODEL)
+    sigma_df = _load_predictions(benchmark_dirs, SIGMA_MODEL)
 
     keys = ["holdout_season", "gameId", "startDate", "homeTeam", "awayTeam", "book_spread"]
     mu_cols = keys + ["pred_margin"]
@@ -233,6 +248,7 @@ def main() -> int:
             "generated_at": datetime.now(ZoneInfo("UTC")).isoformat().replace("+00:00", "Z"),
             "source": "true_walkforward_historical",
             "benchmark_dir": str(args.benchmark_dir),
+            "extra_benchmark_dirs": [str(p) for p in args.extra_benchmark_dir],
             "mu_model": MU_MODEL,
             "sigma_model": SIGMA_MODEL,
             "sigma_mode": args.sigma_mode,
@@ -244,6 +260,7 @@ def main() -> int:
 
     summary = {
         "benchmark_dir": str(args.benchmark_dir),
+        "extra_benchmark_dirs": [str(p) for p in args.extra_benchmark_dir],
         "mu_model": MU_MODEL,
         "sigma_model": SIGMA_MODEL,
         "sigma_mode": args.sigma_mode,

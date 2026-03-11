@@ -1,6 +1,9 @@
 {
   "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2019-01-13",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "Villanova",
@@ -292,7 +295,7 @@
       "start_time": "2019-01-14T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:33:26.720012Z",
+  "generated_at": "2026-03-11T19:50:41.379410Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

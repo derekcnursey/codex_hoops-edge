@@ -1,6 +1,9 @@
 {
   "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2023-01-31",
+  "extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+  ],
   "games": [
     {
       "away_team": "Mississippi State",
@@ -462,7 +465,7 @@
       "start_time": "2023-02-01T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:33:28.854462Z",
+  "generated_at": "2026-03-11T19:50:43.343297Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
