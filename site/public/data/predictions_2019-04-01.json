@@ -1,23 +1,28 @@
 {
+  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2019-04-01",
   "games": [
     {
       "away_team": "DePaul",
-      "edge_home_points": 3.890131950378418,
+      "edge_home_points": 2.4406373500823975,
       "game_id": "2019_04_01_depaul_south_florida",
       "home_team": "South Florida",
       "market_spread_home": -1.5,
-      "model_mu_home": 5.390131950378418,
-      "pick_cover_prob": 0.625798372483633,
-      "pick_ev_per_1": 0.19470598383239024,
-      "pick_fair_odds": -167.23560948602812,
-      "pick_prob_edge": 0.10198884867410918,
+      "model_mu_home": 3.9406373500823975,
+      "pick_cover_prob": 0.5977742133621209,
+      "pick_ev_per_1": 0.14120531641859435,
+      "pick_fair_odds": -148.61658133825532,
+      "pick_prob_edge": 0.07396468955259705,
       "pick_side": "HOME",
-      "pick_spread_odds": -110,
-      "pred_home_win_prob": 0.8247754573822021,
-      "pred_sigma": 12.128406524658203,
+      "pick_spread_odds": -110.0,
+      "pred_home_win_prob": 0.6553323865323057,
+      "pred_sigma": 9.857572555541992,
       "start_time": "2019-04-01T23:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T18:47:13.320557Z"
+  "generated_at": "2026-03-11T19:33:27.408264Z",
+  "mu_model": "HistGradientBoosting",
+  "sigma_mode": "raw",
+  "sigma_model": "CurrentMLP",
+  "source": "true_walkforward_historical"
 }

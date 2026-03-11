@@ -1,23 +1,28 @@
 {
+  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2024-04-04",
   "games": [
     {
       "away_team": "Indiana State",
-      "edge_home_points": 3.949641317129135,
+      "edge_home_points": 4.156815588474274,
       "game_id": "2024_04_04_indiana_state_seton_hall",
       "home_team": "Seton Hall",
       "market_spread_home": 3.5,
-      "model_mu_home": 0.44964131712913513,
-      "pick_cover_prob": 0.6409644936782566,
-      "pick_ev_per_1": 0.22365948793121715,
-      "pick_fair_odds": -178.52398506343476,
-      "pick_prob_edge": 0.11715496986873275,
+      "model_mu_home": 0.6568155884742737,
+      "pick_cover_prob": 0.6417954089584819,
+      "pick_ev_per_1": 0.22524578073891988,
+      "pick_fair_odds": -179.17006789119958,
+      "pick_prob_edge": 0.11798588514895803,
       "pick_side": "HOME",
-      "pick_spread_odds": -110,
-      "pred_home_win_prob": 0.567319929599762,
-      "pred_sigma": 10.939682006835938,
+      "pick_spread_odds": -110.0,
+      "pred_home_win_prob": 0.5228862322289135,
+      "pred_sigma": 11.443023681640625,
       "start_time": "2024-04-04T23:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T18:53:46.284105Z"
+  "generated_at": "2026-03-11T19:33:29.609253Z",
+  "mu_model": "HistGradientBoosting",
+  "sigma_mode": "raw",
+  "sigma_model": "CurrentMLP",
+  "source": "true_walkforward_historical"
 }

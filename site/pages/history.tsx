@@ -3,7 +3,12 @@ import Link from "next/link";
 import { CSSProperties, useMemo, useState } from "react";
 import Layout from "../components/Layout";
 import { normalizeRows, displayTeam } from "../lib/data";
-import { listFinalScoreFiles, readJsonFile, todayET } from "../lib/server-data";
+import {
+  listFinalScoreFiles,
+  listWalkforwardPredictionFiles,
+  readJsonFile,
+  todayET,
+} from "../lib/server-data";
 
 /* -- types -- */
 
@@ -50,8 +55,12 @@ export const getServerSideProps: GetServerSideProps<HistoryProps> = async (
     typeof context.query.date === "string" ? context.query.date : null;
 
   const finalFiles = listFinalScoreFiles();
+  const predDates = new Set(listWalkforwardPredictionFiles().map((f) => f.date));
   const today = todayET();
-  const availableDates = finalFiles.map((f) => f.date).filter((d) => d < today).sort();
+  const availableDates = finalFiles
+    .map((f) => f.date)
+    .filter((d) => d < today && predDates.has(d))
+    .sort();
 
   if (!availableDates.length) {
     return {

@@ -1,23 +1,28 @@
 {
+  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2022-04-04",
   "games": [
     {
       "away_team": "North Carolina",
-      "edge_home_points": 0.9467062950134277,
+      "edge_home_points": 2.167133331298828,
       "game_id": "2022_04_04_north_carolina_kansas",
       "home_team": "Kansas",
       "market_spread_home": -4.5,
-      "model_mu_home": 5.446706295013428,
-      "pick_cover_prob": 0.5365618942420618,
-      "pick_ev_per_1": 0.024345434462117954,
-      "pick_fair_odds": -115.77854465906121,
-      "pick_prob_edge": 0.012752370432537963,
+      "model_mu_home": 6.667133331298828,
+      "pick_cover_prob": 0.5807578526575531,
+      "pick_ev_per_1": 0.10871953689169223,
+      "pick_fair_odds": -138.52563639866494,
+      "pick_prob_edge": 0.05694832884802925,
       "pick_side": "HOME",
-      "pick_spread_odds": -110,
-      "pred_home_win_prob": 0.6442532539367676,
-      "pred_sigma": 10.3154296875,
+      "pick_spread_odds": -110.0,
+      "pred_home_win_prob": 0.7346986189073619,
+      "pred_sigma": 10.631925582885742,
       "start_time": "2022-04-05T01:20:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T18:51:15.844867Z"
+  "generated_at": "2026-03-11T19:33:28.515818Z",
+  "mu_model": "HistGradientBoosting",
+  "sigma_mode": "raw",
+  "sigma_model": "CurrentMLP",
+  "source": "true_walkforward_historical"
 }

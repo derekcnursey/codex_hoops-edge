@@ -6,6 +6,11 @@ const PREDICTIONS_RE = /^predictions_(\d{4}-\d{2}-\d{2})\.json$/;
 const RESULTS_RE = /^results_(\d{4}-\d{2}-\d{2})\.json$/;
 const FINAL_SCORES_RE = /^final_scores_(\d{4}-\d{2}-\d{2})\.json$/;
 const RANKINGS_RE = /^rankings_(\d{4})\.json$/;
+const TRUE_WALKFORWARD_MANIFEST = "true_walkforward_manifest.json";
+
+type TrueWalkforwardManifest = {
+  holdout_seasons?: number[];
+};
 
 /** Today's date in US Eastern Time as YYYY-MM-DD. */
 export function todayET(): string {
@@ -124,4 +129,28 @@ export function getPredictionRowsByFilename(filename: string): PredictionRow[] {
 export function getResultRowsByDate(date: string): PredictionRow[] {
   const filename = `results_${date}.json`;
   return normalizeRows(readJsonFile(filename));
+}
+
+function seasonFromDate(date: string): number {
+  const year = Number(date.slice(0, 4));
+  const month = Number(date.slice(5, 7));
+  return month >= 11 ? year + 1 : year;
+}
+
+export function readTrueWalkforwardManifest(): TrueWalkforwardManifest | null {
+  const payload = readJsonFile(TRUE_WALKFORWARD_MANIFEST);
+  if (!payload || typeof payload !== "object") {
+    return null;
+  }
+  return payload as TrueWalkforwardManifest;
+}
+
+export function listWalkforwardPredictionFiles(): DataFile[] {
+  const manifest = readTrueWalkforwardManifest();
+  const seasons = new Set(manifest?.holdout_seasons ?? []);
+  const files = listPredictionFiles();
+  if (!seasons.size) {
+    return files;
+  }
+  return files.filter((f) => seasons.has(seasonFromDate(f.date)));
 }

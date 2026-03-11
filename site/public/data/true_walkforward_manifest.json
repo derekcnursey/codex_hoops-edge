@@ -1,0 +1,18 @@
+{
+  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "mu_model": "HistGradientBoosting",
+  "sigma_model": "CurrentMLP",
+  "sigma_mode": "raw",
+  "dates_written": 863,
+  "rows_written": 36557,
+  "historical_files_deleted": 990,
+  "keep_current_season": true,
+  "holdout_seasons": [
+    2019,
+    2020,
+    2022,
+    2023,
+    2024,
+    2025
+  ]
+}

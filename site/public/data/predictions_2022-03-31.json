@@ -1,23 +1,28 @@
 {
+  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2022-03-31",
   "games": [
     {
       "away_team": "Xavier",
-      "edge_home_points": -3.1518629789352417,
+      "edge_home_points": -5.212816655635834,
       "game_id": "2022_03_31_xavier_texas_a_m",
       "home_team": "Texas A&M",
       "market_spread_home": -4.5,
-      "model_mu_home": 1.3481370210647583,
-      "pick_cover_prob": 0.6050010380950308,
-      "pick_ev_per_1": 0.15500198181778602,
-      "pick_fair_odds": -153.16522230268163,
-      "pick_prob_edge": 0.08119151428550697,
+      "model_mu_home": -0.7128166556358337,
+      "pick_cover_prob": 0.6721708444159414,
+      "pick_ev_per_1": 0.2832352484304337,
+      "pick_fair_odds": -205.036932489548,
+      "pick_prob_edge": 0.1483613206064176,
       "pick_side": "AWAY",
-      "pick_spread_odds": -110,
-      "pred_home_win_prob": 0.427457720041275,
-      "pred_sigma": 11.835168838500977,
+      "pick_spread_odds": -110.0,
+      "pred_home_win_prob": 0.4756892177588101,
+      "pred_sigma": 11.690145492553711,
       "start_time": "2022-03-31T23:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T18:51:15.731510Z"
+  "generated_at": "2026-03-11T19:33:28.508172Z",
+  "mu_model": "HistGradientBoosting",
+  "sigma_mode": "raw",
+  "sigma_model": "CurrentMLP",
+  "source": "true_walkforward_historical"
 }

@@ -1,23 +1,28 @@
 {
+  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2019-04-08",
   "games": [
     {
       "away_team": "Texas Tech",
-      "edge_home_points": 3.4149460792541504,
+      "edge_home_points": 4.321690082550049,
       "game_id": "2019_04_08_texas_tech_virginia",
       "home_team": "Virginia",
       "market_spread_home": -1.5,
-      "model_mu_home": 4.91494607925415,
-      "pick_cover_prob": 0.6354629436465558,
-      "pick_ev_per_1": 0.2131565287797882,
-      "pick_fair_odds": -174.320534105161,
-      "pick_prob_edge": 0.11165341983703192,
+      "model_mu_home": 5.821690082550049,
+      "pick_cover_prob": 0.6399220798025973,
+      "pick_ev_per_1": 0.22166942507768572,
+      "pick_fair_odds": -177.71766717930882,
+      "pick_prob_edge": 0.11611255599307346,
       "pick_side": "HOME",
-      "pick_spread_odds": -110,
-      "pred_home_win_prob": 0.48502951860427856,
-      "pred_sigma": 9.859601020812988,
+      "pick_spread_odds": -110.0,
+      "pred_home_win_prob": 0.6853081292594589,
+      "pred_sigma": 12.063318252563477,
       "start_time": "2019-04-09T01:20:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T18:47:13.506994Z"
+  "generated_at": "2026-03-11T19:33:27.432876Z",
+  "mu_model": "HistGradientBoosting",
+  "sigma_mode": "raw",
+  "sigma_model": "CurrentMLP",
+  "source": "true_walkforward_historical"
 }

@@ -1,23 +1,28 @@
 {
+  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
   "date": "2023-04-03",
   "games": [
     {
       "away_team": "San Diego State",
-      "edge_home_points": -0.689239501953125,
+      "edge_home_points": -0.5577774047851562,
       "game_id": "2023_04_03_san_diego_state_uconn",
       "home_team": "UConn",
       "market_spread_home": -7.5,
-      "model_mu_home": 6.810760498046875,
-      "pick_cover_prob": 0.5234435574501898,
-      "pick_ev_per_1": -0.0006986630496377266,
-      "pick_fair_odds": -109.8387327741307,
-      "pick_prob_edge": -0.00036596635933405786,
+      "model_mu_home": 6.942222595214844,
+      "pick_cover_prob": 0.5203187734178611,
+      "pick_ev_per_1": -0.006664159838628725,
+      "pick_fair_odds": -108.47178179668944,
+      "pick_prob_edge": -0.003490750391662689,
       "pick_side": "AWAY",
-      "pick_spread_odds": -110,
-      "pred_home_win_prob": 0.7418228983879089,
-      "pred_sigma": 11.722129821777344,
+      "pick_spread_odds": -110.0,
+      "pred_home_win_prob": 0.7370185064172396,
+      "pred_sigma": 10.946760177612305,
       "start_time": "2023-04-04T01:20:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T18:52:37.293360Z"
+  "generated_at": "2026-03-11T19:33:29.057610Z",
+  "mu_model": "HistGradientBoosting",
+  "sigma_mode": "raw",
+  "sigma_model": "CurrentMLP",
+  "source": "true_walkforward_historical"
 }
