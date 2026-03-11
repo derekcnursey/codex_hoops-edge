@@ -110,7 +110,7 @@ function pickSpread(row: PredictionRow): number | null {
 
 /* -- sort -- */
 
-type SortKey = "matchup" | "book" | "model" | "sigma" | "diff" | "edge";
+type SortKey = "matchup" | "time" | "book" | "model" | "sigma" | "diff" | "edge";
 
 type SortState = { key: SortKey; dir: "asc" | "desc" };
 
@@ -118,6 +118,12 @@ function sortVal(row: PredictionRow, key: SortKey): string | number {
   switch (key) {
     case "matchup":
       return `${displayTeam(str(row.away_team))} @ ${displayTeam(str(row.home_team))}`;
+    case "time": {
+      const raw = row.start_time ?? row.startDate;
+      if (typeof raw !== "string" || !raw) return Number.POSITIVE_INFINITY;
+      const ms = new Date(raw).getTime();
+      return Number.isNaN(ms) ? Number.POSITIVE_INFINITY : ms;
+    }
     case "book":
       return bookSpread(row) ?? -Infinity;
     case "model":
@@ -135,6 +141,7 @@ function sortVal(row: PredictionRow, key: SortKey): string | number {
 
 const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
   { key: "matchup", label: "MATCHUP", align: "left" },
+  { key: "time", label: "TIME", align: "center" },
   { key: "book", label: "HOME SPREAD", align: "center" },
   { key: "model", label: "MODEL", align: "center" },
   { key: "sigma", label: "SIGMA", align: "center" },
@@ -411,11 +418,20 @@ export default function Home({ date, rows }: HomeProps) {
                             <span style={{ fontWeight: str(row.pick_side).toUpperCase() === "HOME" ? 700 : 400 }}>
                               {displayTeam(str(row.home_team))}
                             </span>
-                            {formatGameTime(row) && (
-                              <span style={{ ...mono, marginLeft: 6, fontSize: 11, color: "#94a3b8" }}>
-                                {formatGameTime(row)}
-                              </span>
-                            )}
+                          </td>
+
+                          <td
+                            style={{
+                              ...mono,
+                              padding: "10px 14px",
+                              textAlign: "center",
+                              fontSize: 12,
+                              color: "#64748b",
+                              borderBottom: "1px solid #f1f5f9",
+                              whiteSpace: "nowrap"
+                            }}
+                          >
+                            {formatGameTime(row) ?? "—"}
                           </td>
 
                           {/* HOME SPREAD */}

@@ -10,6 +10,7 @@ import { listFinalScoreFiles, readJsonFile, todayET } from "../lib/server-data";
 type HistoryGame = {
   away_team: string;
   home_team: string;
+  start_time: string | null;
   away_score: number | null;
   home_score: number | null;
   pick_side: string;
@@ -30,6 +31,7 @@ type HistoryProps = {
 
 type SortKey =
   | "matchup"
+  | "time"
   | "score"
   | "book"
   | "model"
@@ -86,6 +88,11 @@ export const getServerSideProps: GetServerSideProps<HistoryProps> = async (
 
     const away_team = s(pred.away_team);
     const home_team = s(pred.home_team);
+    const start_time = typeof pred.start_time === "string"
+      ? pred.start_time
+      : typeof pred.startDate === "string"
+        ? pred.startDate
+        : null;
     const pick_side = s(pred.pick_side).toUpperCase();
     const pick_team = pick_side === "HOME" ? home_team : away_team;
 
@@ -118,6 +125,7 @@ export const getServerSideProps: GetServerSideProps<HistoryProps> = async (
     return {
       away_team,
       home_team,
+      start_time,
       away_score,
       home_score,
       pick_side,
@@ -175,6 +183,17 @@ function fmtDate(d: string): string {
   return `${months[Number(mo) - 1]} ${Number(dy)}, ${yr}`;
 }
 
+function fmtTime(raw: string | null): string | null {
+  if (!raw) return null;
+  const dt = new Date(raw);
+  if (Number.isNaN(dt.getTime())) return null;
+  return dt.toLocaleTimeString("en-US", {
+    timeZone: "America/New_York",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
 /* sort helpers */
 
 function atsOrd(r: "win" | "loss" | "push" | null): number {
@@ -188,6 +207,11 @@ function sortVal(g: HistoryGame, key: SortKey): string | number {
   switch (key) {
     case "matchup":
       return `${g.away_team} @ ${g.home_team}`;
+    case "time": {
+      if (!g.start_time) return Number.POSITIVE_INFINITY;
+      const ms = new Date(g.start_time).getTime();
+      return Number.isNaN(ms) ? Number.POSITIVE_INFINITY : ms;
+    }
     case "score":
       return g.home_score !== null && g.away_score !== null
         ? g.home_score - g.away_score
@@ -211,6 +235,7 @@ function sortVal(g: HistoryGame, key: SortKey): string | number {
 
 const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
   { key: "matchup", label: "MATCHUP", align: "left" },
+  { key: "time", label: "TIME", align: "center" },
   { key: "score", label: "SCORE", align: "center" },
   { key: "book", label: "BOOK LINE", align: "center" },
   { key: "model", label: "MODEL", align: "center" },
@@ -748,6 +773,21 @@ export default function History({
                           <span style={{ fontWeight: g.pick_side === "HOME" ? 700 : 400 }}>
                             {displayTeam(g.home_team)}
                           </span>
+                        </td>
+
+                        <td
+                          style={{
+                            ...mono,
+                            padding: "10px 14px",
+                            textAlign: "center",
+                            fontSize: 12,
+                            color: "#64748b",
+                            borderBottom: bd,
+                            whiteSpace: "nowrap",
+                            opacity: dimmed ? 0.4 : 1
+                          }}
+                        >
+                          {fmtTime(g.start_time) ?? "—"}
                         </td>
 
                         {/* SCORE */}
