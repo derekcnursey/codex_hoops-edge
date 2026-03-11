@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 
 from src import config
-from src.features import load_lines
+from src.features import load_research_lines
 from src.infer import (
     american_profit_per_1,
     american_to_breakeven,
@@ -175,7 +175,7 @@ def main() -> int:
     changed = 0
     for season in sorted(files_by_season):
         print(f"\n  Season {season}: loading lines from S3...")
-        raw_lines = load_lines(season)
+        raw_lines = load_research_lines(season)
         if raw_lines.empty:
             print(f"  Season {season}: no lines in S3, skipping")
             continue

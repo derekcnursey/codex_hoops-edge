@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Train production model: Torvik efficiencies, a0.85_p10 adjusted, 53 features, seasons 2015-2025."""
+"""Train production model: Torvik efficiencies, a0.85_p10 adjusted, 53 features."""
 
 from __future__ import annotations
 
@@ -14,10 +14,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src import config
 from src.dataset import load_multi_season_features
 from src.features import get_feature_matrix, get_targets
-from src.trainer import fit_scaler, impute_column_means, save_checkpoint, train_classifier, train_regressor
+from src.trainer import (
+    fit_scaler,
+    impute_column_means,
+    save_checkpoint,
+    save_tree_regressor,
+    train_classifier,
+    train_hist_gradient_boosting_regressor,
+    train_regressor,
+)
 
 ADJ_SUFFIX = f"adj_a{config.ADJUST_ALPHA}_p{config.ADJUST_PRIOR}"
-SEASONS = list(range(2015, 2026))
+SEASONS = [season for season in range(2015, 2026) if season not in config.EXCLUDE_SEASONS]
 VAL_FRAC = 0.15  # best-loss checkpointing
 
 # Load best hparams from session 12
@@ -68,6 +76,11 @@ regressor = train_regressor(X_scaled, y_spread, hparams=reg_hp_full, val_frac=VA
 save_checkpoint(regressor, "regressor", hparams=reg_hp,
                 feature_order=config.FEATURE_ORDER)
 
+# Train production HistGradientBoosting regressor for mu on raw imputed features
+print("\nTraining HistGradientBoostingRegressor (mu)...")
+tree_regressor = train_hist_gradient_boosting_regressor(X, y_spread)
+tree_path = save_tree_regressor(tree_regressor, feature_order=config.FEATURE_ORDER)
+
 # Train classifier with best-loss checkpointing
 print("\nTraining MLPClassifier (BCE)...")
 cls_hp_full = {**cls_hp, "epochs": 150}
@@ -79,4 +92,5 @@ print("\n=== Production training complete ===")
 print(f"  Efficiency source: {config.EFFICIENCY_SOURCE}")
 print(f"  Scaler: {config.ARTIFACTS_DIR / 'scaler.pkl'}")
 print(f"  Regressor: {config.CHECKPOINTS_DIR / 'regressor.pt'}")
+print(f"  Tree regressor: {tree_path}")
 print(f"  Classifier: {config.CHECKPOINTS_DIR / 'classifier.pt'}")

@@ -40,6 +40,11 @@ def _parse_seasons(seasons_str: str) -> list[int]:
     return [int(s.strip()) for s in seasons_str.split(",")]
 
 
+def _exclude_training_seasons(seasons: list[int]) -> list[int]:
+    """Remove globally excluded seasons from training/tuning inputs."""
+    return [season for season in seasons if season not in config.EXCLUDE_SEASONS]
+
+
 # ── 1. build-features ──────────────────────────────────────────────
 
 
@@ -146,17 +151,23 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
         fit_scaler,
         impute_column_means,
         save_checkpoint,
+        save_tree_regressor,
+        train_hist_gradient_boosting_regressor,
         train_classifier,
         train_regressor,
     )
 
-    season_list = _parse_seasons(seasons)
+    requested_seasons = _parse_seasons(seasons)
+    season_list = _exclude_training_seasons(requested_seasons)
+    excluded = sorted(set(requested_seasons) - set(season_list))
     variant = " (no-garbage)" if no_garbage else ""
     if efficiency_source == "torvik":
         variant += " (torvik)"
     if adj_suffix:
         variant += f" ({adj_suffix})"
     click.echo(f"Loading features{variant} for seasons: {season_list}")
+    if excluded:
+        click.echo(f"  Excluding seasons per config: {excluded}")
     if min_date:
         click.echo(f"  Training date filter: games on or after MM-DD={min_date}")
 
@@ -202,6 +213,12 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
     regressor = train_regressor(X_scaled, y_spread, hparams=reg_hp)
     save_checkpoint(regressor, "regressor", hparams=reg_hp, subdir=ckpt_subdir)
 
+    # Train production mu regressor on raw imputed features.
+    click.echo("Training HistGradientBoostingRegressor (mu)...")
+    tree_regressor = train_hist_gradient_boosting_regressor(X, y_spread)
+    tree_path = save_tree_regressor(tree_regressor, feature_order=config.FEATURE_ORDER)
+    click.echo(f"  Tree regressor: {tree_path}")
+
     # Train classifier
     click.echo("Training MLPClassifier (BCE)...")
     cls_hp = {"epochs": cls_epochs}
@@ -233,13 +250,17 @@ def tune(seasons: str, trials: int, min_date: str | None,
     from .trainer import fit_scaler, impute_column_means
     from .tuner import tune_classifier, tune_regressor
 
-    season_list = _parse_seasons(seasons)
+    requested_seasons = _parse_seasons(seasons)
+    season_list = _exclude_training_seasons(requested_seasons)
+    excluded = sorted(set(requested_seasons) - set(season_list))
     variant = " (no-garbage)" if no_garbage else ""
     if efficiency_source == "torvik":
         variant += " (torvik)"
     if adj_suffix:
         variant += f" ({adj_suffix})"
     click.echo(f"Loading features{variant} for seasons: {season_list}")
+    if excluded:
+        click.echo(f"  Excluding seasons per config: {excluded}")
     if min_date:
         click.echo(f"  Tuning date filter: games on or after MM-DD={min_date}")
 
@@ -618,11 +639,15 @@ def _run(cmd: list[str], cwd: Path, label: str) -> None:
 @cli.command("daily-update")
 @click.option("--season", required=True, type=int, help="Season year (e.g. 2026)")
 @click.option("--date", "game_date", default=None, help="Date override (YYYY-MM-DD)")
-@click.option("--skip-etl", is_flag=True, help="Skip ETL ingest + transforms (steps 1-3)")
+@click.option("--skip-etl", is_flag=True, help="Skip ETL ingest (step 1)")
+@click.option("--skip-transforms", is_flag=True, help="Skip silver/gold transforms (steps 2-3)")
 @click.option("--skip-predict", is_flag=True, help="Skip predictions + publish (steps 4-5)")
 @click.option("--skip-deploy", is_flag=True, help="Skip git commit/push (step 6)")
+@click.option("--no-lineups", is_flag=True,
+              help="Exclude lineups + substitutions from ETL ingest")
 def daily_update(season: int, game_date: str | None, skip_etl: bool,
-                 skip_predict: bool, skip_deploy: bool):
+                 skip_transforms: bool, skip_predict: bool, skip_deploy: bool,
+                 no_lineups: bool):
     """Full end-to-end daily pipeline: ETL → silver → gold → predict → publish → deploy."""
     from .infer import predict, save_predictions
 
@@ -632,39 +657,43 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
     etl_root = _get_etl_root()
     click.echo(f"=== Daily update for {game_date} (season {season}) ===")
 
-    # ── Steps 1-3: ETL ingest + silver + gold ──────────────────────
+    # ── Step 1: ETL ingest ─────────────────────────────────────────
     if not skip_etl:
-        # Single incremental ingest: season tables + PBP fanout (7-day window)
-        click.echo("\n[1/6] ETL incremental ingest...")
+        endpoints = "games,games_teams,lines,ratings_adjusted,plays_game"
+        if not no_lineups:
+            endpoints += ",lineups_game,substitutions_game"
+        click.echo(f"\n[1/6] ETL incremental ingest...")
+        if no_lineups:
+            click.echo("  (skipping lineups + substitutions)")
         _run(
             ["poetry", "run", "python", "-m", "cbbd_etl", "incremental",
              "--season-start", str(season), "--season-end", str(season),
-             "--only-endpoints",
-             "games,games_teams,lines,ratings_adjusted,"
-             "lineups_game,plays_game,substitutions_game"],
+             "--only-endpoints", endpoints],
             cwd=etl_root,
             label="ETL incremental ingest",
         )
 
-        # Step 2: Silver — fct_games/fct_lines/fct_ratings_adjusted built during ingest.
-        # PBP pipeline: fct_plays → enriched → flat (both variants).
+    # ── Steps 2-3: Silver + Gold transforms ────────────────────────
+    if not skip_transforms:
+        # Step 2: Silver — PBP pipeline: enriched → flat (both variants).
+        # Incremental: only processes new dates (no --purge).
         click.echo("\n[2/6] Silver transforms (PBP enriched + flat tables)...")
         _run(
             ["poetry", "run", "python", "scripts/build_pbp_plays_enriched.py",
-             "--season", str(season), "--purge"],
+             "--season", str(season)],
             cwd=etl_root,
             label="build_pbp_plays_enriched",
         )
         _run(
             ["poetry", "run", "python", "scripts/build_pbp_game_teams_flat.py",
-             "--season", str(season), "--purge"],
+             "--season", str(season)],
             cwd=etl_root,
             label="build_pbp_game_teams_flat",
         )
         _run(
             ["poetry", "run", "python", "scripts/build_pbp_game_teams_flat.py",
              "--season", str(season), "--exclude-garbage-time",
-             "--output-table", "fct_pbp_game_teams_flat_garbage_removed", "--purge"],
+             "--output-table", "fct_pbp_game_teams_flat_garbage_removed"],
             cwd=etl_root,
             label="build_pbp_game_teams_flat (no garbage)",
         )

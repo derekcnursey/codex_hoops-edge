@@ -14,7 +14,8 @@ import torch
 
 from . import config
 from .architecture import MLPClassifier, MLPRegressor, MLPRegressorSplit
-from .trainer import load_scaler
+from .sigma_calibration import apply_sigma_transform
+from .trainer import load_scaler, load_tree_regressor
 
 
 # ── Betting math helpers ──────────────────────────────────────────────
@@ -109,6 +110,37 @@ def load_classifier(path: Path | None = None) -> tuple[MLPClassifier, dict, list
     return model, hp, feature_order
 
 
+def load_mu_regressor() -> tuple[object, list[str], str]:
+    """Load the preferred point regressor for mu.
+
+    Prefers the production HistGradientBoosting artifact when present, falling
+    back to the legacy MLP regressor checkpoint otherwise.
+    """
+    tree_path = config.TREE_REGRESSOR_PATH
+    if tree_path.exists():
+        model, feature_order, _ = load_tree_regressor(tree_path)
+        return model, feature_order, "hist_gradient_boosting"
+
+    regressor, _, feature_order, _ = load_regressor()
+    return regressor, feature_order, "mlp"
+
+
+def _postprocess_sigma(sigma: torch.Tensor) -> torch.Tensor:
+    """Apply optional inference-time sigma sharpening while preserving positivity."""
+    mode = config.SIGMA_CALIBRATION_MODE or ("cap" if config.SIGMA_CAP_MAX is not None else None)
+    sigma_np = apply_sigma_transform(
+        sigma.detach().cpu().numpy(),
+        mode=mode,
+        cap_max=config.SIGMA_CAP_MAX,
+        scale=config.SIGMA_SCALE,
+        affine_a=config.SIGMA_AFFINE_A,
+        affine_b=config.SIGMA_AFFINE_B,
+        shrink_alpha=config.SIGMA_SHRINK_ALPHA,
+        shrink_target=config.SIGMA_SHRINK_TARGET,
+    ).astype(np.float32)
+    return torch.from_numpy(sigma_np).to(sigma.device)
+
+
 @torch.no_grad()
 def predict(
     features_df: pd.DataFrame,
@@ -124,18 +156,20 @@ def predict(
         DataFrame with predictions: mu, sigma, home_win_prob, plus edge metrics.
     """
     scaler = load_scaler()
+    mu_regressor, mu_feature_order, mu_model_type = load_mu_regressor()
     regressor, _, reg_feature_order, sigma_param = load_regressor()
     classifier, _, cls_feature_order = load_classifier()
 
-    # Validate classifier and regressor were trained on the same features
-    assert cls_feature_order == reg_feature_order, (
-        f"Feature order mismatch: regressor has {len(reg_feature_order)} features, "
-        f"classifier has {len(cls_feature_order)}. Models must be retrained together."
+    # Validate all loaded models use the same feature contract.
+    assert cls_feature_order == reg_feature_order == mu_feature_order, (
+        f"Feature order mismatch: mu regressor={len(mu_feature_order)}, "
+        f"sigma regressor={len(reg_feature_order)}, classifier={len(cls_feature_order)}. "
+        f"Models must be trained together on the same feature set."
     )
 
     # Use the feature order embedded in the checkpoint — ensures compatibility
     # even if config.FEATURE_ORDER has changed since the model was trained.
-    feature_order = reg_feature_order
+    feature_order = mu_feature_order
     X = features_df[feature_order].values.astype(np.float32)
 
     # Validate feature count matches model input dimension
@@ -153,16 +187,21 @@ def predict(
     X_scaled = scaler.transform(X)
     X_tensor = torch.tensor(X_scaled, dtype=torch.float32)
 
-    # Regressor: (mu, log_sigma)
-    mu_raw, log_sigma_raw = regressor(X_tensor)
+    # Mu regressor: tree if available, otherwise the legacy MLP regressor.
+    if mu_model_type == "hist_gradient_boosting":
+        mu = mu_regressor.predict(X).astype(np.float32)
+    else:
+        mu_raw, _ = mu_regressor(X_tensor)
+        mu = mu_raw.numpy()
+
+    # MLP regressor remains the uncertainty model for sigma.
+    _, log_sigma_raw = regressor(X_tensor)
     if sigma_param == "exp":
-        sigma = torch.exp(log_sigma_raw).clamp(min=0.5, max=30.0)
+        sigma = _postprocess_sigma(torch.exp(log_sigma_raw))
     else:
         # Legacy softplus parameterization
-        sigma = torch.nn.functional.softplus(log_sigma_raw) + 1e-3
-        sigma = sigma.clamp(min=0.5, max=30.0)
+        sigma = _postprocess_sigma(torch.nn.functional.softplus(log_sigma_raw) + 1e-3)
 
-    mu = mu_raw.numpy()
     sigma = sigma.numpy()
 
     # Classifier: home_win_prob

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -11,6 +12,7 @@ CHECKPOINTS_DIR = PROJECT_ROOT / "checkpoints"
 FEATURES_DIR = PROJECT_ROOT / "features"
 PREDICTIONS_DIR = PROJECT_ROOT / "predictions"
 SITE_DATA_DIR = PROJECT_ROOT / "site" / "public" / "data"
+TREE_REGRESSOR_PATH = CHECKPOINTS_DIR / "regressor_hgbr.pkl"
 
 # S3 lakehouse
 S3_BUCKET = "hoops-edge"
@@ -23,6 +25,8 @@ TABLE_FCT_GAMES = "fct_games"
 TABLE_FCT_GAME_TEAMS = "fct_pbp_game_teams_flat"  # full boxscore with opponent stats
 TABLE_FCT_RATINGS = "fct_ratings_adjusted"
 TABLE_FCT_LINES = "fct_lines"
+TABLE_FCT_LINES_REPAIRED = "fct_lines_repaired_v1"
+RESEARCH_LINES_TABLE = os.getenv("HOOPS_RESEARCH_LINES_TABLE", TABLE_FCT_LINES_REPAIRED)
 
 # Rolling average parameters
 ROLLING_WINDOW = 15  # number of games for exponential decay
@@ -62,6 +66,33 @@ FEATURE_ORDER: list[str] = json.loads(
     (ARTIFACTS_DIR / "feature_order.json").read_text()
 )
 assert len(FEATURE_ORDER) == 53, f"Expected 53 features, got {len(FEATURE_ORDER)}"
+
+# Benchmark-winning point-prediction baseline, promoted into production mu path.
+HGBR_PARAMS = {
+    "loss": "absolute_error",
+    "learning_rate": 0.05,
+    "max_depth": 6,
+    "max_iter": 300,
+    "min_samples_leaf": 20,
+    "l2_regularization": 1.0,
+    "random_state": 42,
+}
+
+# Optional inference-time sigma sharpening. Disabled by default.
+_sigma_cap = os.getenv("HOOPS_SIGMA_CAP_MAX")
+SIGMA_CAP_MAX: float | None = float(_sigma_cap) if _sigma_cap else None
+_sigma_mode = os.getenv("HOOPS_SIGMA_CALIBRATION_MODE", "").strip().lower()
+SIGMA_CALIBRATION_MODE: str | None = _sigma_mode or ("cap" if SIGMA_CAP_MAX is not None else None)
+_sigma_scale = os.getenv("HOOPS_SIGMA_SCALE")
+SIGMA_SCALE: float | None = float(_sigma_scale) if _sigma_scale else None
+_sigma_affine_a = os.getenv("HOOPS_SIGMA_AFFINE_A")
+SIGMA_AFFINE_A: float | None = float(_sigma_affine_a) if _sigma_affine_a else None
+_sigma_affine_b = os.getenv("HOOPS_SIGMA_AFFINE_B")
+SIGMA_AFFINE_B: float | None = float(_sigma_affine_b) if _sigma_affine_b else None
+_sigma_shrink_alpha = os.getenv("HOOPS_SIGMA_SHRINK_ALPHA")
+SIGMA_SHRINK_ALPHA: float | None = float(_sigma_shrink_alpha) if _sigma_shrink_alpha else None
+_sigma_shrink_target = os.getenv("HOOPS_SIGMA_SHRINK_TARGET")
+SIGMA_SHRINK_TARGET: float | None = float(_sigma_shrink_target) if _sigma_shrink_target else None
 
 # ── Column mappings from S3 Parquet schemas ──────────────────────────
 
