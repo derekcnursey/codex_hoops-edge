@@ -5,7 +5,7 @@ import Layout from "../components/Layout";
 import { normalizeRows } from "../lib/data";
 import {
   listFinalScoreFiles,
-  listWalkforwardPredictionFiles,
+  listPerformancePredictionFiles,
   readJsonFile
 } from "../lib/server-data";
 
@@ -38,7 +38,7 @@ type PerformanceProps = {
 export const getServerSideProps: GetServerSideProps<
   PerformanceProps
 > = async () => {
-  const predFiles = listWalkforwardPredictionFiles();
+  const predFiles = listPerformancePredictionFiles();
   const finalFiles = listFinalScoreFiles();
   const finalByDate = new Map(
     finalFiles.map((f) => [f.date, f.filename])

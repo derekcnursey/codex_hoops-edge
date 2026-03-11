@@ -154,3 +154,15 @@ export function listWalkforwardPredictionFiles(): DataFile[] {
   }
   return files.filter((f) => seasons.has(seasonFromDate(f.date)));
 }
+
+export function listPerformancePredictionFiles(): DataFile[] {
+  const walkforward = listWalkforwardPredictionFiles();
+  const walkforwardDates = new Set(walkforward.map((f) => f.date));
+  const currentSeason = seasonFromDate(todayET());
+  const currentSeasonFiles = listPredictionFiles().filter(
+    (f) => seasonFromDate(f.date) === currentSeason && !walkforwardDates.has(f.date)
+  );
+  return [...walkforward, ...currentSeasonFiles].sort((a, b) =>
+    a.date < b.date ? -1 : 1
+  );
+}
