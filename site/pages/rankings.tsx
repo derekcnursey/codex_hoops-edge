@@ -509,6 +509,24 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
                         )}
                       </td>
 
+                      {/* EDGE INDEX */}
+                      <td
+                        style={{
+                          ...mono,
+                          padding: "10px 14px",
+                          textAlign: "center",
+                          fontSize: 13,
+                          fontWeight: 700,
+                          color: netTextColor(t.model_index ?? 0),
+                          background: netColor(t.model_index ?? 0),
+                          borderBottom: "1px solid #f1f5f9",
+                        }}
+                      >
+                        {t.model_index !== null
+                          ? `${t.model_index > 0 ? "+" : ""}${t.model_index.toFixed(1)}`
+                          : "\u2014"}
+                      </td>
+
                       {/* ADJ O */}
                       <td
                         style={{
@@ -566,24 +584,6 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
                         }}
                       >
                         {t.adj_tempo.toFixed(1)}
-                      </td>
-
-                      {/* EDGE INDEX */}
-                      <td
-                        style={{
-                          ...mono,
-                          padding: "10px 14px",
-                          textAlign: "center",
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: netTextColor(t.model_index ?? 0),
-                          background: netColor(t.model_index ?? 0),
-                          borderBottom: "1px solid #f1f5f9",
-                        }}
-                      >
-                        {t.model_index !== null
-                          ? `${t.model_index > 0 ? "+" : ""}${t.model_index.toFixed(1)}`
-                          : "\u2014"}
                       </td>
                     </tr>
                   ))
