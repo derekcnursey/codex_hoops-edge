@@ -14,6 +14,7 @@ import torch
 
 from . import config
 from .architecture import MLPClassifier, MLPRegressor, MLPRegressorSplit
+from .line_selection import select_preferred_lines
 from .sigma_calibration import apply_sigma_transform
 from .trainer import load_scaler, load_tree_regressor
 
@@ -227,77 +228,7 @@ def predict(
 
     # Attach lines if available
     if lines_df is not None and not lines_df.empty:
-        # Fix flipped spread signs using cross-provider majority vote.
-        # ~1-2% of games have one provider with a flipped spread sign.
-        # When multiple providers exist, use the majority sign as truth.
-        lines_fixed = lines_df.copy()
-        lines_fixed["spread"] = pd.to_numeric(lines_fixed["spread"], errors="coerce")
-        lines_fixed["homeMoneyline"] = pd.to_numeric(
-            lines_fixed["homeMoneyline"], errors="coerce"
-        )
-
-        # Compute majority spread sign per game (positive count vs negative)
-        has_spread = lines_fixed["spread"].notna() & (lines_fixed["spread"] != 0)
-        spread_sign = np.sign(lines_fixed.loc[has_spread, "spread"])
-        majority_sign = (
-            spread_sign.groupby(lines_fixed.loc[has_spread, "gameId"])
-            .sum()  # net sign: positive if more providers say positive
-            .rename("_majority_sign")
-        )
-
-        # Pick preferred provider: Draft Kings > ESPN BET > Bovada,
-        # with completeness (has spread/total) as the top tiebreaker.
-        _provider_rank = {"Draft Kings": 0, "ESPN BET": 1, "Bovada": 2}
-        lines_dedup = (
-            lines_fixed
-            .assign(
-                _has_spread=lines_fixed["spread"].notna().astype(int),
-                _has_total=lines_fixed["overUnder"].notna().astype(int),
-                _prov_rank=lines_fixed["provider"].map(_provider_rank).fillna(99),
-            )
-            .sort_values(
-                ["_has_spread", "_has_total", "_prov_rank"],
-                ascending=[False, False, True],
-            )
-            .drop_duplicates(subset=["gameId"], keep="first")
-            .drop(columns=["_has_spread", "_has_total", "_prov_rank"])
-            .copy()
-        )
-
-        # Merge majority sign and flip when the selected provider disagrees.
-        # Only flip spreads >= 3 pts — smaller spreads can legitimately
-        # differ in sign across providers for near pick'em games.
-        lines_dedup = lines_dedup.merge(majority_sign, on="gameId", how="left")
-        _sp = lines_dedup["spread"]
-        _maj = lines_dedup["_majority_sign"]
-        mask_majority_flip = (
-            _sp.notna() & _maj.notna() & (_maj != 0)
-            & (abs(_sp) >= 3)
-            & (np.sign(_sp) != np.sign(_maj))
-        )
-        lines_dedup.loc[mask_majority_flip, "spread"] = -_sp[mask_majority_flip]
-
-        # Fallback: for single-provider games, use moneyline as cross-check
-        _sp2 = lines_dedup["spread"]
-        _ml = lines_dedup["homeMoneyline"]
-        mask_ml_fix = (
-            _sp2.notna() & _ml.notna()
-            & (~mask_majority_flip)  # not already fixed by majority
-            & _maj.isna()  # single provider (no majority available) or no spread
-            & (
-                ((_sp2 > 3) & (_ml < -150))
-                | ((_sp2 < -3) & (_ml > 150))
-            )
-        )
-        lines_dedup.loc[mask_ml_fix, "spread"] = -_sp2[mask_ml_fix]
-        lines_dedup = lines_dedup.drop(columns=["_majority_sign"])
-
-        lines_dedup = lines_dedup.rename(columns={
-            "spread": "book_spread",
-            "overUnder": "book_total",
-            "homeMoneyline": "home_moneyline",
-            "awayMoneyline": "away_moneyline",
-        })
+        lines_dedup = select_preferred_lines(lines_df)
         merge_cols = ["gameId", "book_spread", "book_total", "home_moneyline", "away_moneyline"]
         available = [c for c in merge_cols if c in lines_dedup.columns]
         out = out.merge(lines_dedup[available], on="gameId", how="left")

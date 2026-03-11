@@ -122,17 +122,57 @@ def _load_bronze_lines_for_season(season: int) -> pd.DataFrame:
     return lines
 
 
-def _latest_provider_rows(lines: pd.DataFrame) -> pd.DataFrame:
+def _best_provider_rows(lines: pd.DataFrame) -> pd.DataFrame:
     if lines.empty:
         return lines
-    ordered = lines.sort_values(
-        ["gameId", "provider", "source_asof", "source_key"],
-        ascending=[True, True, True, True],
-        kind="mergesort",
+
+    def _has_col(col: str) -> pd.Series:
+        if col in lines.columns:
+            return lines[col].notna().astype(int)
+        return pd.Series(0, index=lines.index, dtype=int)
+
+    ordered = (
+        lines.assign(
+            _has_spread=_has_col("spread"),
+            _has_home_ml=_has_col("homeMoneyline"),
+            _has_away_ml=_has_col("awayMoneyline"),
+            _has_total=_has_col("overUnder"),
+            _has_spread_open=_has_col("spreadOpen"),
+            _has_total_open=_has_col("overUnderOpen"),
+        )
+        .sort_values(
+            [
+                "gameId",
+                "provider",
+                "_has_spread",
+                "_has_home_ml",
+                "_has_away_ml",
+                "_has_total",
+                "_has_spread_open",
+                "_has_total_open",
+                "source_asof",
+                "source_key",
+            ],
+            ascending=[True, True, False, False, False, False, False, False, False, False],
+            kind="mergesort",
+        )
+        .drop(columns=[
+            "_has_spread",
+            "_has_home_ml",
+            "_has_away_ml",
+            "_has_total",
+            "_has_spread_open",
+            "_has_total_open",
+        ])
     )
-    latest = ordered.drop_duplicates(["gameId", "provider"], keep="last").copy()
+    latest = ordered.drop_duplicates(["gameId", "provider"], keep="first").copy()
     latest["gameId"] = latest["gameId"].astype(int)
     return latest.reset_index(drop=True)
+
+
+def _latest_provider_rows(lines: pd.DataFrame) -> pd.DataFrame:
+    """Backward-compatible alias for older callers/tests."""
+    return _best_provider_rows(lines)
 
 
 def _spread_sign(series: pd.Series, min_abs: float) -> pd.Series:
@@ -360,9 +400,9 @@ def main(
     for season in seasons:
         click.echo(f"Rebuilding season {season}...")
         bronze = _load_bronze_lines_for_season(season)
-        latest = _latest_provider_rows(bronze)
+        selected = _best_provider_rows(bronze)
         games = load_games(season)
-        repaired, audit = _repair_latest_rows(latest, games, cfg)
+        repaired, audit = _repair_latest_rows(selected, games, cfg)
         _write_tables(repaired, audit, season, staged_table, audit_prefix)
         if not audit.empty:
             audit_frames.append(audit)
@@ -370,7 +410,7 @@ def main(
             {
                 "season": season,
                 "bronze_rows": int(len(bronze)),
-                "latest_provider_rows": int(len(latest)),
+                "selected_provider_rows": int(len(selected)),
                 "repaired_rows_written": int(len(repaired)),
                 "audit_rows": int(len(audit)),
                 "flip_sign_rows": int((audit["action"] == "flip_sign").sum()) if not audit.empty else 0,
@@ -406,7 +446,7 @@ def main(
                         "moneyline_conflict",
                         "consensus majority_sign_conflict without strong corroboration",
                     ],
-                    "keep": ["all other latest provider rows"],
+                    "keep": ["all other selected provider rows"],
                 },
             },
             indent=2,
