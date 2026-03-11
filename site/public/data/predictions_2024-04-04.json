@@ -3,21 +3,21 @@
   "games": [
     {
       "away_team": "Indiana State",
-      "edge_home_points": 3.1597723364830017,
+      "edge_home_points": 3.949641317129135,
       "game_id": "2024_04_04_indiana_state_seton_hall",
       "home_team": "Seton Hall",
       "market_spread_home": 3.5,
-      "model_mu_home": -0.3402276635169983,
-      "pick_cover_prob": 0.5647161028560915,
-      "pick_ev_per_1": 0.07809437817981113,
-      "pick_fair_odds": -129.73512380344079,
-      "pick_prob_edge": 0.04090657904656769,
+      "model_mu_home": 0.44964131712913513,
+      "pick_cover_prob": 0.6409644936782566,
+      "pick_ev_per_1": 0.22365948793121715,
+      "pick_fair_odds": -178.52398506343476,
+      "pick_prob_edge": 0.11715496986873275,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
-      "pred_home_win_prob": 0.5921772122383118,
-      "pred_sigma": 19.39256477355957,
+      "pred_home_win_prob": 0.567319929599762,
+      "pred_sigma": 10.939682006835938,
       "start_time": "2024-04-04T23:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-05T23:16:15.346647Z"
+  "generated_at": "2026-03-11T18:53:46.284105Z"
 }

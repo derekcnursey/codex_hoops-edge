@@ -3,21 +3,21 @@
   "games": [
     {
       "away_team": "Texas Tech",
-      "edge_home_points": 0.9372662305831909,
+      "edge_home_points": 3.4149460792541504,
       "game_id": "2019_04_08_texas_tech_virginia",
       "home_team": "Virginia",
-      "market_spread_home": -1.0,
-      "model_mu_home": 1.937266230583191,
-      "pick_cover_prob": 0.5319831518521366,
-      "pick_ev_per_1": 0.01560419899044263,
-      "pick_fair_odds": -113.6675215769292,
-      "pick_prob_edge": 0.00817362804261279,
+      "market_spread_home": -1.5,
+      "model_mu_home": 4.91494607925415,
+      "pick_cover_prob": 0.6354629436465558,
+      "pick_ev_per_1": 0.2131565287797882,
+      "pick_fair_odds": -174.320534105161,
+      "pick_prob_edge": 0.11165341983703192,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
-      "pred_home_win_prob": 0.4423612058162689,
-      "pred_sigma": 11.678464889526367,
+      "pred_home_win_prob": 0.48502951860427856,
+      "pred_sigma": 9.859601020812988,
       "start_time": "2019-04-09T01:20:00.000Z"
     }
   ],
-  "generated_at": "2026-03-05T23:07:54.973284Z"
+  "generated_at": "2026-03-11T18:47:13.506994Z"
 }
