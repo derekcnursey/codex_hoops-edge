@@ -1,7 +1,8 @@
 """Build power rankings JSON from S3 efficiency ratings and game results.
 
 Reads:
-  - gold/team_adjusted_efficiencies_no_garbage → latest ratings per team
+  - preferred: gold/team_adjusted_efficiencies_no_garbage_priorreg_k5_v1
+  - fallback:  gold/team_adjusted_efficiencies_no_garbage
   - silver/fct_games (season 2026) → win-loss records
   - silver/fct_games team names → display names + conference fallback
 
@@ -28,15 +29,30 @@ from src import config, s3_reader
 
 
 CURRENT_SEASON = 2026
+PRIMARY_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage_priorreg_k5_v1"
+FALLBACK_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage"
+PRIMARY_SOURCE_LABEL = "Hoops Edge Ratings"
+PRIMARY_SOURCE_DESCRIPTION = (
+    "Best internal efficiency model. Strongest in post-Dec-15 validation."
+)
+PRIMARY_SOURCE_NOTE = (
+    "Internal ratings source only. Torvik remains stronger on full-season pooled validation."
+)
 
 
-def _load_latest_ratings(season: int) -> pd.DataFrame:
+def _load_latest_ratings(season: int) -> tuple[pd.DataFrame, str]:
     """Load the most recent efficiency rating for each team."""
-    tbl = s3_reader.read_gold_table(
-        "team_adjusted_efficiencies_no_garbage", season=season
-    )
+    table_name = PRIMARY_RATINGS_TABLE
+    tbl = s3_reader.read_gold_table(table_name, season=season)
     if tbl.num_rows == 0:
-        return pd.DataFrame()
+        print(
+            f"WARNING: rankings season {season} missing preferred ratings table "
+            f"{PRIMARY_RATINGS_TABLE}; falling back to {FALLBACK_RATINGS_TABLE}"
+        )
+        table_name = FALLBACK_RATINGS_TABLE
+        tbl = s3_reader.read_gold_table(table_name, season=season)
+    if tbl.num_rows == 0:
+        return pd.DataFrame(), table_name
     df = tbl.to_pandas()
 
     needed = ["teamId", "rating_date", "adj_oe", "adj_de", "adj_tempo", "barthag"]
@@ -48,7 +64,7 @@ def _load_latest_ratings(season: int) -> pd.DataFrame:
     # Keep only the latest rating_date row per team
     idx = df.groupby("teamId")["rating_date"].idxmax()
     latest = df.loc[idx].copy()
-    return latest
+    return latest, table_name
 
 
 def _load_records(season: int) -> pd.DataFrame:
@@ -170,7 +186,7 @@ def _load_team_info(season: int) -> pd.DataFrame:
 def build_rankings(season: int = CURRENT_SEASON) -> dict:
     """Build the full rankings payload."""
     print(f"Loading efficiency ratings for season {season}...")
-    ratings = _load_latest_ratings(season)
+    ratings, table_name = _load_latest_ratings(season)
     if ratings.empty:
         raise RuntimeError("No efficiency ratings found.")
 
@@ -245,6 +261,11 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
         "generated_at": datetime.utcnow().isoformat() + "Z",
         "as_of_date": as_of_str,
         "season": season,
+        "source_id": PRIMARY_SOURCE_LABEL.lower().replace(" ", "_"),
+        "source_label": PRIMARY_SOURCE_LABEL,
+        "source_table": table_name,
+        "source_description": PRIMARY_SOURCE_DESCRIPTION,
+        "source_note": PRIMARY_SOURCE_NOTE,
         "teams": teams,
     }
     return payload

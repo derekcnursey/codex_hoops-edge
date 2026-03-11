@@ -25,6 +25,10 @@ type RankingsData = {
   generated_at: string;
   as_of_date: string;
   season: number;
+  source_label?: string;
+  source_table?: string;
+  source_description?: string;
+  source_note?: string;
   teams: RankedTeam[];
 };
 
@@ -238,6 +242,44 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
             {data.teams.length} teams
           </span>
         </div>
+
+        {(data.source_label || data.source_description || data.source_note) && (
+          <div
+            style={{
+              marginBottom: 16,
+              padding: "10px 12px",
+              border: "1px solid #dbe2ea",
+              borderRadius: 10,
+              background: "#f8fafc",
+            }}
+          >
+            {data.source_label && (
+              <div
+                style={{
+                  ...mono,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: "#0f172a",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  marginBottom: 4,
+                }}
+              >
+                {data.source_label}
+              </div>
+            )}
+            {data.source_description && (
+              <div style={{ fontSize: 14, color: "#334155", marginBottom: data.source_note ? 4 : 0 }}>
+                {data.source_description}
+              </div>
+            )}
+            {data.source_note && (
+              <div style={{ ...mono, fontSize: 12, color: "#64748b" }}>
+                {data.source_note}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* -- Controls -- */}
         <div
