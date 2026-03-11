@@ -563,8 +563,7 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
                           textAlign: "center",
                           fontSize: 13,
                           fontWeight: 700,
-                          color: netTextColor(t.adj_margin),
-                          background: netColor(t.adj_margin),
+                          color: "#334155",
                           borderBottom: "1px solid #f1f5f9",
                         }}
                       >
