@@ -110,7 +110,8 @@ export function displayTeam(name: string): string {
     .replace(/\bduke\b/g, "dook💩")
     .replace(/\bGeorgia Tech\b/g, "Georgia Tech👑")
     .replace(/\bUCF\b/g, "UCF👸")
-    .replace(/\bUSF\b/g, "USF🃏");
+    .replace(/\bUSF\b/g, "USF🃏")
+    .replace(/\bSouth Florida\b/g, "South Florida🃏");
 }
 
 export function getActualMargin(row: PredictionRow): number | null {
