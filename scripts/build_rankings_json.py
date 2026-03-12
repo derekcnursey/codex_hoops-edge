@@ -40,7 +40,7 @@ PRIMARY_SOURCE_DESCRIPTION = (
 PRIMARY_SOURCE_NOTE = (
     "Internal ratings source only. Torvik remains stronger on full-season pooled validation."
 )
-MODEL_INDEX_LABEL = "EDGE INDEX"
+MODEL_INDEX_LABEL = "DCN INDEX"
 MODEL_INDEX_DESCRIPTION = (
     "Projected neutral-court spread vs an average D-I team from the current HGBR model."
 )

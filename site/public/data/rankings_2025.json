@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-11T23:51:18.542777Z",
+  "generated_at": "2026-03-12T00:04:22.151964Z",
   "as_of_date": "2025-04-08",
   "season": 2025,
   "source_id": "hoops_edge_ratings",
@@ -7,7 +7,7 @@
   "source_table": "team_adjusted_efficiencies_no_garbage_priorreg_k5_v1",
   "source_description": "Best internal efficiency model. Strongest in post-Dec-15 validation.",
   "source_note": "Internal ratings source only. Torvik remains stronger on full-season pooled validation.",
-  "model_index_label": "EDGE INDEX",
+  "model_index_label": "DCN INDEX",
   "model_index_description": "Projected neutral-court spread vs an average D-I team from the current HGBR model.",
   "teams": [
     {

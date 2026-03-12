@@ -142,7 +142,7 @@ const columns: {
   { key: "team", label: "TEAM", align: "left", defaultDir: "asc" },
   { key: "conference", label: "CONF", align: "center", defaultDir: "asc" },
   { key: "record", label: "RECORD", align: "center", defaultDir: "desc" },
-  { key: "model_index", label: "EDGE INDEX", align: "center", defaultDir: "desc" },
+  { key: "model_index", label: "DCN INDEX", align: "center", defaultDir: "desc" },
   { key: "adj_oe", label: "ADJ O", align: "center", defaultDir: "desc" },
   { key: "adj_de", label: "ADJ D", align: "center", defaultDir: "asc" },
   { key: "adj_margin", label: "NET RATING", align: "center", defaultDir: "desc" },
