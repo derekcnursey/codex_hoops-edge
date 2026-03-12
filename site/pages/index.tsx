@@ -146,32 +146,10 @@ function edge(row: PredictionRow): number {
   return num(row.pick_prob_edge) ?? 0;
 }
 
-function mlStrength(row: PredictionRow): number | null {
-  const p = getMuSigmaHomeWinProb(row);
-  return p === null ? null : Math.max(p, 1 - p);
-}
-
-function renderMlFair(row: PredictionRow) {
+function homeMlFair(row: PredictionRow): string | null {
   const homeProb = getMuSigmaHomeWinProb(row);
-  if (homeProb === null) return "\u2014";
-  const awayProb = 1 - homeProb;
-  const awayOdds = formatAmericanOddsFromProb(awayProb);
-  const homeOdds = formatAmericanOddsFromProb(homeProb);
-  if (!awayOdds || !homeOdds) return "\u2014";
-  return (
-    <div
-      style={{
-        ...mono,
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        lineHeight: 1.1,
-      }}
-    >
-      <span style={{ color: "#64748b", fontSize: 11 }}>A {awayOdds}</span>
-      <span style={{ color: "#0f172a", fontSize: 11 }}>H {homeOdds}</span>
-    </div>
-  );
+  if (homeProb === null) return null;
+  return formatAmericanOddsFromProb(homeProb);
 }
 
 function diff(row: PredictionRow): number | null {
@@ -189,7 +167,7 @@ function pickSpread(row: PredictionRow): number | null {
 
 /* -- sort -- */
 
-type SortKey = "matchup" | "time" | "book" | "model" | "sigma" | "ml" | "diff" | "edge";
+type SortKey = "matchup" | "time" | "book" | "model" | "sigma" | "diff" | "edge";
 
 type SortState = { key: SortKey; dir: "asc" | "desc" };
 
@@ -209,8 +187,6 @@ function sortVal(row: PredictionRow, key: SortKey): string | number {
       return modelSpread(row) ?? -Infinity;
     case "sigma":
       return sigma(row) ?? -Infinity;
-    case "ml":
-      return mlStrength(row) ?? -Infinity;
     case "diff":
       return diff(row) ?? -Infinity;
     case "edge":
@@ -226,7 +202,6 @@ const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
   { key: "book", label: "HOME SPREAD", align: "center" },
   { key: "model", label: "MODEL", align: "center" },
   { key: "sigma", label: "SIGMA", align: "center" },
-  { key: "ml", label: "ML FAIR", align: "center" },
   { key: "diff", label: "DIFF", align: "center" },
   { key: "edge", label: "EDGE", align: "center" }
 ];
@@ -499,6 +474,19 @@ export default function Home({ date, rows }: HomeProps) {
                             {renderMatchupSeparator()}
                             <span style={{ fontWeight: str(row.pick_side).toUpperCase() === "HOME" ? 700 : 400 }}>
                               {renderRankedTeam(str(row.home_team), row.home_team_rank)}
+                              {homeMlFair(row) ? (
+                                <span
+                                  style={{
+                                    ...mono,
+                                    marginLeft: 6,
+                                    fontSize: 11,
+                                    fontWeight: 500,
+                                    color: "#64748b"
+                                  }}
+                                >
+                                  ({homeMlFair(row)})
+                                </span>
+                              ) : null}
                             </span>
                           </td>
 
@@ -557,20 +545,6 @@ export default function Home({ date, rows }: HomeProps) {
                             }}
                           >
                             {sg !== null ? sg.toFixed(1) : "\u2014"}
-                          </td>
-
-                          {/* ML FAIR */}
-                          <td
-                            style={{
-                              padding: "10px 14px",
-                              textAlign: "center",
-                              fontSize: 13,
-                              color: "#334155",
-                              borderBottom: "1px solid #f1f5f9",
-                              whiteSpace: "nowrap"
-                            }}
-                          >
-                            {renderMlFair(row)}
                           </td>
 
                           {/* DIFF */}
