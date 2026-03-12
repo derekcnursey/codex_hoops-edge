@@ -105,3 +105,4 @@ date,key,rows,median_poss,median_pts,selected
 2026-03-08,silver/fct_pbp_game_teams_flat_garbage_removed/season=2026/date=2026-03-08/part-11a384a9.parquet,108,65.4,73.0,True
 2026-03-09,silver/fct_pbp_game_teams_flat_garbage_removed/season=2026/date=2026-03-09/part-1062d462.parquet,30,63.237500000000004,71.0,True
 2026-03-10,silver/fct_pbp_game_teams_flat_garbage_removed/season=2026/date=2026-03-10/part-1ee18ccc.parquet,46,64.125,68.0,True
+2026-03-11,silver/fct_pbp_game_teams_flat_garbage_removed/season=2026/date=2026-03-11/part-fabf0a8e.parquet,64,65.5875,70.0,True

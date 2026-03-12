@@ -708,6 +708,35 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
             label="gold team_adjusted_efficiencies_no_garbage",
         )
 
+        # Keep the preferred in-house ratings source current for rankings.
+        repair_script = config.PROJECT_ROOT / "scripts" / f"repair_pbp_garbage_removed_{season}.py"
+        priorreg_script = config.PROJECT_ROOT / "scripts" / "build_gold_priorreg_v1.py"
+        if repair_script.exists():
+            click.echo(f"  Refreshing repaired no-garbage gold tables for season {season}...")
+            _run(
+                [sys.executable, str(repair_script), "--season", str(season)],
+                cwd=config.PROJECT_ROOT,
+                label=f"repair_pbp_garbage_removed_{season}",
+            )
+        elif priorreg_script.exists():
+            click.echo("  Refreshing team_adjusted_efficiencies_no_garbage_priorreg_k5_v1...")
+            _run(
+                [
+                    sys.executable,
+                    str(priorreg_script),
+                    "--season-start",
+                    str(season),
+                    "--season-end",
+                    str(season),
+                    "--k-values",
+                    "5",
+                    "--half-lives",
+                    "none",
+                ],
+                cwd=config.PROJECT_ROOT,
+                label="build_gold_priorreg_k5_v1",
+            )
+
     # ── Freshness check: ensure gold data is current ────────────────
     click.echo("\nChecking gold data freshness...")
     try:
@@ -759,6 +788,18 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
             json_path, csv_path = save_predictions(preds, game_date=game_date)
             click.echo(f"  JSON: {json_path}")
             click.echo(f"  CSV:  {csv_path}")
+            missing_lines = preds[preds["book_spread"].isna()].copy()
+            if not missing_lines.empty:
+                click.echo(
+                    f"  WARNING: {len(missing_lines)} scheduled game(s) have no line after refresh:",
+                    err=True,
+                )
+                for _, row in missing_lines.sort_values("startDate").iterrows():
+                    click.echo(
+                        f"    - {row['awayTeam']} at {row['homeTeam']} "
+                        f"({row['startDate']})",
+                        err=True,
+                    )
 
         # Step 5: Publish pipeline — rankings → final scores
         # (Site JSON is now written directly by save_predictions())

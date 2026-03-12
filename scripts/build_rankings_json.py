@@ -46,6 +46,14 @@ MODEL_INDEX_DESCRIPTION = (
 )
 
 
+def _normalize_public_tempo(adj_tempo: float) -> float:
+    """Map obviously inflated pace values back into a public-facing D-I range."""
+    tempo = float(adj_tempo)
+    while tempo > 85:
+        tempo /= 2.0
+    return min(max(tempo, 45.0), 85.0)
+
+
 def _load_latest_ratings(season: int) -> tuple[pd.DataFrame, str]:
     """Load the most recent efficiency rating for each team."""
     table_name = PRIMARY_RATINGS_TABLE
@@ -356,7 +364,7 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
         adj_oe = round(float(row["adj_oe"]), 1)
         adj_de = round(float(row["adj_de"]), 1)
         adj_margin = round(float(row["adj_margin"]), 1)
-        adj_tempo = round(float(row["adj_tempo"]), 1)
+        adj_tempo = round(_normalize_public_tempo(float(row["adj_tempo"])), 1)
         model_index_value = (
             round(float(row["model_index"]), 1)
             if pd.notna(row["model_index"])

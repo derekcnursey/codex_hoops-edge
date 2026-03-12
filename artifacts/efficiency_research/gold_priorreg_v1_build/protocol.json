@@ -1,10 +1,11 @@
 {
-  "season_start": 2015,
-  "season_end": 2025,
+  "season_start": 2026,
+  "season_end": 2026,
   "k_values": [
-    5,
-    10,
-    15
+    5
+  ],
+  "half_lives": [
+    "none"
   ],
   "prior_regression": 0.3,
   "fixed_params": {
@@ -14,5 +15,5 @@
     "shrinkage": 0.0,
     "no_garbage": true
   },
-  "asof": "2026-03-11"
+  "asof": "2026-03-12"
 }

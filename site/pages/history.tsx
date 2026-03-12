@@ -5,7 +5,7 @@ import Layout from "../components/Layout";
 import { normalizeRows, displayTeam } from "../lib/data";
 import {
   listFinalScoreFiles,
-  listWalkforwardPredictionFiles,
+  listPerformancePredictionFiles,
   readJsonFile,
   todayET,
 } from "../lib/server-data";
@@ -55,7 +55,7 @@ export const getServerSideProps: GetServerSideProps<HistoryProps> = async (
     typeof context.query.date === "string" ? context.query.date : null;
 
   const finalFiles = listFinalScoreFiles();
-  const predDates = new Set(listWalkforwardPredictionFiles().map((f) => f.date));
+  const predDates = new Set(listPerformancePredictionFiles().map((f) => f.date));
   const today = todayET();
   const availableDates = finalFiles
     .map((f) => f.date)

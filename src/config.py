@@ -36,7 +36,8 @@ EWM_SPAN = 15  # span parameter for pandas ewm (matches ROLLING_WINDOW)
 NO_GARBAGE = True
 
 # Efficiency source: "gold" (gold-layer adj efficiencies) or "torvik" (Torvik daily ratings)
-EFFICIENCY_SOURCE = "torvik"
+EFFICIENCY_SOURCE = "gold"
+PRODUCTION_GOLD_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage_priorreg_k5_v1"
 
 # Seasons to exclude from training and evaluation (e.g. COVID-shortened 2021)
 EXCLUDE_SEASONS: list[int] = [2021]

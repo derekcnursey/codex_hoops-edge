@@ -93,7 +93,7 @@ def load_efficiency_ratings(
     """
     if table_name is None:
         table_name = (
-            "team_adjusted_efficiencies_no_garbage"
+            config.PRODUCTION_GOLD_RATINGS_TABLE
             if no_garbage
             else "team_adjusted_efficiencies"
         )
