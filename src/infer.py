@@ -126,6 +126,72 @@ def load_mu_regressor() -> tuple[object, list[str], str]:
     return regressor, feature_order, "mlp"
 
 
+def _swap_feature_frame(features_df: pd.DataFrame, feature_order: list[str]) -> pd.DataFrame:
+    """Swap home/away feature slots for neutral-site symmetrization.
+
+    The trained feature contract is not perfectly mirrored by name, so this
+    helper handles:
+    - generic ``home_*`` <-> ``away_*`` pairs
+    - sign flip for ``rest_advantage``
+    - slot-specific one-offs preserved as swap pairs
+    - forcing ``home_team_hca`` to zero for neutral games
+    """
+    swapped = features_df[feature_order].copy()
+    used: set[str] = set()
+    explicit_pairs = [
+        ("home_opp_ft_rate", "away_def_ft_rate"),
+        ("home_team_efg_home_split", "away_team_efg_away_split"),
+    ]
+    for left, right in explicit_pairs:
+        if left in swapped.columns and right in swapped.columns:
+            tmp = swapped[left].copy()
+            swapped[left] = swapped[right]
+            swapped[right] = tmp
+            used.add(left)
+            used.add(right)
+
+    for col in feature_order:
+        if col in used:
+            continue
+        if col.startswith("home_"):
+            other = "away_" + col[len("home_") :]
+            if other in swapped.columns:
+                tmp = swapped[col].copy()
+                swapped[col] = swapped[other]
+                swapped[other] = tmp
+                used.add(col)
+                used.add(other)
+
+    if "rest_advantage" in swapped.columns:
+        swapped["rest_advantage"] = -swapped["rest_advantage"]
+    if "home_team_hca" in swapped.columns:
+        swapped["home_team_hca"] = 0.0
+    if "neutral_site" in swapped.columns:
+        swapped["neutral_site"] = 1.0
+
+    return swapped
+
+
+def _fill_nan_with_scaler_means(X_df: pd.DataFrame, scaler) -> np.ndarray:
+    """Fill missing values with the scaler's training means."""
+    X = X_df.values.astype(np.float32)
+    nan_mask = np.isnan(X)
+    if nan_mask.any():
+        col_means = scaler.mean_
+        for j in range(X.shape[1]):
+            X[nan_mask[:, j], j] = col_means[j]
+    return X
+
+
+def _predict_mu_values(mu_regressor: object, mu_model_type: str, X_raw: np.ndarray, X_scaled: np.ndarray) -> np.ndarray:
+    """Run the configured mean model on raw/scaled features."""
+    if mu_model_type == "hist_gradient_boosting":
+        return mu_regressor.predict(X_raw).astype(np.float32)
+    X_tensor = torch.tensor(X_scaled, dtype=torch.float32)
+    mu_raw, _ = mu_regressor(X_tensor)
+    return mu_raw.numpy()
+
+
 def _postprocess_sigma(sigma: torch.Tensor) -> torch.Tensor:
     """Apply optional inference-time sigma sharpening while preserving positivity."""
     mode = config.SIGMA_CALIBRATION_MODE or ("cap" if config.SIGMA_CAP_MAX is not None else None)
@@ -171,29 +237,18 @@ def predict(
     # Use the feature order embedded in the checkpoint — ensures compatibility
     # even if config.FEATURE_ORDER has changed since the model was trained.
     feature_order = mu_feature_order
-    X = features_df[feature_order].values.astype(np.float32)
+    X_df = features_df[feature_order].copy()
 
     # Validate feature count matches model input dimension
-    assert X.shape[1] == len(feature_order), (
-        f"Expected {len(feature_order)} features, got {X.shape[1]}"
+    assert X_df.shape[1] == len(feature_order), (
+        f"Expected {len(feature_order)} features, got {X_df.shape[1]}"
     )
 
-    # Handle NaN: fill with column means (from scaler)
-    nan_mask = np.isnan(X)
-    if nan_mask.any():
-        col_means = scaler.mean_
-        for j in range(X.shape[1]):
-            X[nan_mask[:, j], j] = col_means[j]
-
+    X = _fill_nan_with_scaler_means(X_df, scaler)
     X_scaled = scaler.transform(X)
     X_tensor = torch.tensor(X_scaled, dtype=torch.float32)
 
-    # Mu regressor: tree if available, otherwise the legacy MLP regressor.
-    if mu_model_type == "hist_gradient_boosting":
-        mu = mu_regressor.predict(X).astype(np.float32)
-    else:
-        mu_raw, _ = mu_regressor(X_tensor)
-        mu = mu_raw.numpy()
+    mu = _predict_mu_values(mu_regressor, mu_model_type, X, X_scaled)
 
     # MLP regressor remains the uncertainty model for sigma.
     _, log_sigma_raw = regressor(X_tensor)
@@ -208,6 +263,49 @@ def predict(
     # Classifier: home_win_prob
     logits = classifier(X_tensor)
     home_win_prob = torch.sigmoid(logits).numpy()
+
+    # Neutral-site safety: symmetrize slot orientation explicitly.
+    neutral_col = None
+    if "neutral_site" in features_df.columns:
+        neutral_col = "neutral_site"
+    elif "neutralSite" in features_df.columns:
+        neutral_col = "neutralSite"
+    if neutral_col is not None:
+        neutral_mask = features_df[neutral_col].fillna(0).astype(float).to_numpy() == 1.0
+        if neutral_mask.any():
+            neutral_idx = np.flatnonzero(neutral_mask)
+            X_swap_df = _swap_feature_frame(X_df.iloc[neutral_idx], feature_order)
+            X_swap = _fill_nan_with_scaler_means(X_swap_df, scaler)
+            X_swap_scaled = scaler.transform(X_swap)
+            X_swap_tensor = torch.tensor(X_swap_scaled, dtype=torch.float32)
+
+            mu_swap = _predict_mu_values(mu_regressor, mu_model_type, X_swap, X_swap_scaled)
+
+            _, log_sigma_swap_raw = regressor(X_swap_tensor)
+            if sigma_param == "exp":
+                sigma_swap = _postprocess_sigma(torch.exp(log_sigma_swap_raw))
+            else:
+                sigma_swap = _postprocess_sigma(
+                    torch.nn.functional.softplus(log_sigma_swap_raw) + 1e-3
+                )
+            sigma_swap = sigma_swap.numpy()
+
+            logits_swap = classifier(X_swap_tensor)
+            home_win_prob_swap = torch.sigmoid(logits_swap).numpy()
+
+            mu_orig = mu[neutral_idx].copy()
+            sigma_orig = sigma[neutral_idx].copy()
+            p_orig = home_win_prob[neutral_idx].copy()
+
+            mu[neutral_idx] = (mu_orig - mu_swap) / 2.0
+            home_win_prob[neutral_idx] = (p_orig + (1.0 - home_win_prob_swap)) / 2.0
+
+            # Symmetric mixture of A-vs-B and mirrored B-vs-A distributions.
+            sigma_var = (
+                0.5 * (sigma_orig ** 2 + sigma_swap ** 2)
+                + ((mu_orig + mu_swap) ** 2) / 4.0
+            )
+            sigma[neutral_idx] = np.sqrt(np.maximum(sigma_var, 0.25)).astype(np.float32)
 
     # Build output — include team names if available
     meta_cols = ["gameId", "homeTeamId", "awayTeamId"]

@@ -15,6 +15,7 @@ from sklearn.preprocessing import StandardScaler
 
 from src import config
 from src.architecture import MLPClassifier, MLPRegressor
+from src.infer import _swap_feature_frame
 
 
 class TestModelArchitecture:
@@ -257,6 +258,127 @@ class TestPredictPipeline:
         assert (out["home_win_prob"] <= 1).all()
         # sigma should be positive
         assert (out["spread_sigma"] > 0).all()
+
+    def test_swap_feature_frame_is_involution_for_neutral_contract(self):
+        """Swapping the neutral-slot feature frame twice should recover the original."""
+        feature_order = [
+            "neutral_site",
+            "home_team_adj_oe",
+            "away_team_adj_oe",
+            "home_rest_days",
+            "away_rest_days",
+            "rest_advantage",
+            "home_team_hca",
+            "home_opp_ft_rate",
+            "away_def_ft_rate",
+            "home_team_efg_home_split",
+            "away_team_efg_away_split",
+        ]
+        frame = pd.DataFrame(
+            {
+                "neutral_site": [1.0],
+                "home_team_adj_oe": [120.0],
+                "away_team_adj_oe": [110.0],
+                "home_rest_days": [6.0],
+                "away_rest_days": [4.0],
+                "rest_advantage": [2.0],
+                "home_team_hca": [0.0],
+                "home_opp_ft_rate": [0.24],
+                "away_def_ft_rate": [0.19],
+                "home_team_efg_home_split": [0.55],
+                "away_team_efg_away_split": [0.48],
+            }
+        )
+        swapped = _swap_feature_frame(frame, feature_order)
+        restored = _swap_feature_frame(swapped, feature_order)
+        pd.testing.assert_frame_equal(restored[feature_order], frame[feature_order])
+
+    def test_predict_symmetrizes_neutral_site_rows(self, mock_models):
+        """Neutral-site predictions should be anti-symmetric under slot swap."""
+        from src.infer import predict
+
+        tmp_path, _ = mock_models
+        feature_order = [
+            "neutral_site",
+            "home_team_adj_oe",
+            "away_team_adj_oe",
+            "home_rest_days",
+            "away_rest_days",
+            "rest_advantage",
+            "home_team_hca",
+            "home_opp_ft_rate",
+            "away_def_ft_rate",
+            "home_team_efg_home_split",
+            "away_team_efg_away_split",
+        ]
+
+        class DummyTree:
+            def predict(self, X):
+                X = np.asarray(X)
+                # Deliberately slot-biased: favors the home slot strongly.
+                return (
+                    0.1 * X[:, 1]
+                    - 0.08 * X[:, 2]
+                    + 1.2 * X[:, 5]
+                    + 5.0
+                )
+
+        class DummyReg(torch.nn.Module):
+            def forward(self, x):
+                mu = 0.05 * x[:, 1] - 0.03 * x[:, 2] + 0.7 * x[:, 5] + 3.0
+                log_sigma = torch.log(torch.clamp(8.0 + 0.4 * x[:, 5], min=0.5))
+                return mu, log_sigma
+
+        class DummyCls(torch.nn.Module):
+            def forward(self, x):
+                return 0.04 * x[:, 1] - 0.02 * x[:, 2] + 0.9 * x[:, 5] + 1.0
+
+        scaler = StandardScaler()
+        scaler.fit(np.array([
+            [1.0, 118.0, 112.0, 5.0, 5.0, 0.0, 0.0, 0.20, 0.20, 0.50, 0.50],
+            [1.0, 112.0, 118.0, 5.0, 5.0, 0.0, 0.0, 0.20, 0.20, 0.50, 0.50],
+        ]))
+
+        original = pd.DataFrame(
+            {
+                "neutral_site": [1.0],
+                "home_team_adj_oe": [124.0],
+                "away_team_adj_oe": [118.0],
+                "home_rest_days": [6.0],
+                "away_rest_days": [3.0],
+                "rest_advantage": [3.0],
+                "home_team_hca": [0.0],
+                "home_opp_ft_rate": [0.27],
+                "away_def_ft_rate": [0.21],
+                "home_team_efg_home_split": [0.56],
+                "away_team_efg_away_split": [0.49],
+                "gameId": [1],
+                "homeTeamId": [10],
+                "awayTeamId": [20],
+                "startDate": ["2026-03-20"],
+            }
+        )
+        swapped = original.copy()
+        swapped["homeTeamId"] = 20
+        swapped["awayTeamId"] = 10
+        swapped[feature_order] = _swap_feature_frame(original[feature_order], feature_order)
+
+        with patch("src.infer.load_mu_regressor", return_value=(DummyTree(), feature_order, "hist_gradient_boosting")), \
+             patch("src.infer.load_regressor", return_value=(DummyReg(), {}, feature_order, "exp")), \
+             patch("src.infer.load_classifier", return_value=(DummyCls(), {}, feature_order)), \
+             patch("src.infer.load_scaler", return_value=scaler):
+            out_orig = predict(original)
+            out_swap = predict(swapped)
+
+        assert out_orig["predicted_spread"].iloc[0] == pytest.approx(
+            -out_swap["predicted_spread"].iloc[0], abs=1e-6
+        )
+        assert out_orig["home_win_prob"].iloc[0] == pytest.approx(
+            1.0 - out_swap["home_win_prob"].iloc[0], abs=1e-6
+        )
+        assert out_orig["spread_sigma"].iloc[0] == pytest.approx(
+            out_swap["spread_sigma"].iloc[0], abs=1e-6
+        )
 
     def test_predict_optional_sigma_cap(self, mock_models):
         """An optional sigma cap should only affect uncertainty, not mu shape."""
