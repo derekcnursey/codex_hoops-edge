@@ -366,7 +366,7 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
         adj_margin = round(float(row["adj_margin"]), 1)
         adj_tempo = round(_normalize_public_tempo(float(row["adj_tempo"])), 1)
         model_index_value = (
-            round(float(row["model_index"]), 1)
+            round(float(row["model_index"]), 2)
             if pd.notna(row["model_index"])
             else None
         )
@@ -457,7 +457,7 @@ def main():
         print(
             f"  {t['rank']:>3}. {t['team']:<22} "
             f"{t['record']:>6}  "
-            f"Model: {t['model_index']:+.1f}  "
+            f"Model: {t['model_index']:+.2f}  "
             f"Net: {t['adj_margin']:+.1f}  "
             f"O: {t['adj_oe']:.1f}  D: {t['adj_de']:.1f}  "
             f"Tempo: {t['adj_tempo']:.1f}"
