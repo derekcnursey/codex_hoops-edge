@@ -478,9 +478,9 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
                           background: netColor(t.model_index ?? 0),
                           borderBottom: "1px solid #f1f5f9",
                         }}
-                      >
+                        >
                         {t.model_index !== null
-                          ? `${t.model_index > 0 ? "+" : ""}${t.model_index.toFixed(1)}`
+                          ? `${t.model_index > 0 ? "+" : ""}${t.model_index.toFixed(2)}`
                           : "\u2014"}
                       </td>
 
