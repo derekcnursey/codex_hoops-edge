@@ -17,9 +17,223 @@ import pandas as pd
 
 from . import config
 from .efficiency_blend import blend_enabled, gold_weight_for_start_dates
-from .features import build_features, get_feature_matrix, get_targets, load_lines
+from .features import (
+    build_features,
+    get_feature_matrix,
+    get_targets,
+    load_boxscores,
+    load_efficiency_ratings,
+    load_games,
+    load_lines,
+)
+from .line_selection import select_preferred_lines
 
 _ET = ZoneInfo("America/New_York")
+_CRITICAL_FEATURE_COLS = [
+    "home_team_adj_oe",
+    "away_team_adj_oe",
+    "home_team_adj_de",
+    "away_team_adj_de",
+    "home_tov_rate",
+    "away_tov_rate",
+    "home_def_tov_rate",
+    "away_def_tov_rate",
+]
+
+
+def _format_matchup(row: pd.Series) -> str:
+    away = row.get("awayTeam") or row.get("awayTeamId") or "?"
+    home = row.get("homeTeam") or row.get("homeTeamId") or "?"
+    return f"{away} @ {home}"
+
+
+def _normalize_raw_games_for_preflight(df: pd.DataFrame) -> pd.DataFrame:
+    """Project raw game rows down to prediction-relevant fields for conflict checks."""
+    if df.empty:
+        return df
+    out = df.copy()
+    rename = {}
+    for target, candidates in [
+        ("gameId", ["gameId", "gameid"]),
+        ("homeTeamId", ["homeTeamId", "hometeamid"]),
+        ("awayTeamId", ["awayTeamId", "awayteamid"]),
+        ("homeScore", ["homeScore", "homePoints", "homescore"]),
+        ("awayScore", ["awayScore", "awayPoints", "awayscore"]),
+        ("neutralSite", ["neutralSite", "neutralsite"]),
+        ("startDate", ["startDate", "startTime", "date", "startdate"]),
+    ]:
+        for cand in candidates:
+            if cand in out.columns:
+                rename[cand] = target
+                break
+    out = out.rename(columns=rename)
+    keep_cols = [c for c in ["gameId", "homeTeamId", "awayTeamId", "homeScore", "awayScore", "neutralSite", "startDate"] if c in out.columns]
+    return out[keep_cols].copy()
+
+
+def _run_prediction_preflight(season: int, game_date: str) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Run small integrity checks before generating a live slate."""
+    from . import s3_reader
+
+    click.echo("\nPreflight integrity check...")
+
+    # Raw schedule duplicate audit
+    games_raw_tbl = s3_reader.read_silver_table(config.TABLE_FCT_GAMES, season=season)
+    games_raw = games_raw_tbl.to_pandas() if games_raw_tbl.num_rows else pd.DataFrame()
+    games_raw_norm = _normalize_raw_games_for_preflight(games_raw)
+    if not games_raw_norm.empty and "startDate" in games_raw_norm.columns:
+        raw_start = pd.to_datetime(games_raw_norm["startDate"], utc=True, errors="coerce")
+        slate_date = pd.Timestamp(game_date).tz_localize(_ET)
+        raw_slate_mask = raw_start.dt.tz_convert(_ET).dt.normalize() == slate_date.normalize()
+        games_raw_norm = games_raw_norm.loc[raw_slate_mask].copy()
+    raw_game_dup_rows = 0
+    raw_game_dup_keys = 0
+    raw_game_conflicting_keys = 0
+    if not games_raw_norm.empty and "gameId" in games_raw_norm.columns:
+        raw_game_dup_mask = games_raw_norm.duplicated(subset=["gameId"], keep=False)
+        raw_game_dup_rows = int(raw_game_dup_mask.sum())
+        raw_game_dup_keys = int(games_raw_norm.loc[raw_game_dup_mask, "gameId"].nunique())
+        if raw_game_dup_keys:
+            compare_cols = [c for c in games_raw_norm.columns if c != "gameId"]
+            raw_game_conflicting_keys = int(
+                games_raw_norm.loc[raw_game_dup_mask, ["gameId", *compare_cols]]
+                .fillna("__NA__")
+                .groupby("gameId", sort=False)[compare_cols]
+                .apply(lambda g: len(g.drop_duplicates()) > 1)
+                .sum()
+            )
+
+    games = load_games(season)
+    slate_games = games.copy()
+    if not slate_games.empty and "startDate" in slate_games.columns:
+        slate_start = pd.to_datetime(slate_games["startDate"], utc=True, errors="coerce")
+        slate_date = pd.Timestamp(game_date)
+        slate_mask = slate_start.dt.tz_convert(_ET).dt.normalize() == slate_date.tz_localize(_ET)
+        slate_games = slate_games.loc[slate_mask].copy()
+
+    click.echo(
+        "  Games table: "
+        f"{len(games_raw_norm)} raw slate rows, {raw_game_dup_keys} duplicate gameId key(s), "
+        f"{raw_game_conflicting_keys} conflicting duplicate key(s)"
+    )
+
+    # Boxscore duplicate audit after loader dedupe.
+    boxscores = load_boxscores(season)
+    boxscore_dup_keys = 0
+    if not boxscores.empty and {"gameid", "teamid"}.issubset(boxscores.columns):
+        boxscore_dup_keys = int(
+            boxscores.duplicated(subset=["gameid", "teamid"], keep=False).sum()
+        )
+    click.echo(
+        f"  Team-game boxscores: {len(boxscores)} rows after load, {boxscore_dup_keys} duplicate key row(s)"
+    )
+
+    # Efficiency duplicate audit, raw vs protected load.
+    ratings_raw_tbl = s3_reader.read_gold_table(config.PRODUCTION_GOLD_RATINGS_TABLE, season=season)
+    ratings_raw = ratings_raw_tbl.to_pandas() if ratings_raw_tbl.num_rows else pd.DataFrame()
+    raw_rating_dup_rows = 0
+    raw_rating_dup_keys = 0
+    if not ratings_raw.empty and {"teamId", "rating_date"}.issubset(ratings_raw.columns):
+        ratings_raw["rating_date"] = pd.to_datetime(ratings_raw["rating_date"], errors="coerce")
+        raw_rating_dup_mask = ratings_raw.duplicated(subset=["teamId", "rating_date"], keep=False)
+        raw_rating_dup_rows = int(raw_rating_dup_mask.sum())
+        raw_rating_dup_keys = int(
+            ratings_raw.loc[raw_rating_dup_mask, ["teamId", "rating_date"]]
+            .drop_duplicates()
+            .shape[0]
+        )
+    ratings = load_efficiency_ratings(season, no_garbage=True)
+    rating_dup_rows_after = 0
+    if not ratings.empty and {"teamId", "rating_date"}.issubset(ratings.columns):
+        rating_dup_rows_after = int(
+            ratings.duplicated(subset=["teamId", "rating_date"], keep=False).sum()
+        )
+    click.echo(
+        "  Efficiency ratings: "
+        f"{len(ratings_raw)} raw rows, {raw_rating_dup_keys} duplicate team/date key(s), "
+        f"{rating_dup_rows_after} duplicate row(s) after load"
+    )
+
+    # Build the actual live feature rows once and reuse them for prediction.
+    features_df = build_features(
+        season,
+        game_date=game_date,
+        extra_features=config.EXTRA_FEATURES,
+        adjust_ff=config.ADJUST_FF,
+        adjust_alpha=config.ADJUST_ALPHA,
+        adjust_prior_weight=config.ADJUST_PRIOR,
+        efficiency_source=config.EFFICIENCY_SOURCE,
+    )
+    click.echo(f"  Feature rows for {game_date}: {len(features_df)}")
+
+    lines = load_lines(season)
+    preferred_lines = select_preferred_lines(lines)
+    missing_line_games = pd.DataFrame()
+    if not slate_games.empty:
+        merged_lines = slate_games.merge(
+            preferred_lines[["gameId", "book_spread"]] if not preferred_lines.empty else pd.DataFrame(columns=["gameId", "book_spread"]),
+            on="gameId",
+            how="left",
+        )
+        missing_line_games = merged_lines[merged_lines["book_spread"].isna()].copy()
+        click.echo(
+            "  Preferred lines for today's slate: "
+            f"{len(slate_games) - len(missing_line_games)}/{len(slate_games)} with spreads"
+        )
+        if not missing_line_games.empty:
+            click.echo("  Missing preferred line rows:")
+            for _, row in missing_line_games.sort_values("startDate").iterrows():
+                click.echo(f"    - {_format_matchup(row)}")
+
+    feature_missing = {}
+    if not features_df.empty:
+        for col in _CRITICAL_FEATURE_COLS:
+            feature_missing[col] = int(features_df[col].isna().sum()) if col in features_df.columns else len(features_df)
+    if feature_missing:
+        click.echo("  Critical feature missingness:")
+        for col in _CRITICAL_FEATURE_COLS:
+            click.echo(f"    {col}: {feature_missing.get(col, len(features_df))}")
+
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    if raw_game_conflicting_keys > 0:
+        errors.append(f"fct_games has {raw_game_conflicting_keys} conflicting duplicate gameId key(s)")
+    elif raw_game_dup_keys > 0:
+        warnings.append(
+            f"fct_games has {raw_game_dup_keys} duplicate gameId key(s), but the prediction-relevant fields are identical"
+        )
+    if boxscore_dup_keys > 0:
+        errors.append(f"load_boxscores returned {boxscore_dup_keys} duplicate (gameid, teamid) row(s)")
+    if rating_dup_rows_after > 0:
+        errors.append(f"load_efficiency_ratings returned {rating_dup_rows_after} duplicate team/date row(s)")
+    if not features_df.empty:
+        for col in _CRITICAL_FEATURE_COLS[:4]:
+            if feature_missing.get(col, 0) > 0:
+                errors.append(f"critical efficiency feature {col} missing for {feature_missing[col]} row(s)")
+        for col in _CRITICAL_FEATURE_COLS[4:]:
+            if feature_missing.get(col, 0) > 0:
+                warnings.append(f"turnover feature {col} missing for {feature_missing[col]} row(s)")
+    if raw_rating_dup_keys > 0:
+        warnings.append(
+            f"raw gold ratings table still contains {raw_rating_dup_keys} duplicate team/date key(s); loader dedupe protected this run"
+        )
+    if not missing_line_games.empty:
+        warnings.append(f"{len(missing_line_games)} scheduled game(s) have no preferred line")
+
+    if errors:
+        click.echo("  Preflight errors:", err=True)
+        for msg in errors:
+            click.echo(f"    - {msg}", err=True)
+        raise click.ClickException("preflight checks failed")
+
+    if warnings:
+        click.echo("  Preflight warnings:")
+        for msg in warnings:
+            click.echo(f"    - {msg}")
+
+    click.echo("  Preflight passed.")
+    return features_df, lines
 
 
 def _today_et() -> str:
@@ -356,23 +570,12 @@ def predict_today(season: int, game_date: str | None):
         game_date = _today_et()
 
     click.echo(f"Building features for {game_date}...")
-    df = build_features(
-        season,
-        game_date=game_date,
-        no_garbage=True,
-        extra_features=config.EXTRA_FEATURES,
-        adjust_ff=config.ADJUST_FF,
-        adjust_alpha=config.ADJUST_ALPHA,
-        adjust_prior_weight=config.ADJUST_PRIOR,
-        efficiency_source=config.EFFICIENCY_SOURCE,
-    )
+    df, lines = _run_prediction_preflight(season, game_date)
     if df.empty:
         click.echo(f"No games found for {game_date}.")
         return
 
     click.echo(f"  Games: {len(df)}")
-
-    lines = load_lines(season)
     secondary_df = _build_secondary_mu_features_if_needed(season, df, game_date=game_date)
     preds = predict(df, lines_df=lines, secondary_mu_features_df=secondary_df)
 
@@ -820,37 +1023,16 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
     if not skip_predict:
         # Step 4: Predict today's games
         click.echo(f"\n[4/6] Predictions for {game_date}...")
-        df = build_features(
-            season,
-            game_date=game_date,
-            extra_features=config.EXTRA_FEATURES,
-            adjust_ff=config.ADJUST_FF,
-            adjust_alpha=config.ADJUST_ALPHA,
-            adjust_prior_weight=config.ADJUST_PRIOR,
-            efficiency_source=config.EFFICIENCY_SOURCE,
-        )
+        df, lines = _run_prediction_preflight(season, game_date)
         if df.empty:
             click.echo(f"  No games found for {game_date}. Skipping predictions.")
         else:
             click.echo(f"  Games: {len(df)}")
-            lines = load_lines(season)
             secondary_df = _build_secondary_mu_features_if_needed(season, df, game_date=game_date)
             preds = predict(df, lines_df=lines, secondary_mu_features_df=secondary_df)
             json_path, csv_path = save_predictions(preds, game_date=game_date)
             click.echo(f"  JSON: {json_path}")
             click.echo(f"  CSV:  {csv_path}")
-            missing_lines = preds[preds["book_spread"].isna()].copy()
-            if not missing_lines.empty:
-                click.echo(
-                    f"  WARNING: {len(missing_lines)} scheduled game(s) have no line after refresh:",
-                    err=True,
-                )
-                for _, row in missing_lines.sort_values("startDate").iterrows():
-                    click.echo(
-                        f"    - {row['awayTeam']} at {row['homeTeam']} "
-                        f"({row['startDate']})",
-                        err=True,
-                    )
 
         # Step 5: Publish pipeline — rankings → final scores
         # (Site JSON is now written directly by save_predictions())
