@@ -402,22 +402,6 @@ def predict(
         available = [c for c in merge_cols if c in lines_dedup.columns]
         out = out.merge(lines_dedup[available], on="gameId", how="left")
 
-        # Layer 3: Model-based cross-check for phantom edges.
-        # When book_spread and predicted_spread both say home wins (or both
-        # say away wins) with combined edge > 9 pts, the spread sign is wrong.
-        if "book_spread" in out.columns:
-            _bs = out["book_spread"]
-            _ps = out["predicted_spread"]
-            _phantom = _bs + _ps
-            mask_phantom = (
-                _bs.notna() & _ps.notna()
-                & (
-                    ((_bs > 0) & (_ps > 0) & (_phantom >= 9))
-                    | ((_bs < 0) & (_ps < 0) & (_phantom <= -9))
-                )
-            )
-            out.loc[mask_phantom, "book_spread"] = -_bs[mask_phantom]
-
         # Edge metrics
         if "book_spread" in out.columns:
             # book_spread is from home perspective (negative = home favored)

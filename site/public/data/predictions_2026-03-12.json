@@ -411,16 +411,16 @@
     },
     {
       "away_team": "BYU",
-      "edge_home_points": 8.234722375869751,
+      "edge_home_points": -10.765277624130249,
       "game_id": "2026_03_12_byu_houston",
       "home_team": "Houston",
-      "market_spread_home": 9.5,
+      "market_spread_home": -9.5,
       "model_mu_home": -1.265277624130249,
-      "pick_cover_prob": 0.7163588545657691,
-      "pick_ev_per_1": 0.36759417689828644,
-      "pick_fair_odds": -252.55815882039383,
-      "pick_prob_edge": 0.19254933075624525,
-      "pick_side": "HOME",
+      "pick_cover_prob": 0.7727258623588269,
+      "pick_ev_per_1": 0.47520391904866954,
+      "pick_fair_odds": -339.9972695436331,
+      "pick_prob_edge": 0.24891633854930306,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.5864499807357788,
       "pred_sigma": 14.394893646240234,
@@ -750,5 +750,5 @@
       "start_time": "2026-03-13T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T18:29:05.255165Z"
+  "generated_at": "2026-03-12T18:40:48.202912Z"
 }

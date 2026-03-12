@@ -241,6 +241,59 @@ class TestPredictPipeline:
 
         np.testing.assert_allclose(out["predicted_spread"].values, expected_mu, rtol=1e-6, atol=1e-6)
 
+    def test_predict_preserves_valid_book_spread_sign(self, mock_models):
+        from src.infer import predict
+
+        tmp_path, feature_order = mock_models
+        X_fit = np.random.randn(30, len(feature_order))
+        y_fit = np.linspace(-5, 5, 30)
+        tree = HistGradientBoostingRegressor(
+            loss="absolute_error",
+            learning_rate=0.05,
+            max_depth=3,
+            max_iter=30,
+            min_samples_leaf=2,
+            random_state=42,
+        )
+        tree.fit(X_fit, y_fit)
+        with open(tmp_path / "regressor_hgbr.pkl", "wb") as f:
+            pickle.dump(
+                {
+                    "model": tree,
+                    "feature_order": feature_order,
+                    "model_type": "hist_gradient_boosting",
+                    "hparams": {},
+                },
+                f,
+            )
+
+        features = pd.DataFrame(X_fit[:1], columns=feature_order)
+        features["gameId"] = [372377]
+        features["homeTeamId"] = [113]
+        features["awayTeamId"] = [18]
+        features["homeTeam"] = ["Houston"]
+        features["awayTeam"] = ["BYU"]
+        features["startDate"] = ["2026-03-12T23:00:00.000Z"]
+        features["neutralSite"] = [True]
+
+        lines = pd.DataFrame(
+            {
+                "gameId": [372377],
+                "provider": ["Bovada"],
+                "spread": [-9.5],
+                "homeMoneyline": [-480.0],
+                "awayMoneyline": [350.0],
+                "overUnder": [146.0],
+            }
+        )
+
+        with patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+             patch.object(config, "ARTIFACTS_DIR", tmp_path), \
+             patch.object(config, "TREE_REGRESSOR_PATH", tmp_path / "regressor_hgbr.pkl"):
+            out = predict(features, lines)
+
+        assert out.loc[0, "book_spread"] == pytest.approx(-9.5)
+
     def test_predict_output_shape_and_columns(self, mock_models):
         """Predict returns correct columns and row count."""
         from src.infer import predict

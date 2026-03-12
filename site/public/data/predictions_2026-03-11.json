@@ -394,15 +394,15 @@
     },
     {
       "away_team": "Boston University",
-      "edge_home_points": 7.549741744995117,
+      "edge_home_points": 12.549741744995117,
       "game_id": "2026_03_11_boston_university_lehigh",
       "home_team": "Lehigh",
-      "market_spread_home": -2.5,
+      "market_spread_home": 2.5,
       "model_mu_home": 10.049741744995117,
-      "pick_cover_prob": 0.7074662283758849,
-      "pick_ev_per_1": 0.35061734508123477,
-      "pick_fair_odds": -241.8408734308216,
-      "pick_prob_edge": 0.18365670456636107,
+      "pick_cover_prob": 0.8179546450139235,
+      "pick_ev_per_1": 0.5615497768447629,
+      "pick_fair_odds": -449.31365871789666,
+      "pick_prob_edge": 0.2941451212043996,
       "pick_side": "HOME",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.6637043356895447,
@@ -648,5 +648,5 @@
       "start_time": "2026-03-12T03:40:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T18:27:43.553768Z"
+  "generated_at": "2026-03-12T18:45:21.612747Z"
 }

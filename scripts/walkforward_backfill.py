@@ -144,18 +144,6 @@ def generate_predictions(
         available = [c for c in merge_cols if c in lines_dedup.columns]
         out = out.merge(lines_dedup[available], on="gameId", how="left")
 
-        # Phantom edge fix
-        if "book_spread" in out.columns:
-            _bs = out["book_spread"]
-            _ps = out["predicted_spread"]
-            _phantom = _bs + _ps
-            mask_phantom = (
-                _bs.notna() & _ps.notna()
-                & (((_bs > 0) & (_ps > 0) & (_phantom >= 9))
-                   | ((_bs < 0) & (_ps < 0) & (_phantom <= -9)))
-            )
-            out.loc[mask_phantom, "book_spread"] = -_bs[mask_phantom]
-
         # Edge metrics
         if "book_spread" in out.columns:
             out["model_spread"] = -out["predicted_spread"]
