@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2018-11-10",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -398,19 +398,19 @@
     },
     {
       "away_team": "Youngstown State",
-      "edge_home_points": 16.79597759246826,
+      "edge_home_points": 13.793411254882812,
       "game_id": "2018_11_10_youngstown_state_akron",
       "home_team": "Akron",
       "market_spread_home": 6.5,
-      "model_mu_home": 10.295977592468262,
-      "pick_cover_prob": 0.7122145519293817,
-      "pick_ev_per_1": 0.3596823264106377,
-      "pick_fair_odds": -247.4810858937574,
-      "pick_prob_edge": 0.18840502811985782,
+      "model_mu_home": 7.2934112548828125,
+      "pick_cover_prob": 0.7232148049154327,
+      "pick_ev_per_1": 0.3806828093840078,
+      "pick_fair_odds": -261.2910002987934,
+      "pick_prob_edge": 0.19940528110590883,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6342757167258907,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.6229536851868408,
+      "pred_sigma": 23.283222198486328,
       "start_time": "2018-11-10T21:30:00.000Z"
     },
     {
@@ -1010,19 +1010,19 @@
     },
     {
       "away_team": "Portland",
-      "edge_home_points": 5.893345832824707,
+      "edge_home_points": 4.319077491760254,
       "game_id": "2018_11_10_portland_north_texas",
       "home_team": "North Texas",
       "market_spread_home": -9.0,
-      "model_mu_home": 14.893345832824707,
-      "pick_cover_prob": 0.577869006917429,
-      "pick_ev_per_1": 0.10320446775145542,
-      "pick_fair_odds": -136.89329056310135,
-      "pick_prob_edge": 0.054059483107905204,
+      "model_mu_home": 13.319077491760254,
+      "pick_cover_prob": 0.5754948251687215,
+      "pick_ev_per_1": 0.09867193895846837,
+      "pick_fair_odds": -135.56838862976278,
+      "pick_prob_edge": 0.05168530135919769,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6902097096745642,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.721429619335425,
+      "pred_sigma": 22.686458587646484,
       "start_time": "2018-11-11T02:30:00.000Z"
     },
     {
@@ -1094,7 +1094,7 @@
       "start_time": "2018-11-11T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.059554Z",
+  "generated_at": "2026-03-12T01:45:14.248283Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2018-12-05",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -262,19 +262,19 @@
     },
     {
       "away_team": "Ohio State",
-      "edge_home_points": 2.3669497966766357,
+      "edge_home_points": 1.5810093879699707,
       "game_id": "2018_12_05_ohio_state_illinois",
       "home_team": "Illinois",
       "market_spread_home": 5.5,
-      "model_mu_home": -3.1330502033233643,
-      "pick_cover_prob": 0.5905531454088906,
-      "pick_ev_per_1": 0.1274196412351547,
-      "pick_fair_odds": -144.23194091908252,
-      "pick_prob_edge": 0.06674362159936675,
+      "model_mu_home": -3.9189906120300293,
+      "pick_cover_prob": 0.5632568164086669,
+      "pick_ev_per_1": 0.07530846768927313,
+      "pick_fair_odds": -128.9675117026473,
+      "pick_prob_edge": 0.039447292599143036,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3809155083837361,
-      "pred_sigma": 10.337465286254883,
+      "pred_home_win_prob": 0.3465314640736297,
+      "pred_sigma": 9.92898941040039,
       "start_time": "2018-12-06T00:00:00.000Z"
     },
     {
@@ -1179,7 +1179,7 @@
       "start_time": "2018-12-06T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.167863Z",
+  "generated_at": "2026-03-12T01:45:14.345358Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

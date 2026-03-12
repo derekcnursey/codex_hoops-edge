@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-03-19",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Wagner",
-      "edge_home_points": 0.3221700191497803,
+      "edge_home_points": -0.5911812782287598,
       "game_id": "2024_03_19_wagner_howard",
       "home_team": "Howard",
       "market_spread_home": -3.5,
-      "model_mu_home": 3.8221700191497803,
-      "pick_cover_prob": 0.5119015920770256,
-      "pick_ev_per_1": -0.02273332421658758,
-      "pick_fair_odds": -104.87671825346487,
-      "pick_prob_edge": -0.011907931732498267,
-      "pick_side": "HOME",
+      "model_mu_home": 2.9088187217712402,
+      "pick_cover_prob": 0.5238591251629995,
+      "pick_ev_per_1": 9.469349299900953e-05,
+      "pick_fair_odds": -110.02187647559865,
+      "pick_prob_edge": 4.960135347564787e-05,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6383247697182359,
-      "pred_sigma": 10.797561645507812,
+      "pred_home_win_prob": 0.6157898638751615,
+      "pred_sigma": 9.879093170166016,
       "start_time": "2024-03-19T22:40:00.000Z"
     },
     {
@@ -147,15 +147,15 @@
       "game_id": "2024_03_19_abilene_christian_texas_a_m_corpus_christi",
       "home_team": "Texas A&M-Corpus Christi",
       "market_spread_home": null,
-      "model_mu_home": 2.6147210597991943,
+      "model_mu_home": 1.1634302139282227,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.5864957875022352,
-      "pred_sigma": 11.964498519897461,
+      "pred_home_win_prob": 0.5395724219209455,
+      "pred_sigma": 11.709644317626953,
       "start_time": "2024-03-20T01:00:00.000Z"
     },
     {
@@ -194,19 +194,19 @@
     },
     {
       "away_team": "Colorado State",
-      "edge_home_points": 2.818482279777527,
+      "edge_home_points": 1.0354971885681152,
       "game_id": "2024_03_19_colorado_state_virginia",
       "home_team": "Virginia",
       "market_spread_home": 2.5,
-      "model_mu_home": 0.31848227977752686,
-      "pick_cover_prob": 0.6265271569216544,
-      "pick_ev_per_1": 0.19609729957770383,
-      "pick_fair_odds": -167.75708556410999,
-      "pick_prob_edge": 0.10271763311213056,
+      "model_mu_home": -1.4645028114318848,
+      "pick_cover_prob": 0.5489394399126781,
+      "pick_ev_per_1": 0.047975294378749145,
+      "pick_fair_odds": -121.69972027844945,
+      "pick_prob_edge": 0.025129916103154293,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5145425810708667,
-      "pred_sigma": 8.734893798828125,
+      "pred_home_win_prob": 0.43095876267685934,
+      "pred_sigma": 8.419888496398926,
       "start_time": "2024-03-20T01:10:00.000Z"
     },
     {
@@ -227,7 +227,7 @@
       "start_time": "2024-03-20T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.132636Z",
+  "generated_at": "2026-03-12T01:45:17.244044Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

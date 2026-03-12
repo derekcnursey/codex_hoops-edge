@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-02-07",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -619,19 +619,19 @@
     },
     {
       "away_team": "Omaha",
-      "edge_home_points": 0.9367837905883789,
+      "edge_home_points": -1.6755106449127197,
       "game_id": "2019_02_07_omaha_south_dakota",
       "home_team": "South Dakota",
       "market_spread_home": -1.0,
-      "model_mu_home": 1.936783790588379,
-      "pick_cover_prob": 0.5364071715212544,
-      "pick_ev_per_1": 0.024050054722394743,
-      "pick_fair_odds": -115.70652921475188,
-      "pick_prob_edge": 0.012597647711730553,
-      "pick_side": "HOME",
+      "model_mu_home": -0.6755106449127197,
+      "pick_cover_prob": 0.5344893500210536,
+      "pick_ev_per_1": 0.020388759131102274,
+      "pick_fair_odds": -114.81785648625372,
+      "pick_prob_edge": 0.010679826211529742,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5749298909845816,
-      "pred_sigma": 10.250813484191895,
+      "pred_home_win_prob": 0.4860804904513305,
+      "pred_sigma": 19.35664939880371,
       "start_time": "2019-02-08T01:00:00.000Z"
     },
     {
@@ -1111,7 +1111,7 @@
       "start_time": "2019-02-08T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.498866Z",
+  "generated_at": "2026-03-12T01:45:14.560364Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

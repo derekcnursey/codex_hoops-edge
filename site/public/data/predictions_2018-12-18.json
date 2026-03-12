@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2018-12-18",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -483,19 +483,19 @@
     },
     {
       "away_team": "Liberty",
-      "edge_home_points": -3.0669073462486267,
+      "edge_home_points": -3.291447162628174,
       "game_id": "2018_12_18_liberty_alabama",
       "home_team": "Alabama",
       "market_spread_home": -4.0,
-      "model_mu_home": 0.9330926537513733,
-      "pick_cover_prob": 0.6257398784052984,
-      "pick_ev_per_1": 0.19459431331920607,
-      "pick_fair_odds": -167.1938425443394,
-      "pick_prob_edge": 0.1019303545957746,
+      "model_mu_home": 0.7085528373718262,
+      "pick_cover_prob": 0.5586419003378963,
+      "pick_ev_per_1": 0.06649817337234742,
+      "pick_fair_odds": -126.57338808681273,
+      "pick_prob_edge": 0.034832376528372455,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5388505813916453,
-      "pred_sigma": 9.566412925720215,
+      "pred_home_win_prob": 0.5126675739738877,
+      "pred_sigma": 22.310836791992188,
       "start_time": "2018-12-19T01:00:00.000Z"
     },
     {
@@ -907,7 +907,7 @@
       "start_time": "2018-12-19T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.218696Z",
+  "generated_at": "2026-03-12T01:45:14.387416Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

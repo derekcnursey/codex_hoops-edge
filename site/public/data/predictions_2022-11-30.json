@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-11-30",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -24,19 +24,19 @@
     },
     {
       "away_team": "Santa Clara",
-      "edge_home_points": 7.161768674850464,
+      "edge_home_points": 7.2734901905059814,
       "game_id": "2022_11_30_santa_clara_wyoming",
       "home_team": "Wyoming",
       "market_spread_home": 6.5,
-      "model_mu_home": 0.6617686748504639,
-      "pick_cover_prob": 0.7270724922005259,
-      "pick_ev_per_1": 0.388047485110095,
-      "pick_fair_odds": -266.3976592402413,
-      "pick_prob_edge": 0.2032629683910021,
+      "model_mu_home": 0.7734901905059814,
+      "pick_cover_prob": 0.7071151489724002,
+      "pick_ev_per_1": 0.3499471025836731,
+      "pick_fair_odds": -241.431110721997,
+      "pick_prob_edge": 0.1833056251628764,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5222533406114666,
-      "pred_sigma": 11.857568740844727,
+      "pred_home_win_prob": 0.523107699322157,
+      "pred_sigma": 13.346429824829102,
       "start_time": "2022-11-30T21:00:00.000Z"
     },
     {
@@ -75,19 +75,19 @@
     },
     {
       "away_team": "Temple",
-      "edge_home_points": -2.1193394660949707,
+      "edge_home_points": -2.483887195587158,
       "game_id": "2022_11_30_temple_la_salle",
       "home_team": "La Salle",
       "market_spread_home": 4.5,
-      "model_mu_home": -6.619339466094971,
-      "pick_cover_prob": 0.5854213137595108,
-      "pick_ev_per_1": 0.11762250808633878,
-      "pick_fair_odds": -141.20873387589418,
-      "pick_prob_edge": 0.06161178994998695,
+      "model_mu_home": -6.983887195587158,
+      "pick_cover_prob": 0.5813061506024862,
+      "pick_ev_per_1": 0.10976628751383732,
+      "pick_fair_odds": -138.83799617285186,
+      "pick_prob_edge": 0.05749662679296241,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.2501703385604459,
-      "pred_sigma": 9.821651458740234,
+      "pred_home_win_prob": 0.28195034160371896,
+      "pred_sigma": 12.10258674621582,
       "start_time": "2022-11-30T23:00:00.000Z"
     },
     {
@@ -1451,7 +1451,7 @@
       "start_time": "2022-12-01T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.089946Z",
+  "generated_at": "2026-03-12T01:45:16.200323Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

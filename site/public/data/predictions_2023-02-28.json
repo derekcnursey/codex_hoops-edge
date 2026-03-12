@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-02-28",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Arkansas State",
-      "edge_home_points": -1.1138416528701782,
+      "edge_home_points": -2.0094523429870605,
       "game_id": "2023_02_28_arkansas_state_coastal_carolina",
       "home_team": "Coastal Carolina",
       "market_spread_home": -2.5,
-      "model_mu_home": 1.3861583471298218,
-      "pick_cover_prob": 0.5450324174702287,
-      "pick_ev_per_1": 0.040516433352254744,
-      "pick_fair_odds": -119.7958796184262,
-      "pick_prob_edge": 0.021222893660704845,
+      "model_mu_home": 0.49054765701293945,
+      "pick_cover_prob": 0.5791084356043006,
+      "pick_ev_per_1": 0.10557064979002839,
+      "pick_fair_odds": -137.59088672536433,
+      "pick_prob_edge": 0.05529891179477675,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5559767269407417,
-      "pred_sigma": 9.846521377563477,
+      "pred_home_win_prob": 0.5194325993684166,
+      "pred_sigma": 10.066732406616211,
       "start_time": "2023-02-28T23:00:00.000Z"
     },
     {
@@ -517,19 +517,19 @@
     },
     {
       "away_team": "Georgia State",
-      "edge_home_points": 0.7362165451049805,
+      "edge_home_points": -0.2441730499267578,
       "game_id": "2023_02_28_georgia_state_texas_state",
       "home_team": "Texas State",
       "market_spread_home": -4.5,
-      "model_mu_home": 5.2362165451049805,
-      "pick_cover_prob": 0.529911629153336,
-      "pick_ev_per_1": 0.01164947383818693,
-      "pick_fair_odds": -112.72596005702628,
-      "pick_prob_edge": 0.00610210534381217,
-      "pick_side": "HOME",
+      "model_mu_home": 4.255826950073242,
+      "pick_cover_prob": 0.5101663499727371,
+      "pick_ev_per_1": -0.02604605914295638,
+      "pick_fair_odds": -104.15093980259269,
+      "pick_prob_edge": -0.013643173836786704,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7032477006214628,
-      "pred_sigma": 9.809978485107422,
+      "pred_home_win_prob": 0.6715545832354592,
+      "pred_sigma": 9.580666542053223,
       "start_time": "2023-03-01T01:30:00.000Z"
     },
     {
@@ -703,7 +703,7 @@
       "start_time": "2023-03-01T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.460675Z",
+  "generated_at": "2026-03-12T01:45:16.739434Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

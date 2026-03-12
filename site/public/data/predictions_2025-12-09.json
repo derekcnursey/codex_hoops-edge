@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-12-09",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -551,19 +551,19 @@
     },
     {
       "away_team": "Florida",
-      "edge_home_points": 1.0084657669067383,
+      "edge_home_points": -3.0880402326583862,
       "game_id": "2025_12_09_florida_uconn",
       "home_team": "UConn",
       "market_spread_home": -4.5,
-      "model_mu_home": 5.508465766906738,
-      "pick_cover_prob": 0.5378571439928145,
-      "pick_ev_per_1": 0.026818183986282162,
-      "pick_fair_odds": -116.38330810515694,
-      "pick_prob_edge": 0.014047620183290643,
-      "pick_side": "HOME",
+      "model_mu_home": 1.4119597673416138,
+      "pick_cover_prob": 0.6095323409401259,
+      "pick_ev_per_1": 0.1636526508856948,
+      "pick_fair_odds": -156.10315650922078,
+      "pick_prob_edge": 0.08572281713060204,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6981585001485653,
-      "pred_sigma": 10.611334800720215,
+      "pred_home_win_prob": 0.5505920065825859,
+      "pred_sigma": 11.104049682617188,
       "start_time": "2025-12-10T02:31:00.000Z"
     },
     {
@@ -601,7 +601,7 @@
       "start_time": "2025-12-10T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.960760Z",
+  "generated_at": "2026-03-12T01:45:17.875375Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

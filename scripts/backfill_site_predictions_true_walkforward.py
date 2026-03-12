@@ -265,6 +265,7 @@ def main() -> int:
         "sigma_model": SIGMA_MODEL,
         "sigma_mode": args.sigma_mode,
         "dates_written": written,
+        "walkforward_dates": sorted(str(d) for d in merged["site_date"].dropna().unique()),
         "rows_written": int(len(merged)),
         "historical_files_deleted": deleted,
         "keep_current_season": args.keep_current_season,

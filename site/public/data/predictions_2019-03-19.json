@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-03-19",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Fairleigh Dickinson",
-      "edge_home_points": 0.8789217472076416,
+      "edge_home_points": 1.4140466451644897,
       "game_id": "2019_03_19_fairleigh_dickinson_prairie_view_a_m",
       "home_team": "Prairie View A&M",
       "market_spread_home": 2.0,
-      "model_mu_home": -1.1210782527923584,
-      "pick_cover_prob": 0.5280999799723269,
-      "pick_ev_per_1": 0.008190870856260524,
-      "pick_fair_odds": -111.90929382485683,
-      "pick_prob_edge": 0.004290456162803102,
+      "model_mu_home": -0.5859533548355103,
+      "pick_cover_prob": 0.5478611054608729,
+      "pick_ev_per_1": 0.04591665587984817,
+      "pick_fair_odds": -121.17097468894309,
+      "pick_prob_edge": 0.02405158165134902,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4641766321917595,
-      "pred_sigma": 12.467939376831055,
+      "pred_home_win_prob": 0.4801277006350502,
+      "pred_sigma": 11.758319854736328,
       "start_time": "2019-03-19T22:40:00.000Z"
     },
     {
@@ -228,19 +228,19 @@
     },
     {
       "away_team": "Temple",
-      "edge_home_points": 0.2987532615661621,
+      "edge_home_points": -1.2687627077102661,
       "game_id": "2019_03_19_temple_belmont",
       "home_team": "Belmont",
       "market_spread_home": -2.5,
-      "model_mu_home": 2.798753261566162,
-      "pick_cover_prob": 0.508881534915739,
-      "pick_ev_per_1": -0.02849888788813476,
-      "pick_fair_odds": -103.61686051214349,
-      "pick_prob_edge": -0.014927988893784883,
-      "pick_side": "HOME",
+      "model_mu_home": 1.2312372922897339,
+      "pick_cover_prob": 0.536457891657806,
+      "pick_ev_per_1": 0.024146884073993236,
+      "pick_fair_odds": -115.73013152491951,
+      "pick_prob_edge": 0.01264836784828216,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5826106506245965,
-      "pred_sigma": 13.418340682983398,
+      "pred_home_win_prob": 0.5353824739195022,
+      "pred_sigma": 13.864144325256348,
       "start_time": "2019-03-20T01:10:00.000Z"
     },
     {
@@ -261,7 +261,7 @@
       "start_time": "2019-03-20T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.659862Z",
+  "generated_at": "2026-03-12T01:45:14.785527Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-11-30",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -432,19 +432,19 @@
     },
     {
       "away_team": "Hawai'i",
-      "edge_home_points": -2.918393135070801,
+      "edge_home_points": -4.749335289001465,
       "game_id": "2023_11_30_hawai_i_utah",
       "home_team": "Utah",
       "market_spread_home": -11.5,
-      "model_mu_home": 8.5816068649292,
-      "pick_cover_prob": 0.616619976694242,
-      "pick_ev_per_1": 0.17718359187082555,
-      "pick_fair_odds": -160.83779519270033,
-      "pick_prob_edge": 0.09281045288471812,
+      "model_mu_home": 6.750664710998535,
+      "pick_cover_prob": 0.6622237685204622,
+      "pick_ev_per_1": 0.2642453762663368,
+      "pick_fair_odds": -196.05398687165442,
+      "pick_prob_edge": 0.13841424471093833,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.8084518037953439,
-      "pred_sigma": 9.83897590637207,
+      "pred_home_win_prob": 0.7240478377987918,
+      "pred_sigma": 11.347391128540039,
       "start_time": "2023-12-01T02:00:00.000Z"
     },
     {
@@ -482,7 +482,7 @@
       "start_time": "2023-12-01T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.663189Z",
+  "generated_at": "2026-03-12T01:45:16.910344Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

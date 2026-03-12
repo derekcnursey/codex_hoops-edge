@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2021-12-10",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -109,19 +109,19 @@
     },
     {
       "away_team": "High Point",
-      "edge_home_points": 0.3563404083251953,
+      "edge_home_points": -0.42386817932128906,
       "game_id": "2021_12_10_high_point_south_carolina_state",
       "home_team": "South Carolina State",
       "market_spread_home": 7.5,
-      "model_mu_home": -7.143659591674805,
-      "pick_cover_prob": 0.511257437776315,
-      "pick_ev_per_1": -0.02396307333612585,
-      "pick_fair_odds": -104.60669425846436,
-      "pick_prob_edge": -0.012552086033208787,
-      "pick_side": "HOME",
+      "model_mu_home": -7.923868179321289,
+      "pick_cover_prob": 0.5147936425848562,
+      "pick_ev_per_1": -0.017212136883456464,
+      "pick_fair_odds": -106.09787664929489,
+      "pick_prob_edge": -0.009015881224667677,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.2857737869743854,
-      "pred_sigma": 12.62635326385498,
+      "pred_home_win_prob": 0.2440356843774874,
+      "pred_sigma": 11.42789363861084,
       "start_time": "2021-12-11T00:00:00.000Z"
     },
     {
@@ -261,7 +261,7 @@
       "start_time": "2021-12-11T02:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.425863Z",
+  "generated_at": "2026-03-12T01:45:15.577331Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

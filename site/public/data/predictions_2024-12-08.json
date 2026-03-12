@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-12-08",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -75,19 +75,19 @@
     },
     {
       "away_team": "Vanderbilt",
-      "edge_home_points": 3.348223388195038,
+      "edge_home_points": 1.5774580240249634,
       "game_id": "2024_12_08_vanderbilt_tcu",
       "home_team": "TCU",
       "market_spread_home": 2.5,
-      "model_mu_home": 0.8482233881950378,
-      "pick_cover_prob": 0.6129304490429522,
-      "pick_ev_per_1": 0.17013994817290878,
-      "pick_fair_odds": -158.35150234045864,
-      "pick_prob_edge": 0.0891209252334284,
+      "model_mu_home": -0.9225419759750366,
+      "pick_cover_prob": 0.5554639601375131,
+      "pick_ev_per_1": 0.060431196626161365,
+      "pick_fair_odds": -124.95363937406306,
+      "pick_prob_edge": 0.031654436327989255,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5289769344658499,
-      "pred_sigma": 11.667705535888672,
+      "pred_home_win_prob": 0.46749395642592473,
+      "pred_sigma": 11.30968952178955,
       "start_time": "2024-12-08T17:30:00.000Z"
     },
     {
@@ -449,19 +449,19 @@
     },
     {
       "away_team": "Texas A&M",
-      "edge_home_points": 2.5548653602600098,
+      "edge_home_points": 2.0399012565612793,
       "game_id": "2024_12_08_texas_a_m_texas_tech",
       "home_team": "Texas Tech",
       "market_spread_home": -0.5,
-      "model_mu_home": 3.0548653602600098,
-      "pick_cover_prob": 0.5883381739790369,
-      "pick_ev_per_1": 0.1231910594145249,
-      "pick_fair_odds": -142.91783614375672,
-      "pick_prob_edge": 0.06452865016951304,
+      "model_mu_home": 2.5399012565612793,
+      "pick_cover_prob": 0.5655680449939047,
+      "pick_ev_per_1": 0.07972081317018165,
+      "pick_fair_odds": -130.1856455255391,
+      "pick_prob_edge": 0.04175852118438084,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6052529879670637,
-      "pred_sigma": 11.442827224731445,
+      "pred_home_win_prob": 0.5814365155927305,
+      "pred_sigma": 12.355420112609863,
       "start_time": "2024-12-08T20:22:00.000Z"
     },
     {
@@ -669,7 +669,7 @@
       "start_time": "2024-12-08T23:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.331951Z",
+  "generated_at": "2026-03-12T01:45:17.397673Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-11-13",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -143,19 +143,19 @@
     },
     {
       "away_team": "Harvard",
-      "edge_home_points": 6.263085573911667,
+      "edge_home_points": 2.922020196914673,
       "game_id": "2022_11_13_harvard_elon",
       "home_team": "Elon",
       "market_spread_home": 6.5,
-      "model_mu_home": -0.23691442608833313,
-      "pick_cover_prob": 0.6873020676026327,
-      "pick_ev_per_1": 0.3121221290595715,
-      "pick_fair_odds": -219.79744551979624,
-      "pick_prob_edge": 0.16349254379310885,
+      "model_mu_home": -3.577979803085327,
+      "pick_cover_prob": 0.6035757518951416,
+      "pick_ev_per_1": 0.15228098089072484,
+      "pick_fair_odds": -152.25500326495904,
+      "pick_prob_edge": 0.07976622808561773,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4926328113782136,
-      "pred_sigma": 12.828476905822754,
+      "pred_home_win_prob": 0.373890306323195,
+      "pred_sigma": 11.126694679260254,
       "start_time": "2022-11-13T19:00:00.000Z"
     },
     {
@@ -177,19 +177,19 @@
     },
     {
       "away_team": "Colorado",
-      "edge_home_points": -5.912204742431641,
+      "edge_home_points": -5.653038024902344,
       "game_id": "2022_11_13_colorado_tennessee",
       "home_team": "Tennessee",
       "market_spread_home": -15.5,
-      "model_mu_home": 9.58779525756836,
-      "pick_cover_prob": 0.6388695617623659,
-      "pick_ev_per_1": 0.21966007245542574,
-      "pick_fair_odds": -176.90825644056386,
-      "pick_prob_edge": 0.11506003795284203,
+      "model_mu_home": 9.846961975097656,
+      "pick_cover_prob": 0.633616789243423,
+      "pick_ev_per_1": 0.20963205219198933,
+      "pick_fair_odds": -172.93827081623414,
+      "pick_prob_edge": 0.10980726543389918,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7178321353153143,
-      "pred_sigma": 16.63353729248047,
+      "pred_home_win_prob": 0.7239994397094207,
+      "pred_sigma": 16.55607795715332,
       "start_time": "2022-11-13T19:00:00.000Z"
     },
     {
@@ -415,19 +415,19 @@
     },
     {
       "away_team": "Louisiana",
-      "edge_home_points": 10.725787162780762,
+      "edge_home_points": 3.590684413909912,
       "game_id": "2022_11_13_louisiana_east_tennessee_state",
       "home_team": "East Tennessee State",
       "market_spread_home": 5.5,
-      "model_mu_home": 5.225787162780762,
-      "pick_cover_prob": 0.8368346854959088,
-      "pick_ev_per_1": 0.5975934904921895,
-      "pick_fair_odds": -512.8753546912238,
-      "pick_prob_edge": 0.31302516168638495,
+      "model_mu_home": -1.909315586090088,
+      "pick_cover_prob": 0.6422267471254508,
+      "pick_ev_per_1": 0.2260692445122242,
+      "pick_fair_odds": -179.50664057903828,
+      "pick_prob_edge": 0.11841722331592697,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6837528410737459,
-      "pred_sigma": 10.92760181427002,
+      "pred_home_win_prob": 0.42317575500722215,
+      "pred_sigma": 9.853224754333496,
       "start_time": "2022-11-13T21:30:00.000Z"
     },
     {
@@ -619,19 +619,19 @@
     },
     {
       "away_team": "Mississippi Valley State",
-      "edge_home_points": 2.1213340759277344,
+      "edge_home_points": -0.14249801635742188,
       "game_id": "2022_11_13_mississippi_valley_state_yale",
       "home_team": "Yale",
       "market_spread_home": -21.5,
-      "model_mu_home": 23.621334075927734,
-      "pick_cover_prob": 0.5619837013351342,
-      "pick_ev_per_1": 0.07287797527616524,
-      "pick_fair_odds": -128.30200680845397,
-      "pick_prob_edge": 0.038174177525610364,
-      "pick_side": "HOME",
+      "model_mu_home": 21.357501983642578,
+      "pick_cover_prob": 0.5043644010144432,
+      "pick_ev_per_1": -0.037122507154244755,
+      "pick_fair_odds": -101.76113298696707,
+      "pick_prob_edge": -0.019445122795080594,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.958814049456316,
-      "pred_sigma": 13.598248481750488,
+      "pred_home_win_prob": 0.9494664110997542,
+      "pred_sigma": 13.025235176086426,
       "start_time": "2022-11-14T00:30:00.000Z"
     },
     {
@@ -686,7 +686,7 @@
       "start_time": "2022-11-14T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.982991Z",
+  "generated_at": "2026-03-12T01:45:16.113516Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

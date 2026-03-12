@@ -1,29 +1,29 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-03-30",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "UAB",
-      "edge_home_points": 2.367199808359146,
+      "edge_home_points": 1.9871923327445984,
       "game_id": "2023_03_30_uab_north_texas",
       "home_team": "North Texas",
       "market_spread_home": 2.5,
-      "model_mu_home": -0.13280019164085388,
-      "pick_cover_prob": 0.5882310613913853,
-      "pick_ev_per_1": 0.12298657174718997,
-      "pick_fair_odds": -142.85464643813197,
-      "pick_prob_edge": 0.06442153758186142,
+      "model_mu_home": -0.5128076672554016,
+      "pick_cover_prob": 0.577282815544065,
+      "pick_ev_per_1": 0.1020853751295786,
+      "pick_fair_odds": -136.56478533917806,
+      "pick_prob_edge": 0.053473291734541184,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.49500930012721756,
-      "pred_sigma": 10.61539077758789,
+      "pred_home_win_prob": 0.4799387369317027,
+      "pred_sigma": 10.193495750427246,
       "start_time": "2023-03-31T01:42:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.550826Z",
+  "generated_at": "2026-03-12T01:45:16.820696Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

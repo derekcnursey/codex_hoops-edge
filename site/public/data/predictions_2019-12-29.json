@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-12-29",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -41,19 +41,19 @@
     },
     {
       "away_team": "West Virginia",
-      "edge_home_points": 1.5294675827026367,
+      "edge_home_points": -0.7882003784179688,
       "game_id": "2019_12_29_west_virginia_ohio_state",
       "home_team": "Ohio State",
       "market_spread_home": -6.5,
-      "model_mu_home": 8.029467582702637,
-      "pick_cover_prob": 0.5301938015358544,
-      "pick_ev_per_1": 0.012188166568449232,
-      "pick_fair_odds": -112.85372633846112,
-      "pick_prob_edge": 0.006384277726330545,
-      "pick_side": "HOME",
+      "model_mu_home": 5.711799621582031,
+      "pick_cover_prob": 0.5130900051827736,
+      "pick_ev_per_1": -0.020464535560159536,
+      "pick_fair_odds": -105.37676585903202,
+      "pick_prob_edge": -0.010719518626750246,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6545790114454242,
-      "pred_sigma": 20.189115524291992,
+      "pred_home_win_prob": 0.5939887237643775,
+      "pred_sigma": 24.017562866210938,
       "start_time": "2019-12-29T17:00:00.000Z"
     },
     {
@@ -347,19 +347,19 @@
     },
     {
       "away_team": "Marshall",
-      "edge_home_points": 5.5611467361450195,
+      "edge_home_points": 3.5544090270996094,
       "game_id": "2019_12_29_marshall_duquesne",
       "home_team": "Duquesne",
       "market_spread_home": -6.5,
-      "model_mu_home": 12.06114673614502,
-      "pick_cover_prob": 0.6346238316515113,
-      "pick_ev_per_1": 0.21155458769833968,
-      "pick_fair_odds": -173.69053776003784,
-      "pick_prob_edge": 0.11081430784198743,
+      "model_mu_home": 10.05440902709961,
+      "pick_cover_prob": 0.5586288261265874,
+      "pick_ev_per_1": 0.06647321351439406,
+      "pick_fair_odds": -126.56667657385454,
+      "pick_prob_edge": 0.03481930231706354,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7722708732414119,
-      "pred_sigma": 16.160255432128906,
+      "pred_home_win_prob": 0.6617403775994708,
+      "pred_sigma": 24.098716735839844,
       "start_time": "2019-12-29T19:30:00.000Z"
     },
     {
@@ -1060,7 +1060,7 @@
       "start_time": "2019-12-30T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.943925Z",
+  "generated_at": "2026-03-12T01:45:15.151868Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-12-06",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -432,19 +432,19 @@
     },
     {
       "away_team": "Illinois",
-      "edge_home_points": -0.0012023448944091797,
+      "edge_home_points": -0.20662355422973633,
       "game_id": "2022_12_06_illinois_texas",
       "home_team": "Texas",
       "market_spread_home": -3.5,
-      "model_mu_home": 3.498797655105591,
-      "pick_cover_prob": 0.5000472494904455,
-      "pick_ev_per_1": -0.04536434188187671,
-      "pick_fair_odds": -100.0189015823585,
-      "pick_prob_edge": -0.02376227431907829,
+      "model_mu_home": 3.2933764457702637,
+      "pick_cover_prob": 0.5077954632788992,
+      "pick_ev_per_1": -0.030572297376646906,
+      "pick_fair_odds": -103.16757067329365,
+      "pick_prob_edge": -0.016014060530624596,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6348208100661341,
-      "pred_sigma": 10.151775360107422,
+      "pred_home_win_prob": 0.6222796432504448,
+      "pred_sigma": 10.573537826538086,
       "start_time": "2022-12-07T00:00:00.000Z"
     },
     {
@@ -993,19 +993,19 @@
     },
     {
       "away_team": "Iowa",
-      "edge_home_points": 4.460446834564209,
+      "edge_home_points": 1.3345975875854492,
       "game_id": "2022_12_06_iowa_duke",
       "home_team": "Duke",
       "market_spread_home": -0.5,
-      "model_mu_home": 4.960446834564209,
-      "pick_cover_prob": 0.662482710774005,
-      "pick_ev_per_1": 0.264739720568555,
-      "pick_fair_odds": -196.28111860379974,
-      "pick_prob_edge": 0.13867318696448117,
+      "model_mu_home": 1.8345975875854492,
+      "pick_cover_prob": 0.5513526373601664,
+      "pick_ev_per_1": 0.05258230768759031,
+      "pick_fair_odds": -122.89220516443396,
+      "pick_prob_edge": 0.02754311355064254,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6794798111418218,
-      "pred_sigma": 10.63914966583252,
+      "pred_home_win_prob": 0.5704180117060976,
+      "pred_sigma": 10.339344024658203,
       "start_time": "2022-12-07T03:04:00.000Z"
     },
     {
@@ -1026,7 +1026,7 @@
       "start_time": "2022-12-07T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.116303Z",
+  "generated_at": "2026-03-12T01:45:16.237371Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

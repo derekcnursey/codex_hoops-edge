@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-03-18",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "St. Francis (PA)",
-      "edge_home_points": -0.039331674575805664,
+      "edge_home_points": -0.8901309967041016,
       "game_id": "2025_03_18_st_francis_pa_alabama_state",
       "home_team": "Alabama State",
       "market_spread_home": -3.5,
-      "model_mu_home": 3.4606683254241943,
-      "pick_cover_prob": 0.501534699604788,
-      "pick_ev_per_1": -0.042524664390859224,
-      "pick_fair_odds": -100.61576988551508,
-      "pick_prob_edge": -0.02227482420473581,
+      "model_mu_home": 2.6098690032958984,
+      "pick_cover_prob": 0.5328779916698049,
+      "pick_ev_per_1": 0.017312529551445632,
+      "pick_fair_odds": -114.0768326405055,
+      "pick_prob_edge": 0.009068467860281038,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6324989333034091,
-      "pred_sigma": 10.224169731140137,
+      "pred_home_win_prob": 0.5955747654261222,
+      "pred_sigma": 10.788627624511719,
       "start_time": "2025-03-18T22:40:00.000Z"
     },
     {
@@ -109,19 +109,19 @@
     },
     {
       "away_team": "North Carolina",
-      "edge_home_points": 2.585463523864746,
+      "edge_home_points": 1.2996456623077393,
       "game_id": "2025_03_18_north_carolina_san_diego_state",
       "home_team": "San Diego State",
       "market_spread_home": 4.5,
-      "model_mu_home": -1.914536476135254,
-      "pick_cover_prob": 0.5822202731761774,
-      "pick_ev_per_1": 0.11151143060906599,
-      "pick_fair_odds": -139.3605854459518,
-      "pick_prob_edge": 0.05841074936665358,
+      "model_mu_home": -3.2003543376922607,
+      "pick_cover_prob": 0.5413819374868135,
+      "pick_ev_per_1": 0.033547335202098516,
+      "pick_fair_odds": -118.04636182885784,
+      "pick_prob_edge": 0.017572413677289678,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4389189442152822,
-      "pred_sigma": 12.45545768737793,
+      "pred_home_win_prob": 0.39901752351454106,
+      "pred_sigma": 12.506711959838867,
       "start_time": "2025-03-19T01:10:00.000Z"
     },
     {
@@ -159,7 +159,7 @@
       "start_time": "2025-03-19T03:10:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.726280Z",
+  "generated_at": "2026-03-12T01:45:17.713102Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

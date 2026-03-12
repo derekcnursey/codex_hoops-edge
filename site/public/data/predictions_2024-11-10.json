@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-11-10",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -92,19 +92,19 @@
     },
     {
       "away_team": "Michigan",
-      "edge_home_points": 2.7950893342494965,
+      "edge_home_points": 0.8923605680465698,
       "game_id": "2024_11_10_michigan_wake_forest",
       "home_team": "Wake Forest",
       "market_spread_home": 2.5,
-      "model_mu_home": 0.29508933424949646,
-      "pick_cover_prob": 0.5686887375208195,
-      "pick_ev_per_1": 0.08567849890338264,
-      "pick_fair_odds": -131.85112168228397,
-      "pick_prob_edge": 0.04487921371129566,
+      "model_mu_home": -1.6076394319534302,
+      "pick_cover_prob": 0.5216225336633233,
+      "pick_ev_per_1": -0.004175163006382709,
+      "pick_fair_odds": -109.03994656307898,
+      "pick_prob_edge": -0.002186990146200496,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5072875597852077,
-      "pred_sigma": 16.153152465820312,
+      "pred_home_win_prob": 0.4610885599181478,
+      "pred_sigma": 16.456256866455078,
       "start_time": "2024-11-10T18:00:00.000Z"
     },
     {
@@ -419,15 +419,15 @@
       "game_id": "2024_11_10_pacific_life_pacific",
       "home_team": "Life Pacific",
       "market_spread_home": null,
-      "model_mu_home": 4.2311553955078125,
+      "model_mu_home": -10.850886344909668,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.6299963517484288,
-      "pred_sigma": 12.750447273254395,
+      "pred_home_win_prob": 0.2762349526961481,
+      "pred_sigma": 18.265544891357422,
       "start_time": "2024-11-11T00:30:00.000Z"
     },
     {
@@ -499,7 +499,7 @@
       "start_time": "2024-11-11T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.214329Z",
+  "generated_at": "2026-03-12T01:45:17.307046Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

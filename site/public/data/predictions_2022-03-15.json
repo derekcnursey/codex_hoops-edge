@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-03-15",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -24,19 +24,19 @@
     },
     {
       "away_team": "Texas A&M-Corpus Christi",
-      "edge_home_points": -1.1163079738616943,
+      "edge_home_points": -2.049370527267456,
       "game_id": "2022_03_15_texas_a_m_corpus_christi_texas_southern",
       "home_team": "Texas Southern",
       "market_spread_home": -3.5,
-      "model_mu_home": 2.3836920261383057,
-      "pick_cover_prob": 0.5445352031552778,
-      "pick_ev_per_1": 0.039567206023712165,
-      "pick_fair_odds": -119.55593646920678,
-      "pick_prob_edge": 0.020725679345753978,
+      "model_mu_home": 1.450629472732544,
+      "pick_cover_prob": 0.5705838567517463,
+      "pick_ev_per_1": 0.08929645379878837,
+      "pick_fair_odds": -132.87433780100827,
+      "pick_prob_edge": 0.04677433294222244,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5943974280406138,
-      "pred_sigma": 9.978967666625977,
+      "pred_home_win_prob": 0.5500933749218392,
+      "pred_sigma": 11.522327423095703,
       "start_time": "2022-03-15T22:40:00.000Z"
     },
     {
@@ -160,19 +160,19 @@
     },
     {
       "away_team": "Indiana",
-      "edge_home_points": -0.40842294692993164,
+      "edge_home_points": 1.0875730514526367,
       "game_id": "2022_03_15_indiana_wyoming",
       "home_team": "Wyoming",
       "market_spread_home": 4.5,
-      "model_mu_home": -4.908422946929932,
-      "pick_cover_prob": 0.514035222171653,
-      "pick_ev_per_1": -0.018660030399571592,
-      "pick_fair_odds": -105.77623021749551,
-      "pick_prob_edge": -0.009774301637870852,
-      "pick_side": "AWAY",
+      "model_mu_home": -3.4124269485473633,
+      "pick_cover_prob": 0.5387405182325763,
+      "pick_ev_per_1": 0.028504625716736565,
+      "pick_fair_odds": -116.79771138107901,
+      "pick_prob_edge": 0.014930994423052457,
+      "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3361865974492444,
-      "pred_sigma": 11.606767654418945,
+      "pred_home_win_prob": 0.38011760810358053,
+      "pred_sigma": 11.181982040405273,
       "start_time": "2022-03-16T01:25:00.000Z"
     },
     {
@@ -210,7 +210,7 @@
       "start_time": "2022-03-16T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.894347Z",
+  "generated_at": "2026-03-12T01:45:16.000708Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

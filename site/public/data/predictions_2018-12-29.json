@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2018-12-29",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -296,19 +296,19 @@
     },
     {
       "away_team": "Harvard",
-      "edge_home_points": -3.8816347122192383,
+      "edge_home_points": -4.7530670166015625,
       "game_id": "2018_12_29_harvard_mercer",
       "home_team": "Mercer",
       "market_spread_home": 5.5,
-      "model_mu_home": -9.381634712219238,
-      "pick_cover_prob": 0.6052401505965285,
-      "pick_ev_per_1": 0.15545846932064522,
-      "pick_fair_odds": -153.31856862118002,
-      "pick_prob_edge": 0.08143062678700463,
+      "model_mu_home": -10.253067016601562,
+      "pick_cover_prob": 0.6209580831477242,
+      "pick_ev_per_1": 0.18546543146383698,
+      "pick_fair_odds": -163.82306429442482,
+      "pick_prob_edge": 0.09714855933820032,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.25941131582885635,
-      "pred_sigma": 14.541532516479492,
+      "pred_home_win_prob": 0.2532180626617841,
+      "pred_sigma": 15.432134628295898,
       "start_time": "2018-12-29T18:30:00.000Z"
     },
     {
@@ -1791,7 +1791,7 @@
       "start_time": "2018-12-30T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.257564Z",
+  "generated_at": "2026-03-12T01:45:14.419117Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

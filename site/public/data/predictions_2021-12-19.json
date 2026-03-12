@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2021-12-19",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -24,19 +24,19 @@
     },
     {
       "away_team": "UC Irvine",
-      "edge_home_points": -0.5626139640808105,
+      "edge_home_points": -1.437185287475586,
       "game_id": "2021_12_19_uc_irvine_duquesne",
       "home_team": "Duquesne",
       "market_spread_home": 6.5,
-      "model_mu_home": -7.0626139640808105,
-      "pick_cover_prob": 0.5192778041713605,
-      "pick_ev_per_1": -0.008651464763766326,
-      "pick_fair_odds": -108.02035118770857,
-      "pick_prob_edge": -0.004531719638163345,
+      "model_mu_home": -7.937185287475586,
+      "pick_cover_prob": 0.5466034719485642,
+      "pick_ev_per_1": 0.04351571917453162,
+      "pick_fair_odds": -120.55748955504893,
+      "pick_prob_edge": 0.022793948139040343,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.2719797638622523,
-      "pred_sigma": 11.638416290283203,
+      "pred_home_win_prob": 0.25893693191765,
+      "pred_sigma": 12.274765014648438,
       "start_time": "2021-12-19T18:00:00.000Z"
     },
     {
@@ -313,19 +313,19 @@
     },
     {
       "away_team": "Texas",
-      "edge_home_points": 1.9311933517456055,
+      "edge_home_points": -0.42292213439941406,
       "game_id": "2021_12_19_texas_stanford",
       "home_team": "Stanford",
       "market_spread_home": 10.5,
-      "model_mu_home": -8.568806648254395,
-      "pick_cover_prob": 0.568864833961668,
-      "pick_ev_per_1": 0.08601468301772974,
-      "pick_fair_odds": -131.9458208869676,
-      "pick_prob_edge": 0.045055310152144146,
-      "pick_side": "HOME",
+      "model_mu_home": -10.922922134399414,
+      "pick_cover_prob": 0.5154171020917678,
+      "pick_ev_per_1": -0.01602189600662507,
+      "pick_fair_odds": -106.36304011483601,
+      "pick_prob_edge": -0.008392421717756005,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.22072070917111292,
-      "pred_sigma": 11.131769180297852,
+      "pred_home_win_prob": 0.1590568274685945,
+      "pred_sigma": 10.941064834594727,
       "start_time": "2021-12-19T20:00:00.000Z"
     },
     {
@@ -516,7 +516,7 @@
       "start_time": "2021-12-20T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.462847Z",
+  "generated_at": "2026-03-12T01:45:15.626814Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

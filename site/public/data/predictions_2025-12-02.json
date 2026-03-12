@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-12-02",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -381,19 +381,19 @@
     },
     {
       "away_team": "New Mexico State",
-      "edge_home_points": -1.284449577331543,
+      "edge_home_points": -2.592489242553711,
       "game_id": "2025_12_02_new_mexico_state_south_alabama",
       "home_team": "South Alabama",
       "market_spread_home": 2.5,
-      "model_mu_home": -3.784449577331543,
-      "pick_cover_prob": 0.5486630735071747,
-      "pick_ev_per_1": 0.04744768578642439,
-      "pick_fair_odds": -121.56396724961891,
-      "pick_prob_edge": 0.024853549697650856,
+      "model_mu_home": -5.092489242553711,
+      "pick_cover_prob": 0.5962531667135418,
+      "pick_ev_per_1": 0.13830150008948883,
+      "pick_fair_odds": -147.6799611925378,
+      "pick_prob_edge": 0.07244364290401795,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.35931383177064036,
-      "pred_sigma": 10.503796577453613,
+      "pred_home_win_prob": 0.3161014830118488,
+      "pred_sigma": 10.639754295349121,
       "start_time": "2025-12-03T00:00:00.000Z"
     },
     {
@@ -432,19 +432,19 @@
     },
     {
       "away_team": "UNC Greensboro",
-      "edge_home_points": -0.2540163993835449,
+      "edge_home_points": -2.1704397201538086,
       "game_id": "2025_12_02_unc_greensboro_unc_asheville",
       "home_team": "UNC Asheville",
       "market_spread_home": -5.5,
-      "model_mu_home": 5.245983600616455,
-      "pick_cover_prob": 0.5083998852845041,
-      "pick_ev_per_1": -0.02941840082049224,
-      "pick_fair_odds": -103.41736506280735,
-      "pick_prob_edge": -0.015409638525019753,
+      "model_mu_home": 3.3295602798461914,
+      "pick_cover_prob": 0.5707487824124031,
+      "pick_ev_per_1": 0.08961131187822413,
+      "pick_fair_odds": -132.9638121051878,
+      "pick_prob_edge": 0.046939258602879286,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6681720065446973,
-      "pred_sigma": 12.06330680847168,
+      "pred_home_win_prob": 0.6077622778507863,
+      "pred_sigma": 12.174274444580078,
       "start_time": "2025-12-03T00:00:00.000Z"
     },
     {
@@ -992,7 +992,7 @@
       "start_time": "2025-12-03T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.926456Z",
+  "generated_at": "2026-03-12T01:45:17.853394Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-11-09",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -738,19 +738,19 @@
     },
     {
       "away_team": "Florida State",
-      "edge_home_points": 6.4412922859191895,
+      "edge_home_points": 3.498699188232422,
       "game_id": "2024_11_09_florida_state_rice",
       "home_team": "Rice",
       "market_spread_home": 9.5,
-      "model_mu_home": -3.0587077140808105,
-      "pick_cover_prob": 0.6827206888490246,
-      "pick_ev_per_1": 0.303375860529956,
-      "pick_fair_odds": -215.1797059733769,
-      "pick_prob_edge": 0.15891116503950076,
+      "model_mu_home": -6.001300811767578,
+      "pick_cover_prob": 0.6024660612122029,
+      "pick_ev_per_1": 0.15016248049602376,
+      "pick_fair_odds": -151.5508494820107,
+      "pick_prob_edge": 0.07865653740267908,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.41071336400581404,
-      "pred_sigma": 13.551474571228027,
+      "pred_home_win_prob": 0.3279709871359723,
+      "pred_sigma": 13.470243453979492,
       "start_time": "2024-11-10T00:00:00.000Z"
     },
     {
@@ -789,19 +789,19 @@
     },
     {
       "away_team": "Baylor",
-      "edge_home_points": 6.665714502334595,
+      "edge_home_points": 4.289956033229828,
       "game_id": "2024_11_09_baylor_arkansas",
       "home_team": "Arkansas",
       "market_spread_home": 3.5,
-      "model_mu_home": 3.1657145023345947,
-      "pick_cover_prob": 0.6278262421128042,
-      "pick_ev_per_1": 0.19857737130626263,
-      "pick_fair_odds": -168.69170080043517,
-      "pick_prob_edge": 0.10401671830328041,
+      "model_mu_home": 0.7899560332298279,
+      "pick_cover_prob": 0.5906727749167698,
+      "pick_ev_per_1": 0.12764802484110604,
+      "pick_fair_odds": -144.30331986753774,
+      "pick_prob_edge": 0.066863251107246,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5615395900292114,
-      "pred_sigma": 20.440608978271484,
+      "pred_home_win_prob": 0.5168379660966832,
+      "pred_sigma": 18.710886001586914,
       "start_time": "2024-11-10T00:30:00.000Z"
     },
     {
@@ -1010,19 +1010,19 @@
     },
     {
       "away_team": "Auburn",
-      "edge_home_points": -0.825739860534668,
+      "edge_home_points": -3.846769094467163,
       "game_id": "2024_11_09_auburn_houston",
       "home_team": "Houston",
       "market_spread_home": -5.5,
-      "model_mu_home": 4.674260139465332,
-      "pick_cover_prob": 0.5289614514526824,
-      "pick_ev_per_1": 0.009835498227848127,
-      "pick_fair_odds": -112.29684981919186,
-      "pick_prob_edge": 0.005151927643158527,
+      "model_mu_home": 1.653230905532837,
+      "pick_cover_prob": 0.6181982323891747,
+      "pick_ev_per_1": 0.18019662547024262,
+      "pick_fair_odds": -161.9160215673257,
+      "pick_prob_edge": 0.09438870857965087,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6595748187256072,
-      "pred_sigma": 11.364517211914062,
+      "pred_home_win_prob": 0.5514219101731961,
+      "pred_sigma": 12.790497779846191,
       "start_time": "2024-11-10T02:30:00.000Z"
     },
     {
@@ -1077,7 +1077,7 @@
       "start_time": "2024-11-10T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.209882Z",
+  "generated_at": "2026-03-12T01:45:17.303896Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

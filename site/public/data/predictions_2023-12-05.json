@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-12-05",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -58,19 +58,19 @@
     },
     {
       "away_team": "Florida Atlantic",
-      "edge_home_points": 1.626811683177948,
+      "edge_home_points": 0.15087437629699707,
       "game_id": "2023_12_05_florida_atlantic_illinois",
       "home_team": "Illinois",
       "market_spread_home": 2.5,
-      "model_mu_home": -0.873188316822052,
-      "pick_cover_prob": 0.5660640573235517,
-      "pick_ev_per_1": 0.08066774579950775,
-      "pick_fair_odds": -130.4487602092046,
-      "pick_prob_edge": 0.04225453351402786,
+      "model_mu_home": -2.349125623703003,
+      "pick_cover_prob": 0.5059070692050195,
+      "pick_ev_per_1": -0.034177413335871876,
+      "pick_fair_odds": -102.39107618703032,
+      "pick_prob_edge": -0.017902454604504348,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.46442387597936374,
-      "pred_sigma": 9.778731346130371,
+      "pred_home_win_prob": 0.4088314877053093,
+      "pred_sigma": 10.189142227172852,
       "start_time": "2023-12-05T23:30:00.000Z"
     },
     {
@@ -908,19 +908,19 @@
     },
     {
       "away_team": "North Carolina",
-      "edge_home_points": -0.8956146240234375,
+      "edge_home_points": -3.759036064147949,
       "game_id": "2023_12_05_north_carolina_uconn",
       "home_team": "UConn",
       "market_spread_home": -5.5,
-      "model_mu_home": 4.6043853759765625,
-      "pick_cover_prob": 0.5359851276936586,
-      "pick_ev_per_1": 0.023244334687893664,
-      "pick_fair_odds": -115.5103337592599,
-      "pick_prob_edge": 0.012175603884134745,
+      "model_mu_home": 1.7409639358520508,
+      "pick_cover_prob": 0.6488738233264264,
+      "pick_ev_per_1": 0.23875911725954124,
+      "pick_fair_odds": -184.79790640321744,
+      "pick_prob_edge": 0.12506429951690257,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.678804647460554,
-      "pred_sigma": 9.915576934814453,
+      "pred_home_win_prob": 0.5702655979798587,
+      "pred_sigma": 9.833154678344727,
       "start_time": "2023-12-06T02:00:00.000Z"
     },
     {
@@ -1026,7 +1026,7 @@
       "start_time": "2023-12-06T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.683745Z",
+  "generated_at": "2026-03-12T01:45:16.925934Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

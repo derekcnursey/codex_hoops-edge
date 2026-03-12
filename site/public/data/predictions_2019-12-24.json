@@ -1,29 +1,29 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-12-24",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Ball State",
-      "edge_home_points": 3.3936643600463867,
+      "edge_home_points": 1.0937074422836304,
       "game_id": "2019_12_24_ball_state_utep",
       "home_team": "UTEP",
       "market_spread_home": 2.5,
-      "model_mu_home": 0.8936643600463867,
-      "pick_cover_prob": 0.5758790469160713,
-      "pick_ev_per_1": 0.09940545320340877,
-      "pick_fair_odds": -135.7817959071952,
-      "pick_prob_edge": 0.052069523106547444,
+      "model_mu_home": -1.4062925577163696,
+      "pick_cover_prob": 0.5259863960992882,
+      "pick_ev_per_1": 0.004155847098641141,
+      "pick_fair_odds": -110.96440941164694,
+      "pick_prob_edge": 0.0021768722897643755,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5200949896066742,
-      "pred_sigma": 17.734254837036133,
+      "pred_home_win_prob": 0.4666020511917317,
+      "pred_sigma": 16.778676986694336,
       "start_time": "2019-12-24T06:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.929142Z",
+  "generated_at": "2026-03-12T01:45:15.137344Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

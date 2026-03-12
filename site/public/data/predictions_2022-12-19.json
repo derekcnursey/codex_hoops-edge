@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-12-19",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -41,19 +41,19 @@
     },
     {
       "away_team": "Southern Indiana",
-      "edge_home_points": 20.462907075881958,
+      "edge_home_points": 15.264112949371338,
       "game_id": "2022_12_19_southern_indiana_iu_indianapolis",
       "home_team": "IU Indianapolis",
       "market_spread_home": 17.5,
-      "model_mu_home": 2.962907075881958,
-      "pick_cover_prob": 0.9386601766934846,
-      "pick_ev_per_1": 0.7919876100511978,
-      "pick_fair_odds": -1530.2622767643043,
-      "pick_prob_edge": 0.4148506528839607,
+      "model_mu_home": -2.235887050628662,
+      "pick_cover_prob": 0.8451746051819062,
+      "pick_ev_per_1": 0.6135151553472755,
+      "pick_fair_odds": -545.8888744801278,
+      "pick_prob_edge": 0.3213650813723824,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5884297045213891,
-      "pred_sigma": 13.256413459777832,
+      "pred_home_win_prob": 0.44084898552475277,
+      "pred_sigma": 15.024397850036621,
       "start_time": "2022-12-19T21:00:00.000Z"
     },
     {
@@ -652,7 +652,7 @@
       "start_time": "2022-12-20T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.169036Z",
+  "generated_at": "2026-03-12T01:45:16.286251Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

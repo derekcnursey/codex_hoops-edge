@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-11-16",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -41,19 +41,19 @@
     },
     {
       "away_team": "Michigan",
-      "edge_home_points": 2.5647964477539062,
+      "edge_home_points": 3.6473331451416016,
       "game_id": "2022_11_16_michigan_pittsburgh",
       "home_team": "Pittsburgh",
       "market_spread_home": 8.5,
-      "model_mu_home": -5.935203552246094,
-      "pick_cover_prob": 0.5877420754128833,
-      "pick_ev_per_1": 0.12205305306095893,
-      "pick_fair_odds": -142.5665925043204,
-      "pick_prob_edge": 0.06393255160335942,
+      "model_mu_home": -4.852666854858398,
+      "pick_cover_prob": 0.6280597025840295,
+      "pick_ev_per_1": 0.1990230685695109,
+      "pick_fair_odds": -168.86035391901092,
+      "pick_prob_edge": 0.10425017877450571,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3039300038634475,
-      "pred_sigma": 11.566654205322266,
+      "pred_home_win_prob": 0.33189391317121175,
+      "pred_sigma": 11.163524627685547,
       "start_time": "2022-11-16T23:00:00.000Z"
     },
     {
@@ -466,19 +466,19 @@
     },
     {
       "away_team": "VCU",
-      "edge_home_points": 3.9825463593006134,
+      "edge_home_points": 3.1650390028953552,
       "game_id": "2022_11_16_vcu_arizona_state",
       "home_team": "Arizona State",
       "market_spread_home": 3.5,
-      "model_mu_home": 0.4825463593006134,
-      "pick_cover_prob": 0.6487136094413941,
-      "pick_ev_per_1": 0.23845325438811604,
-      "pick_fair_odds": -184.66801643235527,
-      "pick_prob_edge": 0.12490408563187028,
+      "model_mu_home": -0.3349609971046448,
+      "pick_cover_prob": 0.6171473853334314,
+      "pick_ev_per_1": 0.1781904629092781,
+      "pick_fair_odds": -161.19711912400368,
+      "pick_prob_edge": 0.09333786152390755,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.518451254931648,
-      "pred_sigma": 10.429615020751953,
+      "pred_home_win_prob": 0.4874204364893761,
+      "pred_sigma": 10.62103271484375,
       "start_time": "2022-11-17T01:30:00.000Z"
     },
     {
@@ -601,7 +601,7 @@
       "start_time": "2022-11-17T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.995601Z",
+  "generated_at": "2026-03-12T01:45:16.126655Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

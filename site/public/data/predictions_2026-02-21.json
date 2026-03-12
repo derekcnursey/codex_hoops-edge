@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2026-02-21",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -1911,19 +1911,19 @@
     },
     {
       "away_team": "Michigan",
-      "edge_home_points": 8.731890201568604,
+      "edge_home_points": 4.628063917160034,
       "game_id": "2026_02_21_michigan_duke",
       "home_team": "Duke",
       "market_spread_home": 3.5,
-      "model_mu_home": 5.2318902015686035,
-      "pick_cover_prob": 0.7801629150943894,
-      "pick_ev_per_1": 0.4894019288165615,
-      "pick_fair_odds": -354.88230542602065,
-      "pick_prob_edge": 0.25635339128486556,
+      "model_mu_home": 1.1280639171600342,
+      "pick_cover_prob": 0.6637459068568672,
+      "pick_ev_per_1": 0.26715127672674643,
+      "pick_fair_odds": -197.3941493626165,
+      "pick_prob_edge": 0.13993638304734335,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6783196315605046,
-      "pred_sigma": 11.29985523223877,
+      "pred_home_win_prob": 0.54103148445242,
+      "pred_sigma": 10.948602676391602,
       "start_time": "2026-02-21T23:30:00.000Z"
     },
     {
@@ -2522,7 +2522,7 @@
       "start_time": "2026-02-22T03:38:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:45.305708Z",
+  "generated_at": "2026-03-12T01:45:18.097787Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

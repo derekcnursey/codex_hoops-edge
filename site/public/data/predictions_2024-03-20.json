@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-03-20",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -11,15 +11,15 @@
       "game_id": "2024_03_20_grambling_montana_state",
       "home_team": "Montana State",
       "market_spread_home": null,
-      "model_mu_home": 4.469611644744873,
+      "model_mu_home": 2.988884925842285,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.6849703574573246,
-      "pred_sigma": 9.279918670654297,
+      "pred_home_win_prob": 0.6141675617850064,
+      "pred_sigma": 10.29947280883789,
       "start_time": "2024-03-20T22:40:00.000Z"
     },
     {
@@ -194,23 +194,23 @@
     },
     {
       "away_team": "Colorado",
-      "edge_home_points": 5.1365649700164795,
+      "edge_home_points": 2.577449679374695,
       "game_id": "2024_03_20_colorado_boise_state",
       "home_team": "Boise State",
       "market_spread_home": 3.5,
-      "model_mu_home": 1.6365649700164795,
-      "pick_cover_prob": 0.6678892525362161,
-      "pick_ev_per_1": 0.2750613002964125,
-      "pick_fair_odds": -201.1043778729408,
-      "pick_prob_edge": 0.14407972872669228,
+      "model_mu_home": -0.9225503206253052,
+      "pick_cover_prob": 0.5863158750720319,
+      "pick_ev_per_1": 0.11933030695569713,
+      "pick_fair_odds": -141.73032991636381,
+      "pick_prob_edge": 0.06250635126250803,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5550008866702058,
-      "pred_sigma": 11.832889556884766,
+      "pred_home_win_prob": 0.46889134912092933,
+      "pred_sigma": 11.818928718566895,
       "start_time": "2024-03-21T01:28:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.135905Z",
+  "generated_at": "2026-03-12T01:45:17.246411Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

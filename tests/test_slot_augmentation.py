@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from src import config
 from src.slot_augmentation import (
     augment_swapped_slot_training,
     audit_feature_order,
@@ -89,3 +90,42 @@ def test_augment_swapped_slot_training_negates_targets_and_flips_home_win():
     assert aug_df.iloc[2]["neutral_site"] == 1.0
     assert aug_df.iloc[2]["home_team_hca"] == 0.0
     assert aug_df.iloc[2]["rest_advantage"] == -1.5
+
+
+def test_swap_safe_v2_contract_has_no_unswappable_fields():
+    audit = audit_feature_order(config.FEATURE_ORDER_SWAP_SAFE_V2)
+    assert audit.unswappable == []
+    assert "venue_edge" in audit.negated
+
+
+def test_swap_feature_frame_supports_all_games_for_swap_safe_v2():
+    cols = config.FEATURE_ORDER_SWAP_SAFE_V2
+    row = {col: 0.0 for col in cols}
+    row.update(
+        {
+            "neutral_site": 0.0,
+            "home_team_adj_oe": 110.0,
+            "away_team_adj_oe": 100.0,
+            "home_def_ft_rate": 0.21,
+            "away_def_ft_rate": 0.18,
+            "venue_edge": 2.7,
+            "home_team_efg_slot_split": 0.54,
+            "away_team_efg_slot_split": 0.49,
+            "rest_advantage": 1.0,
+        }
+    )
+    df = pd.DataFrame([row])
+    swapped = swap_feature_frame(df, cols, neutral_only=False)
+
+    assert float(swapped.loc[0, "home_team_adj_oe"]) == 100.0
+    assert float(swapped.loc[0, "away_team_adj_oe"]) == 110.0
+    assert float(swapped.loc[0, "home_def_ft_rate"]) == 0.18
+    assert float(swapped.loc[0, "away_def_ft_rate"]) == 0.21
+    assert float(swapped.loc[0, "venue_edge"]) == -2.7
+    assert float(swapped.loc[0, "home_team_efg_slot_split"]) == 0.49
+    assert float(swapped.loc[0, "away_team_efg_slot_split"]) == 0.54
+    assert float(swapped.loc[0, "rest_advantage"]) == -1.0
+    assert float(swapped.loc[0, "neutral_site"]) == 0.0
+
+    swapped_twice = swap_feature_frame(swapped, cols, neutral_only=False)
+    pd.testing.assert_frame_equal(swapped_twice.reset_index(drop=True), df.reset_index(drop=True))

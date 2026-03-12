@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-02-18",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -942,19 +942,19 @@
     },
     {
       "away_team": "Southern",
-      "edge_home_points": 3.0383858680725098,
+      "edge_home_points": 1.2938776016235352,
       "game_id": "2023_02_18_southern_grambling",
       "home_team": "Grambling",
       "market_spread_home": -2.5,
-      "model_mu_home": 5.53838586807251,
-      "pick_cover_prob": 0.6020681489976141,
-      "pick_ev_per_1": 0.1494028299045359,
-      "pick_fair_odds": -151.29931104560018,
-      "pick_prob_edge": 0.07825862518809024,
+      "model_mu_home": 3.793877601623535,
+      "pick_cover_prob": 0.5456651674117072,
+      "pick_ev_per_1": 0.04172441051325926,
+      "pick_fair_odds": -120.10198828540533,
+      "pick_prob_edge": 0.021855643602183394,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6813820069521068,
-      "pred_sigma": 11.744646072387695,
+      "pred_home_win_prob": 0.6317039384718959,
+      "pred_sigma": 11.27889347076416,
       "start_time": "2023-02-18T21:00:00.000Z"
     },
     {
@@ -2437,7 +2437,7 @@
       "start_time": "2023-02-19T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.418923Z",
+  "generated_at": "2026-03-12T01:45:16.668346Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

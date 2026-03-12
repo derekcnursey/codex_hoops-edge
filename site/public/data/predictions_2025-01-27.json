@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-01-27",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Eastern Illinois",
-      "edge_home_points": -2.7581491470336914,
+      "edge_home_points": -2.497897148132324,
       "game_id": "2025_01_27_eastern_illinois_little_rock",
       "home_team": "Little Rock",
       "market_spread_home": -10.5,
-      "model_mu_home": 7.741850852966309,
-      "pick_cover_prob": 0.6192945250473724,
-      "pick_ev_per_1": 0.1822895478177109,
-      "pick_fair_odds": -162.67024400540421,
-      "pick_prob_edge": 0.09548500123784853,
+      "model_mu_home": 8.002102851867676,
+      "pick_cover_prob": 0.6002271828103463,
+      "pick_ev_per_1": 0.14588825809247918,
+      "pick_fair_odds": -150.14206994609046,
+      "pick_prob_edge": 0.07641765900082242,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.8029637139868037,
-      "pred_sigma": 9.08396053314209,
+      "pred_home_win_prob": 0.7920315363899654,
+      "pred_sigma": 9.836750984191895,
       "start_time": "2025-01-27T20:00:00.000Z"
     },
     {
@@ -380,7 +380,7 @@
       "start_time": "2025-01-28T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.523931Z",
+  "generated_at": "2026-03-12T01:45:17.559304Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-03-05",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -41,19 +41,19 @@
     },
     {
       "away_team": "Coastal Carolina",
-      "edge_home_points": 4.390442371368408,
+      "edge_home_points": 3.393526077270508,
       "game_id": "2024_03_05_coastal_carolina_ul_monroe",
       "home_team": "UL Monroe",
       "market_spread_home": -1.5,
-      "model_mu_home": 5.890442371368408,
-      "pick_cover_prob": 0.6814212246878661,
-      "pick_ev_per_1": 0.300895065313199,
-      "pick_fair_odds": -213.89410641692317,
-      "pick_prob_edge": 0.1576117008783423,
+      "model_mu_home": 4.893526077270508,
+      "pick_cover_prob": 0.6459563341799914,
+      "pick_ev_per_1": 0.23318936525271095,
+      "pick_fair_odds": -182.4510354348177,
+      "pick_prob_edge": 0.1221468103704676,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7365762504124818,
-      "pred_sigma": 9.308159828186035,
+      "pred_home_win_prob": 0.7053770741942433,
+      "pred_sigma": 9.063273429870605,
       "start_time": "2024-03-05T23:00:00.000Z"
     },
     {
@@ -568,19 +568,19 @@
     },
     {
       "away_team": "Old Dominion",
-      "edge_home_points": 2.052072048187256,
+      "edge_home_points": 0.5150413513183594,
       "game_id": "2024_03_05_old_dominion_texas_state",
       "home_team": "Texas State",
       "market_spread_home": -3.5,
-      "model_mu_home": 5.552072048187256,
-      "pick_cover_prob": 0.5764459136996006,
-      "pick_ev_per_1": 0.10048765342651023,
-      "pick_fair_odds": -136.09735623959133,
-      "pick_prob_edge": 0.052636389890076796,
+      "model_mu_home": 4.015041351318359,
+      "pick_cover_prob": 0.5203199516026866,
+      "pick_ev_per_1": -0.0066619105766891895,
+      "pick_fair_odds": -108.47229384277239,
+      "pick_prob_edge": -0.0034895722068372104,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6990478623786959,
-      "pred_sigma": 10.643003463745117,
+      "pred_home_win_prob": 0.6544032276894798,
+      "pred_sigma": 10.107449531555176,
       "start_time": "2024-03-06T01:30:00.000Z"
     },
     {
@@ -737,7 +737,7 @@
       "start_time": "2024-03-06T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.049015Z",
+  "generated_at": "2026-03-12T01:45:17.206358Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

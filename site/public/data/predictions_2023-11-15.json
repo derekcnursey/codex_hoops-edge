@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-11-15",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -262,19 +262,19 @@
     },
     {
       "away_team": "Denver",
-      "edge_home_points": 3.6910743713378906,
+      "edge_home_points": 1.1276569366455078,
       "game_id": "2023_11_15_denver_nicholls",
       "home_team": "Nicholls",
       "market_spread_home": 1.5,
-      "model_mu_home": 2.1910743713378906,
-      "pick_cover_prob": 0.6624065657967657,
-      "pick_ev_per_1": 0.26459435288473454,
-      "pick_fair_odds": -196.21429171456901,
-      "pick_prob_edge": 0.13859704198724188,
+      "model_mu_home": -0.3723430633544922,
+      "pick_cover_prob": 0.5423448849872674,
+      "pick_ev_per_1": 0.035385689521146846,
+      "pick_fair_odds": -118.50515097426117,
+      "pick_prob_edge": 0.01853536117774357,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5982221970461661,
-      "pred_sigma": 8.808404922485352,
+      "pred_home_win_prob": 0.4859945865098065,
+      "pred_sigma": 10.603961944580078,
       "start_time": "2023-11-16T00:00:00.000Z"
     },
     {
@@ -635,7 +635,7 @@
       "start_time": "2023-11-16T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.599492Z",
+  "generated_at": "2026-03-12T01:45:16.859306Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

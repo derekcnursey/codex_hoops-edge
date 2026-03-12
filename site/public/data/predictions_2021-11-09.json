@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2021-11-09",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -738,19 +738,19 @@
     },
     {
       "away_team": "Kansas",
-      "edge_home_points": 2.871492624282837,
+      "edge_home_points": 1.0606837272644043,
       "game_id": "2021_11_09_kansas_michigan_state",
       "home_team": "Michigan State",
       "market_spread_home": 4.5,
-      "model_mu_home": -1.628507375717163,
-      "pick_cover_prob": 0.5880196251489754,
-      "pick_ev_per_1": 0.12258292073895305,
-      "pick_fair_odds": -142.73000876840507,
-      "pick_prob_edge": 0.0642101013394516,
+      "model_mu_home": -3.4393162727355957,
+      "pick_cover_prob": 0.5333035969915725,
+      "pick_ev_per_1": 0.018125048802092925,
+      "pick_fair_odds": -114.27206071308464,
+      "pick_prob_edge": 0.009494073182048646,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.449802650147626,
-      "pred_sigma": 12.908273696899414,
+      "pred_home_win_prob": 0.3931947104331899,
+      "pred_sigma": 12.691105842590332,
       "start_time": "2021-11-10T00:00:00.000Z"
     },
     {
@@ -1452,19 +1452,19 @@
     },
     {
       "away_team": "Tennessee State",
-      "edge_home_points": 3.2456177473068237,
+      "edge_home_points": -0.48676013946533203,
       "game_id": "2021_11_09_tennessee_state_alabama_a_m",
       "home_team": "Alabama A&M",
       "market_spread_home": 3.0,
-      "model_mu_home": 0.24561774730682373,
-      "pick_cover_prob": 0.5858370550071383,
-      "pick_ev_per_1": 0.11841619592271868,
-      "pick_fair_odds": -141.45086181411898,
-      "pick_prob_edge": 0.062027531197614505,
-      "pick_side": "HOME",
+      "model_mu_home": -3.486760139465332,
+      "pick_cover_prob": 0.5135881588385697,
+      "pick_ev_per_1": -0.019513514944548838,
+      "pick_fair_odds": -105.5871003494177,
+      "pick_prob_edge": -0.010221364970954161,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5065465232671721,
-      "pred_sigma": 14.967166900634766,
+      "pred_home_win_prob": 0.40360414247918475,
+      "pred_sigma": 14.288296699523926,
       "start_time": "2021-11-10T01:00:00.000Z"
     },
     {
@@ -2778,19 +2778,19 @@
     },
     {
       "away_team": "Kentucky",
-      "edge_home_points": 0.6520600318908691,
+      "edge_home_points": -0.5075926780700684,
       "game_id": "2021_11_09_kentucky_duke",
       "home_team": "Duke",
       "market_spread_home": -2.5,
-      "model_mu_home": 3.152060031890869,
-      "pick_cover_prob": 0.5195999130869611,
-      "pick_ev_per_1": -0.008036529561256167,
-      "pick_fair_odds": -108.15982911781154,
-      "pick_prob_edge": -0.004209610722562762,
-      "pick_side": "HOME",
+      "model_mu_home": 1.9924073219299316,
+      "pick_cover_prob": 0.5151523850718182,
+      "pick_ev_per_1": -0.016527264862892632,
+      "pick_fair_odds": -106.25037005660536,
+      "pick_prob_edge": -0.008657138737705683,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.593899946764099,
-      "pred_sigma": 13.266876220703125,
+      "pred_home_win_prob": 0.5592708360295031,
+      "pred_sigma": 13.361030578613281,
       "start_time": "2021-11-10T02:30:00.000Z"
     },
     {
@@ -3134,7 +3134,7 @@
       "start_time": "2021-11-10T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.262624Z",
+  "generated_at": "2026-03-12T01:45:15.464272Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

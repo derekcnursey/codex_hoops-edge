@@ -1,42 +1,42 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2018-11-29",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Dartmouth",
-      "edge_home_points": -1.7926020622253418,
+      "edge_home_points": -3.8985066413879395,
       "game_id": "2018_11_29_dartmouth_marist",
       "home_team": "Marist",
       "market_spread_home": -2.0,
-      "model_mu_home": 0.2073979377746582,
-      "pick_cover_prob": 0.5774678713557018,
-      "pick_ev_per_1": 0.10243866349724884,
-      "pick_fair_odds": -136.66839329082916,
-      "pick_prob_edge": 0.05365834754617793,
+      "model_mu_home": -1.8985066413879395,
+      "pick_cover_prob": 0.6172843388873335,
+      "pick_ev_per_1": 0.1784519196940002,
+      "pick_fair_odds": -161.2905876630988,
+      "pick_prob_edge": 0.09347481507780964,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5090190821565548,
-      "pred_sigma": 9.173079490661621,
+      "pred_home_win_prob": 0.4422392153992738,
+      "pred_sigma": 13.066618919372559,
       "start_time": "2018-11-29T16:30:00.000Z"
     },
     {
       "away_team": "UAlbany",
-      "edge_home_points": 7.664684295654297,
+      "edge_home_points": 4.5352418422698975,
       "game_id": "2018_11_29_ualbany_liu_brooklyn",
       "home_team": "LIU Brooklyn",
       "market_spread_home": 2.0,
-      "model_mu_home": 5.664684295654297,
-      "pick_cover_prob": 0.7736689705929685,
-      "pick_ev_per_1": 0.47700439840475795,
-      "pick_fair_odds": -341.8307125717215,
-      "pick_prob_edge": 0.24985944678344463,
+      "model_mu_home": 2.5352418422698975,
+      "pick_cover_prob": 0.6231921258545834,
+      "pick_ev_per_1": 0.18973042208602287,
+      "pick_fair_odds": -165.38723540954533,
+      "pick_prob_edge": 0.09938260204505955,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7105611303781961,
-      "pred_sigma": 10.206183433532715,
+      "pred_home_win_prob": 0.5696405775084208,
+      "pred_sigma": 14.449183464050293,
       "start_time": "2018-11-29T19:00:00.000Z"
     },
     {
@@ -397,7 +397,7 @@
       "start_time": "2018-11-30T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.142419Z",
+  "generated_at": "2026-03-12T01:45:14.324022Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

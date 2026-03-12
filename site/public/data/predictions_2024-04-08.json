@@ -1,29 +1,29 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-04-08",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Purdue",
-      "edge_home_points": -3.0737557411193848,
+      "edge_home_points": -5.531518042087555,
       "game_id": "2024_04_08_purdue_uconn",
       "home_team": "UConn",
       "market_spread_home": -6.5,
-      "model_mu_home": 3.4262442588806152,
-      "pick_cover_prob": 0.6214986612324324,
-      "pick_ev_per_1": 0.18649744417100722,
-      "pick_fair_odds": -164.1998581183582,
-      "pick_prob_edge": 0.09768913742290852,
+      "model_mu_home": 0.9684819579124451,
+      "pick_cover_prob": 0.7023130813415792,
+      "pick_ev_per_1": 0.34077951892483305,
+      "pick_fair_odds": -235.92339378118407,
+      "pick_prob_edge": 0.17850355753205538,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.634916124195638,
-      "pred_sigma": 9.933953285217285,
+      "pred_home_win_prob": 0.5370407189896804,
+      "pred_sigma": 10.415899276733398,
       "start_time": "2024-04-09T01:20:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.179886Z",
+  "generated_at": "2026-03-12T01:45:17.280708Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

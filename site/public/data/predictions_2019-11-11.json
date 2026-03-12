@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-11-11",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -24,19 +24,19 @@
     },
     {
       "away_team": "Jacksonville",
-      "edge_home_points": 25.979738235473633,
+      "edge_home_points": 21.699655532836914,
       "game_id": "2019_11_11_jacksonville_bowling_green",
       "home_team": "Bowling Green",
       "market_spread_home": 10.0,
-      "model_mu_home": 15.979738235473633,
-      "pick_cover_prob": 0.9356629194563919,
-      "pick_ev_per_1": 0.7862655735076572,
-      "pick_fair_odds": -1454.3136112963557,
-      "pick_prob_edge": 0.41185339564686807,
+      "model_mu_home": 11.699655532836914,
+      "pick_cover_prob": 0.8353562027435516,
+      "pick_ev_per_1": 0.5947709325104167,
+      "pick_fair_odds": -507.371803046066,
+      "pick_prob_edge": 0.31154667893402777,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.8249845866580313,
-      "pred_sigma": 17.099233627319336,
+      "pred_home_win_prob": 0.7005491438264497,
+      "pred_sigma": 22.243513107299805,
       "start_time": "2019-11-12T00:00:00.000Z"
     },
     {
@@ -449,19 +449,19 @@
     },
     {
       "away_team": "South Dakota",
-      "edge_home_points": 2.5010194778442383,
+      "edge_home_points": -1.124551773071289,
       "game_id": "2019_11_11_south_dakota_florida_a_m",
       "home_team": "Florida A&M",
       "market_spread_home": 17.0,
-      "model_mu_home": -14.498980522155762,
-      "pick_cover_prob": 0.5332202619357441,
-      "pick_ev_per_1": 0.017965954604602374,
-      "pick_fair_odds": -114.233806323089,
-      "pick_prob_edge": 0.009410738126220286,
-      "pick_side": "HOME",
+      "model_mu_home": -18.12455177307129,
+      "pick_cover_prob": 0.5150937622428875,
+      "pick_ev_per_1": -0.016639181172669326,
+      "pick_fair_odds": -106.22543538012721,
+      "pick_prob_edge": -0.008715761566636337,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.31444160049546993,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.2709545938777025,
+      "pred_sigma": 29.715864181518555,
       "start_time": "2019-11-12T02:30:00.000Z"
     },
     {
@@ -482,7 +482,7 @@
       "start_time": "2019-11-12T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.748463Z",
+  "generated_at": "2026-03-12T01:45:14.922030Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

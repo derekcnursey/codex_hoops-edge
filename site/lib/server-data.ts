@@ -10,6 +10,7 @@ const TRUE_WALKFORWARD_MANIFEST = "true_walkforward_manifest.json";
 
 type TrueWalkforwardManifest = {
   holdout_seasons?: number[];
+  walkforward_dates?: string[];
 };
 
 /** Today's date in US Eastern Time as YYYY-MM-DD. */
@@ -147,12 +148,16 @@ export function readTrueWalkforwardManifest(): TrueWalkforwardManifest | null {
 
 export function listWalkforwardPredictionFiles(): DataFile[] {
   const manifest = readTrueWalkforwardManifest();
-  const seasons = new Set(manifest?.holdout_seasons ?? []);
   const files = listPredictionFiles();
-  if (!seasons.size) {
-    return files;
+  const dates = new Set(manifest?.walkforward_dates ?? []);
+  if (dates.size) {
+    return files.filter((f) => dates.has(f.date));
   }
-  return files.filter((f) => seasons.has(seasonFromDate(f.date)));
+  const seasons = new Set(manifest?.holdout_seasons ?? []);
+  if (seasons.size) {
+    return files.filter((f) => seasons.has(seasonFromDate(f.date)));
+  }
+  return files;
 }
 
 export function listPerformancePredictionFiles(): DataFile[] {

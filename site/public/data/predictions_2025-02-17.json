@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-02-17",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -109,19 +109,19 @@
     },
     {
       "away_team": "Northern Iowa",
-      "edge_home_points": 1.6485464721918106,
+      "edge_home_points": -1.6295485496520996,
       "game_id": "2025_02_17_northern_iowa_murray_state",
       "home_team": "Murray State",
       "market_spread_home": 1.5,
-      "model_mu_home": 0.1485464721918106,
-      "pick_cover_prob": 0.5629113031978931,
-      "pick_ev_per_1": 0.07464885155961398,
-      "pick_fair_odds": -128.7865157155397,
-      "pick_prob_edge": 0.03910177938836923,
-      "pick_side": "HOME",
+      "model_mu_home": -3.1295485496520996,
+      "pick_cover_prob": 0.5685451339701287,
+      "pick_ev_per_1": 0.08540434667024577,
+      "pick_fair_odds": -131.77395336891766,
+      "pick_prob_edge": 0.0447356101606049,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5056922915357012,
-      "pred_sigma": 10.41047477722168,
+      "pred_home_win_prob": 0.3700898193810489,
+      "pred_sigma": 9.437281608581543,
       "start_time": "2025-02-18T00:00:00.000Z"
     },
     {
@@ -363,7 +363,7 @@
       "start_time": "2025-02-18T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.611360Z",
+  "generated_at": "2026-03-12T01:45:17.626709Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

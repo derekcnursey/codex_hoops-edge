@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-12-27",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -11,15 +11,15 @@
       "game_id": "2023_12_27_grand_canyon_bethesda_university",
       "home_team": "Bethesda University",
       "market_spread_home": null,
-      "model_mu_home": -10.124706268310547,
+      "model_mu_home": -18.780202865600586,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.2047579213411208,
-      "pred_sigma": 12.276151657104492,
+      "pred_home_win_prob": 0.2067812179723394,
+      "pred_sigma": 22.968774795532227,
       "start_time": "2023-12-27T20:00:00.000Z"
     },
     {
@@ -57,7 +57,7 @@
       "start_time": "2023-12-28T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.760304Z",
+  "generated_at": "2026-03-12T01:45:16.985764Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

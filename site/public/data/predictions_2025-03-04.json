@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-03-04",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -58,19 +58,19 @@
     },
     {
       "away_team": "Coastal Carolina",
-      "edge_home_points": -1.0718295574188232,
+      "edge_home_points": -2.836841344833374,
       "game_id": "2025_03_04_coastal_carolina_southern_miss",
       "home_team": "Southern Miss",
       "market_spread_home": -3.5,
-      "model_mu_home": 2.4281704425811768,
-      "pick_cover_prob": 0.5360190258648716,
-      "pick_ev_per_1": 0.023309049378391233,
-      "pick_fair_odds": -115.52607881476689,
-      "pick_prob_edge": 0.012209502055347765,
+      "model_mu_home": 0.663158655166626,
+      "pick_cover_prob": 0.5881056439534541,
+      "pick_ev_per_1": 0.12274713845659413,
+      "pick_fair_odds": -142.78069978870883,
+      "pick_prob_edge": 0.06429612014393027,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5811425686263323,
-      "pred_sigma": 11.85529899597168,
+      "pred_home_win_prob": 0.5207571248181213,
+      "pred_sigma": 12.739847183227539,
       "start_time": "2025-03-04T23:00:00.000Z"
     },
     {
@@ -500,19 +500,19 @@
     },
     {
       "away_team": "UL Monroe",
-      "edge_home_points": 1.6588830947875977,
+      "edge_home_points": -0.9597163200378418,
       "game_id": "2025_03_04_ul_monroe_louisiana",
       "home_team": "Louisiana",
       "market_spread_home": -5.5,
-      "model_mu_home": 7.158883094787598,
-      "pick_cover_prob": 0.5598214842614578,
-      "pick_ev_per_1": 0.06875010631732859,
-      "pick_fair_odds": -127.18055612554733,
-      "pick_prob_edge": 0.036011960451934,
-      "pick_side": "HOME",
+      "model_mu_home": 4.540283679962158,
+      "pick_cover_prob": 0.5340032742199267,
+      "pick_ev_per_1": 0.01946079623804181,
+      "pick_fair_odds": -114.59378246188557,
+      "pick_prob_edge": 0.010193750410402824,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7420092008403194,
-      "pred_sigma": 11.021261215209961,
+      "pred_home_win_prob": 0.6567897885408636,
+      "pred_sigma": 11.246188163757324,
       "start_time": "2025-03-05T01:30:00.000Z"
     },
     {
@@ -754,7 +754,7 @@
       "start_time": "2025-03-05T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.675261Z",
+  "generated_at": "2026-03-12T01:45:17.675146Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

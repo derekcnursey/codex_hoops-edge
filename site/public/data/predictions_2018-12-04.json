@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2018-12-04",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -262,19 +262,19 @@
     },
     {
       "away_team": "Oklahoma",
-      "edge_home_points": 3.183198571205139,
+      "edge_home_points": 3.4569414854049683,
       "game_id": "2018_12_04_oklahoma_notre_dame",
       "home_team": "Notre Dame",
       "market_spread_home": 2.0,
-      "model_mu_home": 1.1831985712051392,
-      "pick_cover_prob": 0.6222002147079243,
-      "pick_ev_per_1": 0.18783677353330996,
-      "pick_fair_odds": -164.69046276109012,
-      "pick_prob_edge": 0.09839069089840047,
+      "model_mu_home": 1.4569414854049683,
+      "pick_cover_prob": 0.639635589100453,
+      "pick_ev_per_1": 0.2211224882826831,
+      "pick_fair_odds": -177.49688086672742,
+      "pick_prob_edge": 0.1158260652909292,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5460538022649863,
-      "pred_sigma": 10.226668357849121,
+      "pred_home_win_prob": 0.5598793810700581,
+      "pred_sigma": 9.670174598693848,
       "start_time": "2018-12-05T00:00:00.000Z"
     },
     {
@@ -738,19 +738,19 @@
     },
     {
       "away_team": "Florida",
-      "edge_home_points": 2.1050872802734375,
+      "edge_home_points": 1.167878806591034,
       "game_id": "2018_12_04_florida_west_virginia",
       "home_team": "West Virginia",
       "market_spread_home": 1.5,
-      "model_mu_home": 0.6050872802734375,
-      "pick_cover_prob": 0.5584191444884379,
-      "pick_ev_per_1": 0.06607291220519962,
-      "pick_fair_odds": -126.45909294267774,
-      "pick_prob_edge": 0.034609620678914044,
+      "model_mu_home": -0.33212119340896606,
+      "pick_cover_prob": 0.5373870259375662,
+      "pick_ev_per_1": 0.025920685880808092,
+      "pick_fair_odds": -116.16341435876825,
+      "pick_prob_edge": 0.013577502128042318,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.516847482829985,
-      "pred_sigma": 14.323987007141113,
+      "pred_home_win_prob": 0.4893535364860623,
+      "pred_sigma": 12.443705558776855,
       "start_time": "2018-12-05T02:32:00.000Z"
     },
     {
@@ -788,7 +788,7 @@
       "start_time": "2018-12-05T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.163728Z",
+  "generated_at": "2026-03-12T01:45:14.341455Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

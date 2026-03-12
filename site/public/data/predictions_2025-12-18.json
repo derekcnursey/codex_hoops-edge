@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-12-18",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -41,19 +41,19 @@
     },
     {
       "away_team": "Hampton",
-      "edge_home_points": 2.3792648315429688,
+      "edge_home_points": 1.3837156295776367,
       "game_id": "2025_12_18_hampton_jackson_state",
       "home_team": "Jackson State",
       "market_spread_home": 8.5,
-      "model_mu_home": -6.120735168457031,
-      "pick_cover_prob": 0.5722843568222509,
-      "pick_ev_per_1": 0.09254286302429715,
-      "pick_fair_odds": -133.8001931775084,
-      "pick_prob_edge": 0.04847483301272704,
+      "model_mu_home": -7.116284370422363,
+      "pick_cover_prob": 0.5431309851372257,
+      "pick_ev_per_1": 0.03688642617106719,
+      "pick_fair_odds": -118.88111635243223,
+      "pick_prob_edge": 0.01932146132770185,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3196430171072999,
-      "pred_sigma": 13.059037208557129,
+      "pred_home_win_prob": 0.2887289876823437,
+      "pred_sigma": 12.773762702941895,
       "start_time": "2025-12-18T22:00:00.000Z"
     },
     {
@@ -296,19 +296,19 @@
     },
     {
       "away_team": "Norfolk State",
-      "edge_home_points": 1.1125657558441162,
+      "edge_home_points": -0.47287487983703613,
       "game_id": "2025_12_18_norfolk_state_grambling",
       "home_team": "Grambling",
       "market_spread_home": 1.5,
-      "model_mu_home": -0.3874342441558838,
-      "pick_cover_prob": 0.5386421344628919,
-      "pick_ev_per_1": 0.028316802156429954,
-      "pick_fair_odds": -116.75147964277366,
-      "pick_prob_edge": 0.01483261065336805,
-      "pick_side": "HOME",
+      "model_mu_home": -1.9728748798370361,
+      "pick_cover_prob": 0.517298118964617,
+      "pick_ev_per_1": -0.012430863794822167,
+      "pick_fair_odds": -107.16720594811562,
+      "pick_prob_edge": -0.006511404844906865,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4865249115364219,
-      "pred_sigma": 11.468162536621094,
+      "pred_home_win_prob": 0.42820019314793917,
+      "pred_sigma": 10.902379035949707,
       "start_time": "2025-12-19T00:30:00.000Z"
     },
     {
@@ -550,7 +550,7 @@
       "start_time": "2025-12-19T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:45.001083Z",
+  "generated_at": "2026-03-12T01:45:17.901920Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

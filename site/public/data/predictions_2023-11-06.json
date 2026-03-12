@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-11-06",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -92,19 +92,19 @@
     },
     {
       "away_team": "Georgia",
-      "edge_home_points": -0.3961453437805176,
+      "edge_home_points": -1.586355209350586,
       "game_id": "2023_11_06_georgia_oregon",
       "home_team": "Oregon",
       "market_spread_home": -6.5,
-      "model_mu_home": 6.103854656219482,
-      "pick_cover_prob": 0.5123817522204445,
-      "pick_ev_per_1": -0.02181665485187878,
-      "pick_fair_odds": -105.07846138934573,
-      "pick_prob_edge": -0.011427771589079372,
+      "model_mu_home": 4.913644790649414,
+      "pick_cover_prob": 0.5478938982679131,
+      "pick_ev_per_1": 0.04597926032965233,
+      "pick_fair_odds": -121.1870169787244,
+      "pick_prob_edge": 0.02408437445838929,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6837781372032935,
-      "pred_sigma": 12.761824607849121,
+      "pred_home_win_prob": 0.6453337094115565,
+      "pred_sigma": 13.182053565979004,
       "start_time": "2023-11-06T21:30:00.000Z"
     },
     {
@@ -908,19 +908,19 @@
     },
     {
       "away_team": "Princeton",
-      "edge_home_points": 1.0178017616271973,
+      "edge_home_points": -0.46062755584716797,
       "game_id": "2023_11_06_princeton_rutgers",
       "home_team": "Rutgers",
       "market_spread_home": -5.5,
-      "model_mu_home": 6.517801761627197,
-      "pick_cover_prob": 0.5284746666896535,
-      "pick_ev_per_1": 0.00890618186206571,
-      "pick_fair_odds": -112.07768265163907,
-      "pick_prob_edge": 0.004665142880129647,
-      "pick_side": "HOME",
+      "model_mu_home": 5.039372444152832,
+      "pick_cover_prob": 0.5137054788621878,
+      "pick_ev_per_1": -0.019289540354005208,
+      "pick_fair_odds": -105.63669885900431,
+      "pick_prob_edge": -0.010104044947336077,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6763307823097149,
-      "pred_sigma": 14.247719764709473,
+      "pred_home_win_prob": 0.6465120438425209,
+      "pred_sigma": 13.405416488647461,
       "start_time": "2023-11-07T00:00:00.000Z"
     },
     {
@@ -2965,19 +2965,19 @@
     },
     {
       "away_team": "Kansas State",
-      "edge_home_points": 2.955369472503662,
+      "edge_home_points": 1.0961174964904785,
       "game_id": "2023_11_06_kansas_state_usc",
       "home_team": "USC",
       "market_spread_home": -2.5,
-      "model_mu_home": 5.455369472503662,
-      "pick_cover_prob": 0.594272763311131,
-      "pick_ev_per_1": 0.13452072995761366,
-      "pick_fair_odds": -146.47100553588118,
-      "pick_prob_edge": 0.07046323950160716,
+      "model_mu_home": 3.5961174964904785,
+      "pick_cover_prob": 0.5332670227394516,
+      "pick_ev_per_1": 0.018055225229862137,
+      "pick_fair_odds": -114.25526986959855,
+      "pick_prob_edge": 0.009457498929927755,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6701559673733298,
-      "pred_sigma": 12.388884544372559,
+      "pred_home_win_prob": 0.6079175319126778,
+      "pred_sigma": 13.129524230957031,
       "start_time": "2023-11-07T03:00:00.000Z"
     },
     {
@@ -3134,7 +3134,7 @@
       "start_time": "2023-11-07T04:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.561456Z",
+  "generated_at": "2026-03-12T01:45:16.829202Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

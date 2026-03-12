@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-12-28",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -415,19 +415,19 @@
     },
     {
       "away_team": "Gonzaga",
-      "edge_home_points": 0.6549375057220459,
+      "edge_home_points": -0.9950127601623535,
       "game_id": "2024_12_28_gonzaga_ucla",
       "home_team": "UCLA",
       "market_spread_home": 4.5,
-      "model_mu_home": -3.845062494277954,
-      "pick_cover_prob": 0.5193677714895448,
-      "pick_ev_per_1": -0.00847970897450534,
-      "pick_fair_odds": -108.05928955266614,
-      "pick_prob_edge": -0.004441752319979009,
-      "pick_side": "HOME",
+      "model_mu_home": -5.4950127601623535,
+      "pick_cover_prob": 0.5306299974722222,
+      "pick_ev_per_1": 0.0130209042651514,
+      "pick_fair_odds": -113.0515360194581,
+      "pick_prob_edge": 0.006820473662698334,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.38777204245752767,
-      "pred_sigma": 13.485267639160156,
+      "pred_home_win_prob": 0.3356267523499642,
+      "pred_sigma": 12.946858406066895,
       "start_time": "2024-12-28T21:00:00.000Z"
     },
     {
@@ -636,19 +636,19 @@
     },
     {
       "away_team": "Grand Canyon",
-      "edge_home_points": 4.365547180175781,
+      "edge_home_points": 4.035491943359375,
       "game_id": "2024_12_28_grand_canyon_san_diego",
       "home_team": "San Diego",
       "market_spread_home": 16.5,
-      "model_mu_home": -12.134452819824219,
-      "pick_cover_prob": 0.6400009332833307,
-      "pick_ev_per_1": 0.22181996354090416,
-      "pick_fair_odds": -177.7784979056715,
-      "pick_prob_edge": 0.1161914094738069,
+      "model_mu_home": -12.464508056640625,
+      "pick_cover_prob": 0.6332876335565901,
+      "pick_ev_per_1": 0.20900366406258108,
+      "pick_fair_odds": -172.69328539383127,
+      "pick_prob_edge": 0.10947810974706629,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.15953345839003807,
-      "pred_sigma": 12.178573608398438,
+      "pred_home_win_prob": 0.14641439785580634,
+      "pred_sigma": 11.849109649658203,
       "start_time": "2024-12-28T23:45:00.000Z"
     },
     {
@@ -907,7 +907,7 @@
       "start_time": "2024-12-29T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.401366Z",
+  "generated_at": "2026-03-12T01:45:17.454596Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

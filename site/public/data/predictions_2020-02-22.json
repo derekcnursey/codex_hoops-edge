@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2020-02-22",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -1503,19 +1503,19 @@
     },
     {
       "away_team": "LSU",
-      "edge_home_points": -0.7393438816070557,
+      "edge_home_points": -1.270543098449707,
       "game_id": "2020_02_22_lsu_south_carolina",
       "home_team": "South Carolina",
       "market_spread_home": 1.0,
-      "model_mu_home": -1.7393438816070557,
-      "pick_cover_prob": 0.5142673126689674,
-      "pick_ev_per_1": -0.018216948541062206,
-      "pick_fair_odds": -105.87455324341558,
-      "pick_prob_edge": -0.009542211140556422,
+      "model_mu_home": -2.270543098449707,
+      "pick_cover_prob": 0.5250427535999744,
+      "pick_ev_per_1": 0.0023543477817693503,
+      "pick_fair_odds": -110.54526645915517,
+      "pick_prob_edge": 0.0012332297904505962,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.46646784845490363,
-      "pred_sigma": 20.669109344482422,
+      "pred_home_win_prob": 0.4553114110823796,
+      "pred_sigma": 20.227018356323242,
       "start_time": "2020-02-22T23:00:00.000Z"
     },
     {
@@ -2250,7 +2250,7 @@
       "start_time": "2020-02-23T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.181507Z",
+  "generated_at": "2026-03-12T01:45:15.383981Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

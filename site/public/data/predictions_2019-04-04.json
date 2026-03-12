@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-04-04",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -24,23 +24,23 @@
     },
     {
       "away_team": "Lipscomb",
-      "edge_home_points": 3.6359076499938965,
+      "edge_home_points": 2.6883535385131836,
       "game_id": "2019_04_04_lipscomb_texas",
       "home_team": "Texas",
       "market_spread_home": -1.5,
-      "model_mu_home": 5.1359076499938965,
-      "pick_cover_prob": 0.6351813309539167,
-      "pick_ev_per_1": 0.2126189045483864,
-      "pick_fair_odds": -174.1087791956397,
-      "pick_prob_edge": 0.11137180714439288,
+      "model_mu_home": 4.188353538513184,
+      "pick_cover_prob": 0.6003511711365445,
+      "pick_ev_per_1": 0.14612496307885758,
+      "pick_fair_odds": -150.2196748189799,
+      "pick_prob_edge": 0.07654164732702062,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6872920723555895,
-      "pred_sigma": 10.520322799682617,
+      "pred_home_win_prob": 0.6539923143363562,
+      "pred_sigma": 10.573405265808105,
       "start_time": "2019-04-04T23:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.707870Z",
+  "generated_at": "2026-03-12T01:45:14.863666Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

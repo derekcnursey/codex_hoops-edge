@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-11-14",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "North Dakota State",
-      "edge_home_points": -2.4629592895507812,
+      "edge_home_points": -4.890389323234558,
       "game_id": "2023_11_14_north_dakota_state_uc_davis",
       "home_team": "UC Davis",
       "market_spread_home": -4.5,
-      "model_mu_home": 2.0370407104492188,
-      "pick_cover_prob": 0.5915195186857046,
-      "pick_ev_per_1": 0.1292645356727088,
-      "pick_fair_odds": -144.8097389580224,
-      "pick_prob_edge": 0.06770999487618079,
+      "model_mu_home": -0.3903893232345581,
+      "pick_cover_prob": 0.6673587507632487,
+      "pick_ev_per_1": 0.27404852418438386,
+      "pick_fair_odds": -200.62417162468878,
+      "pick_prob_edge": 0.14354922695372485,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5759056335488217,
-      "pred_sigma": 10.641179084777832,
+      "pred_home_win_prob": 0.4862248486992018,
+      "pred_sigma": 11.303821563720703,
       "start_time": "2023-11-14T21:00:00.000Z"
     },
     {
@@ -330,19 +330,19 @@
     },
     {
       "away_team": "Duke",
-      "edge_home_points": 5.730265974998474,
+      "edge_home_points": 2.6256608963012695,
       "game_id": "2023_11_14_duke_michigan_state",
       "home_team": "Michigan State",
       "market_spread_home": 4.5,
-      "model_mu_home": 1.2302659749984741,
-      "pick_cover_prob": 0.6644084550403233,
-      "pick_ev_per_1": 0.2684161414406172,
-      "pick_fair_odds": -197.98128558934818,
-      "pick_prob_edge": 0.14059893123079947,
+      "model_mu_home": -1.8743391036987305,
+      "pick_cover_prob": 0.5755882339506663,
+      "pick_ev_per_1": 0.09885026481490833,
+      "pick_fair_odds": -135.62023487439313,
+      "pick_prob_edge": 0.05177871014114244,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5363108527374048,
-      "pred_sigma": 13.498069763183594,
+      "pred_home_win_prob": 0.44588111498886385,
+      "pred_sigma": 13.77433967590332,
       "start_time": "2023-11-15T00:00:00.000Z"
     },
     {
@@ -1248,19 +1248,19 @@
     },
     {
       "away_team": "Kentucky",
-      "edge_home_points": -1.4162707328796387,
+      "edge_home_points": -2.7089571952819824,
       "game_id": "2023_11_14_kentucky_kansas",
       "home_team": "Kansas",
       "market_spread_home": -6.5,
-      "model_mu_home": 5.083729267120361,
-      "pick_cover_prob": 0.5570728366523219,
-      "pick_ev_per_1": 0.06350268815443261,
-      "pick_fair_odds": -125.77075482161035,
-      "pick_prob_edge": 0.03326331284279804,
+      "model_mu_home": 3.7910428047180176,
+      "pick_cover_prob": 0.5959979042426071,
+      "pick_ev_per_1": 0.13781418082679542,
+      "pick_fair_odds": -147.52346844272552,
+      "pick_prob_edge": 0.07218838043308329,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6968220545438619,
-      "pred_sigma": 9.865914344787598,
+      "pred_home_win_prob": 0.6330972912860102,
+      "pred_sigma": 11.147900581359863,
       "start_time": "2023-11-15T02:45:00.000Z"
     },
     {
@@ -1383,7 +1383,7 @@
       "start_time": "2023-11-15T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.595442Z",
+  "generated_at": "2026-03-12T01:45:16.855951Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

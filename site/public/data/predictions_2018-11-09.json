@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2018-11-09",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -92,19 +92,19 @@
     },
     {
       "away_team": "Wichita State",
-      "edge_home_points": 2.073605537414551,
+      "edge_home_points": -0.7054028511047363,
       "game_id": "2018_11_09_wichita_state_providence",
       "home_team": "Providence",
       "market_spread_home": -7.0,
-      "model_mu_home": 9.07360553741455,
-      "pick_cover_prob": 0.5294539935531111,
-      "pick_ev_per_1": 0.010775805874121136,
-      "pick_fair_odds": -112.51907067515856,
-      "pick_prob_edge": 0.005644469743587233,
-      "pick_side": "HOME",
+      "model_mu_home": 6.294597148895264,
+      "pick_cover_prob": 0.513120867101216,
+      "pick_ev_per_1": -0.02040561735222407,
+      "pick_fair_odds": -105.3897841228466,
+      "pick_prob_edge": -0.010688656708307875,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6267877603352008,
-      "pred_sigma": 28.060596466064453,
+      "pred_home_win_prob": 0.6154437946992625,
+      "pred_sigma": 21.44403076171875,
       "start_time": "2018-11-09T23:00:00.000Z"
     },
     {
@@ -551,19 +551,19 @@
     },
     {
       "away_team": "Arkansas",
-      "edge_home_points": 1.985804557800293,
+      "edge_home_points": -0.8762693405151367,
       "game_id": "2018_11_09_arkansas_texas",
       "home_team": "Texas",
       "market_spread_home": -6.5,
-      "model_mu_home": 8.485804557800293,
-      "pick_cover_prob": 0.5970215717374637,
-      "pick_ev_per_1": 0.139768455135158,
-      "pick_fair_odds": -148.15224088087174,
-      "pick_prob_edge": 0.0732120479279399,
-      "pick_side": "HOME",
+      "model_mu_home": 5.623730659484863,
+      "pick_cover_prob": 0.5341852130233966,
+      "pick_ev_per_1": 0.019808133953757134,
+      "pick_fair_odds": -114.67759889945856,
+      "pick_prob_edge": 0.010375689213872774,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.8530718003942681,
-      "pred_sigma": 8.084033966064453,
+      "pred_home_win_prob": 0.7090510181044118,
+      "pred_sigma": 10.213553428649902,
       "start_time": "2018-11-10T00:00:00.000Z"
     },
     {
@@ -1286,15 +1286,15 @@
       "game_id": "2018_11_09_north_texas_humboldt_state",
       "home_team": "Humboldt State",
       "market_spread_home": null,
-      "model_mu_home": 0.25429007411003113,
+      "model_mu_home": -10.377391815185547,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.5088975976072493,
-      "pred_sigma": 11.400678634643555,
+      "pred_home_win_prob": 0.2319760869446571,
+      "pred_sigma": 14.169900894165039,
       "start_time": "2018-11-10T02:30:00.000Z"
     },
     {
@@ -1418,19 +1418,19 @@
     },
     {
       "away_team": "Yale",
-      "edge_home_points": -1.755256175994873,
+      "edge_home_points": -4.384840965270996,
       "game_id": "2018_11_09_yale_california",
       "home_team": "California",
       "market_spread_home": 4.5,
-      "model_mu_home": -6.255256175994873,
-      "pick_cover_prob": 0.5537359996404676,
-      "pick_ev_per_1": 0.057132362949983584,
-      "pick_fair_odds": -124.0826056312744,
-      "pick_prob_edge": 0.029926475830943766,
+      "model_mu_home": -8.884840965270996,
+      "pick_cover_prob": 0.6188632724759388,
+      "pick_ev_per_1": 0.18146624745406492,
+      "pick_fair_odds": -162.37303512999011,
+      "pick_prob_edge": 0.09505374866641492,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.31508720627164105,
-      "pred_sigma": 12.99168872833252,
+      "pred_home_win_prob": 0.2699587171842358,
+      "pred_sigma": 14.495500564575195,
       "start_time": "2018-11-10T04:00:00.000Z"
     },
     {
@@ -1468,7 +1468,7 @@
       "start_time": "2018-11-10T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.054230Z",
+  "generated_at": "2026-03-12T01:45:14.243655Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

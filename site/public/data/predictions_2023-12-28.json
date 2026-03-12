@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-12-28",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -41,19 +41,19 @@
     },
     {
       "away_team": "UAlbany",
-      "edge_home_points": 13.150519132614136,
+      "edge_home_points": 4.538135528564453,
       "game_id": "2023_12_28_ualbany_long_island_university",
       "home_team": "Long Island University",
       "market_spread_home": 10.5,
-      "model_mu_home": 2.6505191326141357,
-      "pick_cover_prob": 0.883436864573697,
-      "pick_ev_per_1": 0.6865612869134214,
-      "pick_fair_odds": -757.9041704246616,
-      "pick_prob_edge": 0.35962734076417313,
+      "model_mu_home": -5.961864471435547,
+      "pick_cover_prob": 0.6084358374124428,
+      "pick_ev_per_1": 0.16155932596920897,
+      "pick_fair_odds": -155.38598665203207,
+      "pick_prob_edge": 0.08462631360291895,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5949588636438943,
-      "pred_sigma": 11.029129028320312,
+      "pred_home_win_prob": 0.35882703170949315,
+      "pred_sigma": 16.487646102905273,
       "start_time": "2023-12-29T00:00:00.000Z"
     },
     {
@@ -380,7 +380,7 @@
       "start_time": "2023-12-29T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.762972Z",
+  "generated_at": "2026-03-12T01:45:16.988145Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

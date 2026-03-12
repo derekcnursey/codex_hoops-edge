@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-12-17",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -24,19 +24,19 @@
     },
     {
       "away_team": "Iona",
-      "edge_home_points": 6.318984508514404,
+      "edge_home_points": 2.7874302864074707,
       "game_id": "2019_12_17_iona_princeton",
       "home_team": "Princeton",
       "market_spread_home": 1.0,
-      "model_mu_home": 5.318984508514404,
-      "pick_cover_prob": 0.5834130987327054,
-      "pick_ev_per_1": 0.1137886430351649,
-      "pick_fair_odds": -140.0459536672686,
-      "pick_prob_edge": 0.05960357492318158,
+      "model_mu_home": 1.7874302864074707,
+      "pick_cover_prob": 0.540955982945075,
+      "pick_ev_per_1": 0.03273414925877949,
+      "pick_fair_odds": -117.84403300051052,
+      "pick_prob_edge": 0.01714645913555113,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5703634218086787,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.5262901319137501,
+      "pred_sigma": 27.10389518737793,
       "start_time": "2019-12-17T21:30:00.000Z"
     },
     {
@@ -160,19 +160,19 @@
     },
     {
       "away_team": "Kent State",
-      "edge_home_points": 3.283367156982422,
+      "edge_home_points": 1.9552879333496094,
       "game_id": "2019_12_17_kent_state_north_carolina_a_t",
       "home_team": "North Carolina A&T",
       "market_spread_home": 14.0,
-      "model_mu_home": -10.716632843017578,
-      "pick_cover_prob": 0.5578610463383635,
-      "pick_ev_per_1": 0.06500745210051218,
-      "pick_fair_odds": -126.17324072406608,
-      "pick_prob_edge": 0.034051522528839695,
+      "model_mu_home": -12.04471206665039,
+      "pick_cover_prob": 0.5404043492705276,
+      "pick_ev_per_1": 0.0316810304255527,
+      "pick_fair_odds": -117.58256380642315,
+      "pick_prob_edge": 0.01659482546100377,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3173729365996564,
-      "pred_sigma": 22.55859375,
+      "pred_home_win_prob": 0.2660005333926393,
+      "pred_sigma": 19.27294921875,
       "start_time": "2019-12-18T00:00:00.000Z"
     },
     {
@@ -194,19 +194,19 @@
     },
     {
       "away_team": "Florida",
-      "edge_home_points": 1.8443381786346436,
+      "edge_home_points": -0.28623151779174805,
       "game_id": "2019_12_17_florida_providence",
       "home_team": "Providence",
       "market_spread_home": 5.0,
-      "model_mu_home": -3.1556618213653564,
-      "pick_cover_prob": 0.5245107084672327,
-      "pick_ev_per_1": 0.0013386252556260025,
-      "pick_fair_odds": -110.30967843175648,
-      "pick_prob_edge": 0.0007011846577088532,
-      "pick_side": "HOME",
+      "model_mu_home": -5.286231517791748,
+      "pick_cover_prob": 0.5047576257835903,
+      "pick_ev_per_1": -0.03637180532223672,
+      "pick_fair_odds": -101.92133227336129,
+      "pick_prob_edge": -0.019051898025933545,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.458113027673341,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.412837574055576,
+      "pred_sigma": 24.00086784362793,
       "start_time": "2019-12-18T00:00:00.000Z"
     },
     {
@@ -602,19 +602,19 @@
     },
     {
       "away_team": "Miami",
-      "edge_home_points": 5.619628429412842,
+      "edge_home_points": 4.081531047821045,
       "game_id": "2019_12_17_miami_temple",
       "home_team": "Temple",
       "market_spread_home": 2.5,
-      "model_mu_home": 3.119628429412842,
-      "pick_cover_prob": 0.5919139241594007,
-      "pick_ev_per_1": 0.13001749157703768,
-      "pick_fair_odds": -145.04634174056102,
-      "pick_prob_edge": 0.06810440034987686,
+      "model_mu_home": 1.581531047821045,
+      "pick_cover_prob": 0.5595398448908364,
+      "pick_ev_per_1": 0.06821243115523312,
+      "pick_fair_odds": -127.03529215989131,
+      "pick_prob_edge": 0.03573032108131258,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5513416840274865,
-      "pred_sigma": 24.173452377319336,
+      "pred_home_win_prob": 0.5231441045288155,
+      "pred_sigma": 27.246051788330078,
       "start_time": "2019-12-18T02:30:00.000Z"
     },
     {
@@ -669,7 +669,7 @@
       "start_time": "2019-12-18T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.899021Z",
+  "generated_at": "2026-03-12T01:45:15.107115Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2018-11-06",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -585,19 +585,19 @@
     },
     {
       "away_team": "Michigan State",
-      "edge_home_points": 2.4636192321777344,
+      "edge_home_points": -1.9918036460876465,
       "game_id": "2018_11_06_michigan_state_kansas",
       "home_team": "Kansas",
       "market_spread_home": -4.5,
-      "model_mu_home": 6.963619232177734,
-      "pick_cover_prob": 0.5736365425027219,
-      "pick_ev_per_1": 0.0951243084142872,
-      "pick_fair_odds": -134.54167621914078,
-      "pick_prob_edge": 0.049827018693198055,
-      "pick_side": "HOME",
+      "model_mu_home": 2.5081963539123535,
+      "pick_cover_prob": 0.5534625473161123,
+      "pick_ev_per_1": 0.056610317603487115,
+      "pick_fair_odds": -123.9453810625643,
+      "pick_prob_edge": 0.029653023506588494,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7001135413367657,
-      "pred_sigma": 13.27093505859375,
+      "pred_home_win_prob": 0.5672049168204536,
+      "pred_sigma": 14.818381309509277,
       "start_time": "2018-11-07T00:00:00.000Z"
     },
     {
@@ -2404,19 +2404,19 @@
     },
     {
       "away_team": "Duke",
-      "edge_home_points": 1.212754487991333,
+      "edge_home_points": -3.2411118745803833,
       "game_id": "2018_11_06_duke_kentucky",
       "home_team": "Kentucky",
       "market_spread_home": -2.0,
-      "model_mu_home": 3.212754487991333,
-      "pick_cover_prob": 0.5281484032557294,
-      "pick_ev_per_1": 0.008283315306392536,
-      "pick_fair_odds": -111.93104079755187,
-      "pick_prob_edge": 0.00433887944620559,
-      "pick_side": "HOME",
+      "model_mu_home": -1.2411118745803833,
+      "pick_cover_prob": 0.5716571657576671,
+      "pick_ev_per_1": 0.09134549826463723,
+      "pick_fair_odds": -133.45785666493836,
+      "pick_prob_edge": 0.04784764194814328,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5741979740584758,
-      "pred_sigma": 17.173877716064453,
+      "pred_home_win_prob": 0.4724332179965238,
+      "pred_sigma": 17.946876525878906,
       "start_time": "2018-11-07T03:03:00.000Z"
     },
     {
@@ -2488,7 +2488,7 @@
       "start_time": "2018-11-07T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.040020Z",
+  "generated_at": "2026-03-12T01:45:14.230593Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

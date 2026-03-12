@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-11-08",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -126,19 +126,19 @@
     },
     {
       "away_team": "Florida Atlantic",
-      "edge_home_points": 3.8627851009368896,
+      "edge_home_points": 2.3633527755737305,
       "game_id": "2023_11_08_florida_atlantic_loyola_chicago",
       "home_team": "Loyola Chicago",
       "market_spread_home": 6.5,
-      "model_mu_home": -2.6372148990631104,
-      "pick_cover_prob": 0.6117016343222426,
-      "pick_ev_per_1": 0.1677940291606449,
-      "pick_fair_odds": -157.5339193752579,
-      "pick_prob_edge": 0.08789211051271872,
+      "model_mu_home": -4.1366472244262695,
+      "pick_cover_prob": 0.5740673947381099,
+      "pick_ev_per_1": 0.09594684450002788,
+      "pick_fair_odds": -134.7789269114857,
+      "pick_prob_edge": 0.050257870928586024,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4231946220064544,
-      "pred_sigma": 13.613011360168457,
+      "pred_home_win_prob": 0.3718887723241268,
+      "pred_sigma": 12.655908584594727,
       "start_time": "2023-11-09T00:00:00.000Z"
     },
     {
@@ -419,15 +419,15 @@
       "game_id": "2023_11_08_arizona_state_mississippi_state",
       "home_team": "Mississippi State",
       "market_spread_home": null,
-      "model_mu_home": 3.800848960876465,
+      "model_mu_home": 1.9758046865463257,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.6307869682338378,
-      "pred_sigma": 11.381887435913086,
+      "pred_home_win_prob": 0.5654487765212225,
+      "pred_sigma": 11.989202499389648,
       "start_time": "2023-11-09T02:30:00.000Z"
     },
     {
@@ -499,7 +499,7 @@
       "start_time": "2023-11-09T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.569879Z",
+  "generated_at": "2026-03-12T01:45:16.836240Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

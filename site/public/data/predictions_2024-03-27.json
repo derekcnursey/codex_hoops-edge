@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-03-27",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "High Point",
-      "edge_home_points": -1.2933964133262634,
+      "edge_home_points": -2.7225558757781982,
       "game_id": "2024_03_27_high_point_seattle_u",
       "home_team": "Seattle U",
       "market_spread_home": -1.5,
-      "model_mu_home": 0.20660358667373657,
-      "pick_cover_prob": 0.5601673142692962,
-      "pick_ev_per_1": 0.06941032724138363,
-      "pick_fair_odds": -127.3591828080439,
-      "pick_prob_edge": 0.03635779045977239,
+      "model_mu_home": -1.2225558757781982,
+      "pick_cover_prob": 0.61972665569653,
+      "pick_ev_per_1": 0.1831145245115572,
+      "pick_fair_odds": -162.96873419609676,
+      "pick_prob_edge": 0.09591713188700612,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5096467488212328,
-      "pred_sigma": 8.543279647827148,
+      "pred_home_win_prob": 0.4455735214870734,
+      "pred_sigma": 8.933355331420898,
       "start_time": "2024-03-27T21:00:00.000Z"
     },
     {
@@ -74,7 +74,7 @@
       "start_time": "2024-03-28T01:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.157325Z",
+  "generated_at": "2026-03-12T01:45:17.263288Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

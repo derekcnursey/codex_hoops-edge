@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-03-06",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -347,19 +347,19 @@
     },
     {
       "away_team": "SIU Edwardsville",
-      "edge_home_points": 2.366201400756836,
+      "edge_home_points": 1.0468711853027344,
       "game_id": "2019_03_06_siu_edwardsville_morehead_state",
       "home_team": "Morehead State",
       "market_spread_home": -5.0,
-      "model_mu_home": 7.366201400756836,
-      "pick_cover_prob": 0.5815465201661782,
-      "pick_ev_per_1": 0.11022517486270389,
-      "pick_fair_odds": -138.9751903597802,
-      "pick_prob_edge": 0.05773699635665441,
+      "model_mu_home": 6.046871185302734,
+      "pick_cover_prob": 0.5353748611554622,
+      "pick_ev_per_1": 0.022079280387700517,
+      "pick_fair_odds": -115.22726955473604,
+      "pick_prob_edge": 0.011565337345938342,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7391848457382661,
-      "pred_sigma": 11.494704246520996,
+      "pred_home_win_prob": 0.6959727435417428,
+      "pred_sigma": 11.790663719177246,
       "start_time": "2019-03-07T00:30:00.000Z"
     },
     {
@@ -636,19 +636,19 @@
     },
     {
       "away_team": "UT Martin",
-      "edge_home_points": 2.1360440850257874,
+      "edge_home_points": 0.5804023742675781,
       "game_id": "2019_03_06_ut_martin_eastern_illinois",
       "home_team": "Eastern Illinois",
       "market_spread_home": 1.5,
-      "model_mu_home": 0.6360440850257874,
-      "pick_cover_prob": 0.5819365669633583,
-      "pick_ev_per_1": 0.11096980965732028,
-      "pick_fair_odds": -139.19815056208316,
-      "pick_prob_edge": 0.058127043153834435,
+      "model_mu_home": -0.9195976257324219,
+      "pick_cover_prob": 0.5213986835832446,
+      "pick_ev_per_1": -0.004602513159260357,
+      "pick_fair_odds": -108.9421749791474,
+      "pick_prob_edge": -0.0024108402262792428,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5245566117870198,
-      "pred_sigma": 10.32652759552002,
+      "pred_home_win_prob": 0.46612018013807216,
+      "pred_sigma": 10.8154296875,
       "start_time": "2019-03-07T02:30:00.000Z"
     },
     {
@@ -737,7 +737,7 @@
       "start_time": "2019-03-07T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.611516Z",
+  "generated_at": "2026-03-12T01:45:14.707792Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

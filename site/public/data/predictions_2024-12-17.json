@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-12-17",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -228,19 +228,19 @@
     },
     {
       "away_team": "Florida",
-      "edge_home_points": 2.1791434288024902,
+      "edge_home_points": -0.5443544387817383,
       "game_id": "2024_12_17_florida_north_carolina",
       "home_team": "North Carolina",
       "market_spread_home": 3.5,
-      "model_mu_home": -1.3208565711975098,
-      "pick_cover_prob": 0.5760899605891225,
-      "pick_ev_per_1": 0.09980810657923389,
-      "pick_fair_odds": -135.8991076006916,
-      "pick_prob_edge": 0.052280436779598705,
-      "pick_side": "HOME",
+      "model_mu_home": -4.044354438781738,
+      "pick_cover_prob": 0.5187639217117754,
+      "pick_ev_per_1": -0.009632513095701456,
+      "pick_fair_odds": -107.79821902735117,
+      "pick_prob_edge": -0.005045602097748403,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4537003431724795,
-      "pred_sigma": 11.355585098266602,
+      "pred_home_win_prob": 0.3633285838646663,
+      "pred_sigma": 11.569324493408203,
       "start_time": "2024-12-18T00:00:00.000Z"
     },
     {
@@ -279,19 +279,19 @@
     },
     {
       "away_team": "Michigan State",
-      "edge_home_points": 1.8903799057006836,
+      "edge_home_points": -0.2972908020019531,
       "game_id": "2024_12_17_michigan_state_oakland",
       "home_team": "Oakland",
       "market_spread_home": 16.5,
-      "model_mu_home": -14.609620094299316,
-      "pick_cover_prob": 0.5492483640663094,
-      "pick_ev_per_1": 0.04856505867204519,
-      "pick_fair_odds": -121.85166292931846,
-      "pick_prob_edge": 0.025438840256785555,
-      "pick_side": "HOME",
+      "model_mu_home": -16.797290802001953,
+      "pick_cover_prob": 0.5085636953737722,
+      "pick_ev_per_1": -0.029105672468253074,
+      "pick_fair_odds": -103.4851700182328,
+      "pick_prob_edge": -0.015245828435751618,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.16941308896424073,
-      "pred_sigma": 15.274246215820312,
+      "pred_home_win_prob": 0.1125748045420722,
+      "pred_sigma": 13.848316192626953,
       "start_time": "2024-12-18T00:00:00.000Z"
     },
     {
@@ -483,19 +483,19 @@
     },
     {
       "away_team": "Central Michigan",
-      "edge_home_points": -3.5515079498291016,
+      "edge_home_points": -4.353370666503906,
       "game_id": "2024_12_17_central_michigan_mississippi_state",
       "home_team": "Mississippi State",
       "market_spread_home": -19.5,
-      "model_mu_home": 15.948492050170898,
-      "pick_cover_prob": 0.6016114807388955,
-      "pick_ev_per_1": 0.1485310086833459,
-      "pick_fair_odds": -151.0112494844758,
-      "pick_prob_edge": 0.07780195692937164,
+      "model_mu_home": 15.146629333496094,
+      "pick_cover_prob": 0.6308189680480651,
+      "pick_ev_per_1": 0.20429075718266976,
+      "pick_fair_odds": -170.8698208878169,
+      "pick_prob_edge": 0.1070094442385413,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.8762469013995795,
-      "pred_sigma": 13.791169166564941,
+      "pred_home_win_prob": 0.8774153251388167,
+      "pred_sigma": 13.0331392288208,
       "start_time": "2024-12-18T00:30:00.000Z"
     },
     {
@@ -822,7 +822,7 @@
       "start_time": "2024-12-18T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.365730Z",
+  "generated_at": "2026-03-12T01:45:17.423875Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

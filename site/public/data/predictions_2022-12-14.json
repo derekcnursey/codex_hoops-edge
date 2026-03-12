@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-12-14",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -109,19 +109,19 @@
     },
     {
       "away_team": "Ohio",
-      "edge_home_points": -3.4695825576782227,
+      "edge_home_points": -4.650623321533203,
       "game_id": "2022_12_14_ohio_florida",
       "home_team": "Florida",
       "market_spread_home": -12.5,
-      "model_mu_home": 9.030417442321777,
-      "pick_cover_prob": 0.6173843278259656,
-      "pick_ev_per_1": 0.17864280766775253,
-      "pick_fair_odds": -161.35887072214484,
-      "pick_prob_edge": 0.0935748040164418,
+      "model_mu_home": 7.849376678466797,
+      "pick_cover_prob": 0.653240859655894,
+      "pick_ev_per_1": 0.24709618661579758,
+      "pick_fair_odds": -188.38461158014496,
+      "pick_prob_edge": 0.12943133584637012,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7814870748701929,
-      "pred_sigma": 11.618789672851562,
+      "pred_home_win_prob": 0.7470199403470906,
+      "pred_sigma": 11.801066398620605,
       "start_time": "2022-12-15T00:00:00.000Z"
     },
     {
@@ -313,19 +313,19 @@
     },
     {
       "away_team": "Mississippi State",
-      "edge_home_points": 4.618212699890137,
+      "edge_home_points": 1.7446098327636719,
       "game_id": "2022_12_14_mississippi_state_jackson_state",
       "home_team": "Jackson State",
       "market_spread_home": 20.5,
-      "model_mu_home": -15.881787300109863,
-      "pick_cover_prob": 0.6645847520396797,
-      "pick_ev_per_1": 0.2687527084393885,
-      "pick_fair_odds": -198.13790699172395,
-      "pick_prob_edge": 0.14077522823015587,
+      "model_mu_home": -18.755390167236328,
+      "pick_cover_prob": 0.560563847379306,
+      "pick_ev_per_1": 0.07016734499685684,
+      "pick_fair_odds": -127.56434445282548,
+      "pick_prob_edge": 0.036754323569782144,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.07192796437957027,
-      "pred_sigma": 10.866166114807129,
+      "pred_home_win_prob": 0.05067317011988204,
+      "pred_sigma": 11.447651863098145,
       "start_time": "2022-12-15T00:30:00.000Z"
     },
     {
@@ -601,7 +601,7 @@
       "start_time": "2022-12-15T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.150165Z",
+  "generated_at": "2026-03-12T01:45:16.268100Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

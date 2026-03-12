@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2020-01-15",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -466,19 +466,19 @@
     },
     {
       "away_team": "Massachusetts",
-      "edge_home_points": -4.9703686237335205,
+      "edge_home_points": -5.851404666900635,
       "game_id": "2020_01_15_massachusetts_st_bonaventure",
       "home_team": "St. Bonaventure",
       "market_spread_home": -8.5,
-      "model_mu_home": 3.5296313762664795,
-      "pick_cover_prob": 0.6282761908127279,
-      "pick_ev_per_1": 0.19943636427884415,
-      "pick_fair_odds": -169.01693550014343,
-      "pick_prob_edge": 0.10446666700320406,
+      "model_mu_home": 2.6485953330993652,
+      "pick_cover_prob": 0.6373166713835106,
+      "pick_ev_per_1": 0.2166954635503383,
+      "pick_fair_odds": -175.72262662710517,
+      "pick_prob_edge": 0.11350714757398672,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.591894431606983,
-      "pred_sigma": 15.186378479003906,
+      "pred_home_win_prob": 0.563170028372308,
+      "pred_sigma": 16.656644821166992,
       "start_time": "2020-01-16T00:00:00.000Z"
     },
     {
@@ -975,7 +975,7 @@
       "start_time": "2020-01-16T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.018813Z",
+  "generated_at": "2026-03-12T01:45:15.225707Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

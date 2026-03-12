@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-12-14",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -92,19 +92,19 @@
     },
     {
       "away_team": "High Point",
-      "edge_home_points": 3.3199243545532227,
+      "edge_home_points": 1.8407173156738281,
       "game_id": "2025_12_14_high_point_app_state",
       "home_team": "App State",
       "market_spread_home": 11.5,
-      "model_mu_home": -8.180075645446777,
-      "pick_cover_prob": 0.6118830331270293,
-      "pick_ev_per_1": 0.16814033596978317,
-      "pick_fair_odds": -157.6542860408616,
-      "pick_prob_edge": 0.08807350931750546,
+      "model_mu_home": -9.659282684326172,
+      "pick_cover_prob": 0.5590189379025525,
+      "pick_ev_per_1": 0.0672179723594184,
+      "pick_fair_odds": -126.76710769475656,
+      "pick_prob_edge": 0.03520941409302869,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.24186228147188443,
-      "pred_sigma": 11.680404663085938,
+      "pred_home_win_prob": 0.2179396043559062,
+      "pred_sigma": 12.39687728881836,
       "start_time": "2025-12-14T19:00:00.000Z"
     },
     {
@@ -500,19 +500,19 @@
     },
     {
       "away_team": "Saint Mary's",
-      "edge_home_points": -0.30059051513671875,
+      "edge_home_points": -1.0457816123962402,
       "game_id": "2025_12_14_saint_mary_s_boise_state",
       "home_team": "Boise State",
       "market_spread_home": 2.5,
-      "model_mu_home": -2.8005905151367188,
-      "pick_cover_prob": 0.5120036256862819,
-      "pick_ev_per_1": -0.022538532780734588,
-      "pick_fair_odds": -104.91955527463206,
-      "pick_prob_edge": -0.011805898123241954,
+      "model_mu_home": -3.5457816123962402,
+      "pick_cover_prob": 0.541522208992144,
+      "pick_ev_per_1": 0.03381512625772942,
+      "pick_fair_odds": -118.11307322034821,
+      "pick_prob_edge": 0.017712685182620147,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3895941701620371,
-      "pred_sigma": 9.988662719726562,
+      "pred_home_win_prob": 0.36184512206747066,
+      "pred_sigma": 10.029614448547363,
       "start_time": "2025-12-14T23:00:00.000Z"
     },
     {
@@ -550,7 +550,7 @@
       "start_time": "2025-12-15T00:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.984739Z",
+  "generated_at": "2026-03-12T01:45:17.890181Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

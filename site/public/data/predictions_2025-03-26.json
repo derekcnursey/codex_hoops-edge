@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-03-26",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Illinois State",
-      "edge_home_points": 0.913383960723877,
+      "edge_home_points": 0.33843445777893066,
       "game_id": "2025_03_26_illinois_state_cleveland_state",
       "home_team": "Cleveland State",
       "market_spread_home": 1.5,
-      "model_mu_home": -0.586616039276123,
-      "pick_cover_prob": 0.5331975530984604,
-      "pick_ev_per_1": 0.017922601369788016,
-      "pick_fair_odds": -114.22338435405099,
-      "pick_prob_edge": 0.009388029288936561,
+      "model_mu_home": -1.1615655422210693,
+      "pick_cover_prob": 0.51329798431625,
+      "pick_ev_per_1": -0.02006748448715917,
+      "pick_fair_odds": -105.46452814565319,
+      "pick_prob_edge": -0.01051153949327388,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.47866456063575974,
-      "pred_sigma": 10.963651657104492,
+      "pred_home_win_prob": 0.45444998663947367,
+      "pred_sigma": 10.151223182678223,
       "start_time": "2025-03-26T21:00:00.000Z"
     },
     {
@@ -57,7 +57,7 @@
       "start_time": "2025-03-27T01:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.751054Z",
+  "generated_at": "2026-03-12T01:45:17.732057Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

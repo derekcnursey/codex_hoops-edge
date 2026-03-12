@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-12-03",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -772,19 +772,19 @@
     },
     {
       "away_team": "South Dakota",
-      "edge_home_points": -3.4183530807495117,
+      "edge_home_points": -3.547598361968994,
       "game_id": "2022_12_03_south_dakota_byu",
       "home_team": "BYU",
       "market_spread_home": -11.5,
-      "model_mu_home": 8.081646919250488,
-      "pick_cover_prob": 0.6234254217849424,
-      "pick_ev_per_1": 0.19017580522579913,
-      "pick_fair_odds": -165.5516484251125,
-      "pick_prob_edge": 0.09961589797541859,
+      "model_mu_home": 7.952401638031006,
+      "pick_cover_prob": 0.6172683173570646,
+      "pick_ev_per_1": 0.1784213331362141,
+      "pick_fair_odds": -161.2796497782853,
+      "pick_prob_edge": 0.09345879354754072,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7714148272780301,
-      "pred_sigma": 10.869524002075195,
+      "pred_home_win_prob": 0.7481597432431575,
+      "pred_sigma": 11.8921537399292,
       "start_time": "2022-12-03T20:30:00.000Z"
     },
     {
@@ -1503,19 +1503,19 @@
     },
     {
       "away_team": "Boise State",
-      "edge_home_points": -0.6139297485351562,
+      "edge_home_points": -0.4314126968383789,
       "game_id": "2022_12_03_boise_state_texas_a_m",
       "home_team": "Texas A&M",
       "market_spread_home": -4.5,
-      "model_mu_home": 3.8860702514648438,
-      "pick_cover_prob": 0.521748218736324,
-      "pick_ev_per_1": -0.00393521877610864,
-      "pick_fair_odds": -109.09488248171668,
-      "pick_prob_edge": -0.002061305073199793,
+      "model_mu_home": 4.068587303161621,
+      "pick_cover_prob": 0.5164355433243426,
+      "pick_ev_per_1": -0.014077599108073213,
+      "pick_fair_odds": -106.79766392978154,
+      "pick_prob_edge": -0.007373980485181231,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.635042956018525,
-      "pred_sigma": 11.256147384643555,
+      "pred_home_win_prob": 0.6512288055072342,
+      "pred_sigma": 10.468778610229492,
       "start_time": "2022-12-04T00:00:00.000Z"
     },
     {
@@ -1758,19 +1758,19 @@
     },
     {
       "away_team": "Saint Mary's",
-      "edge_home_points": -5.248513698577881,
+      "edge_home_points": -7.937877655029297,
       "game_id": "2022_12_03_saint_mary_s_houston",
       "home_team": "Houston",
       "market_spread_home": -10.5,
-      "model_mu_home": 5.251486301422119,
-      "pick_cover_prob": 0.6956351832333019,
-      "pick_ev_per_1": 0.3280308043544854,
-      "pick_fair_odds": -228.5530865962476,
-      "pick_prob_edge": 0.17182565942377803,
+      "model_mu_home": 2.562122344970703,
+      "pick_cover_prob": 0.7828493895467994,
+      "pick_ev_per_1": 0.4945306527711625,
+      "pick_fair_odds": -360.50987280807846,
+      "pick_prob_edge": 0.25903986573727555,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6957366337306601,
-      "pred_sigma": 10.253252983093262,
+      "pred_home_win_prob": 0.5996185505538603,
+      "pred_sigma": 10.152652740478516,
       "start_time": "2022-12-04T02:50:00.000Z"
     },
     {
@@ -1808,7 +1808,7 @@
       "start_time": "2022-12-04T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.102331Z",
+  "generated_at": "2026-03-12T01:45:16.219542Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

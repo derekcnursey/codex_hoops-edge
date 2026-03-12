@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-12-16",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -41,19 +41,19 @@
     },
     {
       "away_team": "Delaware State",
-      "edge_home_points": 1.154348373413086,
+      "edge_home_points": -1.3874740600585938,
       "game_id": "2019_12_16_delaware_state_delaware",
       "home_team": "Delaware",
       "market_spread_home": -19.5,
-      "model_mu_home": 20.654348373413086,
-      "pick_cover_prob": 0.5153468252935998,
-      "pick_ev_per_1": -0.01615606080312776,
-      "pick_fair_odds": -106.33311658502878,
-      "pick_prob_edge": -0.008462698515924072,
-      "pick_side": "HOME",
+      "model_mu_home": 18.112525939941406,
+      "pick_cover_prob": 0.5184432823480434,
+      "pick_ev_per_1": -0.010244642790099012,
+      "pick_fair_odds": -107.65985881703479,
+      "pick_prob_edge": -0.005366241461480459,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7544241780052381,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.7269857958631909,
+      "pred_sigma": 30.001428604125977,
       "start_time": "2019-12-17T00:00:00.000Z"
     },
     {
@@ -143,19 +143,19 @@
     },
     {
       "away_team": "Kent State",
-      "edge_home_points": 6.364023208618164,
+      "edge_home_points": 2.2702369689941406,
       "game_id": "2019_12_16_kent_state_uc_irvine",
       "home_team": "UC Irvine",
       "market_spread_home": 2.5,
-      "model_mu_home": 3.864023208618164,
-      "pick_cover_prob": 0.5895784052816484,
-      "pick_ev_per_1": 0.12555877371951052,
-      "pick_fair_odds": -143.65189670057242,
-      "pick_prob_edge": 0.06576888147212456,
+      "model_mu_home": -0.22976303100585938,
+      "pick_cover_prob": 0.5390642301693905,
+      "pick_ev_per_1": 0.029122621232472834,
+      "pick_fair_odds": -116.94996688312835,
+      "pick_prob_edge": 0.015254706359866699,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5546819474748165,
-      "pred_sigma": 28.10211944580078,
+      "pred_home_win_prob": 0.49604016673938106,
+      "pred_sigma": 23.147611618041992,
       "start_time": "2019-12-17T00:00:00.000Z"
     },
     {
@@ -346,7 +346,7 @@
       "start_time": "2019-12-17T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.895646Z",
+  "generated_at": "2026-03-12T01:45:15.103978Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

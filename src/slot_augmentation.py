@@ -8,13 +8,14 @@ import numpy as np
 import pandas as pd
 
 
-EXPLICIT_SWAP_PAIRS: list[tuple[str, str]] = [
+CURRENT_EXPLICIT_SWAP_PAIRS: list[tuple[str, str]] = [
     ("home_opp_ft_rate", "away_def_ft_rate"),
     ("home_team_efg_home_split", "away_team_efg_away_split"),
 ]
-NEGATED_FEATURES = ["rest_advantage"]
+CURRENT_NEGATED_FEATURES = ["rest_advantage"]
+V2_NEGATED_FEATURES = ["rest_advantage", "venue_edge"]
 GLOBAL_FEATURES = ["neutral_site"]
-UNSWAPPABLE_FEATURES = ["home_team_hca"]
+CURRENT_UNSWAPPABLE_FEATURES = ["home_team_hca"]
 
 
 @dataclass(frozen=True)
@@ -28,8 +29,13 @@ class FeatureSwapAudit:
 
 
 def audit_feature_order(feature_order: list[str]) -> FeatureSwapAudit:
-    explicit_left = {left for left, _ in EXPLICIT_SWAP_PAIRS}
-    explicit_right = {right for _, right in EXPLICIT_SWAP_PAIRS}
+    is_v2 = "venue_edge" in feature_order
+    explicit_pairs = [] if is_v2 else CURRENT_EXPLICIT_SWAP_PAIRS
+    negated_features = V2_NEGATED_FEATURES if is_v2 else CURRENT_NEGATED_FEATURES
+    unswappable_features = [] if is_v2 else CURRENT_UNSWAPPABLE_FEATURES
+
+    explicit_left = {left for left, _ in explicit_pairs}
+    explicit_right = {right for _, right in explicit_pairs}
     used: set[str] = set(explicit_left | explicit_right)
     generic_pairs: list[tuple[str, str]] = []
     for col in feature_order:
@@ -42,14 +48,14 @@ def audit_feature_order(feature_order: list[str]) -> FeatureSwapAudit:
                 used.add(col)
                 used.add(other)
 
-    tagged = used | set(NEGATED_FEATURES) | set(GLOBAL_FEATURES) | set(UNSWAPPABLE_FEATURES)
+    tagged = used | set(negated_features) | set(GLOBAL_FEATURES) | set(unswappable_features)
     unclassified = [col for col in feature_order if col not in tagged]
     return FeatureSwapAudit(
         generic_pairs=generic_pairs,
-        explicit_pairs=[pair for pair in EXPLICIT_SWAP_PAIRS if pair[0] in feature_order and pair[1] in feature_order],
-        negated=[col for col in NEGATED_FEATURES if col in feature_order],
+        explicit_pairs=[pair for pair in explicit_pairs if pair[0] in feature_order and pair[1] in feature_order],
+        negated=[col for col in negated_features if col in feature_order],
         globals=[col for col in GLOBAL_FEATURES if col in feature_order],
-        unswappable=[col for col in UNSWAPPABLE_FEATURES if col in feature_order],
+        unswappable=[col for col in unswappable_features if col in feature_order],
         unclassified=unclassified,
     )
 
@@ -62,17 +68,24 @@ def swap_feature_frame(
 ) -> pd.DataFrame:
     """Swap home/away slots for a feature matrix.
 
-    This helper is only semantically safe for neutral-site rows under the
-    current 53-feature contract because ``home_team_hca`` has no mirrored
-    away-team counterpart.
+    For the legacy contract, this helper is only semantically safe for
+    neutral-site rows because ``home_team_hca`` has no mirrored away-team
+    counterpart. For the research ``swap_safe_v2`` contract, all-game swapping
+    is supported by construction.
     """
+    audit = audit_feature_order(feature_order)
+    if not neutral_only and audit.unswappable:
+        raise ValueError(
+            "swap_feature_frame(neutral_only=False) requires a fully swap-safe "
+            "contract; unswappable fields present: "
+            + ", ".join(audit.unswappable)
+        )
     if neutral_only and "neutral_site" in feature_df.columns:
         neutral_mask = feature_df["neutral_site"].fillna(0).astype(float).eq(1.0)
         if not bool(neutral_mask.all()):
             raise ValueError("swap_feature_frame(neutral_only=True) requires all rows to be neutral-site")
 
     swapped = feature_df[feature_order].copy()
-    audit = audit_feature_order(feature_order)
 
     for left, right in audit.explicit_pairs + audit.generic_pairs:
         tmp = swapped[left].copy()
@@ -82,8 +95,6 @@ def swap_feature_frame(
     for col in audit.negated:
         swapped[col] = -swapped[col]
 
-    if "neutral_site" in swapped.columns:
-        swapped["neutral_site"] = 1.0
     if "home_team_hca" in swapped.columns:
         swapped["home_team_hca"] = 0.0
 
@@ -96,6 +107,7 @@ def augment_swapped_slot_training(
     *,
     home_win: np.ndarray | None = None,
     eligible_mask: np.ndarray | None = None,
+    neutral_only: bool = True,
 ) -> tuple[pd.DataFrame, np.ndarray, np.ndarray | None]:
     """Append swapped-slot rows for a subset of training rows."""
     if len(feature_df) != len(spread_home):
@@ -115,7 +127,11 @@ def augment_swapped_slot_training(
     if not eligible_mask.any():
         return base_features, base_spread, base_home_win
 
-    swap_features = swap_feature_frame(base_features.loc[eligible_mask], feature_order, neutral_only=True)
+    swap_features = swap_feature_frame(
+        base_features.loc[eligible_mask],
+        feature_order,
+        neutral_only=neutral_only,
+    )
     swap_spread = -base_spread[eligible_mask]
     if base_home_win is None:
         swap_home_win = None

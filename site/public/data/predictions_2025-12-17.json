@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-12-17",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -942,19 +942,19 @@
     },
     {
       "away_team": "Loyola Chicago",
-      "edge_home_points": 1.164952278137207,
+      "edge_home_points": 1.1051177978515625,
       "game_id": "2025_12_17_loyola_chicago_san_francisco",
       "home_team": "San Francisco",
       "market_spread_home": -12.5,
-      "model_mu_home": 13.664952278137207,
-      "pick_cover_prob": 0.5470481520517263,
-      "pick_ev_per_1": 0.044364653916932006,
-      "pick_fair_odds": -120.77401925385196,
-      "pick_prob_edge": 0.023238628242202464,
+      "model_mu_home": 13.605117797851562,
+      "pick_cover_prob": 0.541949984053524,
+      "pick_ev_per_1": 0.034631787738545805,
+      "pick_fair_odds": -118.3167700439185,
+      "pick_prob_edge": 0.01814046024400018,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.9172140935350103,
-      "pred_sigma": 9.855194091796875,
+      "pred_home_win_prob": 0.9026732085030995,
+      "pred_sigma": 10.490208625793457,
       "start_time": "2025-12-18T03:00:00.000Z"
     },
     {
@@ -1009,7 +1009,7 @@
       "start_time": "2025-12-18T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.996714Z",
+  "generated_at": "2026-03-12T01:45:17.898834Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

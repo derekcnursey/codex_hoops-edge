@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-12-14",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -75,19 +75,19 @@
     },
     {
       "away_team": "East Carolina",
-      "edge_home_points": -2.6873741149902344,
+      "edge_home_points": -5.233818054199219,
       "game_id": "2023_12_14_east_carolina_florida",
       "home_team": "Florida",
       "market_spread_home": -15.5,
-      "model_mu_home": 12.812625885009766,
-      "pick_cover_prob": 0.6050725672746053,
-      "pick_ev_per_1": 0.15513853752424656,
-      "pick_fair_odds": -153.21107553835876,
-      "pick_prob_edge": 0.08126304346508151,
+      "model_mu_home": 10.266181945800781,
+      "pick_cover_prob": 0.6882545695765979,
+      "pick_ev_per_1": 0.3139405419189596,
+      "pick_fair_odds": -220.77454949117742,
+      "pick_prob_edge": 0.16444504576707408,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.8980628840337841,
-      "pred_sigma": 10.083990097045898,
+      "pred_home_win_prob": 0.8322067543567684,
+      "pred_sigma": 10.661484718322754,
       "start_time": "2023-12-15T00:00:00.000Z"
     },
     {
@@ -244,7 +244,7 @@
       "start_time": "2023-12-15T01:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.718211Z",
+  "generated_at": "2026-03-12T01:45:16.952983Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

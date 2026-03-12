@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-11-28",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -670,23 +670,23 @@
     },
     {
       "away_team": "UC San Diego",
-      "edge_home_points": -3.448185920715332,
+      "edge_home_points": -6.783729553222656,
       "game_id": "2023_11_28_uc_san_diego_washington",
       "home_team": "Washington",
       "market_spread_home": -15.5,
-      "model_mu_home": 12.051814079284668,
-      "pick_cover_prob": 0.6049947338064612,
-      "pick_ev_per_1": 0.1549899463577895,
-      "pick_fair_odds": -153.161181782836,
-      "pick_prob_edge": 0.08118520999693735,
+      "model_mu_home": 8.716270446777344,
+      "pick_cover_prob": 0.6980800474158608,
+      "pick_ev_per_1": 0.33269827233937066,
+      "pick_fair_odds": -231.21361852404226,
+      "pick_prob_edge": 0.174270523606337,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.8240057085660507,
-      "pred_sigma": 12.948650360107422,
+      "pred_home_win_prob": 0.7475201078222762,
+      "pred_sigma": 13.073629379272461,
       "start_time": "2023-11-29T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.654552Z",
+  "generated_at": "2026-03-12T01:45:16.903724Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

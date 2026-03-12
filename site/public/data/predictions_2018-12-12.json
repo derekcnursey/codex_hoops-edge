@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2018-12-12",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -194,19 +194,19 @@
     },
     {
       "away_team": "SE Louisiana",
-      "edge_home_points": 0.8092727661132812,
+      "edge_home_points": -1.7305307388305664,
       "game_id": "2018_12_12_se_louisiana_ole_miss",
       "home_team": "Ole Miss",
       "market_spread_home": -17.5,
-      "model_mu_home": 18.30927276611328,
-      "pick_cover_prob": 0.5107604656934857,
-      "pick_ev_per_1": -0.024911838221527427,
-      "pick_fair_odds": -104.39885370618643,
-      "pick_prob_edge": -0.013049058116038181,
-      "pick_side": "HOME",
+      "model_mu_home": 15.769469261169434,
+      "pick_cover_prob": 0.530325803578332,
+      "pick_ev_per_1": 0.012440170467724776,
+      "pick_fair_odds": -112.91354892790658,
+      "pick_prob_edge": 0.0065162797688081975,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7291714624401008,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.7559582334664442,
+      "pred_sigma": 22.743545532226562,
       "start_time": "2018-12-13T00:30:00.000Z"
     },
     {
@@ -397,7 +397,7 @@
       "start_time": "2018-12-13T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.195061Z",
+  "generated_at": "2026-03-12T01:45:14.367903Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

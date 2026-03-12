@@ -66,6 +66,12 @@ FEATURE_ORDER: list[str] = json.loads(
     (ARTIFACTS_DIR / "feature_order.json").read_text()
 )
 assert len(FEATURE_ORDER) == 53, f"Expected 53 features, got {len(FEATURE_ORDER)}"
+FEATURE_ORDER_SWAP_SAFE_V2: list[str] = json.loads(
+    (ARTIFACTS_DIR / "feature_order_swap_safe_v2.json").read_text()
+)
+assert len(FEATURE_ORDER_SWAP_SAFE_V2) == 53, (
+    f"Expected 53 swap-safe-v2 features, got {len(FEATURE_ORDER_SWAP_SAFE_V2)}"
+)
 
 # Benchmark-winning point-prediction baseline, promoted into production mu path.
 HGBR_PARAMS = {

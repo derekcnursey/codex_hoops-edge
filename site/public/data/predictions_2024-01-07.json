@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-01-07",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Michigan",
-      "edge_home_points": 5.260849118232727,
+      "edge_home_points": 1.450854778289795,
       "game_id": "2024_01_07_michigan_penn_state",
       "home_team": "Penn State",
       "market_spread_home": 3.5,
-      "model_mu_home": 1.760849118232727,
-      "pick_cover_prob": 0.7024252336121373,
-      "pick_ev_per_1": 0.3409936278049893,
-      "pick_fair_odds": -236.049999177883,
-      "pick_prob_edge": 0.17861570980261343,
+      "model_mu_home": -2.049145221710205,
+      "pick_cover_prob": 0.5537911146212466,
+      "pick_ev_per_1": 0.05723758245874355,
+      "pick_fair_odds": -124.11028394272667,
+      "pick_prob_edge": 0.029981590811722802,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5705835739597432,
-      "pred_sigma": 9.900192260742188,
+      "pred_home_win_prob": 0.42425620448369616,
+      "pred_sigma": 10.727563858032227,
       "start_time": "2024-01-07T17:00:00.000Z"
     },
     {
@@ -312,7 +312,7 @@
       "start_time": "2024-01-08T00:42:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.803699Z",
+  "generated_at": "2026-03-12T01:45:17.020825Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -149,3 +149,82 @@ def test_lightgbm_predict_path_runs_on_small_synthetic_fold():
     assert pred.shape == (len(test_df),)
     assert np.isfinite(pred).all()
     assert best_iteration > 0
+
+
+def _make_synthetic_fold(n_train: int = 24) -> pd.DataFrame:
+    rows = []
+    for i in range(n_train):
+        row = {
+            "gameId": 5000 + i,
+            "startDate": f"2024-01-{(i % 28) + 1:02d}T19:00:00Z",
+            "homeScore": float(68 + (i % 13)),
+            "awayScore": float(63 + (i % 11)),
+            "neutralSite": 0,
+        }
+        for j, feature in enumerate(cw.config.FEATURE_ORDER):
+            row[feature] = float(((i + 1) * (j + 3)) % 23) / 10.0
+        if "neutral_site" in cw.config.FEATURE_ORDER:
+            row["neutral_site"] = 0.0
+        if "home_team_hca" in cw.config.FEATURE_ORDER:
+            row["home_team_hca"] = 3.2
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def _make_neutral_test_pair() -> tuple[pd.DataFrame, pd.DataFrame]:
+    row = {
+        "gameId": 9001,
+        "startDate": "2025-03-21T20:00:00Z",
+        "homeScore": 75.0,
+        "awayScore": 70.0,
+        "neutralSite": 1,
+    }
+    for j, feature in enumerate(cw.config.FEATURE_ORDER):
+        row[feature] = float((j * 7 + 5) % 29) / 10.0
+    if "neutral_site" in cw.config.FEATURE_ORDER:
+        row["neutral_site"] = 1.0
+    if "home_team_hca" in cw.config.FEATURE_ORDER:
+        row["home_team_hca"] = 0.0
+    test_df = pd.DataFrame([row])
+
+    feature_df = cw.get_feature_matrix(test_df).copy()
+    swapped_feature_df = cw._swap_feature_frame(feature_df, list(feature_df.columns))
+    swapped_df = test_df.copy()
+    for col in swapped_feature_df.columns:
+        swapped_df[col] = swapped_feature_df[col].values
+    return test_df, swapped_df
+
+
+def test_hgbr_neutral_predictions_are_antisymmetric_under_slot_swap():
+    train_df = _make_synthetic_fold()
+    test_df, swapped_df = _make_neutral_test_pair()
+
+    pred = cw._predict_hgbr(train_df, test_df)
+    pred_swap = cw._predict_hgbr(train_df, swapped_df)
+
+    assert pred.shape == (1,)
+    assert pred_swap.shape == (1,)
+    assert np.isclose(pred[0], -pred_swap[0], atol=1e-6)
+
+
+def test_mlp_neutral_predictions_are_antisymmetric_with_matching_sigma():
+    train_df = _make_synthetic_fold(28)
+    test_df, swapped_df = _make_neutral_test_pair()
+
+    old_epochs = cw.MLP_HP["epochs"]
+    old_batch = cw.MLP_HP["batch_size"]
+    cw.MLP_HP["epochs"] = 2
+    cw.MLP_HP["batch_size"] = 16
+    try:
+        pred, sigma, _ = cw._predict_mlp(train_df, test_df)
+        pred_swap, sigma_swap, _ = cw._predict_mlp(train_df, swapped_df)
+    finally:
+        cw.MLP_HP["epochs"] = old_epochs
+        cw.MLP_HP["batch_size"] = old_batch
+
+    assert pred.shape == (1,)
+    assert pred_swap.shape == (1,)
+    assert sigma.shape == (1,)
+    assert sigma_swap.shape == (1,)
+    assert np.isclose(pred[0], -pred_swap[0], atol=1e-6)
+    assert np.isclose(sigma[0], sigma_swap[0], atol=1e-6)

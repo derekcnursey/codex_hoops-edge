@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-11-12",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -58,19 +58,19 @@
     },
     {
       "away_team": "Maryland",
-      "edge_home_points": 1.7756755352020264,
+      "edge_home_points": 2.574206590652466,
       "game_id": "2023_11_12_maryland_uab",
       "home_team": "UAB",
       "market_spread_home": 5.5,
-      "model_mu_home": -3.7243244647979736,
-      "pick_cover_prob": 0.5551825729495217,
-      "pick_ev_per_1": 0.059894002903632226,
-      "pick_fair_odds": -124.8113358846705,
-      "pick_prob_edge": 0.03137304913999783,
+      "model_mu_home": -2.925793409347534,
+      "pick_cover_prob": 0.5886697923571435,
+      "pick_ev_per_1": 0.12382414904545569,
+      "pick_fair_odds": -143.11367884467765,
+      "pick_prob_edge": 0.06486026854761962,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3855064914241411,
-      "pred_sigma": 12.796161651611328,
+      "pred_home_win_prob": 0.39946366263131056,
+      "pred_sigma": 11.48560905456543,
       "start_time": "2023-11-12T17:30:00.000Z"
     },
     {
@@ -211,19 +211,19 @@
     },
     {
       "away_team": "Davidson",
-      "edge_home_points": 3.7682132720947266,
+      "edge_home_points": 1.0146121978759766,
       "game_id": "2023_11_12_davidson_clemson",
       "home_team": "Clemson",
       "market_spread_home": -8.5,
-      "model_mu_home": 12.268213272094727,
-      "pick_cover_prob": 0.6157521558612721,
-      "pick_ev_per_1": 0.17552684300788302,
-      "pick_fair_odds": -160.24869501648067,
-      "pick_prob_edge": 0.09194263205174824,
+      "model_mu_home": 9.514612197875977,
+      "pick_cover_prob": 0.5330078783318588,
+      "pick_ev_per_1": 0.017560494997184983,
+      "pick_fair_odds": -114.13637481247069,
+      "pick_prob_edge": 0.009198354522334973,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.8310433117570813,
-      "pred_sigma": 12.802108764648438,
+      "pred_home_win_prob": 0.7813540925375718,
+      "pred_sigma": 12.248872756958008,
       "start_time": "2023-11-12T20:08:00.000Z"
     },
     {
@@ -601,7 +601,7 @@
       "start_time": "2023-11-13T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.586791Z",
+  "generated_at": "2026-03-12T01:45:16.849535Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

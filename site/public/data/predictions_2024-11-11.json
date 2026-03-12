@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-11-11",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -657,15 +657,15 @@
       "game_id": "2024_11_11_life_pacific_san_jos_state",
       "home_team": "San Jos\u00e9 State",
       "market_spread_home": null,
-      "model_mu_home": 35.149314880371094,
+      "model_mu_home": 18.125364303588867,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.9975715904660793,
-      "pred_sigma": 12.480317115783691,
+      "pred_home_win_prob": 0.8514461603220823,
+      "pred_sigma": 17.383840560913086,
       "start_time": "2024-11-12T02:30:00.000Z"
     },
     {
@@ -720,7 +720,7 @@
       "start_time": "2024-11-12T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.217911Z",
+  "generated_at": "2026-03-12T01:45:17.309915Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

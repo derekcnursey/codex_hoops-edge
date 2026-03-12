@@ -3,16 +3,6 @@
   "staged_table": "fct_lines_repaired_v1",
   "audit_prefix": "ref/fct_lines_repaired_v1_audit",
   "seasons": [
-    2016,
-    2017,
-    2018,
-    2019,
-    2020,
-    2021,
-    2022,
-    2023,
-    2024,
-    2025,
     2026
   ],
   "repair_logic": {
@@ -27,7 +17,7 @@
       "consensus majority_sign_conflict without strong corroboration"
     ],
     "keep": [
-      "all other latest provider rows"
+      "all other selected provider rows"
     ]
   }
 }

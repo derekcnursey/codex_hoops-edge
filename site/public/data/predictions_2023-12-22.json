@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-12-22",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -466,19 +466,19 @@
     },
     {
       "away_team": "Nevada",
-      "edge_home_points": 0.6878857612609863,
+      "edge_home_points": -0.5134397745132446,
       "game_id": "2023_12_22_nevada_tcu",
       "home_team": "TCU",
       "market_spread_home": -2.5,
-      "model_mu_home": 3.1878857612609863,
-      "pick_cover_prob": 0.5272670911633146,
-      "pick_ev_per_1": 0.006600810402691504,
-      "pick_fair_odds": -111.53593949294296,
-      "pick_prob_edge": 0.003457567353790769,
-      "pick_side": "HOME",
+      "model_mu_home": 1.9865602254867554,
+      "pick_cover_prob": 0.5193366557112231,
+      "pick_ev_per_1": -0.008539111824028611,
+      "pick_fair_odds": -108.04582081865843,
+      "pick_prob_edge": -0.00447286809830072,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6243766673132948,
-      "pred_sigma": 10.056550025939941,
+      "pred_home_win_prob": 0.574408416995189,
+      "pred_sigma": 10.588831901550293,
       "start_time": "2023-12-22T22:00:00.000Z"
     },
     {
@@ -704,19 +704,19 @@
     },
     {
       "away_team": "Temple",
-      "edge_home_points": -1.3402085304260254,
+      "edge_home_points": -1.4473543167114258,
       "game_id": "2023_12_22_temple_old_dominion",
       "home_team": "Old Dominion",
       "market_spread_home": 3.5,
-      "model_mu_home": -4.840208530426025,
-      "pick_cover_prob": 0.5503969706962981,
-      "pick_ev_per_1": 0.05075785314747816,
-      "pick_fair_odds": -122.4184302202535,
-      "pick_prob_edge": 0.02658744688677428,
+      "model_mu_home": -4.947354316711426,
+      "pick_cover_prob": 0.5497494752683365,
+      "pick_ev_per_1": 0.04952172551227879,
+      "pick_fair_odds": -122.09857514235472,
+      "pick_prob_edge": 0.02593995145881267,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.32367287742279444,
-      "pred_sigma": 10.58078670501709,
+      "pred_home_win_prob": 0.3345538987870463,
+      "pred_sigma": 11.576202392578125,
       "start_time": "2023-12-23T00:30:00.000Z"
     },
     {
@@ -908,19 +908,19 @@
     },
     {
       "away_team": "Missouri",
-      "edge_home_points": 1.1057419776916504,
+      "edge_home_points": 0.13623714447021484,
       "game_id": "2023_12_22_missouri_illinois",
       "home_team": "Illinois",
       "market_spread_home": -6.5,
-      "model_mu_home": 7.60574197769165,
-      "pick_cover_prob": 0.545285407851391,
-      "pick_ev_per_1": 0.04099941498901921,
-      "pick_fair_odds": -119.9181678500394,
-      "pick_prob_edge": 0.021475884041867177,
+      "model_mu_home": 6.636237144470215,
+      "pick_cover_prob": 0.5053502693363917,
+      "pick_ev_per_1": -0.035240394903252203,
+      "pick_fair_odds": -102.16325573622125,
+      "pick_prob_edge": -0.018459254473132125,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.783033021603028,
-      "pred_sigma": 9.720076560974121,
+      "pred_home_win_prob": 0.743214823432485,
+      "pred_sigma": 10.158204078674316,
       "start_time": "2023-12-23T02:00:00.000Z"
     },
     {
@@ -992,7 +992,7 @@
       "start_time": "2023-12-23T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.751199Z",
+  "generated_at": "2026-03-12T01:45:16.978394Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

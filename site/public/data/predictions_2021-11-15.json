@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2021-11-15",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -41,19 +41,19 @@
     },
     {
       "away_team": "IU Indianapolis",
-      "edge_home_points": 18.229267120361328,
+      "edge_home_points": 5.940652847290039,
       "game_id": "2021_11_15_iu_indianapolis_denver",
       "home_team": "Denver",
       "market_spread_home": 2.0,
-      "model_mu_home": 16.229267120361328,
-      "pick_cover_prob": 0.9362011197918434,
-      "pick_ev_per_1": 0.7872930468753374,
-      "pick_fair_odds": -1467.4256299441306,
-      "pick_prob_edge": 0.41239159598231956,
+      "model_mu_home": 3.940652847290039,
+      "pick_cover_prob": 0.7144664142968926,
+      "pick_ev_per_1": 0.36398133638497676,
+      "pick_fair_odds": -250.22149759985916,
+      "pick_prob_edge": 0.19065689048736878,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.9125266048227589,
-      "pred_sigma": 11.964259147644043,
+      "pred_home_win_prob": 0.6464550496715784,
+      "pred_sigma": 10.486949920654297,
       "start_time": "2021-11-15T23:00:00.000Z"
     },
     {
@@ -1043,7 +1043,7 @@
       "start_time": "2021-11-16T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.294789Z",
+  "generated_at": "2026-03-12T01:45:15.486716Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

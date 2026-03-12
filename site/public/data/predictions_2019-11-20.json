@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-11-20",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -619,19 +619,19 @@
     },
     {
       "away_team": "Sacramento State",
-      "edge_home_points": 2.604369640350342,
+      "edge_home_points": 0.7945961952209473,
       "game_id": "2019_11_20_sacramento_state_uc_davis",
       "home_team": "UC Davis",
       "market_spread_home": 5.5,
-      "model_mu_home": -2.895630359649658,
-      "pick_cover_prob": 0.5345896532077655,
-      "pick_ev_per_1": 0.02058024703300687,
-      "pick_fair_odds": -114.86415308390502,
-      "pick_prob_edge": 0.010780129398241689,
+      "model_mu_home": -4.705403804779053,
+      "pick_cover_prob": 0.5105637591043771,
+      "pick_ev_per_1": -0.025287368982552794,
+      "pick_fair_odds": -104.31670490319492,
+      "pick_prob_edge": -0.013245764705146712,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.46155339334114254,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.43769219495451206,
+      "pred_sigma": 30.004562377929688,
       "start_time": "2019-11-21T01:35:00.000Z"
     },
     {
@@ -755,19 +755,19 @@
     },
     {
       "away_team": "Saint Mary's",
-      "edge_home_points": -1.3140687942504883,
+      "edge_home_points": -2.768869400024414,
       "game_id": "2019_11_20_saint_mary_s_fresno_state",
       "home_team": "Fresno State",
       "market_spread_home": 8.5,
-      "model_mu_home": -9.814068794250488,
-      "pick_cover_prob": 0.5174690004111488,
-      "pick_ev_per_1": -0.012104635578715828,
-      "pick_fair_odds": -107.24057124870055,
-      "pick_prob_edge": -0.0063405233983749865,
+      "model_mu_home": -11.268869400024414,
+      "pick_cover_prob": 0.5442265968387748,
+      "pick_ev_per_1": 0.03897804851038833,
+      "pick_fair_odds": -119.40727411122324,
+      "pick_prob_edge": 0.020417073029251,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3717826534485619,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.32559497636090184,
+      "pred_sigma": 24.925077438354492,
       "start_time": "2019-11-21T04:00:00.000Z"
     },
     {
@@ -788,7 +788,7 @@
       "start_time": "2019-11-21T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.787829Z",
+  "generated_at": "2026-03-12T01:45:14.975639Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

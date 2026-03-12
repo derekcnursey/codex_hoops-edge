@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-11-09",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -381,19 +381,19 @@
     },
     {
       "away_team": "Delaware",
-      "edge_home_points": 0.02635025978088379,
+      "edge_home_points": -2.6889167428016663,
       "game_id": "2019_11_09_delaware_southern_illinois",
       "home_team": "Southern Illinois",
       "market_spread_home": -3.5,
-      "model_mu_home": 3.526350259780884,
-      "pick_cover_prob": 0.5007525285175526,
-      "pick_ev_per_1": -0.04401790010285417,
-      "pick_fair_odds": -100.30146512923463,
-      "pick_prob_edge": -0.02305699529197125,
-      "pick_side": "HOME",
+      "model_mu_home": 0.8110832571983337,
+      "pick_cover_prob": 0.5770176315958095,
+      "pick_ev_per_1": 0.10157911486472726,
+      "pick_fair_odds": -136.416473758175,
+      "pick_prob_edge": 0.05320810778628571,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5996485028795258,
-      "pred_sigma": 13.969206809997559,
+      "pred_home_win_prob": 0.5233644005222489,
+      "pred_sigma": 13.841156005859375,
       "start_time": "2019-11-09T20:00:00.000Z"
     },
     {
@@ -738,19 +738,19 @@
     },
     {
       "away_team": "UTSA",
-      "edge_home_points": -5.495859146118164,
+      "edge_home_points": -7.501948356628418,
       "game_id": "2019_11_09_utsa_oakland",
       "home_team": "Oakland",
       "market_spread_home": 4.5,
-      "model_mu_home": -9.995859146118164,
-      "pick_cover_prob": 0.6174155634148392,
-      "pick_ev_per_1": 0.17870243924651108,
-      "pick_fair_odds": -161.38020901365297,
-      "pick_prob_edge": 0.09360603960531533,
+      "model_mu_home": -12.001948356628418,
+      "pick_cover_prob": 0.6848513991773544,
+      "pick_ev_per_1": 0.3074435802476765,
+      "pick_fair_odds": -217.3106266027068,
+      "pick_prob_edge": 0.16104187536783054,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.29347015281917455,
-      "pred_sigma": 18.399253845214844,
+      "pred_home_win_prob": 0.22064439329524815,
+      "pred_sigma": 15.586566925048828,
       "start_time": "2019-11-09T22:30:00.000Z"
     },
     {
@@ -1010,19 +1010,19 @@
     },
     {
       "away_team": "Oklahoma",
-      "edge_home_points": 1.38417649269104,
+      "edge_home_points": 0.5726499557495117,
       "game_id": "2019_11_09_oklahoma_minnesota",
       "home_team": "Minnesota",
       "market_spread_home": 4.5,
-      "model_mu_home": -3.11582350730896,
-      "pick_cover_prob": 0.5200128330894983,
-      "pick_ev_per_1": -0.007248227738230528,
-      "pick_fair_odds": -108.3389033995694,
-      "pick_prob_edge": -0.0037966907200255307,
+      "model_mu_home": -3.9273500442504883,
+      "pick_cover_prob": 0.5089143412901127,
+      "pick_ev_per_1": -0.028436257537057585,
+      "pick_fair_odds": -103.6304628864672,
+      "pick_prob_edge": -0.014895182519411132,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4550272695854985,
-      "pred_sigma": 27.581043243408203,
+      "pred_home_win_prob": 0.4390970536367149,
+      "pred_sigma": 25.625591278076172,
       "start_time": "2019-11-10T01:00:00.000Z"
     },
     {
@@ -1197,19 +1197,19 @@
     },
     {
       "away_team": "Princeton",
-      "edge_home_points": 0.2830028533935547,
+      "edge_home_points": -3.6384294033050537,
       "game_id": "2019_11_09_princeton_san_francisco",
       "home_team": "San Francisco",
       "market_spread_home": -7.0,
-      "model_mu_home": 7.283002853393555,
-      "pick_cover_prob": 0.5037633376400473,
-      "pick_ev_per_1": -0.03826999177809148,
-      "pick_fair_odds": -101.51675114940117,
-      "pick_prob_edge": -0.02004618616947651,
-      "pick_side": "HOME",
+      "model_mu_home": 3.3615705966949463,
+      "pick_cover_prob": 0.548237012631893,
+      "pick_ev_per_1": 0.0466342968427047,
+      "pick_fair_odds": -121.35500870175906,
+      "pick_prob_edge": 0.024427488822369114,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5959069571816995,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.5445824655609321,
+      "pred_sigma": 30.01796531677246,
       "start_time": "2019-11-10T02:00:00.000Z"
     },
     {
@@ -1298,7 +1298,7 @@
       "start_time": "2019-11-10T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.739430Z",
+  "generated_at": "2026-03-12T01:45:14.911705Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

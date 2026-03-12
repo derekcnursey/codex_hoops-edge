@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-11-12",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -806,19 +806,19 @@
     },
     {
       "away_team": "Manhattan",
-      "edge_home_points": -1.1897810697555542,
+      "edge_home_points": -4.812753438949585,
       "game_id": "2025_11_12_manhattan_utah_tech",
       "home_team": "Utah Tech",
       "market_spread_home": -2.5,
-      "model_mu_home": 1.3102189302444458,
-      "pick_cover_prob": 0.5446032909695249,
-      "pick_ev_per_1": 0.039697191850911084,
-      "pick_fair_odds": -119.58876297744172,
-      "pick_prob_edge": 0.02079376716000103,
+      "model_mu_home": -2.312753438949585,
+      "pick_cover_prob": 0.682198376588472,
+      "pick_ev_per_1": 0.3023787189416284,
+      "pick_fair_odds": -214.66170287779784,
+      "pick_prob_edge": 0.1583888527789482,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.549096532542159,
-      "pred_sigma": 10.61945915222168,
+      "pred_home_win_prob": 0.4099360183142888,
+      "pred_sigma": 10.156593322753906,
       "start_time": "2025-11-13T02:30:00.000Z"
     },
     {
@@ -924,7 +924,7 @@
       "start_time": "2025-11-13T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.831313Z",
+  "generated_at": "2026-03-12T01:45:17.789430Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-12-10",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -126,19 +126,19 @@
     },
     {
       "away_team": "Texas Tech",
-      "edge_home_points": 3.038999557495117,
+      "edge_home_points": 2.6598892211914062,
       "game_id": "2019_12_10_texas_tech_louisville",
       "home_team": "Louisville",
       "market_spread_home": -7.5,
-      "model_mu_home": 10.538999557495117,
-      "pick_cover_prob": 0.5574412209588294,
-      "pick_ev_per_1": 0.06420596728503791,
-      "pick_fair_odds": -125.9586855708881,
-      "pick_prob_edge": 0.033631697149305584,
+      "model_mu_home": 10.159889221191406,
+      "pick_cover_prob": 0.553028871888865,
+      "pick_ev_per_1": 0.05578239178783306,
+      "pick_fair_odds": -123.7280972097508,
+      "pick_prob_edge": 0.029219348079341123,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6918361841568181,
-      "pred_sigma": 21.03333282470703,
+      "pred_home_win_prob": 0.6947039714411183,
+      "pred_sigma": 19.9515323638916,
       "start_time": "2019-12-11T00:00:00.000Z"
     },
     {
@@ -466,19 +466,19 @@
     },
     {
       "away_team": "Indiana",
-      "edge_home_points": -3.328025698661804,
+      "edge_home_points": -2.806039869785309,
       "game_id": "2019_12_10_indiana_uconn",
       "home_team": "UConn",
       "market_spread_home": -2.0,
-      "model_mu_home": -1.3280256986618042,
-      "pick_cover_prob": 0.5808145059731472,
-      "pick_ev_per_1": 0.1088276932214628,
-      "pick_fair_odds": -138.55787336380024,
-      "pick_prob_edge": 0.057004982163623374,
+      "model_mu_home": -0.8060398697853088,
+      "pick_cover_prob": 0.5626625785445083,
+      "pick_ev_per_1": 0.07417401358497033,
+      "pick_fair_odds": -128.65639914186283,
+      "pick_prob_edge": 0.03885305473498446,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.46756356985694564,
-      "pred_sigma": 16.315641403198242,
+      "pred_home_win_prob": 0.481931585715534,
+      "pred_sigma": 17.790903091430664,
       "start_time": "2019-12-11T02:00:00.000Z"
     },
     {
@@ -499,7 +499,7 @@
       "start_time": "2019-12-11T02:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.873054Z",
+  "generated_at": "2026-03-12T01:45:15.083808Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

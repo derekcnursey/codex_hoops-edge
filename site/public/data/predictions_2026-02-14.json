@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2026-02-14",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -925,19 +925,19 @@
     },
     {
       "away_team": "Louisville",
-      "edge_home_points": 2.476937770843506,
+      "edge_home_points": 0.04681587219238281,
       "game_id": "2026_02_14_louisville_baylor",
       "home_team": "Baylor",
       "market_spread_home": 7.5,
-      "model_mu_home": -5.023062229156494,
-      "pick_cover_prob": 0.5841120111330539,
-      "pick_ev_per_1": 0.11512293034492105,
-      "pick_fair_odds": -140.44935818522214,
-      "pick_prob_edge": 0.06030248732353005,
+      "model_mu_home": -7.453184127807617,
+      "pick_cover_prob": 0.5016024976052752,
+      "pick_ev_per_1": -0.042395231844474635,
+      "pick_fair_odds": -100.64306004647914,
+      "pick_prob_edge": -0.022207026204248637,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3333133555092618,
-      "pred_sigma": 11.660327911376953,
+      "pred_home_win_prob": 0.2612504493023631,
+      "pred_sigma": 11.654794692993164,
       "start_time": "2026-02-14T21:00:00.000Z"
     },
     {
@@ -1928,19 +1928,19 @@
     },
     {
       "away_team": "Virginia",
-      "edge_home_points": 1.0992240905761719,
+      "edge_home_points": -0.5540781021118164,
       "game_id": "2026_02_14_virginia_ohio_state",
       "home_team": "Ohio State",
       "market_spread_home": 4.5,
-      "model_mu_home": -3.400775909423828,
-      "pick_cover_prob": 0.5391044402697965,
-      "pick_ev_per_1": 0.02919938596961158,
-      "pick_fair_odds": -116.96889433809572,
-      "pick_prob_edge": 0.0152949164602727,
-      "pick_side": "HOME",
+      "model_mu_home": -5.054078102111816,
+      "pick_cover_prob": 0.5195139042606451,
+      "pick_ev_per_1": -0.00820072822967749,
+      "pick_fair_odds": -108.12256772201403,
+      "pick_prob_edge": -0.004295619548878693,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.38066218217768544,
-      "pred_sigma": 11.196260452270508,
+      "pred_home_win_prob": 0.32767117571195736,
+      "pred_sigma": 11.323054313659668,
       "start_time": "2026-02-15T01:00:00.000Z"
     },
     {
@@ -2233,7 +2233,7 @@
       "start_time": "2026-02-15T03:40:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:45.275170Z",
+  "generated_at": "2026-03-12T01:45:18.075498Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

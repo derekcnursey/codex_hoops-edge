@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-12-23",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -41,19 +41,19 @@
     },
     {
       "away_team": "Charleston",
-      "edge_home_points": 3.0297274589538574,
+      "edge_home_points": 1.7999701499938965,
       "game_id": "2024_12_23_charleston_loyola_chicago",
       "home_team": "Loyola Chicago",
       "market_spread_home": -1.5,
-      "model_mu_home": 4.529727458953857,
-      "pick_cover_prob": 0.6151624404741719,
-      "pick_ev_per_1": 0.17440102272341906,
-      "pick_fair_odds": -159.8498964685607,
-      "pick_prob_edge": 0.09135291666464807,
+      "model_mu_home": 3.2999701499938965,
+      "pick_cover_prob": 0.5629934348907816,
+      "pick_ev_per_1": 0.07480564842785575,
+      "pick_fair_odds": -128.8295142088028,
+      "pick_prob_edge": 0.03918391108125774,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.669221081726074,
-      "pred_sigma": 10.347434043884277,
+      "pred_home_win_prob": 0.6143600518129455,
+      "pred_sigma": 11.351761817932129,
       "start_time": "2024-12-23T22:30:00.000Z"
     },
     {
@@ -92,19 +92,19 @@
     },
     {
       "away_team": "Oregon State",
-      "edge_home_points": -0.9616842269897461,
+      "edge_home_points": -1.5735015869140625,
       "game_id": "2024_12_23_oregon_state_oakland",
       "home_team": "Oakland",
       "market_spread_home": 9.5,
-      "model_mu_home": -10.461684226989746,
-      "pick_cover_prob": 0.5334002482074243,
-      "pick_ev_per_1": 0.01830956475962814,
-      "pick_fair_odds": -114.31644490984306,
-      "pick_prob_edge": 0.00959072439790043,
+      "model_mu_home": -11.073501586914062,
+      "pick_cover_prob": 0.5541022540036875,
+      "pick_ev_per_1": 0.05783157582522158,
+      "pick_fair_odds": -124.26666404549842,
+      "pick_prob_edge": 0.030292730194163675,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.18092735435128532,
-      "pred_sigma": 11.473199844360352,
+      "pred_home_win_prob": 0.16920081072040472,
+      "pred_sigma": 11.567090034484863,
       "start_time": "2024-12-24T01:00:00.000Z"
     },
     {
@@ -142,7 +142,7 @@
       "start_time": "2024-12-24T03:39:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.390678Z",
+  "generated_at": "2026-03-12T01:45:17.444651Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

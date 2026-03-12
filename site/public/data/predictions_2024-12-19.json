@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-12-19",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -58,19 +58,19 @@
     },
     {
       "away_team": "Alabama State",
-      "edge_home_points": -1.982088327407837,
+      "edge_home_points": -3.7202816009521484,
       "game_id": "2024_12_19_alabama_state_norfolk_state",
       "home_team": "Norfolk State",
       "market_spread_home": -5.5,
-      "model_mu_home": 3.517911672592163,
-      "pick_cover_prob": 0.5609589607914587,
-      "pick_ev_per_1": 0.07092165242005743,
-      "pick_fair_odds": -127.76914017028993,
-      "pick_prob_edge": 0.03714943698193485,
+      "model_mu_home": 1.7797183990478516,
+      "pick_cover_prob": 0.6218847706582762,
+      "pick_ev_per_1": 0.18723456216579992,
+      "pick_fair_odds": -164.46964374879602,
+      "pick_prob_edge": 0.09807524684875235,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6072904386886924,
-      "pred_sigma": 12.920963287353516,
+      "pred_home_win_prob": 0.5590284964659364,
+      "pred_sigma": 11.984106063842773,
       "start_time": "2024-12-19T22:00:00.000Z"
     },
     {
@@ -194,19 +194,19 @@
     },
     {
       "away_team": "Grambling",
-      "edge_home_points": 1.6822326183319092,
+      "edge_home_points": 2.253230571746826,
       "game_id": "2024_12_19_grambling_delaware_state",
       "home_team": "Delaware State",
       "market_spread_home": 4.5,
-      "model_mu_home": -2.817767381668091,
-      "pick_cover_prob": 0.560705456763322,
-      "pick_ev_per_1": 0.07043769018452373,
-      "pick_fair_odds": -127.63770126350774,
-      "pick_prob_edge": 0.036895932953798116,
+      "model_mu_home": -2.246769428253174,
+      "pick_cover_prob": 0.5912503491204351,
+      "pick_ev_per_1": 0.12875066650264877,
+      "pick_fair_odds": -144.648527001346,
+      "pick_prob_edge": 0.06744082531091122,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.39902474491803736,
-      "pred_sigma": 11.012399673461914,
+      "pred_home_win_prob": 0.40900671936046573,
+      "pred_sigma": 9.764283180236816,
       "start_time": "2024-12-20T00:30:00.000Z"
     },
     {
@@ -448,7 +448,7 @@
       "start_time": "2024-12-20T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.373240Z",
+  "generated_at": "2026-03-12T01:45:17.430519Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

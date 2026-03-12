@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-11-15",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -262,19 +262,19 @@
     },
     {
       "away_team": "Kentucky",
-      "edge_home_points": 3.1716809272766113,
+      "edge_home_points": 2.7794458866119385,
       "game_id": "2022_11_15_kentucky_michigan_state",
       "home_team": "Michigan State",
       "market_spread_home": 6.5,
-      "model_mu_home": -3.3283190727233887,
-      "pick_cover_prob": 0.6103612005949455,
-      "pick_ev_per_1": 0.1652350193176232,
-      "pick_fair_odds": -156.64795228989396,
-      "pick_prob_edge": 0.08655167678542164,
+      "model_mu_home": -3.7205541133880615,
+      "pick_cover_prob": 0.5991146217185886,
+      "pick_ev_per_1": 0.14376427782639645,
+      "pick_fair_odds": -149.44786070446935,
+      "pick_prob_edge": 0.07530509790906481,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3843401138552876,
-      "pred_sigma": 11.316900253295898,
+      "pred_home_win_prob": 0.368411844431855,
+      "pred_sigma": 11.071016311645508,
       "start_time": "2022-11-16T00:00:00.000Z"
     },
     {
@@ -721,19 +721,19 @@
     },
     {
       "away_team": "St. Bonaventure",
-      "edge_home_points": -1.1217389106750488,
+      "edge_home_points": -4.9265806674957275,
       "game_id": "2022_11_15_st_bonaventure_south_dakota_state",
       "home_team": "South Dakota State",
       "market_spread_home": -7.0,
-      "model_mu_home": 5.878261089324951,
-      "pick_cover_prob": 0.5261078207494561,
-      "pick_ev_per_1": 0.004387657794416078,
-      "pick_fair_odds": -111.01846449154122,
-      "pick_prob_edge": 0.0022982969399322206,
+      "model_mu_home": 2.0734193325042725,
+      "pick_cover_prob": 0.6244031217376658,
+      "pick_ev_per_1": 0.19204232331736193,
+      "pick_fair_odds": -166.24289441020161,
+      "pick_prob_edge": 0.10059359792814193,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6342702651939712,
-      "pred_sigma": 17.12856101989746,
+      "pred_home_win_prob": 0.5530778723766173,
+      "pred_sigma": 15.538043975830078,
       "start_time": "2022-11-16T01:00:00.000Z"
     },
     {
@@ -1044,19 +1044,19 @@
     },
     {
       "away_team": "Duke",
-      "edge_home_points": -1.9208507537841797,
+      "edge_home_points": -3.1364665031433105,
       "game_id": "2022_11_15_duke_kansas",
       "home_team": "Kansas",
       "market_spread_home": -0.5,
-      "model_mu_home": -1.4208507537841797,
-      "pick_cover_prob": 0.5574913490248559,
-      "pick_ev_per_1": 0.06430166632017931,
-      "pick_fair_odds": -125.98428252110496,
-      "pick_prob_edge": 0.03368182521533203,
+      "model_mu_home": -2.6364665031433105,
+      "pick_cover_prob": 0.6050251836795133,
+      "pick_ev_per_1": 0.1550480779336163,
+      "pick_fair_odds": -153.18069878880317,
+      "pick_prob_edge": 0.08121565986998946,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.45740669535877576,
-      "pred_sigma": 13.282798767089844,
+      "pred_home_win_prob": 0.41141301776583666,
+      "pred_sigma": 11.774582862854004,
       "start_time": "2022-11-16T03:24:00.000Z"
     },
     {
@@ -1111,7 +1111,7 @@
       "start_time": "2022-11-16T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.991583Z",
+  "generated_at": "2026-03-12T01:45:16.122309Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

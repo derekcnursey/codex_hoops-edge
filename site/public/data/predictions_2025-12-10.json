@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-12-10",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -24,19 +24,19 @@
     },
     {
       "away_team": "UAlbany",
-      "edge_home_points": -4.034674644470215,
+      "edge_home_points": -5.08482551574707,
       "game_id": "2025_12_10_ualbany_yale",
       "home_team": "Yale",
       "market_spread_home": -18.5,
-      "model_mu_home": 14.465325355529785,
-      "pick_cover_prob": 0.6515444206753559,
-      "pick_ev_per_1": 0.24385753038022484,
-      "pick_fair_odds": -186.98062517412995,
-      "pick_prob_edge": 0.12773489686583206,
+      "model_mu_home": 13.41517448425293,
+      "pick_cover_prob": 0.6805382364651338,
+      "pick_ev_per_1": 0.2992093605243463,
+      "pick_fair_odds": -213.02650712715402,
+      "pick_prob_edge": 0.15672871265560995,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.9187078010749581,
-      "pred_sigma": 10.358774185180664,
+      "pred_home_win_prob": 0.8921217384827671,
+      "pred_sigma": 10.837121963500977,
       "start_time": "2025-12-10T21:30:00.000Z"
     },
     {
@@ -92,19 +92,19 @@
     },
     {
       "away_team": "Massachusetts",
-      "edge_home_points": 0.5068678855895996,
+      "edge_home_points": -0.2845604419708252,
       "game_id": "2025_12_10_massachusetts_boston_college",
       "home_team": "Boston College",
       "market_spread_home": -1.5,
-      "model_mu_home": 2.0068678855895996,
-      "pick_cover_prob": 0.516476159508012,
-      "pick_ev_per_1": -0.014000059121068109,
-      "pick_fair_odds": -106.81503501099236,
-      "pick_prob_edge": -0.00733336430151188,
-      "pick_side": "HOME",
+      "model_mu_home": 1.2154395580291748,
+      "pick_cover_prob": 0.5093332302270798,
+      "pick_ev_per_1": -0.027636560475575,
+      "pick_fair_odds": -103.80430499966369,
+      "pick_prob_edge": -0.014476293582444066,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5649636549786073,
-      "pred_sigma": 12.26945686340332,
+      "pred_home_win_prob": 0.5398022872779538,
+      "pred_sigma": 12.162223815917969,
       "start_time": "2025-12-11T00:00:00.000Z"
     },
     {
@@ -652,7 +652,7 @@
       "start_time": "2025-12-11T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.965334Z",
+  "generated_at": "2026-03-12T01:45:17.878222Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

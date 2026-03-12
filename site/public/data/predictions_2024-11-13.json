@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-11-13",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -24,19 +24,19 @@
     },
     {
       "away_team": "Louisiana Tech",
-      "edge_home_points": 2.364833176136017,
+      "edge_home_points": 0.42348575592041016,
       "game_id": "2024_11_13_louisiana_tech_massachusetts",
       "home_team": "Massachusetts",
       "market_spread_home": 1.5,
-      "model_mu_home": 0.8648331761360168,
-      "pick_cover_prob": 0.5919326720262145,
-      "pick_ev_per_1": 0.13005328295913665,
-      "pick_fair_odds": -145.05759992239334,
-      "pick_prob_edge": 0.06812314821669063,
+      "model_mu_home": -1.0765142440795898,
+      "pick_cover_prob": 0.5127345527303991,
+      "pick_ev_per_1": -0.021143126605601636,
+      "pick_fair_odds": -105.22694675017792,
+      "pick_prob_edge": -0.011074971079124696,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5338826899956487,
-      "pred_sigma": 10.170478820800781,
+      "pred_home_win_prob": 0.4676583701104304,
+      "pred_sigma": 13.26451587677002,
       "start_time": "2024-11-13T23:00:00.000Z"
     },
     {
@@ -194,19 +194,19 @@
     },
     {
       "away_team": "Tennessee State",
-      "edge_home_points": 1.2687270641326904,
+      "edge_home_points": -0.3786759376525879,
       "game_id": "2024_11_13_tennessee_state_howard",
       "home_team": "Howard",
       "market_spread_home": -2.5,
-      "model_mu_home": 3.7687270641326904,
-      "pick_cover_prob": 0.5465735307684805,
-      "pick_ev_per_1": 0.04345855873982635,
-      "pick_fair_odds": -120.54292544827155,
-      "pick_prob_edge": 0.02276400695895664,
-      "pick_side": "HOME",
+      "model_mu_home": 2.121324062347412,
+      "pick_cover_prob": 0.5141601266298181,
+      "pick_ev_per_1": -0.018421576433983566,
+      "pick_fair_odds": -105.82913317986518,
+      "pick_prob_edge": -0.009649397179705699,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6359194480669452,
-      "pred_sigma": 10.842988967895508,
+      "pred_home_win_prob": 0.5788210638708766,
+      "pred_sigma": 10.666438102722168,
       "start_time": "2024-11-14T00:00:00.000Z"
     },
     {
@@ -585,19 +585,19 @@
     },
     {
       "away_team": "Seton Hall",
-      "edge_home_points": 4.3371500968933105,
+      "edge_home_points": 4.218697428703308,
       "game_id": "2024_11_13_seton_hall_hofstra",
       "home_team": "Hofstra",
       "market_spread_home": 4.5,
-      "model_mu_home": -0.16284990310668945,
-      "pick_cover_prob": 0.6727785787014754,
-      "pick_ev_per_1": 0.28439546843008934,
-      "pick_fair_odds": -205.6034644772533,
-      "pick_prob_edge": 0.14896905489195156,
+      "model_mu_home": -0.2813025712966919,
+      "pick_cover_prob": 0.6529679326764178,
+      "pick_ev_per_1": 0.24657514420043403,
+      "pick_fair_odds": -188.15780850234015,
+      "pick_prob_edge": 0.129158408866894,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4932955757368155,
-      "pred_sigma": 9.689818382263184,
+      "pred_home_win_prob": 0.48953763043528914,
+      "pred_sigma": 10.725163459777832,
       "start_time": "2024-11-14T01:00:00.000Z"
     },
     {
@@ -941,7 +941,7 @@
       "start_time": "2024-11-14T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.227440Z",
+  "generated_at": "2026-03-12T01:45:17.316806Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

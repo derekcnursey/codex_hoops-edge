@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-02-01",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -776,15 +776,15 @@
       "game_id": "2025_02_01_howard_hampton",
       "home_team": "Hampton",
       "market_spread_home": null,
-      "model_mu_home": 2.0499274730682373,
+      "model_mu_home": 2.169741630554199,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.5906840434429306,
-      "pred_sigma": 8.939743995666504,
+      "pred_home_win_prob": 0.5827460994897865,
+      "pred_sigma": 10.385330200195312,
       "start_time": "2025-02-01T20:00:00.000Z"
     },
     {
@@ -2488,7 +2488,7 @@
       "start_time": "2025-02-02T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.544355Z",
+  "generated_at": "2026-03-12T01:45:17.575369Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

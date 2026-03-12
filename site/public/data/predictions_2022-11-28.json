@@ -1,42 +1,42 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-11-28",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "UC Davis",
-      "edge_home_points": 2.3011314868927,
+      "edge_home_points": 2.048964500427246,
       "game_id": "2022_11_28_uc_davis_boston_university",
       "home_team": "Boston University",
       "market_spread_home": 4.5,
-      "model_mu_home": -2.1988685131073,
-      "pick_cover_prob": 0.5915887312813186,
-      "pick_ev_per_1": 0.12939666880979006,
-      "pick_fair_odds": -144.85122634772648,
-      "pick_prob_edge": 0.06777920747179478,
+      "model_mu_home": -2.451035499572754,
+      "pick_cover_prob": 0.5751713084018928,
+      "pick_ev_per_1": 0.09805431603997716,
+      "pick_fair_odds": -135.38899791307207,
+      "pick_prob_edge": 0.05136178459236895,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4124139233418046,
-      "pred_sigma": 9.934355735778809,
+      "pred_home_win_prob": 0.41030816141459275,
+      "pred_sigma": 10.809306144714355,
       "start_time": "2022-11-28T19:00:00.000Z"
     },
     {
       "away_team": "Grambling",
-      "edge_home_points": 3.0690943598747253,
+      "edge_home_points": 3.3935546875,
       "game_id": "2022_11_28_grambling_dartmouth",
       "home_team": "Dartmouth",
       "market_spread_home": 2.5,
-      "model_mu_home": 0.5690943598747253,
-      "pick_cover_prob": 0.6185526404868845,
-      "pick_ev_per_1": 0.18087322274768858,
-      "pick_fair_odds": -162.1593714205843,
-      "pick_prob_edge": 0.09474311667736068,
+      "model_mu_home": 0.8935546875,
+      "pick_cover_prob": 0.6365386996930753,
+      "pick_ev_per_1": 0.2152102448685983,
+      "pick_fair_odds": -175.13245541012222,
+      "pick_prob_edge": 0.11272917588355147,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5223052253994345,
-      "pred_sigma": 10.173286437988281,
+      "pred_home_win_prob": 0.5366324824248501,
+      "pred_sigma": 9.717469215393066,
       "start_time": "2022-11-28T21:00:00.000Z"
     },
     {
@@ -397,7 +397,7 @@
       "start_time": "2022-11-29T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.082016Z",
+  "generated_at": "2026-03-12T01:45:16.190602Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

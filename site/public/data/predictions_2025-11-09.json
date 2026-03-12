@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-11-09",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -92,19 +92,19 @@
     },
     {
       "away_team": "Indiana",
-      "edge_home_points": 2.9911991357803345,
+      "edge_home_points": 1.2861273288726807,
       "game_id": "2025_11_09_indiana_marquette",
       "home_team": "Marquette",
       "market_spread_home": 3.5,
-      "model_mu_home": -0.5088008642196655,
-      "pick_cover_prob": 0.6059962205709231,
-      "pick_ev_per_1": 0.1569018756353986,
-      "pick_fair_odds": -153.80467198792596,
-      "pick_prob_edge": 0.08218669676139922,
+      "model_mu_home": -2.2138726711273193,
+      "pick_cover_prob": 0.5500864623120143,
+      "pick_ev_per_1": 0.050165064413845495,
+      "pick_fair_odds": -122.26492786565102,
+      "pick_prob_edge": 0.026276938502490466,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.48175894147896553,
-      "pred_sigma": 11.123884201049805,
+      "pred_home_win_prob": 0.4142277248053263,
+      "pred_sigma": 10.217106819152832,
       "start_time": "2025-11-09T18:00:00.000Z"
     },
     {
@@ -398,19 +398,19 @@
     },
     {
       "away_team": "North Texas",
-      "edge_home_points": -4.754076719284058,
+      "edge_home_points": -6.920716762542725,
       "game_id": "2025_11_09_north_texas_loyola_chicago",
       "home_team": "Loyola Chicago",
       "market_spread_home": -1.5,
-      "model_mu_home": -3.2540767192840576,
-      "pick_cover_prob": 0.6573218839154337,
-      "pick_ev_per_1": 0.25488723292946425,
-      "pick_fair_odds": -191.8190433127102,
-      "pick_prob_edge": 0.13351236010590983,
+      "model_mu_home": -5.420716762542725,
+      "pick_cover_prob": 0.7003670204251848,
+      "pick_ev_per_1": 0.3370643117208074,
+      "pick_fair_odds": -233.74163332054394,
+      "pick_prob_edge": 0.176557496615661,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3907641794733496,
-      "pred_sigma": 11.733680725097656,
+      "pred_home_win_prob": 0.3403277948696911,
+      "pred_sigma": 13.170867919921875,
       "start_time": "2025-11-09T22:00:00.000Z"
     },
     {
@@ -567,7 +567,7 @@
       "start_time": "2025-11-10T01:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.817567Z",
+  "generated_at": "2026-03-12T01:45:17.779576Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

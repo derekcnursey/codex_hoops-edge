@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-12-15",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -160,19 +160,19 @@
     },
     {
       "away_team": "Akron",
-      "edge_home_points": -1.4782572984695435,
+      "edge_home_points": -3.3169984817504883,
       "game_id": "2024_12_15_akron_milwaukee",
       "home_team": "Milwaukee",
       "market_spread_home": 0.5,
-      "model_mu_home": -1.9782572984695435,
-      "pick_cover_prob": 0.5453117407824062,
-      "pick_ev_per_1": 0.04104968694822997,
-      "pick_fair_odds": -119.93090424651672,
-      "pick_prob_edge": 0.02150221697288235,
+      "model_mu_home": -3.8169984817504883,
+      "pick_cover_prob": 0.6082490418413414,
+      "pick_ev_per_1": 0.16120271624256088,
+      "pick_fair_odds": -155.26421293269726,
+      "pick_prob_edge": 0.0844395180318176,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4394654110158229,
-      "pred_sigma": 12.987105369567871,
+      "pred_home_win_prob": 0.3759348270785593,
+      "pred_sigma": 12.07242202758789,
       "start_time": "2024-12-15T18:30:00.000Z"
     },
     {
@@ -483,19 +483,19 @@
     },
     {
       "away_team": "Georgia Tech",
-      "edge_home_points": -0.6077985763549805,
+      "edge_home_points": -1.8285589218139648,
       "game_id": "2024_12_15_georgia_tech_northwestern",
       "home_team": "Northwestern",
       "market_spread_home": -6.5,
-      "model_mu_home": 5.8922014236450195,
-      "pick_cover_prob": 0.5208937577691006,
-      "pick_ev_per_1": -0.0055664624408078844,
-      "pick_fair_odds": -108.72197267637817,
-      "pick_prob_edge": -0.0029157660404232066,
+      "model_mu_home": 4.671441078186035,
+      "pick_cover_prob": 0.5628522118482934,
+      "pick_ev_per_1": 0.07453604080128728,
+      "pick_fair_odds": -128.75558955200813,
+      "pick_prob_edge": 0.039042688038769535,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6942566634080297,
-      "pred_sigma": 11.599906921386719,
+      "pred_home_win_prob": 0.6569551030074458,
+      "pred_sigma": 11.55819034576416,
       "start_time": "2024-12-15T21:00:00.000Z"
     },
     {
@@ -619,19 +619,19 @@
     },
     {
       "away_team": "San Francisco",
-      "edge_home_points": 0.7366330623626709,
+      "edge_home_points": -1.025120735168457,
       "game_id": "2024_12_15_san_francisco_loyola_chicago",
       "home_team": "Loyola Chicago",
       "market_spread_home": 3.5,
-      "model_mu_home": -2.763366937637329,
-      "pick_cover_prob": 0.5226530226678867,
-      "pick_ev_per_1": -0.0022078658158526387,
-      "pick_fair_odds": -109.49121864958451,
-      "pick_prob_edge": -0.001156501141637123,
-      "pick_side": "HOME",
+      "model_mu_home": -4.525120735168457,
+      "pick_cover_prob": 0.5315805110944067,
+      "pick_ev_per_1": 0.014835521180231015,
+      "pick_fair_odds": -113.48385873875182,
+      "pick_prob_edge": 0.007770987284882902,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.41561422957312527,
-      "pred_sigma": 12.965866088867188,
+      "pred_home_win_prob": 0.36324477027893964,
+      "pred_sigma": 12.936345100402832,
       "start_time": "2024-12-15T23:30:00.000Z"
     },
     {
@@ -686,7 +686,7 @@
       "start_time": "2024-12-16T01:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.358910Z",
+  "generated_at": "2026-03-12T01:45:17.418015Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

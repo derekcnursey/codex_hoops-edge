@@ -40,6 +40,14 @@ EXTRA_FEATURE_GROUPS = {
 }
 
 
+def _feature_order_for_contract(feature_contract: str) -> list[str]:
+    if feature_contract == "current":
+        return config.FEATURE_ORDER
+    if feature_contract == "swap_safe_v2":
+        return config.FEATURE_ORDER_SWAP_SAFE_V2
+    raise ValueError(f"Unknown feature_contract: {feature_contract}")
+
+
 def load_games(season: int) -> pd.DataFrame:
     """Load fct_games for a season, return DataFrame with key columns."""
     tbl = s3_reader.read_silver_table(config.TABLE_FCT_GAMES, season=season)
@@ -69,7 +77,11 @@ def load_games(season: int) -> pd.DataFrame:
     return df
 
 
-def load_efficiency_ratings(season: int, no_garbage: bool = True) -> pd.DataFrame:
+def load_efficiency_ratings(
+    season: int,
+    no_garbage: bool = True,
+    table_name: str | None = None,
+) -> pd.DataFrame:
     """Load team_adjusted_efficiencies from the gold layer for a season.
 
     Args:
@@ -79,7 +91,12 @@ def load_efficiency_ratings(season: int, no_garbage: bool = True) -> pd.DataFram
     Returns a DataFrame with columns: teamId, rating_date, adj_oe, adj_de,
     adj_tempo, barthag, sorted by (teamId, rating_date) for as-of lookups.
     """
-    table_name = "team_adjusted_efficiencies_no_garbage" if no_garbage else "team_adjusted_efficiencies"
+    if table_name is None:
+        table_name = (
+            "team_adjusted_efficiencies_no_garbage"
+            if no_garbage
+            else "team_adjusted_efficiencies"
+        )
     tbl = s3_reader.read_gold_table(table_name, season=season)
     if tbl.num_rows == 0:
         return pd.DataFrame()
@@ -524,6 +541,8 @@ def build_features(
     adjust_alpha: float = 1.0,
     adjust_ff_method: str = "multiplicative",
     efficiency_source: str = "gold",
+    gold_table_name: str | None = None,
+    feature_contract: str = "current",
 ) -> pd.DataFrame:
     """Build the feature matrix for games in a season.
 
@@ -542,6 +561,12 @@ def build_features(
             "multiplicative" (default) or "iterative".
         efficiency_source: "gold" (default) uses gold-layer ratings, "torvik"
             uses Torvik daily ratings from S3. PBP features are unchanged.
+        gold_table_name: Optional explicit gold table name when
+            ``efficiency_source="gold"``. Defaults to the current production
+            gold table selection based on ``no_garbage``.
+        feature_contract: "current" (default) preserves the existing
+            production contract. "swap_safe_v2" emits a research-only
+            contract with swap-safe naming and a signed venue field.
 
     Returns:
         DataFrame with columns: gameId, homeTeamId, awayTeamId, startDate,
@@ -564,7 +589,11 @@ def build_features(
         eff_ratings = pd.DataFrame()  # Not used when Torvik is the source
         torvik_eff_lookup = torvik_loader.build_torvik_efficiency_lookup(season)
     else:
-        eff_ratings = load_efficiency_ratings(season, no_garbage=no_garbage)
+        eff_ratings = load_efficiency_ratings(
+            season,
+            no_garbage=no_garbage,
+            table_name=gold_table_name,
+        )
     boxscores = load_boxscores(season)
 
     if game_date is not None and "startDate" in games.columns:
@@ -920,8 +949,19 @@ def build_features(
     if result.empty:
         return result
 
-    # Verify we have all features in FEATURE_ORDER
-    missing = [f for f in config.FEATURE_ORDER if f not in result.columns]
+    feature_order = _feature_order_for_contract(feature_contract)
+    if feature_contract == "swap_safe_v2":
+        result = result.rename(
+            columns={
+                "home_opp_ft_rate": "home_def_ft_rate",
+                "home_team_hca": "venue_edge",
+                "home_team_efg_home_split": "home_team_efg_slot_split",
+                "away_team_efg_away_split": "away_team_efg_slot_split",
+            }
+        )
+
+    # Verify we have all features in the selected feature order
+    missing = [f for f in feature_order if f not in result.columns]
     if missing:
         for col in missing:
             result[col] = None

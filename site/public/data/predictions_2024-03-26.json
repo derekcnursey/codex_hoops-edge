@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-03-26",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "High Point",
-      "edge_home_points": 4.624786853790283,
+      "edge_home_points": 2.1978551149368286,
       "game_id": "2024_03_26_high_point_arkansas_state",
       "home_team": "Arkansas State",
       "market_spread_home": 1.5,
-      "model_mu_home": 3.124786853790283,
-      "pick_cover_prob": 0.6979841674622405,
-      "pick_ev_per_1": 0.33251522879154993,
-      "pick_fair_odds": -231.10846924721238,
-      "pick_prob_edge": 0.17417464365271662,
+      "model_mu_home": 0.6978551149368286,
+      "pick_cover_prob": 0.6012592176788959,
+      "pick_ev_per_1": 0.14785850647789212,
+      "pick_fair_odds": -150.7894964189303,
+      "pick_prob_edge": 0.07744969386937206,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6369827800532762,
-      "pred_sigma": 8.917632102966309,
+      "pred_home_win_prob": 0.5324687672170395,
+      "pred_sigma": 8.56503677368164,
       "start_time": "2024-03-26T23:00:00.000Z"
     },
     {
@@ -58,23 +58,23 @@
     },
     {
       "away_team": "Seattle U",
-      "edge_home_points": 5.347324967384338,
+      "edge_home_points": 3.560138463973999,
       "game_id": "2024_03_26_seattle_u_fairfield",
       "home_team": "Fairfield",
       "market_spread_home": 6.5,
-      "model_mu_home": -1.1526750326156616,
-      "pick_cover_prob": 0.6791713367216005,
-      "pick_ev_per_1": 0.2965998246503281,
-      "pick_fair_odds": -211.6928486942105,
-      "pick_prob_edge": 0.15536181291207662,
+      "model_mu_home": -2.939861536026001,
+      "pick_cover_prob": 0.637823080114114,
+      "pick_ev_per_1": 0.21766224385421773,
+      "pick_fair_odds": -176.10815187093593,
+      "pick_prob_edge": 0.1140135563045902,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4600457686844114,
-      "pred_sigma": 11.490163803100586,
+      "pred_home_win_prob": 0.38544723509147527,
+      "pred_sigma": 10.095501899719238,
       "start_time": "2024-03-27T01:34:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.153870Z",
+  "generated_at": "2026-03-12T01:45:17.261061Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

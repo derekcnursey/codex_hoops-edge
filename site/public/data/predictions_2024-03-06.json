@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-03-06",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -313,19 +313,19 @@
     },
     {
       "away_team": "Southern Indiana",
-      "edge_home_points": -2.8865727186203003,
+      "edge_home_points": -6.449872016906738,
       "game_id": "2024_03_06_southern_indiana_tennessee_state",
       "home_team": "Tennessee State",
       "market_spread_home": -4.5,
-      "model_mu_home": 1.6134272813796997,
-      "pick_cover_prob": 0.584439004620155,
-      "pick_ev_per_1": 0.1157471906384776,
-      "pick_fair_odds": -140.63856115416857,
-      "pick_prob_edge": 0.06062948081063113,
+      "model_mu_home": -1.9498720169067383,
+      "pick_cover_prob": 0.6907416809190171,
+      "pick_ev_per_1": 0.318688663572669,
+      "pick_fair_odds": -223.35427644167538,
+      "pick_prob_edge": 0.16693215710949327,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5474421703203487,
-      "pred_sigma": 13.535284996032715,
+      "pred_home_win_prob": 0.4401703763645871,
+      "pred_sigma": 12.952753067016602,
       "start_time": "2024-03-07T00:30:00.000Z"
     },
     {
@@ -432,19 +432,19 @@
     },
     {
       "away_team": "Radford",
-      "edge_home_points": 5.512247289530933,
+      "edge_home_points": 2.330742835998535,
       "game_id": "2024_03_06_radford_south_carolina_upstate",
       "home_team": "South Carolina Upstate",
       "market_spread_home": 5.5,
-      "model_mu_home": 0.012247289530932903,
-      "pick_cover_prob": 0.725214561834915,
-      "pick_ev_per_1": 0.3845005271393831,
-      "pick_fair_odds": -263.920303301961,
-      "pick_prob_edge": 0.20140503802539111,
+      "model_mu_home": -3.169257164001465,
+      "pick_cover_prob": 0.59866756849706,
+      "pick_ev_per_1": 0.14291081258529648,
+      "pick_fair_odds": -149.1699951222792,
+      "pick_prob_edge": 0.07485804468753621,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5005304142668369,
-      "pred_sigma": 9.211592674255371,
+      "pred_home_win_prob": 0.36700192393388475,
+      "pred_sigma": 9.32671070098877,
       "start_time": "2024-03-07T01:30:00.000Z"
     },
     {
@@ -551,19 +551,19 @@
     },
     {
       "away_team": "Eastern Illinois",
-      "edge_home_points": 0.28368473052978516,
+      "edge_home_points": -0.36481451988220215,
       "game_id": "2024_03_06_eastern_illinois_siu_edwardsville",
       "home_team": "SIU Edwardsville",
       "market_spread_home": -3.5,
-      "model_mu_home": 3.783684730529785,
-      "pick_cover_prob": 0.5118796582344353,
-      "pick_ev_per_1": -0.022775197916078127,
-      "pick_fair_odds": -104.86751205305877,
-      "pick_prob_edge": -0.011929865575088572,
-      "pick_side": "HOME",
+      "model_mu_home": 3.135185480117798,
+      "pick_cover_prob": 0.515300761267737,
+      "pick_ev_per_1": -0.016244001216138393,
+      "pick_fair_odds": -106.31350744752824,
+      "pick_prob_edge": -0.008508762541786785,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6543993902549574,
-      "pred_sigma": 9.525282859802246,
+      "pred_home_win_prob": 0.6291814139153862,
+      "pred_sigma": 9.509608268737793,
       "start_time": "2024-03-07T03:00:00.000Z"
     },
     {
@@ -601,7 +601,7 @@
       "start_time": "2024-03-07T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.052764Z",
+  "generated_at": "2026-03-12T01:45:17.209387Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

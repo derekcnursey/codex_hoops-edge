@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-02-27",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -24,36 +24,36 @@
     },
     {
       "away_team": "Bellarmine",
-      "edge_home_points": 1.6651625633239746,
+      "edge_home_points": -0.5917997360229492,
       "game_id": "2023_02_27_bellarmine_north_florida",
       "home_team": "North Florida",
       "market_spread_home": -2.5,
-      "model_mu_home": 4.165162563323975,
-      "pick_cover_prob": 0.5643752280199364,
-      "pick_ev_per_1": 0.07744361712896952,
-      "pick_fair_odds": -129.5553568853897,
-      "pick_prob_edge": 0.04056570421041261,
-      "pick_side": "HOME",
+      "model_mu_home": 1.9082002639770508,
+      "pick_cover_prob": 0.5225283275235486,
+      "pick_ev_per_1": -0.002445920182316319,
+      "pick_fair_odds": -109.43650851859057,
+      "pick_prob_edge": -0.001281196285975228,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6574076417612107,
-      "pred_sigma": 10.274246215820312,
+      "pred_home_win_prob": 0.5722790005717504,
+      "pred_sigma": 10.474296569824219,
       "start_time": "2023-02-28T00:00:00.000Z"
     },
     {
       "away_team": "Florida Gulf Coast",
-      "edge_home_points": 1.0408036708831787,
+      "edge_home_points": -1.3126957416534424,
       "game_id": "2023_02_27_florida_gulf_coast_queens_university",
       "home_team": "Queens University",
       "market_spread_home": -1.5,
-      "model_mu_home": 2.5408036708831787,
-      "pick_cover_prob": 0.5423498465114425,
-      "pick_ev_per_1": 0.03539516152184469,
-      "pick_fair_odds": -118.50751985490216,
-      "pick_prob_edge": 0.018540322701918632,
-      "pick_side": "HOME",
+      "model_mu_home": 0.18730425834655762,
+      "pick_cover_prob": 0.5511662170292626,
+      "pick_ev_per_1": 0.05222641432859221,
+      "pick_fair_odds": -122.79962826799893,
+      "pick_prob_edge": 0.02735669321973877,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6024270937787665,
-      "pred_sigma": 9.786083221435547,
+      "pred_home_win_prob": 0.5073204605162167,
+      "pred_sigma": 10.206925392150879,
       "start_time": "2023-02-28T00:00:00.000Z"
     },
     {
@@ -329,7 +329,7 @@
       "start_time": "2023-02-28T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.457202Z",
+  "generated_at": "2026-03-12T01:45:16.735545Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

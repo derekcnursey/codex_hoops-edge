@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-12-07",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -585,19 +585,19 @@
     },
     {
       "away_team": "UNLV",
-      "edge_home_points": 19.223243713378906,
+      "edge_home_points": 16.10533905029297,
       "game_id": "2019_12_07_unlv_byu",
       "home_team": "BYU",
       "market_spread_home": 10.0,
-      "model_mu_home": 9.223243713378906,
-      "pick_cover_prob": 0.8520645923614963,
-      "pick_ev_per_1": 0.6266687672355838,
-      "pick_fair_odds": -575.9706928605012,
-      "pick_prob_edge": 0.3282550685519725,
+      "model_mu_home": 6.105339050292969,
+      "pick_cover_prob": 0.7921686440676383,
+      "pick_ev_per_1": 0.5123219568564004,
+      "pick_fair_odds": -381.15934937433025,
+      "pick_prob_edge": 0.2683591202581145,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6920062802852178,
-      "pred_sigma": 18.3896541595459,
+      "pred_home_win_prob": 0.6211740772053408,
+      "pred_sigma": 19.786182403564453,
       "start_time": "2019-12-07T20:00:00.000Z"
     },
     {
@@ -687,19 +687,19 @@
     },
     {
       "away_team": "New Mexico State",
-      "edge_home_points": 0.7488069534301758,
+      "edge_home_points": -0.08018016815185547,
       "game_id": "2019_12_07_new_mexico_state_washington_state",
       "home_team": "Washington State",
       "market_spread_home": 4.0,
-      "model_mu_home": -3.251193046569824,
-      "pick_cover_prob": 0.5100680644124828,
-      "pick_ev_per_1": -0.026233695212532937,
-      "pick_fair_odds": -104.10998495144406,
-      "pick_prob_edge": -0.013741459397041078,
-      "pick_side": "HOME",
+      "model_mu_home": -4.0801801681518555,
+      "pick_cover_prob": 0.501292975128546,
+      "pick_ev_per_1": -0.04298613839095766,
+      "pick_fair_odds": -100.5185309466532,
+      "pick_prob_edge": -0.022516548680977855,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4563688729320834,
-      "pred_sigma": 29.667970657348633,
+      "pred_home_win_prob": 0.43450049843896116,
+      "pred_sigma": 24.739225387573242,
       "start_time": "2019-12-07T20:00:00.000Z"
     },
     {
@@ -1775,19 +1775,19 @@
     },
     {
       "away_team": "Portland",
-      "edge_home_points": -3.4080556631088257,
+      "edge_home_points": -5.412694036960602,
       "game_id": "2019_12_07_portland_seattle_u",
       "home_team": "Seattle U",
       "market_spread_home": -5.0,
-      "model_mu_home": 1.5919443368911743,
-      "pick_cover_prob": 0.5574721165888344,
-      "pick_ev_per_1": 0.06426494985141118,
-      "pick_fair_odds": -125.97446115522418,
-      "pick_prob_edge": 0.03366259277931061,
+      "model_mu_home": -0.4126940369606018,
+      "pick_cover_prob": 0.596528470108253,
+      "pick_ev_per_1": 0.13882707929757399,
+      "pick_fair_odds": -147.84896229686987,
+      "pick_prob_edge": 0.07271894629872921,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5269190055028564,
-      "pred_sigma": 23.574851989746094,
+      "pred_home_win_prob": 0.49256723625133714,
+      "pred_sigma": 22.149442672729492,
       "start_time": "2019-12-08T03:00:00.000Z"
     },
     {
@@ -1808,7 +1808,7 @@
       "start_time": "2019-12-08T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.861584Z",
+  "generated_at": "2026-03-12T01:45:15.072790Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

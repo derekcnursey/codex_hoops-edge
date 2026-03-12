@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2021-11-17",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -24,36 +24,36 @@
     },
     {
       "away_team": "Denver",
-      "edge_home_points": 4.490827679634094,
+      "edge_home_points": 4.180418014526367,
       "game_id": "2021_11_17_denver_texas_a_m_corpus_christi",
       "home_team": "Texas A&M-Corpus Christi",
       "market_spread_home": 3.0,
-      "model_mu_home": 1.4908276796340942,
-      "pick_cover_prob": 0.6778941852353912,
-      "pick_ev_per_1": 0.2941616263584742,
-      "pick_fair_odds": -210.45698468088463,
-      "pick_prob_edge": 0.1540846614258674,
+      "model_mu_home": 1.1804180145263672,
+      "pick_cover_prob": 0.6485932459829369,
+      "pick_ev_per_1": 0.2382234696037886,
+      "pick_fair_odds": -184.57051225357023,
+      "pick_prob_edge": 0.12478372217341305,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5609233301149454,
-      "pred_sigma": 9.724230766296387,
+      "pred_home_win_prob": 0.5428953388828689,
+      "pred_sigma": 10.95711898803711,
       "start_time": "2021-11-17T19:00:00.000Z"
     },
     {
       "away_team": "Central Connecticut",
-      "edge_home_points": -0.1542530059814453,
+      "edge_home_points": -1.2860875129699707,
       "game_id": "2021_11_17_central_connecticut_umass_lowell",
       "home_team": "UMass Lowell",
       "market_spread_home": -8.5,
-      "model_mu_home": 8.345746994018555,
-      "pick_cover_prob": 0.5059365973999874,
-      "pick_ev_per_1": -0.034121041327296764,
-      "pick_fair_odds": -102.40317229276488,
-      "pick_prob_edge": -0.017872926409536416,
+      "model_mu_home": 7.213912487030029,
+      "pick_cover_prob": 0.5437214850342276,
+      "pick_ev_per_1": 0.03801374415625264,
+      "pick_fair_odds": -119.16438473440168,
+      "pick_prob_edge": 0.019911961224703734,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7896325506388041,
-      "pred_sigma": 10.365495681762695,
+      "pred_home_win_prob": 0.7310418053741213,
+      "pred_sigma": 11.711526870727539,
       "start_time": "2021-11-17T22:00:00.000Z"
     },
     {
@@ -466,19 +466,19 @@
     },
     {
       "away_team": "Oklahoma State",
-      "edge_home_points": -10.929747581481934,
+      "edge_home_points": -12.396650791168213,
       "game_id": "2021_11_17_oklahoma_state_nc_state",
       "home_team": "NC State",
       "market_spread_home": -4.5,
-      "model_mu_home": -6.429747581481934,
-      "pick_cover_prob": 0.8055673357476909,
-      "pick_ev_per_1": 0.5379012773365008,
-      "pick_fair_odds": -414.31687357960175,
-      "pick_prob_edge": 0.28175781193816707,
+      "model_mu_home": -7.896650791168213,
+      "pick_cover_prob": 0.8492775972213342,
+      "pick_ev_per_1": 0.6213481401498199,
+      "pick_fair_odds": -563.4713762283164,
+      "pick_prob_edge": 0.3254680734118104,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3061100514227457,
-      "pred_sigma": 12.68427562713623,
+      "pred_home_win_prob": 0.25519315840883194,
+      "pred_sigma": 11.996681213378906,
       "start_time": "2021-11-18T01:00:00.000Z"
     },
     {
@@ -737,7 +737,7 @@
       "start_time": "2021-11-18T03:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.304141Z",
+  "generated_at": "2026-03-12T01:45:15.494507Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

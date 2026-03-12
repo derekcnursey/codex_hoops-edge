@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-12-15",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -177,19 +177,19 @@
     },
     {
       "away_team": "Wyoming",
-      "edge_home_points": 0.3493814468383789,
+      "edge_home_points": -1.3971099853515625,
       "game_id": "2025_12_15_wyoming_south_dakota_state",
       "home_team": "South Dakota State",
       "market_spread_home": 3.5,
-      "model_mu_home": -3.150618553161621,
-      "pick_cover_prob": 0.508955307223482,
-      "pick_ev_per_1": -0.028358049846079758,
-      "pick_fair_odds": -103.64745097756621,
-      "pick_prob_edge": -0.014854216586041802,
-      "pick_side": "HOME",
+      "model_mu_home": -4.8971099853515625,
+      "pick_cover_prob": 0.5404930492445417,
+      "pick_ev_per_1": 0.03185036673957953,
+      "pick_fair_odds": -117.62456440668355,
+      "pick_prob_edge": 0.016683525435017832,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.41978518488568994,
-      "pred_sigma": 15.562986373901367,
+      "pred_home_win_prob": 0.3607736622123821,
+      "pred_sigma": 13.740812301635742,
       "start_time": "2025-12-16T01:00:00.000Z"
     },
     {
@@ -210,7 +210,7 @@
       "start_time": "2025-12-16T01:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.988049Z",
+  "generated_at": "2026-03-12T01:45:17.892751Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

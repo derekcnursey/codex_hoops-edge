@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-11-13",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -619,19 +619,19 @@
     },
     {
       "away_team": "Houston Christian",
-      "edge_home_points": -2.7465553283691406,
+      "edge_home_points": -8.611104965209961,
       "game_id": "2019_11_13_houston_christian_texas_tech",
       "home_team": "Texas Tech",
       "market_spread_home": -24.5,
-      "model_mu_home": 21.75344467163086,
-      "pick_cover_prob": 0.5364729433071143,
-      "pick_ev_per_1": 0.024175619040854468,
-      "pick_fair_odds": -115.73713671315622,
-      "pick_prob_edge": 0.012663419497590422,
+      "model_mu_home": 15.888895034790039,
+      "pick_cover_prob": 0.6218435264248339,
+      "pick_ev_per_1": 0.18715582317468282,
+      "pick_fair_odds": -164.4407989491234,
+      "pick_prob_edge": 0.09803400261531003,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7658092040729924,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.7165430429055212,
+      "pred_sigma": 27.748563766479492,
       "start_time": "2019-11-14T01:00:00.000Z"
     },
     {
@@ -839,7 +839,7 @@
       "start_time": "2019-11-14T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.758116Z",
+  "generated_at": "2026-03-12T01:45:14.932006Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

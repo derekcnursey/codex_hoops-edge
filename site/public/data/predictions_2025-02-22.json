@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-02-22",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -1877,19 +1877,19 @@
     },
     {
       "away_team": "Duke",
-      "edge_home_points": 9.694445610046387,
+      "edge_home_points": 4.121591091156006,
       "game_id": "2025_02_22_duke_illinois",
       "home_team": "Illinois",
       "market_spread_home": 8.5,
-      "model_mu_home": 1.1944456100463867,
-      "pick_cover_prob": 0.804928744153085,
-      "pick_ev_per_1": 0.5366821479286168,
-      "pick_fair_odds": -412.6331891689694,
-      "pick_prob_edge": 0.2811192203435612,
+      "model_mu_home": -4.378408908843994,
+      "pick_cover_prob": 0.6386388106848891,
+      "pick_ev_per_1": 0.21921954767115204,
+      "pick_fair_odds": -176.7314336925068,
+      "pick_prob_edge": 0.11482928687536531,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5421616124153328,
-      "pred_sigma": 11.281020164489746,
+      "pred_home_win_prob": 0.3531121107511816,
+      "pred_sigma": 11.615915298461914,
       "start_time": "2025-02-23T01:00:00.000Z"
     },
     {
@@ -2233,7 +2233,7 @@
       "start_time": "2025-02-23T03:10:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.631581Z",
+  "generated_at": "2026-03-12T01:45:17.642125Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

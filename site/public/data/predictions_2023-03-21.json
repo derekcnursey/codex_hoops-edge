@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-03-21",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Southern Utah",
-      "edge_home_points": 6.142401695251465,
+      "edge_home_points": 4.155855655670166,
       "game_id": "2023_03_21_southern_utah_eastern_kentucky",
       "home_team": "Eastern Kentucky",
       "market_spread_home": 4.5,
-      "model_mu_home": 1.6424016952514648,
-      "pick_cover_prob": 0.7111210787989725,
-      "pick_ev_per_1": 0.35759478679803836,
-      "pick_fair_odds": -246.16579009726757,
-      "pick_prob_edge": 0.18731155498944863,
+      "model_mu_home": -0.344144344329834,
+      "pick_cover_prob": 0.6482717639069723,
+      "pick_ev_per_1": 0.23760973109512884,
+      "pick_fair_odds": -184.31041280845946,
+      "pick_prob_edge": 0.12446224009744844,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5591619095781285,
-      "pred_sigma": 11.034331321716309,
+      "pred_home_win_prob": 0.4874265586361611,
+      "pred_sigma": 10.917535781860352,
       "start_time": "2023-03-21T23:00:00.000Z"
     },
     {
@@ -58,23 +58,23 @@
     },
     {
       "away_team": "Charlotte",
-      "edge_home_points": 4.348293662071228,
+      "edge_home_points": 3.1065800189971924,
       "game_id": "2023_03_21_charlotte_radford",
       "home_team": "Radford",
       "market_spread_home": 5.5,
-      "model_mu_home": -1.151706337928772,
-      "pick_cover_prob": 0.6610386268833169,
-      "pick_ev_per_1": 0.2619828331408778,
-      "pick_fair_odds": -195.01886625169027,
-      "pick_prob_edge": 0.1372291030737931,
+      "model_mu_home": -2.3934199810028076,
+      "pick_cover_prob": 0.6272180286797007,
+      "pick_ev_per_1": 0.19741623657033758,
+      "pick_fair_odds": -168.2533161296007,
+      "pick_prob_edge": 0.10340850487017683,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.45620554110947814,
-      "pred_sigma": 10.47026252746582,
+      "pred_home_win_prob": 0.40129295210630456,
+      "pred_sigma": 9.5736083984375,
       "start_time": "2023-03-22T01:57:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.530716Z",
+  "generated_at": "2026-03-12T01:45:16.805522Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

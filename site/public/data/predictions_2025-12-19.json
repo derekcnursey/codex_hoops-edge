@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-12-19",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -92,19 +92,19 @@
     },
     {
       "away_team": "Grambling",
-      "edge_home_points": 2.048523187637329,
+      "edge_home_points": 1.7618331909179688,
       "game_id": "2025_12_19_grambling_hampton",
       "home_team": "Hampton",
       "market_spread_home": -1.5,
-      "model_mu_home": 3.548523187637329,
-      "pick_cover_prob": 0.5825265004252677,
-      "pick_ev_per_1": 0.11209604626642,
-      "pick_fair_odds": -139.5361624195715,
-      "pick_prob_edge": 0.05871697661574382,
+      "model_mu_home": 3.2618331909179688,
+      "pick_cover_prob": 0.562501648977873,
+      "pick_ev_per_1": 0.07386678441230299,
+      "pick_fair_odds": -128.5722900814828,
+      "pick_prob_edge": 0.03869212516834919,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6409242667738139,
-      "pred_sigma": 9.831599235534668,
+      "pred_home_win_prob": 0.6145701428899671,
+      "pred_sigma": 11.199406623840332,
       "start_time": "2025-12-19T22:00:00.000Z"
     },
     {
@@ -245,19 +245,19 @@
     },
     {
       "away_team": "Norfolk State",
-      "edge_home_points": 2.003671646118164,
+      "edge_home_points": 2.818821668624878,
       "game_id": "2025_12_19_norfolk_state_jackson_state",
       "home_team": "Jackson State",
       "market_spread_home": 5.5,
-      "model_mu_home": -3.496328353881836,
-      "pick_cover_prob": 0.5904687253967773,
-      "pick_ev_per_1": 0.12725847575748395,
-      "pick_fair_odds": -144.18159540290475,
-      "pick_prob_edge": 0.06665920158725347,
+      "model_mu_home": -2.681178331375122,
+      "pick_cover_prob": 0.6196214792027083,
+      "pick_ev_per_1": 0.18291373302335212,
+      "pick_fair_odds": -162.89602207399926,
+      "pick_prob_edge": 0.09581195539318443,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.34488717892728227,
-      "pred_sigma": 8.759186744689941,
+      "pred_home_win_prob": 0.386053984457965,
+      "pred_sigma": 9.257615089416504,
       "start_time": "2025-12-20T00:30:00.000Z"
     },
     {
@@ -330,19 +330,19 @@
     },
     {
       "away_team": "Wisconsin",
-      "edge_home_points": 6.714500188827515,
+      "edge_home_points": 4.327280879020691,
       "game_id": "2025_12_19_wisconsin_villanova",
       "home_team": "Villanova",
       "market_spread_home": 4.5,
-      "model_mu_home": 2.2145001888275146,
-      "pick_cover_prob": 0.7574226294337261,
-      "pick_ev_per_1": 0.44598865619165884,
-      "pick_fair_odds": -312.2396073737606,
-      "pick_prob_edge": 0.23361310562420223,
+      "model_mu_home": -0.17271912097930908,
+      "pick_cover_prob": 0.6531312681724369,
+      "pick_ev_per_1": 0.24688696651101594,
+      "pick_fair_odds": -188.29349786913755,
+      "pick_prob_edge": 0.1293217443629131,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5910389184265139,
-      "pred_sigma": 9.619132995605469,
+      "pred_home_win_prob": 0.493729818008813,
+      "pred_sigma": 10.988855361938477,
       "start_time": "2025-12-20T01:00:00.000Z"
     },
     {
@@ -482,7 +482,7 @@
       "start_time": "2025-12-20T04:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:45.004474Z",
+  "generated_at": "2026-03-12T01:45:17.904648Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

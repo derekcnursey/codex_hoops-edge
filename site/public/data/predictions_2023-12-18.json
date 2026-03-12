@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-12-18",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -177,19 +177,19 @@
     },
     {
       "away_team": "Bradley",
-      "edge_home_points": 2.51517391204834,
+      "edge_home_points": 0.7031183242797852,
       "game_id": "2023_12_18_bradley_duquesne",
       "home_team": "Duquesne",
       "market_spread_home": -4.5,
-      "model_mu_home": 7.01517391204834,
-      "pick_cover_prob": 0.5591322235932364,
-      "pick_ev_per_1": 0.0674342450416332,
-      "pick_fair_odds": -126.82537792858714,
-      "pick_prob_edge": 0.03532269978371261,
+      "model_mu_home": 5.203118324279785,
+      "pick_cover_prob": 0.518669683128976,
+      "pick_ev_per_1": -0.009812423117409486,
+      "pick_fair_odds": -107.75753468027598,
+      "pick_prob_edge": -0.005139840680547847,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6609067002157291,
-      "pred_sigma": 16.90652084350586,
+      "pred_home_win_prob": 0.6354917931738292,
+      "pred_sigma": 15.019065856933594,
       "start_time": "2023-12-19T00:00:00.000Z"
     },
     {
@@ -618,7 +618,7 @@
       "start_time": "2023-12-19T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.734162Z",
+  "generated_at": "2026-03-12T01:45:16.965177Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-11-14",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "UC Davis",
-      "edge_home_points": -0.4761209487915039,
+      "edge_home_points": -1.572648048400879,
       "game_id": "2019_11_14_uc_davis_idaho",
       "home_team": "Idaho",
       "market_spread_home": 5.0,
-      "model_mu_home": -5.476120948791504,
-      "pick_cover_prob": 0.5063312267835638,
-      "pick_ev_per_1": -0.03336765795865093,
-      "pick_fair_odds": -102.5649695208848,
-      "pick_prob_edge": -0.017478297025960043,
+      "model_mu_home": -6.572648048400879,
+      "pick_cover_prob": 0.5225103706589023,
+      "pick_ev_per_1": -0.0024802014693683927,
+      "pick_fair_odds": -109.42863227834498,
+      "pick_prob_edge": -0.0012991531506215681,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4275805169503908,
-      "pred_sigma": 30.0,
+      "pred_home_win_prob": 0.4067374034511867,
+      "pred_sigma": 27.856613159179688,
       "start_time": "2019-11-14T23:00:00.000Z"
     },
     {
@@ -414,7 +414,7 @@
       "start_time": "2019-11-15T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.761827Z",
+  "generated_at": "2026-03-12T01:45:14.936048Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

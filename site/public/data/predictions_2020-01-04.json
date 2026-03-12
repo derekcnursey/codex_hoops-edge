@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2020-01-04",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -483,19 +483,19 @@
     },
     {
       "away_team": "Iowa",
-      "edge_home_points": -3.9377431869506836,
+      "edge_home_points": -3.7425830364227295,
       "game_id": "2020_01_04_iowa_penn_state",
       "home_team": "Penn State",
       "market_spread_home": -2.5,
-      "model_mu_home": -1.4377431869506836,
-      "pick_cover_prob": 0.5674758436811592,
-      "pick_ev_per_1": 0.08336297430039485,
-      "pick_fair_odds": -131.20095962058522,
-      "pick_prob_edge": 0.043666319871635384,
+      "model_mu_home": -1.2425830364227295,
+      "pick_cover_prob": 0.570505249497093,
+      "pick_ev_per_1": 0.08914638540354125,
+      "pick_fair_odds": -132.83171652949727,
+      "pick_prob_edge": 0.04669572568756919,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.47526053799934465,
-      "pred_sigma": 23.169811248779297,
+      "pred_home_win_prob": 0.4764818327821495,
+      "pred_sigma": 21.06591033935547,
       "start_time": "2020-01-04T19:00:00.000Z"
     },
     {
@@ -2148,7 +2148,7 @@
       "start_time": "2020-01-05T03:05:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.968475Z",
+  "generated_at": "2026-03-12T01:45:15.175898Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

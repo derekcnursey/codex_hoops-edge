@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-12-18",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -925,19 +925,19 @@
     },
     {
       "away_team": "Michigan",
-      "edge_home_points": 3.9738433361053467,
+      "edge_home_points": 2.64682674407959,
       "game_id": "2024_12_18_michigan_oklahoma",
       "home_team": "Oklahoma",
       "market_spread_home": 4.5,
-      "model_mu_home": -0.5261566638946533,
-      "pick_cover_prob": 0.6226955868956543,
-      "pick_ev_per_1": 0.18878248407352183,
-      "pick_fair_odds": -165.0379813403996,
-      "pick_prob_edge": 0.09888606308613046,
+      "model_mu_home": -1.8531732559204102,
+      "pick_cover_prob": 0.5786499679445202,
+      "pick_ev_per_1": 0.10469539334862943,
+      "pick_fair_odds": -137.33236594801738,
+      "pick_prob_edge": 0.054840444134996336,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.48349425711886096,
-      "pred_sigma": 12.713528633117676,
+      "pred_home_win_prob": 0.4447494686741167,
+      "pred_sigma": 13.338106155395508,
       "start_time": "2024-12-19T02:00:00.000Z"
     },
     {
@@ -1094,7 +1094,7 @@
       "start_time": "2024-12-19T04:15:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.369408Z",
+  "generated_at": "2026-03-12T01:45:17.427231Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

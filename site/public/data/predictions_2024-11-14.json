@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-11-14",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -24,19 +24,19 @@
     },
     {
       "away_team": "Lindenwood",
-      "edge_home_points": -1.2533153295516968,
+      "edge_home_points": -7.696071147918701,
       "game_id": "2024_11_14_lindenwood_new_orleans",
       "home_team": "New Orleans",
       "market_spread_home": -2.5,
-      "model_mu_home": 1.2466846704483032,
-      "pick_cover_prob": 0.5442958593741279,
-      "pick_ev_per_1": 0.039110276986971504,
-      "pick_fair_odds": -119.4406218531573,
-      "pick_prob_edge": 0.020486335564604108,
+      "model_mu_home": -5.196071147918701,
+      "pick_cover_prob": 0.7537006803984894,
+      "pick_ev_per_1": 0.43888311712438877,
+      "pick_fair_odds": -306.0100537906101,
+      "pick_prob_edge": 0.22989115658896553,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5440624701243426,
-      "pred_sigma": 11.264501571655273,
+      "pred_home_win_prob": 0.32158126973103696,
+      "pred_sigma": 11.215794563293457,
       "start_time": "2024-11-14T21:00:00.000Z"
     },
     {
@@ -296,19 +296,19 @@
     },
     {
       "away_team": "Grand Canyon",
-      "edge_home_points": 6.230503261089325,
+      "edge_home_points": 2.3845386505126953,
       "game_id": "2024_11_14_grand_canyon_arizona_state",
       "home_team": "Arizona State",
       "market_spread_home": 5.5,
-      "model_mu_home": 0.730503261089325,
-      "pick_cover_prob": 0.7283161856503696,
-      "pick_ev_per_1": 0.39042180896888734,
-      "pick_fair_odds": -268.07492650743563,
-      "pick_prob_edge": 0.20450666184084576,
+      "model_mu_home": -3.1154613494873047,
+      "pick_cover_prob": 0.5797325773346116,
+      "pick_ev_per_1": 0.10676219309334933,
+      "pick_fair_odds": -137.94373441031317,
+      "pick_prob_edge": 0.05592305352508775,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5284021524643384,
-      "pred_sigma": 10.252118110656738,
+      "pred_home_win_prob": 0.3963195037994397,
+      "pred_sigma": 11.851030349731445,
       "start_time": "2024-11-15T02:00:00.000Z"
     },
     {
@@ -347,19 +347,19 @@
     },
     {
       "away_team": "Northern Colorado",
-      "edge_home_points": -2.017131805419922,
+      "edge_home_points": -3.990455389022827,
       "game_id": "2024_11_14_northern_colorado_south_dakota_state",
       "home_team": "South Dakota State",
       "market_spread_home": -3.5,
-      "model_mu_home": 1.4828681945800781,
-      "pick_cover_prob": 0.5552062226407445,
-      "pick_ev_per_1": 0.05993915231414859,
-      "pick_fair_odds": -124.8232891064728,
-      "pick_prob_edge": 0.03139669883122065,
+      "model_mu_home": -0.49045538902282715,
+      "pick_cover_prob": 0.6184025759434949,
+      "pick_ev_per_1": 0.1805867358921266,
+      "pick_fair_odds": -162.05627631593362,
+      "pick_prob_edge": 0.09459305213397107,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5406439721036113,
-      "pred_sigma": 14.529915809631348,
+      "pred_home_win_prob": 0.4852303642108585,
+      "pred_sigma": 13.244651794433594,
       "start_time": "2024-11-15T02:00:00.000Z"
     },
     {
@@ -448,7 +448,7 @@
       "start_time": "2024-11-15T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.231203Z",
+  "generated_at": "2026-03-12T01:45:17.319774Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

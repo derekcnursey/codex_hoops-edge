@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-01-26",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -58,19 +58,19 @@
     },
     {
       "away_team": "Illinois",
-      "edge_home_points": -3.2679123878479004,
+      "edge_home_points": -4.139471054077148,
       "game_id": "2019_01_26_illinois_maryland",
       "home_team": "Maryland",
       "market_spread_home": -9.0,
-      "model_mu_home": 5.7320876121521,
-      "pick_cover_prob": 0.6122664211417037,
-      "pick_ev_per_1": 0.1688722585432525,
-      "pick_fair_odds": -157.9090526398454,
-      "pick_prob_edge": 0.08845689733217987,
+      "model_mu_home": 4.860528945922852,
+      "pick_cover_prob": 0.6499592174331086,
+      "pick_ev_per_1": 0.2408312332813891,
+      "pick_fair_odds": -185.68099770171892,
+      "pick_prob_edge": 0.12614969362358475,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6915715866366985,
-      "pred_sigma": 11.457072257995605,
+      "pred_home_win_prob": 0.6744773352599323,
+      "pred_sigma": 10.746001243591309,
       "start_time": "2019-01-26T17:00:00.000Z"
     },
     {
@@ -1826,19 +1826,19 @@
     },
     {
       "away_team": "Pennsylvania",
-      "edge_home_points": -7.913747549057007,
+      "edge_home_points": -10.341144561767578,
       "game_id": "2019_01_26_pennsylvania_saint_joseph_s",
       "home_team": "Saint Joseph's",
       "market_spread_home": -5.0,
-      "model_mu_home": -2.913747549057007,
-      "pick_cover_prob": 0.6402689445932044,
-      "pick_ev_per_1": 0.2223316214961174,
-      "pick_fair_odds": -177.98545190077274,
-      "pick_prob_edge": 0.11645942078368055,
+      "model_mu_home": -5.341144561767578,
+      "pick_cover_prob": 0.7205774997200965,
+      "pick_ev_per_1": 0.3756479540110934,
+      "pick_fair_odds": -257.8809863193833,
+      "pick_prob_edge": 0.1967679759105727,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4473952653047502,
-      "pred_sigma": 22.032955169677734,
+      "pred_home_win_prob": 0.38135615377691773,
+      "pred_sigma": 17.69053840637207,
       "start_time": "2019-01-27T00:00:00.000Z"
     },
     {
@@ -2454,7 +2454,7 @@
       "start_time": "2019-01-27T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.449275Z",
+  "generated_at": "2026-03-12T01:45:14.518194Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2026-02-13",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -262,23 +262,23 @@
     },
     {
       "away_team": "Hampton",
-      "edge_home_points": 3.3037978410720825,
+      "edge_home_points": 2.493292897939682,
       "game_id": "2026_02_13_hampton_north_carolina_a_t",
       "home_team": "North Carolina A&T",
       "market_spread_home": 2.5,
-      "model_mu_home": 0.8037978410720825,
-      "pick_cover_prob": 0.6011915394565892,
-      "pick_ev_per_1": 0.147729302598943,
-      "pick_fair_odds": -150.74693717315176,
-      "pick_prob_edge": 0.07738201564706537,
+      "model_mu_home": -0.006707102060317993,
+      "pick_cover_prob": 0.582575884564942,
+      "pick_ev_per_1": 0.11219032507852567,
+      "pick_fair_odds": -139.56450119269118,
+      "pick_prob_edge": 0.05876636075541819,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5248733786181702,
-      "pred_sigma": 12.883695602416992,
+      "pred_home_win_prob": 0.4997762557024025,
+      "pred_sigma": 11.958948135375977,
       "start_time": "2026-02-14T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:45.270305Z",
+  "generated_at": "2026-03-12T01:45:18.071828Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

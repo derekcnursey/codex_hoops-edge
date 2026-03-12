@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2021-11-29",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Norfolk State",
-      "edge_home_points": 1.7556042671203613,
+      "edge_home_points": 1.8186936378479004,
       "game_id": "2021_11_29_norfolk_state_grambling",
       "home_team": "Grambling",
       "market_spread_home": 5.5,
-      "model_mu_home": -3.7443957328796387,
-      "pick_cover_prob": 0.55598000894705,
-      "pick_ev_per_1": 0.06141638071709543,
-      "pick_fair_odds": -125.21508493989151,
-      "pick_prob_edge": 0.032170485137526184,
+      "model_mu_home": -3.6813063621520996,
+      "pick_cover_prob": 0.5653338024838401,
+      "pick_ev_per_1": 0.07927362292369478,
+      "pick_fair_odds": -130.06159800655362,
+      "pick_prob_edge": 0.041524278674316295,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.38198591896760536,
-      "pred_sigma": 12.47012996673584,
+      "pred_home_win_prob": 0.36957253556501024,
+      "pred_sigma": 11.055448532104492,
       "start_time": "2021-11-29T23:00:00.000Z"
     },
     {
@@ -364,19 +364,19 @@
     },
     {
       "away_team": "Morgan State",
-      "edge_home_points": 2.5570307970046997,
+      "edge_home_points": 1.8829317092895508,
       "game_id": "2021_11_29_morgan_state_hampton",
       "home_team": "Hampton",
       "market_spread_home": 4.5,
-      "model_mu_home": -1.9429692029953003,
-      "pick_cover_prob": 0.5957481764195769,
-      "pick_ev_per_1": 0.13733742771010127,
-      "pick_fair_odds": -147.37056004920083,
-      "pick_prob_edge": 0.07193865261005306,
+      "model_mu_home": -2.617068290710449,
+      "pick_cover_prob": 0.5721306144511054,
+      "pick_ev_per_1": 0.09224935486120112,
+      "pick_fair_odds": -133.7161839043811,
+      "pick_prob_edge": 0.04832109064158152,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4269456329815679,
-      "pred_sigma": 10.550683975219727,
+      "pred_home_win_prob": 0.40025634082586237,
+      "pred_sigma": 10.357093811035156,
       "start_time": "2021-11-30T01:30:00.000Z"
     },
     {
@@ -533,7 +533,7 @@
       "start_time": "2021-11-30T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.376421Z",
+  "generated_at": "2026-03-12T01:45:15.538961Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

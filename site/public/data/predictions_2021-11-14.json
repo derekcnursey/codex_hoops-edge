@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2021-11-14",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -11,15 +11,15 @@
       "game_id": "2021_11_14_loyola_maryland_lipscomb",
       "home_team": "Lipscomb",
       "market_spread_home": null,
-      "model_mu_home": 3.29203200340271,
+      "model_mu_home": 1.3107569217681885,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.5961179744146499,
-      "pred_sigma": 13.530109405517578,
+      "pred_home_win_prob": 0.5421388282496815,
+      "pred_sigma": 12.386248588562012,
       "start_time": "2021-11-14T15:30:00.000Z"
     },
     {
@@ -415,19 +415,19 @@
     },
     {
       "away_team": "Western Kentucky",
-      "edge_home_points": -0.7645633220672607,
+      "edge_home_points": -2.9944173097610474,
       "game_id": "2021_11_14_western_kentucky_south_carolina",
       "home_team": "South Carolina",
       "market_spread_home": -1.5,
-      "model_mu_home": 0.7354366779327393,
-      "pick_cover_prob": 0.5216521980270113,
-      "pick_ev_per_1": -0.0041185310393420105,
-      "pick_fair_odds": -109.05291001137871,
-      "pick_prob_edge": -0.002157325782512487,
+      "model_mu_home": -1.4944173097610474,
+      "pick_cover_prob": 0.5875432116927175,
+      "pick_ev_per_1": 0.12167340414064254,
+      "pick_fair_odds": -142.4496403863269,
+      "pick_prob_edge": 0.06373368788319367,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5208281051281559,
-      "pred_sigma": 14.080178260803223,
+      "pred_home_win_prob": 0.45604265512226233,
+      "pred_sigma": 13.535330772399902,
       "start_time": "2021-11-14T22:00:00.000Z"
     },
     {
@@ -551,19 +551,19 @@
     },
     {
       "away_team": "Minnesota",
-      "edge_home_points": 1.5800737738609314,
+      "edge_home_points": -2.4668259620666504,
       "game_id": "2021_11_14_minnesota_princeton",
       "home_team": "Princeton",
       "market_spread_home": 2.5,
-      "model_mu_home": -0.9199262261390686,
-      "pick_cover_prob": 0.5570755066049035,
-      "pick_ev_per_1": 0.06350778533663382,
-      "pick_fair_odds": -125.77211576962446,
-      "pick_prob_edge": 0.03326598279537962,
-      "pick_side": "HOME",
+      "model_mu_home": -4.96682596206665,
+      "pick_cover_prob": 0.591398545557348,
+      "pick_ev_per_1": 0.12903358697311895,
+      "pick_fair_odds": -144.73725903987258,
+      "pick_prob_edge": 0.06758902174782422,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4666949805624834,
-      "pred_sigma": 11.006467819213867,
+      "pred_home_win_prob": 0.32082376886313013,
+      "pred_sigma": 10.672245979309082,
       "start_time": "2021-11-15T00:30:00.000Z"
     },
     {
@@ -601,7 +601,7 @@
       "start_time": "2021-11-15T01:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.290214Z",
+  "generated_at": "2026-03-12T01:45:15.483416Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

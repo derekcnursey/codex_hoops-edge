@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2024-12-22",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -177,19 +177,19 @@
     },
     {
       "away_team": "Illinois",
-      "edge_home_points": -0.23737144470214844,
+      "edge_home_points": -1.4318256378173828,
       "game_id": "2024_12_22_illinois_missouri",
       "home_team": "Missouri",
       "market_spread_home": 3.5,
-      "model_mu_home": -3.7373714447021484,
-      "pick_cover_prob": 0.5065321129566722,
-      "pick_ev_per_1": -0.0329841479918076,
-      "pick_fair_odds": -102.64743183018865,
-      "pick_prob_edge": -0.017277410852851616,
+      "model_mu_home": -4.931825637817383,
+      "pick_cover_prob": 0.542215182399594,
+      "pick_ev_per_1": 0.03513807549013398,
+      "pick_fair_odds": -118.44324266622709,
+      "pick_prob_edge": 0.01840565859007015,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3982765308027518,
-      "pred_sigma": 14.496576309204102,
+      "pred_home_win_prob": 0.35749413271076136,
+      "pred_sigma": 13.505746841430664,
       "start_time": "2024-12-22T18:00:00.000Z"
     },
     {
@@ -415,19 +415,19 @@
     },
     {
       "away_team": "Oregon State",
-      "edge_home_points": 0.8885173797607422,
+      "edge_home_points": -0.0952444076538086,
       "game_id": "2024_12_22_oregon_state_charleston",
       "home_team": "Charleston",
       "market_spread_home": 6.5,
-      "model_mu_home": -5.611482620239258,
-      "pick_cover_prob": 0.5311309127793691,
-      "pick_ev_per_1": 0.013977197124250051,
-      "pick_fair_odds": -113.2791491816649,
-      "pick_prob_edge": 0.007321388969845244,
-      "pick_side": "HOME",
+      "model_mu_home": -6.595244407653809,
+      "pick_cover_prob": 0.5031926759944194,
+      "pick_ev_per_1": -0.03935943673792658,
+      "pick_fair_odds": -101.28527734602541,
+      "pick_prob_edge": -0.020616847815104422,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.31089074858495946,
-      "pred_sigma": 11.374771118164062,
+      "pred_home_win_prob": 0.2897322079279938,
+      "pred_sigma": 11.9011812210083,
       "start_time": "2024-12-22T20:00:00.000Z"
     },
     {
@@ -704,19 +704,19 @@
     },
     {
       "away_team": "Loyola Chicago",
-      "edge_home_points": -1.542215347290039,
+      "edge_home_points": -2.2775192260742188,
       "game_id": "2024_12_22_loyola_chicago_oakland",
       "home_team": "Oakland",
       "market_spread_home": 6.5,
-      "model_mu_home": -8.042215347290039,
-      "pick_cover_prob": 0.5520461230817377,
-      "pick_ev_per_1": 0.05390623497422653,
-      "pick_fair_odds": -123.23726872944758,
-      "pick_prob_edge": 0.02823659927221389,
+      "model_mu_home": -8.777519226074219,
+      "pick_cover_prob": 0.5704291267438312,
+      "pick_ev_per_1": 0.08900106014731402,
+      "pick_fair_odds": -132.79045723466996,
+      "pick_prob_edge": 0.046619602934307336,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.24753894191473869,
-      "pred_sigma": 11.787701606750488,
+      "pred_home_win_prob": 0.24700213400914084,
+      "pred_sigma": 12.833495140075684,
       "start_time": "2024-12-22T22:00:00.000Z"
     },
     {
@@ -789,19 +789,19 @@
     },
     {
       "away_team": "Nebraska",
-      "edge_home_points": 2.6569466590881348,
+      "edge_home_points": 1.5102949142456055,
       "game_id": "2024_12_22_nebraska_murray_state",
       "home_team": "Murray State",
       "market_spread_home": 7.5,
-      "model_mu_home": -4.843053340911865,
-      "pick_cover_prob": 0.5831476216558377,
-      "pick_ev_per_1": 0.11328182316114466,
-      "pick_fair_odds": -139.89307772987644,
-      "pick_prob_edge": 0.05933809784631383,
+      "model_mu_home": -5.9897050857543945,
+      "pick_cover_prob": 0.5471486472489611,
+      "pick_ev_per_1": 0.04455650838438019,
+      "pick_fair_odds": -120.82301265637673,
+      "pick_prob_edge": 0.023339123439437226,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.35097144144084075,
-      "pred_sigma": 12.654990196228027,
+      "pred_home_win_prob": 0.31924716990460544,
+      "pred_sigma": 12.749342918395996,
       "start_time": "2024-12-23T02:00:00.000Z"
     },
     {
@@ -822,7 +822,7 @@
       "start_time": "2024-12-23T04:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.386717Z",
+  "generated_at": "2026-03-12T01:45:17.441548Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

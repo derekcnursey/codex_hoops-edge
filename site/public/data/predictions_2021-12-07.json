@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2021-12-07",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -296,19 +296,19 @@
     },
     {
       "away_team": "Texas Tech",
-      "edge_home_points": -2.099096655845642,
+      "edge_home_points": -1.372493028640747,
       "game_id": "2021_12_07_texas_tech_tennessee",
       "home_team": "Tennessee",
       "market_spread_home": -4.0,
-      "model_mu_home": 1.900903344154358,
-      "pick_cover_prob": 0.5736698171757119,
-      "pick_ev_per_1": 0.09518783278999532,
-      "pick_fair_odds": -134.55998197813494,
-      "pick_prob_edge": 0.049860293366188024,
+      "model_mu_home": 2.627506971359253,
+      "pick_cover_prob": 0.5461143384107187,
+      "pick_ev_per_1": 0.042581918784099226,
+      "pick_fair_odds": -120.31980400052701,
+      "pick_prob_edge": 0.022304814601194822,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5667827858666632,
-      "pred_sigma": 11.30217170715332,
+      "pred_home_win_prob": 0.5877589878561702,
+      "pred_sigma": 11.847143173217773,
       "start_time": "2021-12-08T00:00:00.000Z"
     },
     {
@@ -704,23 +704,23 @@
     },
     {
       "away_team": "Villanova",
-      "edge_home_points": -0.8412113189697266,
+      "edge_home_points": -2.691577911376953,
       "game_id": "2021_12_07_villanova_syracuse",
       "home_team": "Syracuse",
       "market_spread_home": 8.5,
-      "model_mu_home": -9.341211318969727,
-      "pick_cover_prob": 0.5268642422713796,
-      "pick_ev_per_1": 0.005831735245361069,
-      "pick_fair_odds": -111.35582835689554,
-      "pick_prob_edge": 0.0030547184618557877,
+      "model_mu_home": -11.191577911376953,
+      "pick_cover_prob": 0.5892317832341367,
+      "pick_ev_per_1": 0.12489704071971552,
+      "pick_fair_odds": -143.44629384264098,
+      "pick_prob_edge": 0.06542225942461288,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.22713156526290906,
-      "pred_sigma": 12.48279857635498,
+      "pred_home_win_prob": 0.17414357806794517,
+      "pred_sigma": 11.932377815246582,
       "start_time": "2021-12-08T03:01:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:42.413576Z",
+  "generated_at": "2026-03-12T01:45:15.567633Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

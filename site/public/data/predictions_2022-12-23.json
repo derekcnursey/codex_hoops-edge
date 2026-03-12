@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-12-23",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -41,19 +41,19 @@
     },
     {
       "away_team": "Iona",
-      "edge_home_points": 3.542046070098877,
+      "edge_home_points": 4.45079231262207,
       "game_id": "2022_12_23_iona_seattle_u",
       "home_team": "Seattle U",
       "market_spread_home": 8.5,
-      "model_mu_home": -4.957953929901123,
-      "pick_cover_prob": 0.6332572491203472,
-      "pick_ev_per_1": 0.2089456574115719,
-      "pick_fair_odds": -172.6706929043436,
-      "pick_prob_edge": 0.10944772531082336,
+      "model_mu_home": -4.04920768737793,
+      "pick_cover_prob": 0.6612562952585426,
+      "pick_ev_per_1": 0.26239838185721764,
+      "pick_fair_odds": -195.20843812086176,
+      "pick_prob_edge": 0.13744677144901873,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3168226795037806,
-      "pred_sigma": 10.40270709991455,
+      "pred_home_win_prob": 0.35257822733462635,
+      "pred_sigma": 10.701741218566895,
       "start_time": "2022-12-23T21:30:00.000Z"
     },
     {
@@ -92,36 +92,36 @@
     },
     {
       "away_team": "SMU",
-      "edge_home_points": 3.324589729309082,
+      "edge_home_points": 1.2016382217407227,
       "game_id": "2022_12_23_smu_utah_state",
       "home_team": "Utah State",
       "market_spread_home": -12.5,
-      "model_mu_home": 15.824589729309082,
-      "pick_cover_prob": 0.6091538415162437,
-      "pick_ev_per_1": 0.16293006107646535,
-      "pick_fair_odds": -155.8551435888196,
-      "pick_prob_edge": 0.08534431770671991,
+      "model_mu_home": 13.701638221740723,
+      "pick_cover_prob": 0.540363811658392,
+      "pick_ev_per_1": 0.031603640438748304,
+      "pick_fair_odds": -117.56337411291604,
+      "pick_prob_edge": 0.016554287848868143,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.9064198061714992,
-      "pred_sigma": 11.997177124023438,
+      "pred_home_win_prob": 0.8760864862884887,
+      "pred_sigma": 11.856285095214844,
       "start_time": "2022-12-24T00:00:00.000Z"
     },
     {
       "away_team": "George Washington",
-      "edge_home_points": -1.1551947593688965,
+      "edge_home_points": -1.1529173851013184,
       "game_id": "2022_12_23_george_washington_pepperdine",
       "home_team": "Pepperdine",
       "market_spread_home": -3.5,
-      "model_mu_home": 2.3448052406311035,
-      "pick_cover_prob": 0.540287086255476,
-      "pick_ev_per_1": 0.03145716466954496,
-      "pick_fair_odds": -117.52706310872296,
-      "pick_prob_edge": 0.01647756244595211,
+      "model_mu_home": 2.3470826148986816,
+      "pick_cover_prob": 0.5400111776481993,
+      "pick_ev_per_1": 0.030930430055653158,
+      "pick_fair_odds": -117.39658691862674,
+      "pick_prob_edge": 0.016201653838675445,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.581341944779656,
-      "pred_sigma": 11.419819831848145,
+      "pred_home_win_prob": 0.5810256279657725,
+      "pred_sigma": 11.476167678833008,
       "start_time": "2022-12-24T03:00:00.000Z"
     },
     {
@@ -142,7 +142,7 @@
       "start_time": "2022-12-24T04:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.186676Z",
+  "generated_at": "2026-03-12T01:45:16.302257Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

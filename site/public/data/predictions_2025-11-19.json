@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2025-11-19",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -755,19 +755,19 @@
     },
     {
       "away_team": "Alabama",
-      "edge_home_points": 6.011673927307129,
+      "edge_home_points": 1.4596459865570068,
       "game_id": "2025_11_19_alabama_illinois",
       "home_team": "Illinois",
       "market_spread_home": -2.5,
-      "model_mu_home": 8.511673927307129,
-      "pick_cover_prob": 0.7211880587130619,
-      "pick_ev_per_1": 0.3768135666340272,
-      "pick_fair_odds": -258.6646954159163,
-      "pick_prob_edge": 0.19737853490353807,
+      "model_mu_home": 3.959645986557007,
+      "pick_cover_prob": 0.5578738146379079,
+      "pick_ev_per_1": 0.06503182794509677,
+      "pick_fair_odds": -126.1797724513921,
+      "pick_prob_edge": 0.034064290828384025,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.796793572874118,
-      "pred_sigma": 10.252277374267578,
+      "pred_home_win_prob": 0.653550251960486,
+      "pred_sigma": 10.0263671875,
       "start_time": "2025-11-20T02:15:00.000Z"
     },
     {
@@ -856,7 +856,7 @@
       "start_time": "2025-11-20T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:44.868949Z",
+  "generated_at": "2026-03-12T01:45:17.811729Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

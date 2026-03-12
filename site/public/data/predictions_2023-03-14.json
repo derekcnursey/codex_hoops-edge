@@ -1,25 +1,25 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2023-03-14",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Southeast Missouri State",
-      "edge_home_points": 2.620572090148926,
+      "edge_home_points": -0.3059704303741455,
       "game_id": "2023_03_14_southeast_missouri_state_texas_a_m_corpus_christi",
       "home_team": "Texas A&M-Corpus Christi",
       "market_spread_home": -3.5,
-      "model_mu_home": 6.120572090148926,
-      "pick_cover_prob": 0.5872264909339856,
-      "pick_ev_per_1": 0.12106875541942708,
-      "pick_fair_odds": -142.26360898564135,
-      "pick_prob_edge": 0.06341696712446176,
-      "pick_side": "HOME",
+      "model_mu_home": 3.1940295696258545,
+      "pick_cover_prob": 0.5118664489531215,
+      "pick_ev_per_1": -0.02280041563494989,
+      "pick_fair_odds": -104.86196817558312,
+      "pick_prob_edge": -0.011943074856402336,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6966539836260996,
-      "pred_sigma": 11.889198303222656,
+      "pred_home_win_prob": 0.6219293642355082,
+      "pred_sigma": 10.285009384155273,
       "start_time": "2023-03-14T22:40:00.000Z"
     },
     {
@@ -126,19 +126,19 @@
     },
     {
       "away_team": "Pittsburgh",
-      "edge_home_points": 2.6026673316955566,
+      "edge_home_points": 0.42969417572021484,
       "game_id": "2023_03_14_pittsburgh_mississippi_state",
       "home_team": "Mississippi State",
       "market_spread_home": -2.5,
-      "model_mu_home": 5.102667331695557,
-      "pick_cover_prob": 0.6002950988186072,
-      "pick_ev_per_1": 0.14601791592643187,
-      "pick_fair_odds": -150.1845729297633,
-      "pick_prob_edge": 0.07648557500908337,
+      "model_mu_home": 2.929694175720215,
+      "pick_cover_prob": 0.5155750579544706,
+      "pick_ev_per_1": -0.015720343905101686,
+      "pick_fair_odds": -106.4303286650367,
+      "pick_prob_edge": -0.008234465855053275,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6908277891446744,
-      "pred_sigma": 10.2422456741333,
+      "pred_home_win_prob": 0.60497741155841,
+      "pred_sigma": 11.00346565246582,
       "start_time": "2023-03-15T01:34:00.000Z"
     },
     {
@@ -176,7 +176,7 @@
       "start_time": "2023-03-15T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.509754Z",
+  "generated_at": "2026-03-12T01:45:16.788854Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2022-12-02",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -330,19 +330,19 @@
     },
     {
       "away_team": "Baylor",
-      "edge_home_points": -2.044949382543564,
+      "edge_home_points": -2.5220221132040024,
       "game_id": "2022_12_02_baylor_gonzaga",
       "home_team": "Gonzaga",
       "market_spread_home": -2.5,
-      "model_mu_home": 0.45505061745643616,
-      "pick_cover_prob": 0.5669464933270976,
-      "pick_ev_per_1": 0.08235239635173175,
-      "pick_fair_odds": -130.91834717674467,
-      "pick_prob_edge": 0.04313696951757373,
+      "model_mu_home": -0.02202211320400238,
+      "pick_cover_prob": 0.5832934889946222,
+      "pick_ev_per_1": 0.11356029717155147,
+      "pick_fair_odds": -139.97705185535114,
+      "pick_prob_edge": 0.05948396518509835,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5149643161364695,
-      "pred_sigma": 12.128609657287598,
+      "pred_home_win_prob": 0.4992673214585164,
+      "pred_sigma": 11.990998268127441,
       "start_time": "2022-12-03T01:00:00.000Z"
     },
     {
@@ -431,7 +431,7 @@
       "start_time": "2022-12-03T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:43.097966Z",
+  "generated_at": "2026-03-12T01:45:16.208391Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

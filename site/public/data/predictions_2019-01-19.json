@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
   "date": "2019-01-19",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026"
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -1605,19 +1605,19 @@
     },
     {
       "away_team": "Alabama State",
-      "edge_home_points": -1.3532676696777344,
+      "edge_home_points": -3.241140842437744,
       "game_id": "2019_01_19_alabama_state_alabama_a_m",
       "home_team": "Alabama A&M",
       "market_spread_home": 1.0,
-      "model_mu_home": -2.3532676696777344,
-      "pick_cover_prob": 0.5472910168032371,
-      "pick_ev_per_1": 0.04482830480617994,
-      "pick_fair_odds": -120.89245787406114,
-      "pick_prob_edge": 0.02348149299371327,
+      "model_mu_home": -4.241140842437744,
+      "pick_cover_prob": 0.6190697071864125,
+      "pick_ev_per_1": 0.18186035008315116,
+      "pick_fair_odds": -162.5152209906712,
+      "pick_prob_edge": 0.09526018337688869,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.41815242832354527,
-      "pred_sigma": 11.389225006103516,
+      "pred_home_win_prob": 0.3458548759398539,
+      "pred_sigma": 10.695478439331055,
       "start_time": "2019-01-19T23:00:00.000Z"
     },
     {
@@ -2556,7 +2556,7 @@
       "start_time": "2019-01-20T04:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-11T19:50:41.417854Z",
+  "generated_at": "2026-03-12T01:45:14.492691Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",

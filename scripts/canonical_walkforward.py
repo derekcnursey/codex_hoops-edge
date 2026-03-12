@@ -210,6 +210,101 @@ def _prepare_point_data(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
     return X, y
 
 
+def _neutral_mask(df: pd.DataFrame) -> np.ndarray:
+    if "neutral_site" in df.columns:
+        return df["neutral_site"].fillna(0).astype(float).to_numpy() == 1.0
+    if "neutralSite" in df.columns:
+        return df["neutralSite"].fillna(0).astype(float).to_numpy() == 1.0
+    return np.zeros(len(df), dtype=bool)
+
+
+def _swap_feature_frame(feature_df: pd.DataFrame, feature_order: list[str]) -> pd.DataFrame:
+    swapped = feature_df[feature_order].copy()
+    used: set[str] = set()
+    explicit_pairs = [
+        ("home_opp_ft_rate", "away_def_ft_rate"),
+        ("home_team_efg_home_split", "away_team_efg_away_split"),
+    ]
+    for left, right in explicit_pairs:
+        if left in swapped.columns and right in swapped.columns:
+            tmp = swapped[left].copy()
+            swapped[left] = swapped[right]
+            swapped[right] = tmp
+            used.add(left)
+            used.add(right)
+
+    for col in feature_order:
+        if col in used:
+            continue
+        if col.startswith("home_"):
+            other = "away_" + col[len("home_") :]
+            if other in swapped.columns:
+                tmp = swapped[col].copy()
+                swapped[col] = swapped[other]
+                swapped[other] = tmp
+                used.add(col)
+                used.add(other)
+
+    if "rest_advantage" in swapped.columns:
+        swapped["rest_advantage"] = -swapped["rest_advantage"]
+    if "home_team_hca" in swapped.columns:
+        swapped["home_team_hca"] = 0.0
+    if "neutral_site" in swapped.columns:
+        swapped["neutral_site"] = 1.0
+
+    return swapped
+
+
+def _symmetrize_neutral_margin(
+    test_df: pd.DataFrame,
+    pred_margin: np.ndarray,
+    predict_swapped_margin: callable,
+) -> np.ndarray:
+    neutral_mask = _neutral_mask(test_df)
+    if not neutral_mask.any():
+        return pred_margin.astype(np.float32)
+
+    neutral_idx = np.flatnonzero(neutral_mask)
+    feature_df = get_feature_matrix(test_df.iloc[neutral_idx]).copy()
+    swapped_feature_df = _swap_feature_frame(feature_df, list(feature_df.columns))
+    pred_swap = np.asarray(predict_swapped_margin(swapped_feature_df), dtype=np.float32)
+
+    out = pred_margin.astype(np.float32).copy()
+    out[neutral_idx] = (out[neutral_idx] - pred_swap) / 2.0
+    return out
+
+
+def _symmetrize_neutral_gaussian(
+    test_df: pd.DataFrame,
+    pred_margin: np.ndarray,
+    sigma: np.ndarray,
+    predict_swapped_gaussian: callable,
+) -> tuple[np.ndarray, np.ndarray]:
+    neutral_mask = _neutral_mask(test_df)
+    if not neutral_mask.any():
+        return pred_margin.astype(np.float32), sigma.astype(np.float32)
+
+    neutral_idx = np.flatnonzero(neutral_mask)
+    feature_df = get_feature_matrix(test_df.iloc[neutral_idx]).copy()
+    swapped_feature_df = _swap_feature_frame(feature_df, list(feature_df.columns))
+    pred_swap, sigma_swap = predict_swapped_gaussian(swapped_feature_df)
+    pred_swap = np.asarray(pred_swap, dtype=np.float32)
+    sigma_swap = np.asarray(sigma_swap, dtype=np.float32)
+
+    mu_out = pred_margin.astype(np.float32).copy()
+    sigma_out = sigma.astype(np.float32).copy()
+
+    mu_orig = mu_out[neutral_idx].copy()
+    sigma_orig = sigma_out[neutral_idx].copy()
+    mu_out[neutral_idx] = (mu_orig - pred_swap) / 2.0
+    sigma_var = (
+        0.5 * (sigma_orig ** 2 + sigma_swap ** 2)
+        + ((mu_orig + pred_swap) ** 2) / 4.0
+    )
+    sigma_out[neutral_idx] = np.sqrt(np.maximum(sigma_var, 0.25)).astype(np.float32)
+    return mu_out, sigma_out
+
+
 def _line_selection_metadata() -> dict[str, object]:
     return {
         "benchmark_label": BOOK_BENCHMARK_LABEL,
@@ -354,7 +449,15 @@ def _predict_ridge(train_df: pd.DataFrame, test_df: pd.DataFrame) -> np.ndarray:
     X_test_scaled = scaler.transform(X_test)
     model = Ridge(alpha=RIDGE_ALPHA)
     model.fit(X_train_scaled, y_train)
-    return model.predict(X_test_scaled).astype(np.float32)
+    pred = model.predict(X_test_scaled).astype(np.float32)
+
+    def _predict_swapped(swapped_feature_df: pd.DataFrame) -> np.ndarray:
+        X_swap_raw = swapped_feature_df.values.astype(np.float32)
+        X_swap = _apply_impute_means(X_swap_raw, means)
+        X_swap_scaled = scaler.transform(X_swap)
+        return model.predict(X_swap_scaled).astype(np.float32)
+
+    return _symmetrize_neutral_margin(test_df, pred, _predict_swapped)
 
 
 def _predict_hgbr(train_df: pd.DataFrame, test_df: pd.DataFrame) -> np.ndarray:
@@ -365,7 +468,14 @@ def _predict_hgbr(train_df: pd.DataFrame, test_df: pd.DataFrame) -> np.ndarray:
     X_test = _apply_impute_means(X_test_raw, means)
     model = HistGradientBoostingRegressor(**HGBR_PARAMS)
     model.fit(X_train, y_train)
-    return model.predict(X_test).astype(np.float32)
+    pred = model.predict(X_test).astype(np.float32)
+
+    def _predict_swapped(swapped_feature_df: pd.DataFrame) -> np.ndarray:
+        X_swap_raw = swapped_feature_df.values.astype(np.float32)
+        X_swap = _apply_impute_means(X_swap_raw, means)
+        return model.predict(X_swap).astype(np.float32)
+
+    return _symmetrize_neutral_margin(test_df, pred, _predict_swapped)
 
 
 def _predict_lightgbm(train_df: pd.DataFrame, test_df: pd.DataFrame) -> tuple[np.ndarray, int]:
@@ -390,8 +500,15 @@ def _predict_lightgbm(train_df: pd.DataFrame, test_df: pd.DataFrame) -> tuple[np
     )
 
     best_iteration = int(model.best_iteration_ or LGBM_PARAMS["n_estimators"])
-    pred = model.predict(X_test, num_iteration=best_iteration)
-    return pred.astype(np.float32), best_iteration
+    pred = model.predict(X_test, num_iteration=best_iteration).astype(np.float32)
+
+    def _predict_swapped(swapped_feature_df: pd.DataFrame) -> np.ndarray:
+        X_swap_raw = swapped_feature_df.values.astype(np.float32)
+        X_swap = _apply_impute_means(X_swap_raw, means)
+        return model.predict(X_swap, num_iteration=best_iteration).astype(np.float32)
+
+    pred = _symmetrize_neutral_margin(test_df, pred, _predict_swapped)
+    return pred, best_iteration
 
 
 def _train_temporal_mlp(train_df: pd.DataFrame) -> tuple[MLPRegressor, np.ndarray, StandardScaler, int]:
@@ -484,7 +601,24 @@ def _predict_mlp(train_df: pd.DataFrame, test_df: pd.DataFrame) -> tuple[np.ndar
         mu_t, log_sigma_t = model(X_test_t)
         sigma_t = torch.exp(log_sigma_t).clamp(min=0.5, max=30.0)
 
-    return mu_t.numpy().astype(np.float32), sigma_t.numpy().astype(np.float32), best_epoch
+    pred = mu_t.numpy().astype(np.float32)
+    sigma = sigma_t.numpy().astype(np.float32)
+
+    def _predict_swapped(swapped_feature_df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
+        X_swap_raw = swapped_feature_df.values.astype(np.float32)
+        X_swap = _apply_impute_means(X_swap_raw, means)
+        X_swap_scaled = scaler.transform(X_swap).astype(np.float32)
+        X_swap_t = torch.tensor(X_swap_scaled, dtype=torch.float32)
+        with torch.no_grad():
+            mu_swap_t, log_sigma_swap_t = model(X_swap_t)
+            sigma_swap_t = torch.exp(log_sigma_swap_t).clamp(min=0.5, max=30.0)
+        return (
+            mu_swap_t.numpy().astype(np.float32),
+            sigma_swap_t.numpy().astype(np.float32),
+        )
+
+    pred, sigma = _symmetrize_neutral_gaussian(test_df, pred, sigma, _predict_swapped)
+    return pred, sigma, best_epoch
 
 
 def _build_prediction_frame(
