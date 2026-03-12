@@ -1,9 +1,7 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
-  "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
-  ],
-  "mu_model": "HistGradientBoosting",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
+  "extra_benchmark_dirs": [],
+  "mu_model": "LightGBMRegressionL2Blend",
   "sigma_model": "CurrentMLP",
   "sigma_mode": "raw",
   "dates_written": 974,

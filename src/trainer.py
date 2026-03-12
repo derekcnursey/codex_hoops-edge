@@ -5,6 +5,7 @@ from __future__ import annotations
 import pickle
 from pathlib import Path
 
+import lightgbm as lgb
 import numpy as np
 import torch
 import torch.nn as nn
@@ -64,32 +65,52 @@ def train_hist_gradient_boosting_regressor(
     return model
 
 
+def train_lightgbm_regressor(
+    X_train: np.ndarray,
+    y_spread: np.ndarray,
+    hparams: dict | None = None,
+) -> lgb.LGBMRegressor:
+    """Train the promoted LightGBM L2 point regressor."""
+    hp = {**config.LGBM_REG_L2_PARAMS, **(hparams or {})}
+    model = lgb.LGBMRegressor(**hp)
+    model.fit(X_train, y_spread)
+    return model
+
+
 def save_tree_regressor(
-    model: HistGradientBoostingRegressor,
+    model,
     path: Path | None = None,
     feature_order: list[str] | None = None,
     hparams: dict | None = None,
+    model_type: str | None = None,
 ) -> Path:
     """Persist the production tree mu regressor with feature metadata."""
     out_path = path or config.TREE_REGRESSOR_PATH
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    inferred_model_type = model_type
+    if inferred_model_type is None:
+        inferred_model_type = "lightgbm" if isinstance(model, lgb.LGBMRegressor) else "hist_gradient_boosting"
+    default_hparams = config.LGBM_REG_L2_PARAMS if inferred_model_type == "lightgbm" else config.HGBR_PARAMS
     payload = {
         "model": model,
         "feature_order": feature_order or config.FEATURE_ORDER,
-        "model_type": "hist_gradient_boosting",
-        "hparams": hparams or config.HGBR_PARAMS,
+        "model_type": inferred_model_type,
+        "hparams": hparams or default_hparams,
     }
     with open(out_path, "wb") as f:
         pickle.dump(payload, f)
     return out_path
 
 
-def load_tree_regressor(path: Path | None = None) -> tuple[HistGradientBoostingRegressor, list[str], dict]:
+def load_tree_regressor(path: Path | None = None) -> tuple[object, list[str], dict]:
     """Load the production tree mu regressor if present."""
     in_path = path or config.TREE_REGRESSOR_PATH
     with open(in_path, "rb") as f:
         payload = pickle.load(f)
-    return payload["model"], payload["feature_order"], payload.get("hparams", {})
+    return payload["model"], payload["feature_order"], {
+        **payload.get("hparams", {}),
+        "model_type": payload.get("model_type", "hist_gradient_boosting"),
+    }
 
 
 def _get_device() -> torch.device:

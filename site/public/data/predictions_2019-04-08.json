@@ -1,35 +1,31 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
   "date": "2019-04-08",
-  "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
-  ],
+  "extra_benchmark_dirs": [],
   "games": [
     {
       "away_team": "Texas Tech",
-      "edge_home_points": -1.929357647895813,
+      "edge_home_points": -1.5489025712013245,
       "game_id": "2019_04_08_texas_tech_virginia",
       "home_team": "Virginia",
       "market_spread_home": -1.5,
-      "model_mu_home": -0.429357647895813,
-      "pick_cover_prob": 0.5635241821005469,
-      "pick_ev_per_1": 0.07581889310104406,
-      "pick_fair_odds": -129.1077670264795,
-      "pick_prob_edge": 0.03971465829102305,
+      "model_mu_home": -0.04890257120132446,
+      "pick_cover_prob": 0.5510747912249885,
+      "pick_ev_per_1": 0.05205187415679613,
+      "pick_fair_odds": -122.7542540390445,
+      "pick_prob_edge": 0.027265267415464645,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4858061029583853,
+      "pred_home_win_prob": 0.49838302014656405,
       "pred_sigma": 12.065239906311035,
       "start_time": "2019-04-09T01:20:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T15:18:44.759244Z",
-  "mu_model": "HistGradientBoosting",
+  "generated_at": "2026-03-12T18:15:19.931334Z",
+  "mu_model": "LightGBMRegressionL2Blend",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
   "source": "true_walkforward_historical",
-  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
-  "torvik_extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
-  ]
+  "torvik_benchmark_dir": null,
+  "torvik_extra_benchmark_dirs": []
 }

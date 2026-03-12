@@ -1,52 +1,48 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
   "date": "2023-04-01",
-  "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
-  ],
+  "extra_benchmark_dirs": [],
   "games": [
     {
       "away_team": "Florida Atlantic",
-      "edge_home_points": -1.9578863978385925,
+      "edge_home_points": -1.0032870769500732,
       "game_id": "2023_04_01_florida_atlantic_san_diego_state",
       "home_team": "San Diego State",
       "market_spread_home": -2.5,
-      "model_mu_home": 0.5421136021614075,
-      "pick_cover_prob": 0.5669803560208044,
-      "pick_ev_per_1": 0.08241704331244482,
-      "pick_fair_odds": -130.93640528881986,
-      "pick_prob_edge": 0.043170832211280596,
+      "model_mu_home": 1.4967129230499268,
+      "pick_cover_prob": 0.5344429584135911,
+      "pick_ev_per_1": 0.020300193335037575,
+      "pick_fair_odds": -114.79645041828819,
+      "pick_prob_edge": 0.010633434604067293,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5186272285785886,
+      "pred_home_win_prob": 0.5513040872307826,
       "pred_sigma": 11.606311798095703,
       "start_time": "2023-04-01T22:09:00.000Z"
     },
     {
       "away_team": "Miami",
-      "edge_home_points": 0.7027568817138672,
+      "edge_home_points": 1.1710057258605957,
       "game_id": "2023_04_01_miami_uconn",
       "home_team": "UConn",
       "market_spread_home": -5.5,
-      "model_mu_home": 6.202756881713867,
-      "pick_cover_prob": 0.5237174649022763,
-      "pick_ev_per_1": -0.00017574882292703542,
-      "pick_fair_odds": -109.9594098689384,
-      "pick_prob_edge": -9.205890724750532e-05,
+      "model_mu_home": 6.671005725860596,
+      "pick_cover_prob": 0.5394791279114735,
+      "pick_ev_per_1": 0.029914698740085677,
+      "pick_fair_odds": -117.14542393374272,
+      "pick_prob_edge": 0.01566960410194962,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7002229514233411,
+      "pred_home_win_prob": 0.7138534269177694,
       "pred_sigma": 11.813833236694336,
       "start_time": "2023-04-02T01:16:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T15:18:46.203446Z",
-  "mu_model": "HistGradientBoosting",
+  "generated_at": "2026-03-12T18:15:21.319407Z",
+  "mu_model": "LightGBMRegressionL2Blend",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
   "source": "true_walkforward_historical",
-  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
-  "torvik_extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
-  ]
+  "torvik_benchmark_dir": null,
+  "torvik_extra_benchmark_dirs": []
 }

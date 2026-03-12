@@ -120,8 +120,8 @@ def load_mu_regressor() -> tuple[object, list[str], str]:
     """
     tree_path = config.TREE_REGRESSOR_PATH
     if tree_path.exists():
-        model, feature_order, _ = load_tree_regressor(tree_path)
-        return model, feature_order, "hist_gradient_boosting"
+        model, feature_order, meta = load_tree_regressor(tree_path)
+        return model, feature_order, meta.get("model_type", "hist_gradient_boosting")
 
     regressor, _, feature_order, _ = load_regressor()
     return regressor, feature_order, "mlp"
@@ -132,8 +132,8 @@ def load_torvik_mu_regressor() -> tuple[object, list[str], str] | None:
     tree_path = config.TORVIK_TREE_REGRESSOR_PATH
     if not tree_path.exists():
         return None
-    model, feature_order, _ = load_tree_regressor(tree_path)
-    return model, feature_order, "hist_gradient_boosting"
+    model, feature_order, meta = load_tree_regressor(tree_path)
+    return model, feature_order, meta.get("model_type", "hist_gradient_boosting")
 
 
 def _swap_feature_frame(features_df: pd.DataFrame, feature_order: list[str]) -> pd.DataFrame:
@@ -195,7 +195,7 @@ def _fill_nan_with_scaler_means(X_df: pd.DataFrame, scaler) -> np.ndarray:
 
 def _predict_mu_values(mu_regressor: object, mu_model_type: str, X_raw: np.ndarray, X_scaled: np.ndarray) -> np.ndarray:
     """Run the configured mean model on raw/scaled features."""
-    if mu_model_type == "hist_gradient_boosting":
+    if mu_model_type != "mlp":
         return mu_regressor.predict(X_raw).astype(np.float32)
     X_tensor = torch.tensor(X_scaled, dtype=torch.float32)
     mu_raw, _ = mu_regressor(X_tensor)

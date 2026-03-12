@@ -1,35 +1,31 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
   "date": "2019-03-18",
-  "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
-  ],
+  "extra_benchmark_dirs": [],
   "games": [
     {
       "away_team": "Quinnipiac",
-      "edge_home_points": -1.1807284355163574,
+      "edge_home_points": -0.2234816551208496,
       "game_id": "2019_03_18_quinnipiac_njit",
       "home_team": "NJIT",
       "market_spread_home": -5.5,
-      "model_mu_home": 4.319271564483643,
-      "pick_cover_prob": 0.5473345598678374,
-      "pick_ev_per_1": 0.04491143247496232,
-      "pick_fair_odds": -120.91370609340856,
-      "pick_prob_edge": 0.023525036058313575,
+      "model_mu_home": 5.27651834487915,
+      "pick_cover_prob": 0.5089795869290838,
+      "pick_ev_per_1": -0.028311697680839965,
+      "pick_fair_odds": -103.65752082400167,
+      "pick_prob_edge": -0.014829936880439987,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.668241450591069,
+      "pred_home_win_prob": 0.7024575866931876,
       "pred_sigma": 9.927934646606445,
       "start_time": "2019-03-18T23:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T15:18:44.708331Z",
-  "mu_model": "HistGradientBoosting",
+  "generated_at": "2026-03-12T18:15:19.879310Z",
+  "mu_model": "LightGBMRegressionL2Blend",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
   "source": "true_walkforward_historical",
-  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
-  "torvik_extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
-  ]
+  "torvik_benchmark_dir": null,
+  "torvik_extra_benchmark_dirs": []
 }

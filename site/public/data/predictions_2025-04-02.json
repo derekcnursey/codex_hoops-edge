@@ -1,52 +1,48 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
   "date": "2025-04-02",
-  "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
-  ],
+  "extra_benchmark_dirs": [],
   "games": [
     {
       "away_team": "Butler",
-      "edge_home_points": -8.71543663740158,
+      "edge_home_points": -8.360888004302979,
       "game_id": "2025_04_02_butler_boise_state",
       "home_team": "Boise State",
       "market_spread_home": -9.5,
-      "model_mu_home": 0.7845633625984192,
-      "pick_cover_prob": 0.7569133359587735,
-      "pick_ev_per_1": 0.44501636864856764,
-      "pick_fair_odds": -311.3759197544478,
-      "pick_prob_edge": 0.2331038121492497,
+      "model_mu_home": 1.1391119956970215,
+      "pick_cover_prob": 0.7479580307779837,
+      "pick_ev_per_1": 0.42791987693978706,
+      "pick_fair_odds": -296.75931873041736,
+      "pick_prob_edge": 0.2241485069684599,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5249935715444569,
+      "pred_home_win_prob": 0.5362620018882367,
       "pred_sigma": 12.51484203338623,
       "start_time": "2025-04-02T23:00:00.000Z"
     },
     {
       "away_team": "Nebraska",
-      "edge_home_points": 9.674949884414673,
+      "edge_home_points": 7.576159715652466,
       "game_id": "2025_04_02_nebraska_georgetown",
       "home_team": "Georgetown",
       "market_spread_home": 9.5,
-      "model_mu_home": 0.17494988441467285,
-      "pick_cover_prob": 0.796113724571019,
-      "pick_ev_per_1": 0.5198534741810363,
-      "pick_fair_odds": -390.4695021261138,
-      "pick_prob_edge": 0.2723042007614952,
+      "model_mu_home": -1.9238402843475342,
+      "pick_cover_prob": 0.7415853208670278,
+      "pick_ev_per_1": 0.4157537943825076,
+      "pick_fair_odds": -286.9749208346755,
+      "pick_prob_edge": 0.21777579705750394,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5059716535022468,
+      "pred_home_win_prob": 0.43462549577918397,
       "pred_sigma": 11.687265396118164,
       "start_time": "2025-04-03T01:39:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T15:18:47.181711Z",
-  "mu_model": "HistGradientBoosting",
+  "generated_at": "2026-03-12T18:15:22.262031Z",
+  "mu_model": "LightGBMRegressionL2Blend",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
   "source": "true_walkforward_historical",
-  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
-  "torvik_extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
-  ]
+  "torvik_benchmark_dir": null,
+  "torvik_extra_benchmark_dirs": []
 }

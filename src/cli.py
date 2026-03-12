@@ -178,7 +178,7 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
         impute_column_means,
         save_checkpoint,
         save_tree_regressor,
-        train_hist_gradient_boosting_regressor,
+        train_lightgbm_regressor,
         train_classifier,
         train_regressor,
     )
@@ -240,13 +240,13 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
     save_checkpoint(regressor, "regressor", hparams=reg_hp, subdir=ckpt_subdir)
 
     # Train production mu regressor on raw imputed features.
-    click.echo("Training HistGradientBoostingRegressor (mu)...")
-    tree_regressor = train_hist_gradient_boosting_regressor(X, y_spread)
+    click.echo("Training LightGBMRegressor (mu)...")
+    tree_regressor = train_lightgbm_regressor(X, y_spread)
     tree_path = save_tree_regressor(tree_regressor, feature_order=config.FEATURE_ORDER)
     click.echo(f"  Tree regressor: {tree_path}")
 
     if blend_enabled() and efficiency_source == "gold":
-        click.echo("Training Torvik HistGradientBoostingRegressor (mu blend side)...")
+        click.echo("Training Torvik LightGBMRegressor (mu blend side)...")
         torvik_df = load_multi_season_features(
             season_list,
             no_garbage=no_garbage,
@@ -259,7 +259,7 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
         X_t = get_feature_matrix(torvik_df).values.astype(np.float32)
         y_t = get_targets(torvik_df)["spread_home"].values.astype(np.float32)
         X_t = impute_column_means(X_t)
-        torvik_tree = train_hist_gradient_boosting_regressor(X_t, y_t)
+        torvik_tree = train_lightgbm_regressor(X_t, y_t)
         torvik_tree_path = save_tree_regressor(
             torvik_tree,
             path=config.TORVIK_TREE_REGRESSOR_PATH,

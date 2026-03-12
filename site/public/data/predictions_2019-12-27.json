@@ -1,52 +1,48 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
   "date": "2019-12-27",
-  "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
-  ],
+  "extra_benchmark_dirs": [],
   "games": [
     {
       "away_team": "UMass Lowell",
-      "edge_home_points": -0.3594871756043858,
+      "edge_home_points": 0.09271285834483933,
       "game_id": "2019_12_27_umass_lowell_loyola_maryland",
       "home_team": "Loyola Maryland",
       "market_spread_home": -6.5,
-      "model_mu_home": 6.140512824395614,
-      "pick_cover_prob": 0.51150943643512,
-      "pick_ev_per_1": -0.02348198498749815,
-      "pick_fair_odds": -104.71224514599713,
-      "pick_prob_edge": -0.0123000873744038,
-      "pick_side": "AWAY",
+      "model_mu_home": 6.592712858344839,
+      "pick_cover_prob": 0.5029687038628202,
+      "pick_ev_per_1": -0.03978701989825234,
+      "pick_fair_odds": -101.19457421932677,
+      "pick_prob_edge": -0.020840819946703615,
+      "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.688945013475043,
+      "pred_home_win_prob": 0.7016519247365832,
       "pred_sigma": 12.458884239196777,
       "start_time": "2019-12-28T00:00:00.000Z"
     },
     {
       "away_team": "Coppin State",
-      "edge_home_points": -2.3361876134122213,
+      "edge_home_points": -2.311796726898365,
       "game_id": "2019_12_27_coppin_state_mount_st_mary_s",
       "home_team": "Mount St. Mary's",
       "market_spread_home": -4.5,
-      "model_mu_home": 2.1638123865877787,
-      "pick_cover_prob": 0.5928909685969699,
-      "pick_ev_per_1": 0.13188275823057882,
-      "pick_fair_odds": -145.6344425849937,
-      "pick_prob_edge": 0.06908144478744604,
+      "model_mu_home": 2.188203273101635,
+      "pick_cover_prob": 0.5919385900339406,
+      "pick_ev_per_1": 0.1300645809738865,
+      "pick_fair_odds": -145.06115392856557,
+      "pick_prob_edge": 0.06812906622441672,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.586148865796412,
+      "pred_home_win_prob": 0.5871044581329197,
       "pred_sigma": 9.941732406616211,
       "start_time": "2019-12-28T00:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T15:18:44.946447Z",
-  "mu_model": "HistGradientBoosting",
+  "generated_at": "2026-03-12T18:15:20.147677Z",
+  "mu_model": "LightGBMRegressionL2Blend",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
   "source": "true_walkforward_historical",
-  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
-  "torvik_extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
-  ]
+  "torvik_benchmark_dir": null,
+  "torvik_extra_benchmark_dirs": []
 }

@@ -1,35 +1,31 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
   "date": "2018-12-27",
-  "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
-  ],
+  "extra_benchmark_dirs": [],
   "games": [
     {
       "away_team": "Kansas City",
-      "edge_home_points": 1.9314556727467789,
+      "edge_home_points": -0.015370985026038397,
       "game_id": "2018_12_27_kansas_city_creighton",
       "home_team": "Creighton",
       "market_spread_home": -18.5,
-      "model_mu_home": 20.43145567274678,
-      "pick_cover_prob": 0.5301817720837074,
-      "pick_ev_per_1": 0.012165201250714186,
-      "pick_fair_odds": -112.84827632915295,
-      "pick_prob_edge": 0.0063722482741835895,
-      "pick_side": "HOME",
+      "model_mu_home": 18.48462901497396,
+      "pick_cover_prob": 0.5002404233170692,
+      "pick_ev_per_1": -0.044995555485595196,
+      "pick_fair_odds": -100.09621559177113,
+      "pick_prob_edge": -0.023569100492454642,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7884510686464711,
+      "pred_home_win_prob": 0.7656908213568001,
       "pred_sigma": 25.505577087402344,
       "start_time": "2018-12-28T01:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T15:18:44.419157Z",
-  "mu_model": "HistGradientBoosting",
+  "generated_at": "2026-03-12T18:15:19.604459Z",
+  "mu_model": "LightGBMRegressionL2Blend",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
   "source": "true_walkforward_historical",
-  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
-  "torvik_extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
-  ]
+  "torvik_benchmark_dir": null,
+  "torvik_extra_benchmark_dirs": []
 }

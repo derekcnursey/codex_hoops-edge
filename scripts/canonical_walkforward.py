@@ -34,7 +34,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from src import config
 from src.architecture import MLPRegressor, gaussian_nll_loss
 from src.dataset import HoopsDataset, load_multi_season_features
-from src.features import get_feature_matrix, get_targets, load_research_lines
+from src.features import build_features, get_feature_matrix, get_targets, load_research_lines
 
 SEED = 42
 TRAIN_START = 2015
@@ -44,6 +44,7 @@ INNER_VAL_FRAC = 0.15
 ADJ_SUFFIX = f"adj_a{config.ADJUST_ALPHA}_p{config.ADJUST_PRIOR}"
 NO_GARBAGE = True
 EFFICIENCY_SOURCE = "torvik"
+GOLD_TABLE_NAME: str | None = None
 
 RIDGE_ALPHA = 10.0
 HGBR_PARAMS = {
@@ -119,6 +120,18 @@ def _default_output_dir() -> Path:
     return config.ARTIFACTS_DIR / "benchmarks" / "canonical_walkforward_v1"
 
 
+def _feature_cache_dir() -> Path:
+    return config.FEATURES_DIR / "canonical_walkforward"
+
+
+def _feature_cache_path(season: int) -> Path:
+    source_slug = EFFICIENCY_SOURCE
+    if GOLD_TABLE_NAME:
+        source_slug += "_" + GOLD_TABLE_NAME
+    source_slug = source_slug.replace("/", "_")
+    return _feature_cache_dir() / source_slug / f"season_{season}.parquet"
+
+
 def _folds(selected_holdout: int | None = None) -> list[dict]:
     if selected_holdout is not None and selected_holdout not in HOLDOUT_SEASONS:
         if selected_holdout < TRAIN_START:
@@ -158,6 +171,31 @@ def _folds(selected_holdout: int | None = None) -> list[dict]:
 
 
 def _load_fold_frame(seasons: list[int]) -> pd.DataFrame:
+    if GOLD_TABLE_NAME is not None:
+        frames = []
+        for season in seasons:
+            cache_path = _feature_cache_path(season)
+            if cache_path.exists():
+                frames.append(pd.read_parquet(cache_path))
+                continue
+            df = build_features(
+                season,
+                no_garbage=NO_GARBAGE,
+                extra_features=config.EXTRA_FEATURES,
+                adjust_ff=config.ADJUST_FF,
+                adjust_alpha=config.ADJUST_ALPHA,
+                adjust_prior_weight=config.ADJUST_PRIOR,
+                adjust_ff_method=config.ADJUST_FF_METHOD,
+                efficiency_source=EFFICIENCY_SOURCE,
+                gold_table_name=GOLD_TABLE_NAME,
+            )
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            if not df.empty:
+                df.to_parquet(cache_path, index=False)
+            frames.append(df)
+        if not frames:
+            return pd.DataFrame()
+        return _clean_games(pd.concat(frames, ignore_index=True))
     df = load_multi_season_features(
         seasons,
         no_garbage=NO_GARBAGE,
@@ -729,7 +767,7 @@ def _write_summary(output_dir: Path, fold_metrics: pd.DataFrame, pooled_metrics:
         "",
         f"- Holdouts: {', '.join(str(x) for x in HOLDOUT_SEASONS)}",
         f"- Excluded seasons: {', '.join(str(x) for x in EXCLUDE_SEASONS)}",
-        f"- Features: torvik + adjusted + 53 features (`{ADJ_SUFFIX}`)",
+        f"- Features: {EFFICIENCY_SOURCE}{f' ({GOLD_TABLE_NAME})' if GOLD_TABLE_NAME else ''} + adjusted + 53 features (`{ADJ_SUFFIX}`)",
         "- Primary target: homeScore - awayScore",
         f"- External book benchmark: `{line_meta['benchmark_label']}`",
         f"- Uses true closing timestamps: {line_meta['uses_true_closing_timestamps']}",
@@ -790,6 +828,7 @@ def run_benchmark(output_dir: Path, holdout_season: int | None = None) -> None:
         "feature_config": {
             "no_garbage": NO_GARBAGE,
             "efficiency_source": EFFICIENCY_SOURCE,
+            "gold_table_name": GOLD_TABLE_NAME,
             "adj_suffix": ADJ_SUFFIX,
             "feature_order_size": len(config.FEATURE_ORDER),
         },
@@ -939,6 +978,7 @@ def run_benchmark(output_dir: Path, holdout_season: int | None = None) -> None:
 
 
 def main() -> None:
+    global EFFICIENCY_SOURCE, GOLD_TABLE_NAME
     parser = argparse.ArgumentParser(description="Run canonical walk-forward benchmark v1.")
     parser.add_argument(
         "--output-dir",
@@ -952,7 +992,22 @@ def main() -> None:
         default=None,
         help="Run only one canonical holdout season (must be one of 2019, 2020, 2022, 2023, 2024, 2025)",
     )
+    parser.add_argument(
+        "--efficiency-source",
+        type=str,
+        default=EFFICIENCY_SOURCE,
+        choices=["gold", "torvik"],
+        help="Efficiency source for this benchmark run",
+    )
+    parser.add_argument(
+        "--gold-table-name",
+        type=str,
+        default=None,
+        help="Optional explicit gold ratings table when --efficiency-source=gold",
+    )
     args = parser.parse_args()
+    EFFICIENCY_SOURCE = args.efficiency_source
+    GOLD_TABLE_NAME = args.gold_table_name
     run_benchmark(args.output_dir, holdout_season=args.holdout_season)
 
 

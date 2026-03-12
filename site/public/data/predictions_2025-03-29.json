@@ -1,52 +1,48 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
   "date": "2025-03-29",
-  "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
-  ],
+  "extra_benchmark_dirs": [],
   "games": [
     {
       "away_team": "Texas Tech",
-      "edge_home_points": -2.683927059173584,
+      "edge_home_points": -2.9311723709106445,
       "game_id": "2025_03_29_texas_tech_florida",
       "home_team": "Florida",
       "market_spread_home": -6.5,
-      "model_mu_home": 3.816072940826416,
-      "pick_cover_prob": 0.584556005947966,
-      "pick_ev_per_1": 0.11597055680975321,
-      "pick_fair_odds": -140.70633209701685,
-      "pick_prob_edge": 0.06074648213844214,
+      "model_mu_home": 3.5688276290893555,
+      "pick_cover_prob": 0.5922110762509957,
+      "pick_ev_per_1": 0.13058478193371903,
+      "pick_fair_odds": -145.2249047881212,
+      "pick_prob_edge": 0.06840155244147184,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6193022805378492,
+      "pred_home_win_prob": 0.6117853360981366,
       "pred_sigma": 12.567388534545898,
       "start_time": "2025-03-29T22:09:00.000Z"
     },
     {
       "away_team": "Alabama",
-      "edge_home_points": -4.415738344192505,
+      "edge_home_points": -2.6016604900360107,
       "game_id": "2025_03_29_alabama_duke",
       "home_team": "Duke",
       "market_spread_home": -6.5,
-      "model_mu_home": 2.084261655807495,
-      "pick_cover_prob": 0.6451802238355362,
-      "pick_ev_per_1": 0.23170770004966001,
-      "pick_fair_odds": -181.83321989822977,
-      "pick_prob_edge": 0.12137070002601236,
+      "model_mu_home": 3.8983395099639893,
+      "pick_cover_prob": 0.5868210510721965,
+      "pick_ev_per_1": 0.12029473386510237,
+      "pick_fair_odds": -142.02588311795483,
+      "pick_prob_edge": 0.06301152726267267,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5697537955964154,
+      "pred_home_win_prob": 0.6288135164290976,
       "pred_sigma": 11.859417915344238,
       "start_time": "2025-03-30T00:59:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T15:18:47.172928Z",
-  "mu_model": "HistGradientBoosting",
+  "generated_at": "2026-03-12T18:15:22.253339Z",
+  "mu_model": "LightGBMRegressionL2Blend",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
   "source": "true_walkforward_historical",
-  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
-  "torvik_extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
-  ]
+  "torvik_benchmark_dir": null,
+  "torvik_extra_benchmark_dirs": []
 }

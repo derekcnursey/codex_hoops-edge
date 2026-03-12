@@ -1,24 +1,22 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
   "date": "2021-12-27",
-  "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
-  ],
+  "extra_benchmark_dirs": [],
   "games": [
     {
       "away_team": "Brown",
-      "edge_home_points": -0.9595468248566021,
+      "edge_home_points": -2.763897171570079,
       "game_id": "2021_12_27_brown_syracuse",
       "home_team": "Syracuse",
       "market_spread_home": -9.5,
-      "model_mu_home": 8.540453175143398,
-      "pick_cover_prob": 0.5342474634946297,
-      "pick_ev_per_1": 0.019926975762474874,
-      "pick_fair_odds": -114.70629177957674,
-      "pick_prob_edge": 0.010437939685105868,
+      "model_mu_home": 6.736102828429921,
+      "pick_cover_prob": 0.5977687555564177,
+      "pick_ev_per_1": 0.1411948969713429,
+      "pick_fair_odds": -148.61320790316225,
+      "pick_prob_edge": 0.0739592317468939,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7778674402226217,
+      "pred_home_win_prob": 0.7268740903530593,
       "pred_sigma": 11.163833618164062,
       "start_time": "2021-12-27T23:00:00.000Z"
     },
@@ -28,25 +26,23 @@
       "game_id": "2021_12_27_dallas_christian_texas_a_m",
       "home_team": "Texas A&M",
       "market_spread_home": null,
-      "model_mu_home": 28.928756004347633,
+      "model_mu_home": 33.48346673016522,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.9529207799248929,
+      "pred_home_win_prob": 0.973651785063115,
       "pred_sigma": 17.282678604125977,
       "start_time": "2021-12-28T01:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T15:18:45.393461Z",
-  "mu_model": "HistGradientBoosting",
+  "generated_at": "2026-03-12T18:15:20.568902Z",
+  "mu_model": "LightGBMRegressionL2Blend",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
   "source": "true_walkforward_historical",
-  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
-  "torvik_extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
-  ]
+  "torvik_benchmark_dir": null,
+  "torvik_extra_benchmark_dirs": []
 }

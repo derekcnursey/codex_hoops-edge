@@ -22,6 +22,7 @@ from src.trainer import (
     save_tree_regressor,
     train_classifier,
     train_hist_gradient_boosting_regressor,
+    train_lightgbm_regressor,
     train_regressor,
 )
 
@@ -77,14 +78,14 @@ regressor = train_regressor(X_scaled, y_spread, hparams=reg_hp_full, val_frac=VA
 save_checkpoint(regressor, "regressor", hparams=reg_hp,
                 feature_order=config.FEATURE_ORDER)
 
-# Train production HistGradientBoosting regressor for mu on raw imputed features
-print("\nTraining HistGradientBoostingRegressor (mu)...")
-tree_regressor = train_hist_gradient_boosting_regressor(X, y_spread)
+# Train production LightGBM L2 regressor for mu on raw imputed features
+print("\nTraining LightGBMRegressor (mu)...")
+tree_regressor = train_lightgbm_regressor(X, y_spread)
 tree_path = save_tree_regressor(tree_regressor, feature_order=config.FEATURE_ORDER)
 
 torvik_tree_path = None
 if blend_enabled():
-    print("\nTraining Torvik HistGradientBoostingRegressor (mu blend side)...")
+    print("\nTraining Torvik LightGBMRegressor (mu blend side)...")
     torvik_df = load_multi_season_features(
         SEASONS, no_garbage=True, adj_suffix=ADJ_SUFFIX,
         efficiency_source="torvik",
@@ -94,7 +95,7 @@ if blend_enabled():
     X_t = get_feature_matrix(torvik_df).values.astype(np.float32)
     X_t = impute_column_means(X_t)
     y_t = get_targets(torvik_df)["spread_home"].values.astype(np.float32)
-    torvik_tree = train_hist_gradient_boosting_regressor(X_t, y_t)
+    torvik_tree = train_lightgbm_regressor(X_t, y_t)
     torvik_tree_path = save_tree_regressor(
         torvik_tree,
         path=config.TORVIK_TREE_REGRESSOR_PATH,

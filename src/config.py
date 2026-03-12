@@ -12,8 +12,8 @@ CHECKPOINTS_DIR = PROJECT_ROOT / "checkpoints"
 FEATURES_DIR = PROJECT_ROOT / "features"
 PREDICTIONS_DIR = PROJECT_ROOT / "predictions"
 SITE_DATA_DIR = PROJECT_ROOT / "site" / "public" / "data"
-TREE_REGRESSOR_PATH = CHECKPOINTS_DIR / "regressor_hgbr.pkl"
-TORVIK_TREE_REGRESSOR_PATH = CHECKPOINTS_DIR / "regressor_hgbr_torvik.pkl"
+TREE_REGRESSOR_PATH = CHECKPOINTS_DIR / "regressor_lgbm_l2.pkl"
+TORVIK_TREE_REGRESSOR_PATH = CHECKPOINTS_DIR / "regressor_lgbm_l2_torvik.pkl"
 
 # S3 lakehouse
 S3_BUCKET = "hoops-edge"
@@ -87,6 +87,24 @@ HGBR_PARAMS = {
     "min_samples_leaf": 20,
     "l2_regularization": 1.0,
     "random_state": 42,
+}
+
+LGBM_REG_L2_PARAMS = {
+    "objective": "regression",
+    "learning_rate": 0.02019353198222356,
+    "num_leaves": 110,
+    "max_depth": 9,
+    "min_child_samples": 60,
+    "subsample": 0.6469253206264255,
+    "colsample_bytree": 0.4684413154048659,
+    "reg_alpha": 1.561017503434852,
+    "reg_lambda": 0.004257796528177626,
+    "n_estimators": 5000,
+    "random_state": 42,
+    "n_jobs": -1,
+    "verbosity": -1,
+    "deterministic": True,
+    "force_col_wise": True,
 }
 
 # Optional inference-time sigma sharpening. Disabled by default.

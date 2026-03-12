@@ -1,52 +1,48 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
   "date": "2023-03-28",
-  "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
-  ],
+  "extra_benchmark_dirs": [],
   "games": [
     {
       "away_team": "Wisconsin",
-      "edge_home_points": -0.843332052230835,
+      "edge_home_points": -1.031700223684311,
       "game_id": "2023_03_28_wisconsin_north_texas",
       "home_team": "North Texas",
       "market_spread_home": -1.5,
-      "model_mu_home": 0.656667947769165,
-      "pick_cover_prob": 0.531123015430634,
-      "pick_ev_per_1": 0.013962120367573994,
-      "pick_fair_odds": -113.2755568965359,
-      "pick_prob_edge": 0.007313491621110169,
+      "model_mu_home": 0.4682997763156891,
+      "pick_cover_prob": 0.5380555137816991,
+      "pick_ev_per_1": 0.02719688994688013,
+      "pick_fair_odds": -116.47622816899053,
+      "pick_prob_edge": 0.0142459899721753,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5242439038030031,
+      "pred_home_win_prob": 0.5172946652386727,
       "pred_sigma": 10.799055099487305,
       "start_time": "2023-03-28T23:00:00.000Z"
     },
     {
       "away_team": "Utah Valley",
-      "edge_home_points": -4.87377393245697,
+      "edge_home_points": -2.6416633129119873,
       "game_id": "2023_03_28_utah_valley_uab",
       "home_team": "UAB",
       "market_spread_home": -4.5,
-      "model_mu_home": -0.3737739324569702,
-      "pick_cover_prob": 0.6537811398647528,
-      "pick_ev_per_1": 0.24812763065089172,
-      "pick_fair_odds": -188.83464049571398,
-      "pick_prob_edge": 0.129971616055229,
+      "model_mu_home": 1.8583366870880127,
+      "pick_cover_prob": 0.5848800547036626,
+      "pick_ev_per_1": 0.11658919534335577,
+      "pick_fair_odds": -140.89423101222954,
+      "pick_prob_edge": 0.06107053089413872,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.48789994200421094,
+      "pred_home_win_prob": 0.5599412062736248,
       "pred_sigma": 12.321540832519531,
       "start_time": "2023-03-29T01:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T15:18:46.198782Z",
-  "mu_model": "HistGradientBoosting",
+  "generated_at": "2026-03-12T18:15:21.314803Z",
+  "mu_model": "LightGBMRegressionL2Blend",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
   "source": "true_walkforward_historical",
-  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
-  "torvik_extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
-  ]
+  "torvik_benchmark_dir": null,
+  "torvik_extra_benchmark_dirs": []
 }

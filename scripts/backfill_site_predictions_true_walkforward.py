@@ -43,6 +43,11 @@ def _parse_args() -> argparse.Namespace:
         help=f"Benchmark artifact directory (default: {DEFAULT_BENCHMARK_DIR}).",
     )
     parser.add_argument(
+        "--mu-model-name",
+        default=MU_MODEL,
+        help=f"Mean-model prediction directory name inside the benchmark bundle (default: {MU_MODEL}).",
+    )
+    parser.add_argument(
         "--extra-benchmark-dir",
         type=Path,
         action="append",
@@ -230,7 +235,7 @@ def main() -> int:
     args.site_data_dir.mkdir(parents=True, exist_ok=True)
     benchmark_dirs = [args.benchmark_dir, *args.extra_benchmark_dir]
 
-    mu_df = _load_predictions(benchmark_dirs, MU_MODEL)
+    mu_df = _load_predictions(benchmark_dirs, args.mu_model_name)
     sigma_df = _load_predictions(benchmark_dirs, SIGMA_MODEL)
 
     keys = ["holdout_season", "gameId", "startDate", "homeTeam", "awayTeam", "book_spread"]
@@ -281,7 +286,7 @@ def main() -> int:
             "extra_benchmark_dirs": [str(p) for p in args.extra_benchmark_dir],
             "torvik_benchmark_dir": str(args.torvik_benchmark_dir) if args.torvik_benchmark_dir else None,
             "torvik_extra_benchmark_dirs": [str(p) for p in args.torvik_extra_benchmark_dir],
-            "mu_model": MU_MODEL,
+            "mu_model": args.mu_model_name,
             "sigma_model": SIGMA_MODEL,
             "sigma_mode": args.sigma_mode,
             "games": games,
@@ -293,7 +298,7 @@ def main() -> int:
     summary = {
         "benchmark_dir": str(args.benchmark_dir),
         "extra_benchmark_dirs": [str(p) for p in args.extra_benchmark_dir],
-        "mu_model": MU_MODEL,
+        "mu_model": args.mu_model_name,
         "sigma_model": SIGMA_MODEL,
         "sigma_mode": args.sigma_mode,
         "dates_written": written,
