@@ -519,7 +519,6 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
                           padding: "10px 14px",
                           textAlign: "center",
                           fontSize: 13,
-                          fontWeight: 700,
                           color: "#334155",
                           borderBottom: "1px solid #f1f5f9",
                         }}
