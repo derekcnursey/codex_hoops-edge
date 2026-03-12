@@ -27,6 +27,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src import config, s3_reader
+from src.features import _dedupe_efficiency_ratings
 from src.trainer import load_scaler, load_tree_regressor
 
 
@@ -42,7 +43,7 @@ PRIMARY_SOURCE_NOTE = (
 )
 MODEL_INDEX_LABEL = "DCN INDEX"
 MODEL_INDEX_DESCRIPTION = (
-    "Projected neutral-court spread vs an average D-I team from the current HGBR model."
+    "Projected neutral-court spread vs an average D-I team from the current LightGBM mean model."
 )
 
 
@@ -75,6 +76,7 @@ def _load_latest_ratings(season: int) -> tuple[pd.DataFrame, str]:
         raise ValueError(f"Missing columns in efficiency ratings: {missing}")
 
     df["rating_date"] = pd.to_datetime(df["rating_date"], errors="coerce")
+    df = _dedupe_efficiency_ratings(df)
     # Keep only the latest rating_date row per team
     idx = df.groupby("teamId")["rating_date"].idxmax()
     latest = df.loc[idx].copy()
@@ -84,7 +86,7 @@ def _load_latest_ratings(season: int) -> tuple[pd.DataFrame, str]:
 def _compute_model_index(ratings: pd.DataFrame) -> pd.DataFrame:
     """Score each team as a neutral-court matchup vs an average D-I team.
 
-    Uses the current production HGBR mean model with a symmetric home/away
+    Uses the current production tree mean model with a symmetric home/away
     construction to reduce slot bias:
       1. team as home vs average away on a neutral floor
       2. average home vs team as away on a neutral floor
@@ -97,7 +99,7 @@ def _compute_model_index(ratings: pd.DataFrame) -> pd.DataFrame:
         model, feature_order, _ = load_tree_regressor()
         scaler = load_scaler()
     except Exception as exc:
-        print(f"WARNING: rankings model index unavailable; HGBR artifacts missing ({exc})")
+        print(f"WARNING: rankings model index unavailable; tree-model artifacts missing ({exc})")
         return pd.DataFrame(columns=["teamId", "model_index"])
 
     if len(feature_order) != len(scaler.mean_):
@@ -310,7 +312,7 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
     print("Computing model index...")
     model_index = _compute_model_index(ratings)
     if not model_index.empty:
-        print(f"  {len(model_index)} teams scored with HGBR")
+        print(f"  {len(model_index)} teams scored with the promoted tree mean model")
 
     print("Loading game records...")
     records = _load_records(season)
@@ -349,8 +351,8 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
     df["conference"] = df["conference"].fillna("")
 
     # Sort by model-driven neutral spread vs average team when available.
-    if df["model_index"].notna().any():
-        df = df.sort_values(["model_index", "adj_margin"], ascending=[False, False]).reset_index(drop=True)
+    if "barthag" in df.columns:
+        df = df.sort_values(["adj_margin", "barthag"], ascending=[False, False]).reset_index(drop=True)
     else:
         df = df.sort_values("adj_margin", ascending=False).reset_index(drop=True)
 

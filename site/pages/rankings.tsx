@@ -159,7 +159,7 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [confFilter, setConfFilter] = useState("all");
-  const [sort, setSort] = useState<SortState>({ key: "model_index", dir: "desc" });
+  const [sort, setSort] = useState<SortState>({ key: "adj_margin", dir: "desc" });
 
   const conferences = useMemo(() => {
     if (!data) return [];
