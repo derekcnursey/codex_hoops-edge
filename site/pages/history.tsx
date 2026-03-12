@@ -9,12 +9,15 @@ import {
   readJsonFile,
   todayET,
 } from "../lib/server-data";
+import { getTeamRank, getTeamRankMapForDate } from "../lib/team-rankings";
 
 /* -- types -- */
 
 type HistoryGame = {
   away_team: string;
+  away_team_rank: number | null;
   home_team: string;
+  home_team_rank: number | null;
   start_time: string | null;
   away_score: number | null;
   home_score: number | null;
@@ -84,6 +87,7 @@ export const getServerSideProps: GetServerSideProps<HistoryProps> = async (
   const finalRows = normalizeRows(
     readJsonFile(`final_scores_${date}.json`)
   );
+  const teamRanks = getTeamRankMapForDate(date);
 
   const finalLookup = new Map<string, Record<string, unknown>>();
   for (const r of finalRows) {
@@ -133,7 +137,9 @@ export const getServerSideProps: GetServerSideProps<HistoryProps> = async (
 
     return {
       away_team,
+      away_team_rank: getTeamRank(away_team, teamRanks),
       home_team,
+      home_team_rank: getTeamRank(home_team, teamRanks),
       start_time,
       away_score,
       home_score,
@@ -201,6 +207,26 @@ function fmtTime(raw: string | null): string | null {
     hour: "numeric",
     minute: "2-digit"
   });
+}
+
+function renderRankedTeam(teamName: string, rank: number | null) {
+  return (
+    <>
+      {rank !== null && (
+        <span
+          style={{
+            ...mono,
+            fontSize: 11,
+            color: "#64748b",
+            marginRight: 6,
+          }}
+        >
+          #{rank}
+        </span>
+      )}
+      {displayTeam(teamName)}
+    </>
+  );
 }
 
 /* sort helpers */
@@ -776,11 +802,11 @@ export default function History({
                           }}
                         >
                           <span style={{ fontWeight: g.pick_side === "AWAY" ? 700 : 400 }}>
-                            {displayTeam(g.away_team)}
+                            {renderRankedTeam(g.away_team, g.away_team_rank)}
                           </span>
                           {" @ "}
                           <span style={{ fontWeight: g.pick_side === "HOME" ? 700 : 400 }}>
-                            {displayTeam(g.home_team)}
+                            {renderRankedTeam(g.home_team, g.home_team_rank)}
                           </span>
                         </td>
 

@@ -6,10 +6,16 @@ import {
   getLatestPredictionFile,
   getPredictionRowsByFilename,
 } from "../lib/server-data";
+import { getTeamRank, getTeamRankMapForDate } from "../lib/team-rankings";
+
+type RankedPredictionRow = PredictionRow & {
+  away_team_rank: number | null;
+  home_team_rank: number | null;
+};
 
 type HomeProps = {
   date: string | null;
-  rows: PredictionRow[];
+  rows: RankedPredictionRow[];
 };
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
@@ -17,7 +23,12 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   if (!latest) {
     return { props: { date: null, rows: [] } };
   }
-  const rows = getPredictionRowsByFilename(latest.filename);
+  const teamRanks = getTeamRankMapForDate(latest.date);
+  const rows = getPredictionRowsByFilename(latest.filename).map((row) => ({
+    ...row,
+    away_team_rank: getTeamRank(str(row.away_team), teamRanks),
+    home_team_rank: getTeamRank(str(row.home_team), teamRanks),
+  }));
   return { props: { date: latest.date, rows } };
 };
 
@@ -56,6 +67,26 @@ function num(v: unknown): number | null {
 function getPickTeam(row: PredictionRow): string {
   const side = str(row.pick_side).toUpperCase();
   return displayTeam(side === "HOME" ? str(row.home_team) : str(row.away_team));
+}
+
+function renderRankedTeam(teamName: string, rank: number | null) {
+  return (
+    <>
+      {rank !== null && (
+        <span
+          style={{
+            ...mono,
+            fontSize: 11,
+            color: "#64748b",
+            marginRight: 6,
+          }}
+        >
+          #{rank}
+        </span>
+      )}
+      {displayTeam(teamName)}
+    </>
+  );
 }
 
 function formatGameTime(row: PredictionRow): string | null {
@@ -412,11 +443,11 @@ export default function Home({ date, rows }: HomeProps) {
                             }}
                           >
                             <span style={{ fontWeight: str(row.pick_side).toUpperCase() === "AWAY" ? 700 : 400 }}>
-                              {displayTeam(str(row.away_team))}
+                              {renderRankedTeam(str(row.away_team), row.away_team_rank)}
                             </span>
                             {" @ "}
                             <span style={{ fontWeight: str(row.pick_side).toUpperCase() === "HOME" ? 700 : 400 }}>
-                              {displayTeam(str(row.home_team))}
+                              {renderRankedTeam(str(row.home_team), row.home_team_rank)}
                             </span>
                           </td>
 
