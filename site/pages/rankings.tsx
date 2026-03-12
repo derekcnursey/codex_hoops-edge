@@ -245,49 +245,6 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
           </span>
         </div>
 
-        {(data.source_label || data.source_description || data.source_note || data.model_index_description) && (
-          <div
-            style={{
-              marginBottom: 16,
-              padding: "10px 12px",
-              border: "1px solid #dbe2ea",
-              borderRadius: 10,
-              background: "#f8fafc",
-            }}
-          >
-            {data.source_label && (
-              <div
-                style={{
-                  ...mono,
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: "#0f172a",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  marginBottom: 4,
-                }}
-              >
-                {data.source_label}
-              </div>
-            )}
-            {data.source_description && (
-              <div style={{ fontSize: 14, color: "#334155", marginBottom: data.source_note ? 4 : 0 }}>
-                {data.source_description}
-              </div>
-            )}
-            {data.source_note && (
-              <div style={{ ...mono, fontSize: 12, color: "#64748b" }}>
-                {data.source_note}
-              </div>
-            )}
-            {data.model_index_description && (
-              <div style={{ ...mono, fontSize: 12, color: "#64748b", marginTop: 4 }}>
-                {data.model_index_label || "EDGE INDEX"}: {data.model_index_description}
-              </div>
-            )}
-          </div>
-        )}
-
         {/* -- Controls -- */}
         <div
           style={{
