@@ -78,6 +78,7 @@ function renderRankedTeam(teamName: string, rank: number | null) {
             ...mono,
             fontSize: 11,
             color: "#64748b",
+            marginRight: 2,
           }}
         >
           {rank}
