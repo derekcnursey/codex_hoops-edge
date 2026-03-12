@@ -423,7 +423,7 @@ export default function History({
                   textDecoration: "none"
                 }}
               >
-                \u2190
+                {"\u2190"}
               </Link>
             ) : (
               <span
@@ -440,7 +440,7 @@ export default function History({
                   fontSize: 16
                 }}
               >
-                \u2190
+                {"\u2190"}
               </span>
             )}
 
@@ -476,7 +476,7 @@ export default function History({
                   textDecoration: "none"
                 }}
               >
-                \u2192
+                {"\u2192"}
               </Link>
             ) : (
               <span
@@ -493,7 +493,7 @@ export default function History({
                   fontSize: 16
                 }}
               >
-                \u2192
+                {"\u2192"}
               </span>
             )}
           </div>
