@@ -167,6 +167,19 @@ def _compute_model_index(ratings: pd.DataFrame) -> pd.DataFrame:
         if "away_sos_de" in vec and "sos_de" in avg_eff:
             vec["away_sos_de"] = avg_eff["sos_de"]
 
+    def neutralize_context_terms(vec: dict[str, float]) -> None:
+        """Keep DCN focused on neutral team strength, not schedule context."""
+        for name in (
+            "home_sos_oe",
+            "away_sos_oe",
+            "home_sos_de",
+            "away_sos_de",
+            "home_conf_strength",
+            "away_conf_strength",
+        ):
+            if name in vec and name in base:
+                vec[name] = float(base[name])
+
     rows: list[dict[str, float]] = []
     for _, row in ratings.iterrows():
         home_vec = dict(base)
@@ -175,6 +188,8 @@ def _compute_model_index(ratings: pd.DataFrame) -> pd.DataFrame:
         apply_avg_away(home_vec)
         apply_avg_home(away_vec)
         apply_away(away_vec, row)
+        neutralize_context_terms(home_vec)
+        neutralize_context_terms(away_vec)
 
         X = pd.DataFrame([home_vec, away_vec], columns=feature_order)
         preds = model.predict(X.values.astype(np.float32))
