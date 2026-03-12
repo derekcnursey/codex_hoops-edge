@@ -1025,6 +1025,18 @@ export default function History({
             </table>
           </div>
         </div>
+
+        <div
+          style={{
+            ...mono,
+            fontSize: 11,
+            color: "#94a3b8",
+            marginTop: 10,
+            textAlign: "right"
+          }}
+        >
+          ML odds are a work in progress.
+        </div>
       </div>
     </Layout>
   );
