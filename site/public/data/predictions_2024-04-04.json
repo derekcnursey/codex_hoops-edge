@@ -1,31 +1,35 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2024-04-04",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Indiana State",
-      "edge_home_points": 2.1115375757217407,
+      "edge_home_points": -0.057776451110839844,
       "game_id": "2024_04_04_indiana_state_seton_hall",
       "home_team": "Seton Hall",
       "market_spread_home": 3.5,
-      "model_mu_home": -1.3884624242782593,
-      "pick_cover_prob": 0.5767571167413679,
-      "pick_ev_per_1": 0.1010817683244295,
-      "pick_fair_odds": -136.27095446964134,
-      "pick_prob_edge": 0.052947592931844034,
-      "pick_side": "HOME",
+      "model_mu_home": -3.55777645111084,
+      "pick_cover_prob": 0.502067805573558,
+      "pick_ev_per_1": -0.04150691663229833,
+      "pick_fair_odds": -100.83055709058534,
+      "pick_prob_edge": -0.021741718235965823,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4493489502458984,
-      "pred_sigma": 10.906462669372559,
+      "pred_home_win_prob": 0.3747967652917599,
+      "pred_sigma": 11.14677619934082,
       "start_time": "2024-04-04T23:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:17.276028Z",
+  "generated_at": "2026-03-12T15:18:46.697787Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

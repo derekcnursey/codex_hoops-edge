@@ -1,48 +1,52 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2025-03-30",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Tennessee",
-      "edge_home_points": -1.4807076454162598,
+      "edge_home_points": -2.141420841217041,
       "game_id": "2025_03_30_tennessee_houston",
       "home_team": "Houston",
       "market_spread_home": -2.5,
-      "model_mu_home": 1.0192923545837402,
-      "pick_cover_prob": 0.5503144961366171,
-      "pick_ev_per_1": 0.050600401715359844,
-      "pick_fair_odds": -122.37763757308171,
-      "pick_prob_edge": 0.026504972327093257,
+      "model_mu_home": 0.358579158782959,
+      "pick_cover_prob": 0.5702777265586321,
+      "pick_ev_per_1": 0.08871202343011575,
+      "pick_fair_odds": -132.70844026576663,
+      "pick_prob_edge": 0.046468202749108234,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5346841137838003,
-      "pred_sigma": 11.709275245666504,
+      "pred_home_win_prob": 0.5118277489002909,
+      "pred_sigma": 12.092869758605957,
       "start_time": "2025-03-30T18:20:00.000Z"
     },
     {
       "away_team": "Michigan State",
-      "edge_home_points": -1.9499995708465576,
+      "edge_home_points": -2.7113804817199707,
       "game_id": "2025_03_30_michigan_state_auburn",
       "home_team": "Auburn",
       "market_spread_home": -5.5,
-      "model_mu_home": 3.5500004291534424,
-      "pick_cover_prob": 0.5625270431350382,
-      "pick_ev_per_1": 0.07391526416689109,
-      "pick_fair_odds": -128.5855581031213,
-      "pick_prob_edge": 0.03871751932551437,
+      "model_mu_home": 2.7886195182800293,
+      "pick_cover_prob": 0.5834733980510983,
+      "pick_ev_per_1": 0.1139037599157331,
+      "pick_fair_odds": -140.0807044066485,
+      "pick_prob_edge": 0.05966387424157449,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6127566765094498,
-      "pred_sigma": 12.390443801879883,
+      "pred_home_win_prob": 0.5858147971442904,
+      "pred_sigma": 12.863107681274414,
       "start_time": "2025-03-30T21:05:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:17.740490Z",
+  "generated_at": "2026-03-12T15:18:47.175049Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

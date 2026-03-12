@@ -1,48 +1,52 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2021-12-25",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Wyoming",
-      "edge_home_points": -2.606602668762207,
+      "edge_home_points": -3.42224349401954,
       "game_id": "2021_12_25_wyoming_south_florida",
       "home_team": "South Florida",
       "market_spread_home": 7.5,
-      "model_mu_home": -10.106602668762207,
-      "pick_cover_prob": 0.5982620288367428,
-      "pick_ev_per_1": 0.142136600506509,
-      "pick_fair_odds": -148.9184672049889,
-      "pick_prob_edge": 0.07445250502721901,
+      "model_mu_home": -10.92224349401954,
+      "pick_cover_prob": 0.6229790577328429,
+      "pick_ev_per_1": 0.189323655671791,
+      "pick_fair_odds": -165.23725551866025,
+      "pick_prob_edge": 0.09916953392331906,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.16730431776321647,
-      "pred_sigma": 10.474546432495117,
+      "pred_home_win_prob": 0.1586657458187598,
+      "pred_sigma": 10.922717094421387,
       "start_time": "2021-12-25T18:30:00.000Z"
     },
     {
       "away_team": "Liberty",
-      "edge_home_points": 0.1657543182373047,
+      "edge_home_points": 0.15636821709529158,
       "game_id": "2021_12_25_liberty_byu",
       "home_team": "BYU",
       "market_spread_home": -6.5,
-      "model_mu_home": 6.665754318237305,
-      "pick_cover_prob": 0.5055575903352866,
-      "pick_ev_per_1": -0.03484460026899838,
-      "pick_fair_odds": -102.24802331946212,
-      "pick_prob_edge": -0.01825193347423726,
+      "model_mu_home": 6.656368217095292,
+      "pick_cover_prob": 0.5051629457209135,
+      "pick_ev_per_1": -0.035598012714619764,
+      "pick_fair_odds": -102.08672559027949,
+      "pick_prob_edge": -0.018646578088610366,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7123425007583205,
-      "pred_sigma": 11.89801025390625,
+      "pred_home_win_prob": 0.7091557121225553,
+      "pred_sigma": 12.082279205322266,
       "start_time": "2021-12-25T23:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:15.653453Z",
+  "generated_at": "2026-03-12T15:18:45.391039Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

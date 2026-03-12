@@ -1,48 +1,52 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2024-04-02",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Utah",
-      "edge_home_points": -4.660597205162048,
+      "edge_home_points": -2.5609318017959595,
       "game_id": "2024_04_02_utah_indiana_state",
       "home_team": "Indiana State",
       "market_spread_home": -4.5,
-      "model_mu_home": -0.16059720516204834,
-      "pick_cover_prob": 0.6679515730935623,
-      "pick_ev_per_1": 0.2751802759058918,
-      "pick_fair_odds": -201.1608906919391,
-      "pick_prob_edge": 0.1441420492840385,
+      "model_mu_home": 1.9390681982040405,
+      "pick_cover_prob": 0.5964922803739436,
+      "pick_ev_per_1": 0.13875798980480147,
+      "pick_fair_odds": -147.82673325970873,
+      "pick_prob_edge": 0.0726827565644198,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.49403041767192096,
-      "pred_sigma": 10.732178688049316,
+      "pred_home_win_prob": 0.5733700953220343,
+      "pred_sigma": 10.483673095703125,
       "start_time": "2024-04-02T23:00:00.000Z"
     },
     {
       "away_team": "Georgia",
-      "edge_home_points": -4.429694294929504,
+      "edge_home_points": -3.690585494041443,
       "game_id": "2024_04_02_georgia_seton_hall",
       "home_team": "Seton Hall",
       "market_spread_home": -5.5,
-      "model_mu_home": 1.0703057050704956,
-      "pick_cover_prob": 0.6392877782499198,
-      "pick_ev_per_1": 0.22045848574984683,
-      "pick_fair_odds": -177.2293090453838,
-      "pick_prob_edge": 0.11547825444039594,
+      "model_mu_home": 1.8094145059585571,
+      "pick_cover_prob": 0.6342277727724197,
+      "pick_ev_per_1": 0.21079847529280127,
+      "pick_fair_odds": -173.3941851134063,
+      "pick_prob_edge": 0.11041824896289587,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5343268996485008,
-      "pred_sigma": 12.423568725585938,
+      "pred_home_win_prob": 0.5667873055403266,
+      "pred_sigma": 10.75747299194336,
       "start_time": "2024-04-03T01:35:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:17.273835Z",
+  "generated_at": "2026-03-12T15:18:46.695428Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

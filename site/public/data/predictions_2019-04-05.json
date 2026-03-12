@@ -1,31 +1,35 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2019-04-05",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "South Florida",
-      "edge_home_points": 3.2137489318847656,
+      "edge_home_points": 5.773162364959717,
       "game_id": "2019_04_05_south_florida_depaul",
       "home_team": "DePaul",
       "market_spread_home": -1.5,
-      "model_mu_home": 4.713748931884766,
-      "pick_cover_prob": 0.6152715367089521,
-      "pick_ev_per_1": 0.17460929735345398,
-      "pick_fair_odds": -159.92358128270268,
-      "pick_prob_edge": 0.09146201289942824,
+      "model_mu_home": 7.273162364959717,
+      "pick_cover_prob": 0.6957151831233104,
+      "pick_ev_per_1": 0.3281835314172289,
+      "pick_fair_odds": -228.639466886462,
+      "pick_prob_edge": 0.17190565931378654,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6663590181003477,
-      "pred_sigma": 10.965232849121094,
+      "pred_home_win_prob": 0.7405933767650018,
+      "pred_sigma": 11.273147583007812,
       "start_time": "2019-04-05T23:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:14.866443Z",
+  "generated_at": "2026-03-12T15:18:44.754652Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

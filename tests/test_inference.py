@@ -15,6 +15,7 @@ from sklearn.preprocessing import StandardScaler
 
 from src import config
 from src.architecture import MLPClassifier, MLPRegressor
+from src.efficiency_blend import gold_weight_for_start_dates
 from src.infer import _swap_feature_frame
 
 
@@ -207,6 +208,38 @@ class TestPredictPipeline:
             out = predict(features)
 
         np.testing.assert_allclose(out["predicted_spread"].values, expected_mu, rtol=1e-6)
+
+    def test_predict_blends_gold_and_torvik_mu_by_date(self, mock_models):
+        from src.infer import predict
+
+        class ConstantTree:
+            def __init__(self, value):
+                self.value = float(value)
+
+            def predict(self, X):
+                return np.full(len(X), self.value, dtype=np.float32)
+
+        tmp_path, feature_order = mock_models
+        features_df = pd.DataFrame(
+            np.random.randn(2, len(feature_order)),
+            columns=feature_order,
+        )
+        features_df["gameId"] = [1, 2]
+        features_df["homeTeamId"] = [100, 101]
+        features_df["awayTeamId"] = [200, 201]
+        features_df["startDate"] = ["2025-11-01T18:00:00.000Z", "2026-01-15T18:00:00.000Z"]
+
+        secondary_df = features_df.copy()
+        expected_w = gold_weight_for_start_dates(features_df["startDate"])
+        expected_mu = expected_w * 10.0 + (1.0 - expected_w) * 2.0
+
+        with patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+             patch.object(config, "ARTIFACTS_DIR", tmp_path), \
+             patch("src.infer.load_mu_regressor", return_value=(ConstantTree(10.0), feature_order, "hist_gradient_boosting")), \
+             patch("src.infer.load_torvik_mu_regressor", return_value=(ConstantTree(2.0), feature_order, "hist_gradient_boosting")):
+            out = predict(features_df, secondary_mu_features_df=secondary_df)
+
+        np.testing.assert_allclose(out["predicted_spread"].values, expected_mu, rtol=1e-6, atol=1e-6)
 
     def test_predict_output_shape_and_columns(self, mock_models):
         """Predict returns correct columns and row count."""

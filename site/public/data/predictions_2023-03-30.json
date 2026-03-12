@@ -1,31 +1,35 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2023-03-30",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "UAB",
-      "edge_home_points": 1.9871923327445984,
+      "edge_home_points": 3.459547519683838,
       "game_id": "2023_03_30_uab_north_texas",
       "home_team": "North Texas",
       "market_spread_home": 2.5,
-      "model_mu_home": -0.5128076672554016,
-      "pick_cover_prob": 0.577282815544065,
-      "pick_ev_per_1": 0.1020853751295786,
-      "pick_fair_odds": -136.56478533917806,
-      "pick_prob_edge": 0.053473291734541184,
+      "model_mu_home": 0.9595475196838379,
+      "pick_cover_prob": 0.6218735198399024,
+      "pick_ev_per_1": 0.18721308333072262,
+      "pick_fair_odds": -164.46177468888266,
+      "pick_prob_edge": 0.09806399603037852,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4799387369317027,
-      "pred_sigma": 10.193495750427246,
+      "pred_home_win_prob": 0.5343043951290637,
+      "pred_sigma": 11.145268440246582,
       "start_time": "2023-03-31T01:42:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:16.820696Z",
+  "generated_at": "2026-03-12T15:18:46.201118Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

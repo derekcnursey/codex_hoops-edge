@@ -1,48 +1,52 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2019-03-31",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Auburn",
-      "edge_home_points": -4.273582935333252,
+      "edge_home_points": -5.213427662849426,
       "game_id": "2019_03_31_auburn_kentucky",
       "home_team": "Kentucky",
       "market_spread_home": -4.5,
-      "model_mu_home": 0.22641706466674805,
-      "pick_cover_prob": 0.6457473762668694,
-      "pick_ev_per_1": 0.23279044560038697,
-      "pick_fair_odds": -182.28443009453355,
-      "pick_prob_edge": 0.12193785245734556,
+      "model_mu_home": -0.7134276628494263,
+      "pick_cover_prob": 0.6754308548350134,
+      "pick_ev_per_1": 0.28945890468502555,
+      "pick_fair_odds": -208.10075908222117,
+      "pick_prob_edge": 0.15162133102548958,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5079015579896601,
-      "pred_sigma": 11.430838584899902,
+      "pred_home_win_prob": 0.4751784431011463,
+      "pred_sigma": 11.459099769592285,
       "start_time": "2019-03-31T18:20:00.000Z"
     },
     {
       "away_team": "Michigan State",
-      "edge_home_points": -1.7190721035003662,
+      "edge_home_points": -1.836866021156311,
       "game_id": "2019_03_31_michigan_state_duke",
       "home_team": "Duke",
       "market_spread_home": -2.5,
-      "model_mu_home": 0.7809278964996338,
-      "pick_cover_prob": 0.55466430492793,
-      "pick_ev_per_1": 0.05890458213513894,
-      "pick_fair_odds": -124.54970734788438,
-      "pick_prob_edge": 0.030854781118406116,
+      "model_mu_home": 0.663133978843689,
+      "pick_cover_prob": 0.5603402628152844,
+      "pick_ev_per_1": 0.06974050173827018,
+      "pick_fair_odds": -127.44861888043819,
+      "pick_prob_edge": 0.03653073900576054,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5248945560705558,
-      "pred_sigma": 12.506462097167969,
+      "pred_home_win_prob": 0.5218564504859388,
+      "pred_sigma": 12.09801959991455,
       "start_time": "2019-03-31T21:05:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:14.851212Z",
+  "generated_at": "2026-03-12T15:18:44.742679Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

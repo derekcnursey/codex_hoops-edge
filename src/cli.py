@@ -16,6 +16,7 @@ import numpy as np
 import pandas as pd
 
 from . import config
+from .efficiency_blend import blend_enabled, gold_weight_for_start_dates
 from .features import build_features, get_feature_matrix, get_targets, load_lines
 
 _ET = ZoneInfo("America/New_York")
@@ -43,6 +44,31 @@ def _parse_seasons(seasons_str: str) -> list[int]:
 def _exclude_training_seasons(seasons: list[int]) -> list[int]:
     """Remove globally excluded seasons from training/tuning inputs."""
     return [season for season in seasons if season not in config.EXCLUDE_SEASONS]
+
+
+def _build_secondary_mu_features_if_needed(
+    season: int,
+    primary_df: pd.DataFrame,
+    game_date: str | None = None,
+) -> pd.DataFrame | None:
+    """Build Torvik-side features only when the blend schedule needs them."""
+    if not blend_enabled() or primary_df.empty:
+        return None
+    if float(gold_weight_for_start_dates(primary_df["startDate"]).min()) >= 1.0:
+        return None
+    secondary_df = build_features(
+        season,
+        game_date=game_date,
+        no_garbage=True,
+        extra_features=config.EXTRA_FEATURES,
+        adjust_ff=config.ADJUST_FF,
+        adjust_alpha=config.ADJUST_ALPHA,
+        adjust_prior_weight=config.ADJUST_PRIOR,
+        efficiency_source="torvik",
+    )
+    if secondary_df.empty:
+        return None
+    return secondary_df
 
 
 # ── 1. build-features ──────────────────────────────────────────────
@@ -219,6 +245,28 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
     tree_path = save_tree_regressor(tree_regressor, feature_order=config.FEATURE_ORDER)
     click.echo(f"  Tree regressor: {tree_path}")
 
+    if blend_enabled() and efficiency_source == "gold":
+        click.echo("Training Torvik HistGradientBoostingRegressor (mu blend side)...")
+        torvik_df = load_multi_season_features(
+            season_list,
+            no_garbage=no_garbage,
+            adj_suffix=adj_suffix,
+            min_month_day=min_date,
+            efficiency_source="torvik",
+        )
+        torvik_df = torvik_df.dropna(subset=["homeScore", "awayScore"])
+        torvik_df = torvik_df[(torvik_df["homeScore"] != 0) | (torvik_df["awayScore"] != 0)]
+        X_t = get_feature_matrix(torvik_df).values.astype(np.float32)
+        y_t = get_targets(torvik_df)["spread_home"].values.astype(np.float32)
+        X_t = impute_column_means(X_t)
+        torvik_tree = train_hist_gradient_boosting_regressor(X_t, y_t)
+        torvik_tree_path = save_tree_regressor(
+            torvik_tree,
+            path=config.TORVIK_TREE_REGRESSOR_PATH,
+            feature_order=config.FEATURE_ORDER,
+        )
+        click.echo(f"  Torvik tree regressor: {torvik_tree_path}")
+
     # Train classifier
     click.echo("Training MLPClassifier (BCE)...")
     cls_hp = {"epochs": cls_epochs}
@@ -325,7 +373,8 @@ def predict_today(season: int, game_date: str | None):
     click.echo(f"  Games: {len(df)}")
 
     lines = load_lines(season)
-    preds = predict(df, lines_df=lines)
+    secondary_df = _build_secondary_mu_features_if_needed(season, df, game_date=game_date)
+    preds = predict(df, lines_df=lines, secondary_mu_features_df=secondary_df)
 
     json_path, csv_path = save_predictions(preds, game_date=game_date)
     click.echo(f"  JSON: {json_path}")
@@ -386,7 +435,8 @@ def predict_season(season: int):
     click.echo(f"  Games: {len(df)}")
 
     lines = load_lines(season)
-    preds = predict(df, lines_df=lines)
+    secondary_df = _build_secondary_mu_features_if_needed(season, df)
+    preds = predict(df, lines_df=lines, secondary_mu_features_df=secondary_df)
 
     json_path, csv_path = save_predictions(preds, game_date=f"season_{season}")
     click.echo(f"  JSON: {json_path}")
@@ -784,7 +834,8 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
         else:
             click.echo(f"  Games: {len(df)}")
             lines = load_lines(season)
-            preds = predict(df, lines_df=lines)
+            secondary_df = _build_secondary_mu_features_if_needed(season, df, game_date=game_date)
+            preds = predict(df, lines_df=lines, secondary_mu_features_df=secondary_df)
             json_path, csv_path = save_predictions(preds, game_date=game_date)
             click.echo(f"  JSON: {json_path}")
             click.echo(f"  CSV:  {csv_path}")

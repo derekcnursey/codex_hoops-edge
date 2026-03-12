@@ -1,31 +1,35 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2026-03-02",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "IU Indianapolis",
-      "edge_home_points": 1.979718804359436,
+      "edge_home_points": 2.4841148853302,
       "game_id": "2026_03_02_iu_indianapolis_cleveland_state",
       "home_team": "Cleveland State",
       "market_spread_home": 1.5,
-      "model_mu_home": 0.47971880435943604,
-      "pick_cover_prob": 0.5564636527536828,
-      "pick_ev_per_1": 0.06233970071157624,
-      "pick_fair_odds": -125.46066544680534,
-      "pick_prob_edge": 0.03265412894415898,
+      "model_mu_home": 0.9841148853302002,
+      "pick_cover_prob": 0.586192113364528,
+      "pick_ev_per_1": 0.119094034605008,
+      "pick_fair_odds": -141.6580331831402,
+      "pick_prob_edge": 0.0623825895550042,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5137253759510596,
-      "pred_sigma": 13.940773010253906,
+      "pred_home_win_prob": 0.5343735780147761,
+      "pred_sigma": 11.40755844116211,
       "start_time": "2026-03-03T00:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:18.101509Z",
+  "generated_at": "2026-03-12T15:18:47.561390Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

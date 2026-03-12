@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2023-12-27",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -11,55 +11,59 @@
       "game_id": "2023_12_27_grand_canyon_bethesda_university",
       "home_team": "Bethesda University",
       "market_spread_home": null,
-      "model_mu_home": -18.780202865600586,
+      "model_mu_home": -22.905672650417273,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.2067812179723394,
-      "pred_sigma": 22.968774795532227,
+      "pred_home_win_prob": 0.1571071077366465,
+      "pred_sigma": 22.759586334228516,
       "start_time": "2023-12-27T20:00:00.000Z"
     },
     {
       "away_team": "Morgan State",
-      "edge_home_points": -4.86100959777832,
+      "edge_home_points": -0.3520921388030729,
       "game_id": "2023_12_27_morgan_state_virginia",
       "home_team": "Virginia",
       "market_spread_home": -26.5,
-      "model_mu_home": 21.63899040222168,
-      "pick_cover_prob": 0.6342196442916135,
-      "pick_ev_per_1": 0.21078295728398933,
-      "pick_fair_odds": -173.3881096658008,
-      "pick_prob_edge": 0.11041012048208965,
+      "model_mu_home": 26.147907861196927,
+      "pick_cover_prob": 0.511304235510322,
+      "pick_ev_per_1": -0.02387373220756711,
+      "pick_fair_odds": -104.62628749079768,
+      "pick_prob_edge": -0.012505288299201833,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.9366322270709495,
-      "pred_sigma": 14.169966697692871,
+      "pred_home_win_prob": 0.9823369947821718,
+      "pred_sigma": 12.424160957336426,
       "start_time": "2023-12-28T00:00:00.000Z"
     },
     {
       "away_team": "Chicago State",
-      "edge_home_points": -1.6388368606567383,
+      "edge_home_points": 0.30203391583563644,
       "game_id": "2023_12_27_chicago_state_california_baptist",
       "home_team": "California Baptist",
       "market_spread_home": -10.5,
-      "model_mu_home": 8.861163139343262,
-      "pick_cover_prob": 0.5547419463957984,
-      "pick_ev_per_1": 0.059052806755615195,
-      "pick_fair_odds": -124.58886299874077,
-      "pick_prob_edge": 0.0309324225862746,
-      "pick_side": "AWAY",
+      "model_mu_home": 10.802033915835636,
+      "pick_cover_prob": 0.5083924175209911,
+      "pick_ev_per_1": -0.02943265745992618,
+      "pick_fair_odds": -103.41427505193104,
+      "pick_prob_edge": -0.015417106288532767,
+      "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7716457192795219,
-      "pred_sigma": 11.905723571777344,
+      "pred_home_win_prob": 0.7740999804407391,
+      "pred_sigma": 14.356436729431152,
       "start_time": "2023-12-28T03:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:16.985764Z",
+  "generated_at": "2026-03-12T15:18:46.387235Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

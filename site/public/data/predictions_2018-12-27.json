@@ -1,31 +1,35 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2018-12-27",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Kansas City",
-      "edge_home_points": -0.34724998474121094,
+      "edge_home_points": 1.9314556727467789,
       "game_id": "2018_12_27_kansas_city_creighton",
       "home_team": "Creighton",
       "market_spread_home": -18.5,
-      "model_mu_home": 18.15275001525879,
-      "pick_cover_prob": 0.5124967501434606,
-      "pick_ev_per_1": -0.021597113362484266,
-      "pick_fair_odds": -105.12683767631832,
-      "pick_prob_edge": -0.011312773666063203,
-      "pick_side": "AWAY",
+      "model_mu_home": 20.43145567274678,
+      "pick_cover_prob": 0.5301817720837074,
+      "pick_ev_per_1": 0.012165201250714186,
+      "pick_fair_odds": -112.84827632915295,
+      "pick_prob_edge": 0.0063722482741835895,
+      "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.9492672617199118,
-      "pred_sigma": 11.083684921264648,
+      "pred_home_win_prob": 0.7884510686464711,
+      "pred_sigma": 25.505577087402344,
       "start_time": "2018-12-28T01:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:14.412833Z",
+  "generated_at": "2026-03-12T15:18:44.419157Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

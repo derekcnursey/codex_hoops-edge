@@ -14,6 +14,7 @@ import torch
 
 from . import config
 from .architecture import MLPClassifier, MLPRegressor, MLPRegressorSplit
+from .efficiency_blend import blend_enabled, gold_weight_for_start_dates
 from .line_selection import select_preferred_lines
 from .sigma_calibration import apply_sigma_transform
 from .trainer import load_scaler, load_tree_regressor
@@ -126,6 +127,15 @@ def load_mu_regressor() -> tuple[object, list[str], str]:
     return regressor, feature_order, "mlp"
 
 
+def load_torvik_mu_regressor() -> tuple[object, list[str], str] | None:
+    """Load the secondary Torvik-backed point regressor when available."""
+    tree_path = config.TORVIK_TREE_REGRESSOR_PATH
+    if not tree_path.exists():
+        return None
+    model, feature_order, _ = load_tree_regressor(tree_path)
+    return model, feature_order, "hist_gradient_boosting"
+
+
 def _swap_feature_frame(features_df: pd.DataFrame, feature_order: list[str]) -> pd.DataFrame:
     """Swap home/away feature slots for neutral-site symmetrization.
 
@@ -192,6 +202,39 @@ def _predict_mu_values(mu_regressor: object, mu_model_type: str, X_raw: np.ndarr
     return mu_raw.numpy()
 
 
+def _symmetrize_neutral_mu(
+    mu: np.ndarray,
+    features_df: pd.DataFrame,
+    feature_order: list[str],
+    scaler,
+    mu_regressor: object,
+    mu_model_type: str,
+) -> np.ndarray:
+    """Enforce anti-symmetry for neutral-site point predictions."""
+    neutral_col = None
+    if "neutral_site" in features_df.columns:
+        neutral_col = "neutral_site"
+    elif "neutralSite" in features_df.columns:
+        neutral_col = "neutralSite"
+    if neutral_col is None:
+        return mu
+    neutral_mask = features_df[neutral_col].fillna(0).astype(float).to_numpy() == 1.0
+    if not neutral_mask.any():
+        return mu
+
+    X_df = features_df[feature_order].copy()
+    neutral_idx = np.flatnonzero(neutral_mask)
+    X_swap_df = _swap_feature_frame(X_df.iloc[neutral_idx], feature_order)
+    X_swap = _fill_nan_with_scaler_means(X_swap_df, scaler)
+    X_swap_scaled = scaler.transform(X_swap)
+    mu_swap = _predict_mu_values(mu_regressor, mu_model_type, X_swap, X_swap_scaled)
+
+    mu_out = mu.copy()
+    mu_orig = mu_out[neutral_idx].copy()
+    mu_out[neutral_idx] = (mu_orig - mu_swap) / 2.0
+    return mu_out
+
+
 def _postprocess_sigma(sigma: torch.Tensor) -> torch.Tensor:
     """Apply optional inference-time sigma sharpening while preserving positivity."""
     mode = config.SIGMA_CALIBRATION_MODE or ("cap" if config.SIGMA_CAP_MAX is not None else None)
@@ -212,6 +255,7 @@ def _postprocess_sigma(sigma: torch.Tensor) -> torch.Tensor:
 def predict(
     features_df: pd.DataFrame,
     lines_df: pd.DataFrame | None = None,
+    secondary_mu_features_df: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     """Generate predictions for a feature DataFrame.
 
@@ -248,7 +292,38 @@ def predict(
     X_scaled = scaler.transform(X)
     X_tensor = torch.tensor(X_scaled, dtype=torch.float32)
 
-    mu = _predict_mu_values(mu_regressor, mu_model_type, X, X_scaled)
+    mu_primary_raw = _predict_mu_values(mu_regressor, mu_model_type, X, X_scaled)
+    mu = _symmetrize_neutral_mu(
+        mu_primary_raw,
+        features_df,
+        feature_order,
+        scaler,
+        mu_regressor,
+        mu_model_type,
+    )
+
+    if blend_enabled() and secondary_mu_features_df is not None:
+        secondary_loaded = load_torvik_mu_regressor()
+        if secondary_loaded is not None:
+            sec_regressor, sec_feature_order, sec_model_type = secondary_loaded
+            assert sec_feature_order == feature_order, (
+                "Torvik mu regressor feature order does not match production feature order"
+            )
+            sec_aligned = secondary_mu_features_df.set_index("gameId").reindex(features_df["gameId"]).reset_index()
+            sec_df = sec_aligned[feature_order].copy()
+            sec_X = _fill_nan_with_scaler_means(sec_df, scaler)
+            sec_X_scaled = scaler.transform(sec_X)
+            mu_torvik = _predict_mu_values(sec_regressor, sec_model_type, sec_X, sec_X_scaled)
+            mu_torvik = _symmetrize_neutral_mu(
+                mu_torvik,
+                sec_aligned,
+                feature_order,
+                scaler,
+                sec_regressor,
+                sec_model_type,
+            )
+            gold_w = gold_weight_for_start_dates(features_df["startDate"])
+            mu = gold_w * mu + (1.0 - gold_w) * mu_torvik
 
     # MLP regressor remains the uncertainty model for sigma.
     _, log_sigma_raw = regressor(X_tensor)
@@ -264,7 +339,7 @@ def predict(
     logits = classifier(X_tensor)
     home_win_prob = torch.sigmoid(logits).numpy()
 
-    # Neutral-site safety: symmetrize slot orientation explicitly.
+    # Neutral-site safety: symmetrize slot orientation explicitly for sigma/probability.
     neutral_col = None
     if "neutral_site" in features_df.columns:
         neutral_col = "neutral_site"
@@ -293,18 +368,14 @@ def predict(
             logits_swap = classifier(X_swap_tensor)
             home_win_prob_swap = torch.sigmoid(logits_swap).numpy()
 
-            mu_orig = mu[neutral_idx].copy()
             sigma_orig = sigma[neutral_idx].copy()
             p_orig = home_win_prob[neutral_idx].copy()
 
-            mu[neutral_idx] = (mu_orig - mu_swap) / 2.0
             home_win_prob[neutral_idx] = (p_orig + (1.0 - home_win_prob_swap)) / 2.0
 
             # Symmetric mixture of A-vs-B and mirrored B-vs-A distributions.
-            sigma_var = (
-                0.5 * (sigma_orig ** 2 + sigma_swap ** 2)
-                + ((mu_orig + mu_swap) ** 2) / 4.0
-            )
+            mu_orig = mu_primary_raw[neutral_idx].copy()
+            sigma_var = 0.5 * (sigma_orig ** 2 + sigma_swap ** 2) + ((mu_orig + mu_swap) ** 2) / 4.0
             sigma[neutral_idx] = np.sqrt(np.maximum(sigma_var, 0.25)).astype(np.float32)
 
     # Build output — include team names if available

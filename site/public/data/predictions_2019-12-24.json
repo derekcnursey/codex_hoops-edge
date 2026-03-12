@@ -1,31 +1,35 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2019-12-24",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Ball State",
-      "edge_home_points": 1.0937074422836304,
+      "edge_home_points": -3.043693959982626,
       "game_id": "2019_12_24_ball_state_utep",
       "home_team": "UTEP",
       "market_spread_home": 2.5,
-      "model_mu_home": -1.4062925577163696,
-      "pick_cover_prob": 0.5259863960992882,
-      "pick_ev_per_1": 0.004155847098641141,
-      "pick_fair_odds": -110.96440941164694,
-      "pick_prob_edge": 0.0021768722897643755,
-      "pick_side": "HOME",
+      "model_mu_home": -5.543693959982626,
+      "pick_cover_prob": 0.6120239037324531,
+      "pick_ev_per_1": 0.1684092707619559,
+      "pick_fair_odds": -157.74783797773034,
+      "pick_prob_edge": 0.08821437992292924,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.4666020511917317,
-      "pred_sigma": 16.778676986694336,
+      "pred_home_win_prob": 0.3021041708180726,
+      "pred_sigma": 10.69471549987793,
       "start_time": "2019-12-24T06:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:15.137344Z",
+  "generated_at": "2026-03-12T15:18:44.941548Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

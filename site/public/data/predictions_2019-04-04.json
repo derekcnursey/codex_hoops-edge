@@ -1,48 +1,52 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2019-04-04",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Green Bay",
-      "edge_home_points": -1.3648152351379395,
+      "edge_home_points": 0.6416497230529785,
       "game_id": "2019_04_04_green_bay_marshall",
       "home_team": "Marshall",
       "market_spread_home": -5.5,
-      "model_mu_home": 4.1351847648620605,
-      "pick_cover_prob": 0.5519805298805707,
-      "pick_ev_per_1": 0.05378101159018034,
-      "pick_fair_odds": -123.20458522336726,
-      "pick_prob_edge": 0.028171006071046834,
-      "pick_side": "AWAY",
+      "model_mu_home": 6.1416497230529785,
+      "pick_cover_prob": 0.5270095026394437,
+      "pick_ev_per_1": 0.00610905049348337,
+      "pick_fair_odds": -111.42073795992336,
+      "pick_prob_edge": 0.0031999788299198473,
+      "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6539108109262918,
-      "pred_sigma": 10.445008277893066,
+      "pred_home_win_prob": 0.7416768009428086,
+      "pred_sigma": 9.470203399658203,
       "start_time": "2019-04-04T23:00:00.000Z"
     },
     {
       "away_team": "Lipscomb",
-      "edge_home_points": 2.6883535385131836,
+      "edge_home_points": -2.265495538711548,
       "game_id": "2019_04_04_lipscomb_texas",
       "home_team": "Texas",
       "market_spread_home": -1.5,
-      "model_mu_home": 4.188353538513184,
-      "pick_cover_prob": 0.6003511711365445,
-      "pick_ev_per_1": 0.14612496307885758,
-      "pick_fair_odds": -150.2196748189799,
-      "pick_prob_edge": 0.07654164732702062,
-      "pick_side": "HOME",
+      "model_mu_home": -0.7654955387115479,
+      "pick_cover_prob": 0.5878476272903992,
+      "pick_ev_per_1": 0.12225456119076206,
+      "pick_fair_odds": -142.62871360553632,
+      "pick_prob_edge": 0.06403810348087535,
+      "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6539923143363562,
-      "pred_sigma": 10.573405265808105,
+      "pred_home_win_prob": 0.4701008886085855,
+      "pred_sigma": 10.204395294189453,
       "start_time": "2019-04-04T23:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:14.863666Z",
+  "generated_at": "2026-03-12T15:18:44.752303Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

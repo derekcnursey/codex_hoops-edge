@@ -1,8 +1,8 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2024-12-27",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
@@ -11,15 +11,15 @@
       "game_id": "2024_12_27_arlington_baptist_baylor",
       "home_team": "Baylor",
       "market_spread_home": null,
-      "model_mu_home": 39.382442474365234,
+      "model_mu_home": 39.68183944829616,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.9651171811837393,
-      "pred_sigma": 21.71710968017578,
+      "pred_home_win_prob": 0.9070370726711932,
+      "pred_sigma": 30.0,
       "start_time": "2024-12-28T00:00:00.000Z"
     },
     {
@@ -28,21 +28,25 @@
       "game_id": "2024_12_27_cleary_university_duquesne",
       "home_team": "Duquesne",
       "market_spread_home": null,
-      "model_mu_home": 44.083412170410156,
+      "model_mu_home": 42.55357777262088,
       "pick_cover_prob": null,
       "pick_ev_per_1": null,
       "pick_fair_odds": null,
       "pick_prob_edge": null,
       "pick_side": null,
       "pick_spread_odds": null,
-      "pred_home_win_prob": 0.9650285409891692,
-      "pred_sigma": 24.324832916259766,
+      "pred_home_win_prob": 0.9663192070742659,
+      "pred_sigma": 23.262805938720703,
       "start_time": "2024-12-28T00:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:17.451644Z",
+  "generated_at": "2026-03-12T15:18:46.878249Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

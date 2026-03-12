@@ -1,7 +1,7 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "mu_model": "HistGradientBoosting",
   "sigma_model": "CurrentMLP",
@@ -984,8 +984,8 @@
     "2026-03-04"
   ],
   "rows_written": 41913,
-  "historical_files_deleted": 974,
-  "keep_current_season": false,
+  "historical_files_deleted": 863,
+  "keep_current_season": true,
   "holdout_seasons": [
     2019,
     2020,

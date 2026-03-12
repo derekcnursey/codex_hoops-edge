@@ -1,48 +1,52 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2022-03-27",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Miami",
-      "edge_home_points": 1.5102720260620117,
+      "edge_home_points": 0.7986965179443359,
       "game_id": "2022_03_27_miami_kansas",
       "home_team": "Kansas",
       "market_spread_home": -5.5,
-      "model_mu_home": 7.010272026062012,
-      "pick_cover_prob": 0.553303862600937,
-      "pick_ev_per_1": 0.056307374056334236,
-      "pick_fair_odds": -123.86582651522558,
-      "pick_prob_edge": 0.029494338791413166,
+      "model_mu_home": 6.298696517944336,
+      "pick_cover_prob": 0.5266920385604755,
+      "pick_ev_per_1": 0.005502982706362347,
+      "pick_fair_odds": -111.27893073224209,
+      "pick_prob_edge": 0.0028825147509516924,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7330461678464577,
-      "pred_sigma": 11.269591331481934,
+      "pred_home_win_prob": 0.7012634364919231,
+      "pred_sigma": 11.928496360778809,
       "start_time": "2022-03-27T18:20:00.000Z"
     },
     {
       "away_team": "Saint Peter's",
-      "edge_home_points": -1.1321845054626465,
+      "edge_home_points": -2.5711026191711426,
       "game_id": "2022_03_27_saint_peter_s_north_carolina",
       "home_team": "North Carolina",
       "market_spread_home": -8.5,
-      "model_mu_home": 7.3678154945373535,
-      "pick_cover_prob": 0.5411873700034515,
-      "pick_ev_per_1": 0.03317588818840744,
-      "pick_fair_odds": -117.95389547308727,
-      "pick_prob_edge": 0.017377846193927682,
+      "model_mu_home": 5.928897380828857,
+      "pick_cover_prob": 0.5985232420357218,
+      "pick_ev_per_1": 0.14263528025001437,
+      "pick_fair_odds": -149.08042126039487,
+      "pick_prob_edge": 0.07471371822619799,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.7495432017962269,
-      "pred_sigma": 10.946858406066895,
+      "pred_home_win_prob": 0.7174902275190638,
+      "pred_sigma": 10.303924560546875,
       "start_time": "2022-03-27T21:05:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:16.046642Z",
+  "generated_at": "2026-03-12T15:18:45.703605Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

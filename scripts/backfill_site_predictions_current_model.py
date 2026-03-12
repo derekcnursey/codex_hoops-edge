@@ -20,6 +20,7 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 
 from src import config
+from src.efficiency_blend import blend_enabled, gold_weight_for_start_dates
 from src.features import build_features, load_research_lines
 from src.infer import predict, save_predictions
 
@@ -87,6 +88,30 @@ def _season_dates(features_df: pd.DataFrame, season: int) -> list[str]:
     return date_strings
 
 
+def _build_secondary_mu_features_if_needed(
+    season: int,
+    daily: pd.DataFrame,
+    game_date: str,
+) -> pd.DataFrame | None:
+    if not blend_enabled() or daily.empty:
+        return None
+    if float(gold_weight_for_start_dates(daily["startDate"]).min()) >= 1.0:
+        return None
+    secondary = build_features(
+        season,
+        game_date=game_date,
+        no_garbage=True,
+        extra_features=config.EXTRA_FEATURES,
+        adjust_ff=config.ADJUST_FF,
+        adjust_alpha=config.ADJUST_ALPHA,
+        adjust_prior_weight=config.ADJUST_PRIOR,
+        efficiency_source="torvik",
+    )
+    if secondary.empty:
+        return None
+    return secondary
+
+
 def main() -> int:
     args = _parse_args()
 
@@ -128,7 +153,8 @@ def main() -> int:
             if daily.empty:
                 continue
 
-            preds = predict(daily, lines_df=lines_df)
+            secondary_df = _build_secondary_mu_features_if_needed(season, daily, game_date)
+            preds = predict(daily, lines_df=lines_df, secondary_mu_features_df=secondary_df)
             save_predictions(preds, game_date=game_date)
 
             total_dates += 1

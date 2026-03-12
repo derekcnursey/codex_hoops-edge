@@ -13,6 +13,7 @@ FEATURES_DIR = PROJECT_ROOT / "features"
 PREDICTIONS_DIR = PROJECT_ROOT / "predictions"
 SITE_DATA_DIR = PROJECT_ROOT / "site" / "public" / "data"
 TREE_REGRESSOR_PATH = CHECKPOINTS_DIR / "regressor_hgbr.pkl"
+TORVIK_TREE_REGRESSOR_PATH = CHECKPOINTS_DIR / "regressor_hgbr_torvik.pkl"
 
 # S3 lakehouse
 S3_BUCKET = "hoops-edge"
@@ -38,6 +39,9 @@ NO_GARBAGE = True
 # Efficiency source: "gold" (gold-layer adj efficiencies) or "torvik" (Torvik daily ratings)
 EFFICIENCY_SOURCE = "gold"
 PRODUCTION_GOLD_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage_priorreg_k5_v1"
+PRODUCTION_MU_BLEND_ENABLED = True
+PRODUCTION_MU_BLEND_START_DAY = 0   # Nov 1
+PRODUCTION_MU_BLEND_END_DAY = 75    # Jan 15
 
 # Seasons to exclude from training and evaluation (e.g. COVID-shortened 2021)
 EXCLUDE_SEASONS: list[int] = [2021]

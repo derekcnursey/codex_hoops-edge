@@ -22,6 +22,7 @@ import numpy as np
 import pandas as pd
 
 from src import config
+from src.efficiency_blend import blend_enabled, gold_weight_for_start_dates
 from src.infer import american_profit_per_1, american_to_breakeven, normal_cdf, prob_to_american
 from src.sigma_calibration import apply_sigma_transform
 
@@ -47,6 +48,19 @@ def _parse_args() -> argparse.Namespace:
         action="append",
         default=[],
         help="Additional benchmark directories to merge into the true walk-forward archive.",
+    )
+    parser.add_argument(
+        "--torvik-benchmark-dir",
+        type=Path,
+        default=None,
+        help="Optional Torvik benchmark directory for mu blending.",
+    )
+    parser.add_argument(
+        "--torvik-extra-benchmark-dir",
+        type=Path,
+        action="append",
+        default=[],
+        help="Additional Torvik benchmark directories for mu blending.",
     )
     parser.add_argument(
         "--site-data-dir",
@@ -230,6 +244,22 @@ def main() -> int:
         suffixes=("_mu", "_sigma"),
     )
     merged = merged.rename(columns={"pred_margin": "pred_margin_mu"})
+    if blend_enabled() and args.torvik_benchmark_dir is not None:
+        torvik_dirs = [args.torvik_benchmark_dir, *args.torvik_extra_benchmark_dir]
+        torvik_mu_df = _load_predictions(torvik_dirs, MU_MODEL)
+        torvik_cols = keys + ["pred_margin"]
+        torvik_mu_df = torvik_mu_df[torvik_cols].rename(columns={"pred_margin": "pred_margin_mu_torvik"})
+        merged = merged.merge(
+            torvik_mu_df,
+            on=keys,
+            how="inner",
+            validate="one_to_one",
+        )
+        gold_w = gold_weight_for_start_dates(merged["startDate"])
+        merged["pred_margin_mu"] = (
+            gold_w * merged["pred_margin_mu"].astype(float).to_numpy()
+            + (1.0 - gold_w) * merged["pred_margin_mu_torvik"].astype(float).to_numpy()
+        )
     merged["sigma_calibrated"] = _apply_sigma_mode(merged, args)
     merged["site_date"] = (
         pd.to_datetime(merged["startDate"], utc=True, errors="coerce")
@@ -249,6 +279,8 @@ def main() -> int:
             "source": "true_walkforward_historical",
             "benchmark_dir": str(args.benchmark_dir),
             "extra_benchmark_dirs": [str(p) for p in args.extra_benchmark_dir],
+            "torvik_benchmark_dir": str(args.torvik_benchmark_dir) if args.torvik_benchmark_dir else None,
+            "torvik_extra_benchmark_dirs": [str(p) for p in args.torvik_extra_benchmark_dir],
             "mu_model": MU_MODEL,
             "sigma_model": SIGMA_MODEL,
             "sigma_mode": args.sigma_mode,

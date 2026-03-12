@@ -1,48 +1,52 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2022-04-02",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Villanova",
-      "edge_home_points": -1.8489208221435547,
+      "edge_home_points": -4.145003795623779,
       "game_id": "2022_04_02_villanova_kansas",
       "home_team": "Kansas",
       "market_spread_home": -4.0,
-      "model_mu_home": 2.1510791778564453,
-      "pick_cover_prob": 0.561540446488255,
-      "pick_ev_per_1": 0.07203176147757762,
-      "pick_fair_odds": -128.071207934853,
-      "pick_prob_edge": 0.03773092267873113,
+      "model_mu_home": -0.1450037956237793,
+      "pick_cover_prob": 0.6313347973092268,
+      "pick_ev_per_1": 0.20527552213579658,
+      "pick_fair_odds": -171.24881673163335,
+      "pick_prob_edge": 0.10752527349970298,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.571496895984405,
-      "pred_sigma": 11.938075065612793,
+      "pred_home_win_prob": 0.4953193570204611,
+      "pred_sigma": 12.358733177185059,
       "start_time": "2022-04-02T22:09:00.000Z"
     },
     {
       "away_team": "North Carolina",
-      "edge_home_points": -1.2446472644805908,
+      "edge_home_points": -3.788967728614807,
       "game_id": "2022_04_02_north_carolina_duke",
       "home_team": "Duke",
       "market_spread_home": -4.5,
-      "model_mu_home": 3.255352735519409,
-      "pick_cover_prob": 0.5428189714090754,
-      "pick_ev_per_1": 0.03629076359914396,
-      "pick_fair_odds": -118.73173589072476,
-      "pick_prob_edge": 0.019009447599551588,
+      "model_mu_home": 0.7110322713851929,
+      "pick_cover_prob": 0.6413399349423765,
+      "pick_ev_per_1": 0.22437623943544605,
+      "pick_fair_odds": -178.81554079329595,
+      "pick_prob_edge": 0.11753041113285267,
       "pick_side": "AWAY",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.6107460893281713,
-      "pred_sigma": 11.574006080627441,
+      "pred_home_win_prob": 0.5270834662527664,
+      "pred_sigma": 10.465527534484863,
       "start_time": "2022-04-03T00:49:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:16.065222Z",
+  "generated_at": "2026-03-12T15:18:45.715268Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

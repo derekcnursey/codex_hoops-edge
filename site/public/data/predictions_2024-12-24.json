@@ -1,31 +1,35 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_neutralfix",
   "date": "2024-12-24",
   "extra_benchmark_dirs": [
-    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+    "artifacts/benchmarks/canonical_walkforward_priorreg_k5_repaired_lines_2026_neutralfix"
   ],
   "games": [
     {
       "away_team": "Murray State",
-      "edge_home_points": 1.7248859405517578,
+      "edge_home_points": 3.464552320940321,
       "game_id": "2024_12_24_murray_state_charlotte",
       "home_team": "Charlotte",
       "market_spread_home": 5.5,
-      "model_mu_home": -3.775114059448242,
-      "pick_cover_prob": 0.5752331143775666,
-      "pick_ev_per_1": 0.09817230926626352,
-      "pick_fair_odds": -135.4232483388264,
-      "pick_prob_edge": 0.0514235905680428,
+      "model_mu_home": -2.035447679059679,
+      "pick_cover_prob": 0.6496221307224458,
+      "pick_ev_per_1": 0.24018770410648738,
+      "pick_fair_odds": -185.40615366544262,
+      "pick_prob_edge": 0.12581260691292195,
       "pick_side": "HOME",
       "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.3389941776190518,
-      "pred_sigma": 9.09206485748291,
+      "pred_home_win_prob": 0.4106866106510403,
+      "pred_sigma": 9.015216827392578,
       "start_time": "2024-12-24T06:00:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T01:45:17.447171Z",
+  "generated_at": "2026-03-12T15:18:46.873803Z",
   "mu_model": "HistGradientBoosting",
   "sigma_mode": "raw",
   "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical"
+  "source": "true_walkforward_historical",
+  "torvik_benchmark_dir": "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_neutralfix",
+  "torvik_extra_benchmark_dirs": [
+    "artifacts/benchmarks/canonical_walkforward_v2_lgb_repaired_lines_2026_neutralfix"
+  ]
 }

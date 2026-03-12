@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src import config
 from src.dataset import load_multi_season_features
+from src.efficiency_blend import blend_enabled
 from src.features import get_feature_matrix, get_targets
 from src.trainer import (
     fit_scaler,
@@ -81,6 +82,25 @@ print("\nTraining HistGradientBoostingRegressor (mu)...")
 tree_regressor = train_hist_gradient_boosting_regressor(X, y_spread)
 tree_path = save_tree_regressor(tree_regressor, feature_order=config.FEATURE_ORDER)
 
+torvik_tree_path = None
+if blend_enabled():
+    print("\nTraining Torvik HistGradientBoostingRegressor (mu blend side)...")
+    torvik_df = load_multi_season_features(
+        SEASONS, no_garbage=True, adj_suffix=ADJ_SUFFIX,
+        efficiency_source="torvik",
+    )
+    torvik_df = torvik_df.dropna(subset=["homeScore", "awayScore"])
+    torvik_df = torvik_df[(torvik_df["homeScore"] != 0) | (torvik_df["awayScore"] != 0)]
+    X_t = get_feature_matrix(torvik_df).values.astype(np.float32)
+    X_t = impute_column_means(X_t)
+    y_t = get_targets(torvik_df)["spread_home"].values.astype(np.float32)
+    torvik_tree = train_hist_gradient_boosting_regressor(X_t, y_t)
+    torvik_tree_path = save_tree_regressor(
+        torvik_tree,
+        path=config.TORVIK_TREE_REGRESSOR_PATH,
+        feature_order=config.FEATURE_ORDER,
+    )
+
 # Train classifier with best-loss checkpointing
 print("\nTraining MLPClassifier (BCE)...")
 cls_hp_full = {**cls_hp, "epochs": 150}
@@ -93,4 +113,6 @@ print(f"  Efficiency source: {config.EFFICIENCY_SOURCE}")
 print(f"  Scaler: {config.ARTIFACTS_DIR / 'scaler.pkl'}")
 print(f"  Regressor: {config.CHECKPOINTS_DIR / 'regressor.pt'}")
 print(f"  Tree regressor: {tree_path}")
+if torvik_tree_path is not None:
+    print(f"  Torvik tree regressor: {torvik_tree_path}")
 print(f"  Classifier: {config.CHECKPOINTS_DIR / 'classifier.pt'}")
