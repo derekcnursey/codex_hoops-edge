@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { CSSProperties, useMemo, useState } from "react";
 import Layout from "../components/Layout";
-import { normalizeRows, displayTeam } from "../lib/data";
+import { displayTeam, formatAmericanOddsFromProb, normalizeRows } from "../lib/data";
 import {
   listFinalScoreFiles,
   listPerformancePredictionFiles,
@@ -25,6 +25,8 @@ type HistoryGame = {
   pick_team: string;
   market_spread_home: number | null;
   model_mu_home: number | null;
+  model_mu_home_raw: number | null;
+  pred_sigma: number | null;
   pick_prob_edge: number;
   ats_result: "win" | "loss" | "push" | null;
   has_book: boolean;
@@ -43,6 +45,7 @@ type SortKey =
   | "score"
   | "book"
   | "model"
+  | "ml"
   | "diff"
   | "ats"
   | "edge";
@@ -112,6 +115,7 @@ export const getServerSideProps: GetServerSideProps<HistoryProps> = async (
     const market_spread_home = pn(pred.market_spread_home);
     const rawMu = pn(pred.model_mu_home);
     const model_mu_home = rawMu !== null ? -rawMu : null; // Negate to book convention for display
+    const pred_sigma = pn(pred.pred_sigma);
     const pick_prob_edge = pn(pred.pick_prob_edge) ?? 0;
     const has_book = market_spread_home !== null;
 
@@ -147,6 +151,8 @@ export const getServerSideProps: GetServerSideProps<HistoryProps> = async (
       pick_team,
       market_spread_home,
       model_mu_home,
+      model_mu_home_raw: rawMu,
+      pred_sigma,
       pick_prob_edge,
       ats_result,
       has_book
@@ -253,6 +259,45 @@ function atsOrd(r: "win" | "loss" | "push" | null): number {
   return -1;
 }
 
+function homeWinProb(g: HistoryGame): number | null {
+  if (g.model_mu_home_raw === null || g.pred_sigma === null) return null;
+  const sigmaSafe = Math.max(g.pred_sigma, 0.5);
+  const x = g.model_mu_home_raw / sigmaSafe;
+  const sign = x < 0 ? -1 : 1;
+  const ax = Math.abs(x) / Math.sqrt(2);
+  const t = 1 / (1 + 0.3275911 * ax);
+  const erf =
+    sign *
+    (1 -
+      (((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t) *
+        Math.exp(-ax * ax));
+  const prob = 0.5 * (1 + erf);
+  return Math.min(Math.max(prob, 1e-6), 1 - 1e-6);
+}
+
+function renderMlFair(g: HistoryGame) {
+  const homeProb = homeWinProb(g);
+  if (homeProb === null) return "\u2014";
+  const awayProb = 1 - homeProb;
+  const awayOdds = formatAmericanOddsFromProb(awayProb);
+  const homeOdds = formatAmericanOddsFromProb(homeProb);
+  if (!awayOdds || !homeOdds) return "\u2014";
+  return (
+    <div
+      style={{
+        ...mono,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        lineHeight: 1.1
+      }}
+    >
+      <span style={{ color: "#64748b", fontSize: 11 }}>A {awayOdds}</span>
+      <span style={{ color: "#0f172a", fontSize: 11 }}>H {homeOdds}</span>
+    </div>
+  );
+}
+
 function sortVal(g: HistoryGame, key: SortKey): string | number {
   switch (key) {
     case "matchup":
@@ -270,6 +315,10 @@ function sortVal(g: HistoryGame, key: SortKey): string | number {
       return g.market_spread_home ?? -Infinity;
     case "model":
       return g.model_mu_home ?? -Infinity;
+    case "ml": {
+      const p = homeWinProb(g);
+      return p !== null ? Math.max(p, 1 - p) : -Infinity;
+    }
     case "diff":
       return g.model_mu_home !== null && g.market_spread_home !== null
         ? Math.abs(g.model_mu_home - g.market_spread_home)
@@ -289,6 +338,7 @@ const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
   { key: "score", label: "SCORE", align: "center" },
   { key: "book", label: "BOOK LINE", align: "center" },
   { key: "model", label: "MODEL", align: "center" },
+  { key: "ml", label: "ML FAIR", align: "center" },
   { key: "diff", label: "DIFF", align: "center" },
   { key: "ats", label: "ATS", align: "center" },
   { key: "edge", label: "EDGE", align: "center" }
@@ -890,6 +940,21 @@ export default function History({
                           {g.model_mu_home !== null
                             ? sp(g.model_mu_home)
                             : "\u2014"}
+                        </td>
+
+                        {/* ML FAIR */}
+                        <td
+                          style={{
+                            padding: "10px 14px",
+                            textAlign: "center",
+                            fontSize: 13,
+                            color: "#334155",
+                            borderBottom: bd,
+                            whiteSpace: "nowrap",
+                            opacity: dimmed ? 0.4 : 1
+                          }}
+                        >
+                          {renderMlFair(g)}
                         </td>
 
                         {/* DIFF */}

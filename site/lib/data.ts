@@ -5,6 +5,56 @@ export type DataFile = {
   filename: string;
 };
 
+function toFiniteNumber(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+  return null;
+}
+
+function erfApprox(x: number): number {
+  const sign = x < 0 ? -1 : 1;
+  const ax = Math.abs(x);
+  const t = 1 / (1 + 0.3275911 * ax);
+  const y =
+    1 -
+    (((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t) *
+      Math.exp(-ax * ax);
+  return sign * y;
+}
+
+function normalCdf(x: number): number {
+  return 0.5 * (1 + erfApprox(x / Math.sqrt(2)));
+}
+
+export function getModelMuHome(row: PredictionRow): number | null {
+  return toFiniteNumber(row.model_mu_home);
+}
+
+export function getPredSigma(row: PredictionRow): number | null {
+  return toFiniteNumber(row.pred_sigma);
+}
+
+export function getMuSigmaHomeWinProb(row: PredictionRow): number | null {
+  const mu = getModelMuHome(row);
+  const sigma = getPredSigma(row);
+  if (mu === null || sigma === null) return null;
+  const sigmaSafe = Math.max(sigma, 0.5);
+  return Math.min(Math.max(normalCdf(mu / sigmaSafe), 1e-6), 1 - 1e-6);
+}
+
+export function formatAmericanOddsFromProb(prob: number | null): string | null {
+  if (prob === null || prob <= 0 || prob >= 1) return null;
+  const odds =
+    prob >= 0.5 ? -100 * prob / (1 - prob) : 100 * (1 - prob) / prob;
+  const rounded = Math.round(odds);
+  return rounded > 0 ? `+${rounded}` : `${rounded}`;
+}
+
 export function normalizeRows(payload: unknown): PredictionRow[] {
   if (!payload) {
     return [];
