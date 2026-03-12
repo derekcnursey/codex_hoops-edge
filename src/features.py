@@ -110,8 +110,46 @@ def load_efficiency_ratings(
             f"Available: {list(df.columns)}"
         )
     df["rating_date"] = pd.to_datetime(df["rating_date"], errors="coerce")
+    df = _dedupe_efficiency_ratings(df)
     df = df.sort_values(["teamId", "rating_date"]).reset_index(drop=True)
     return df
+
+
+def _dedupe_efficiency_ratings(df: pd.DataFrame) -> pd.DataFrame:
+    """Collapse same-day duplicate team ratings by choosing the sane tempo row.
+
+    Some repaired 2026 gold tables contain duplicate `(teamId, rating_date)` rows
+    where one row has a plausible college-basketball tempo (roughly 45-85) and
+    another is an inflated multiple (for example 58 vs 117).  For feature builds
+    we only want one deterministic row per team/date.  Prefer a plausible tempo,
+    then the tempo closest to a normal D-I center, then the smaller tempo.
+    """
+    if df.empty or "adj_tempo" not in df.columns:
+        return df
+
+    dup_mask = df.duplicated(subset=["teamId", "rating_date"], keep=False)
+    if not dup_mask.any():
+        return df
+
+    out = df.copy()
+    tempo = pd.to_numeric(out["adj_tempo"], errors="coerce")
+    plausible = tempo.between(45.0, 85.0, inclusive="both")
+    out["_tempo_plausible"] = (~plausible).astype(int)
+    out["_tempo_distance"] = (tempo - 65.0).abs()
+    out["_tempo_numeric"] = tempo
+
+    out = out.sort_values(
+        [
+            "teamId",
+            "rating_date",
+            "_tempo_plausible",
+            "_tempo_distance",
+            "_tempo_numeric",
+        ],
+        kind="stable",
+    )
+    out = out.drop_duplicates(subset=["teamId", "rating_date"], keep="first")
+    return out.drop(columns=["_tempo_plausible", "_tempo_distance", "_tempo_numeric"])
 
 
 def load_boxscores(season: int) -> pd.DataFrame:
@@ -119,7 +157,63 @@ def load_boxscores(season: int) -> pd.DataFrame:
     tbl = s3_reader.read_silver_table(config.TABLE_FCT_GAME_TEAMS, season=season)
     if tbl.num_rows == 0:
         return pd.DataFrame()
-    return tbl.to_pandas()
+    df = tbl.to_pandas()
+    return _dedupe_boxscores(df)
+
+
+def _dedupe_boxscores(df: pd.DataFrame) -> pd.DataFrame:
+    """Collapse duplicate team-game boxscore rows deterministically.
+
+    In 2026 the boxscore spine contains repeated `(gameid, teamid)` rows where the
+    same per-game ratios are preserved but counting stats are scaled by x2/x3/x4/x5.
+    Those duplicates contaminate rolling secondary features because the same game is
+    effectively counted multiple times.  Keep the smallest-volume row for each
+    `(gameid, teamid)`, which corresponds to the sane single-game boxscore.
+    """
+    if df.empty or "gameid" not in df.columns or "teamid" not in df.columns:
+        return df
+
+    dup_mask = df.duplicated(subset=["gameid", "teamid"], keep=False)
+    if not dup_mask.any():
+        return df
+
+    out = df.copy()
+    count_cols = [
+        c
+        for c in [
+            "team_fg_made",
+            "team_fg_att",
+            "team_3fg_made",
+            "team_3fg_att",
+            "team_ft_made",
+            "team_ft_att",
+            "team_reb_off",
+            "team_reb_def",
+            "opp_fg_made",
+            "opp_fg_att",
+            "opp_3fg_made",
+            "opp_3fg_att",
+            "opp_ft_made",
+            "opp_ft_att",
+            "opp_reb_off",
+            "opp_reb_def",
+            "team_poss",
+            "opp_poss",
+        ]
+        if c in out.columns
+    ]
+    if not count_cols:
+        return out.drop_duplicates(subset=["gameid", "teamid"], keep="first")
+
+    volume = pd.DataFrame({c: pd.to_numeric(out[c], errors="coerce") for c in count_cols})
+    out["_volume_score"] = volume.fillna(0.0).sum(axis=1)
+
+    sort_cols = ["gameid", "teamid", "_volume_score"]
+    if "startdate" in out.columns:
+        sort_cols.append("startdate")
+    out = out.sort_values(sort_cols, kind="stable")
+    out = out.drop_duplicates(subset=["gameid", "teamid"], keep="first")
+    return out.drop(columns=["_volume_score"])
 
 
 def load_lines(season: int, table_name: str | None = None) -> pd.DataFrame:
