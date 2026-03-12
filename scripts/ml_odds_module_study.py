@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
 from pathlib import Path
 import sys
 
@@ -11,20 +10,12 @@ if str(ROOT) not in sys.path:
 
 import numpy as np
 import pandas as pd
-from sklearn.isotonic import IsotonicRegression
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import brier_score_loss, log_loss
 
 from src.ml_odds import mu_sigma_home_win_prob
 
 SITE_DATA = ROOT / "site" / "public" / "data"
-
-
-@dataclass(frozen=True)
-class Variant:
-    name: str
-    mode: str
-    calibrated: bool = False
 
 
 def _season_from_date(date_str: str) -> int:
@@ -59,6 +50,87 @@ def _bucket_table(df: pd.DataFrame, prob_col: str) -> pd.DataFrame:
         .reset_index()
     )
     return out
+
+
+def _is_post_dec15(date_series: pd.Series) -> pd.Series:
+    dt = pd.to_datetime(date_series)
+    return (dt.dt.month > 12) | ((dt.dt.month == 12) & (dt.dt.day >= 15)) | (dt.dt.month < 11)
+
+
+def _fit_beta_cap14(train: pd.DataFrame) -> LogisticRegression:
+    x = np.column_stack(
+        [
+            np.log(train["cap14_mu_sigma"].to_numpy()),
+            np.log1p(-train["cap14_mu_sigma"].to_numpy()),
+        ]
+    )
+    model = LogisticRegression(C=1e6, solver="lbfgs")
+    model.fit(x, train["home_win"].to_numpy())
+    return model
+
+
+def _predict_beta_cap14(model: LogisticRegression, test: pd.DataFrame) -> np.ndarray:
+    x = np.column_stack(
+        [
+            np.log(test["cap14_mu_sigma"].to_numpy()),
+            np.log1p(-test["cap14_mu_sigma"].to_numpy()),
+        ]
+    )
+    return np.clip(model.predict_proba(x)[:, 1], 1e-6, 1 - 1e-6)
+
+
+def _fit_meta_small(train: pd.DataFrame) -> LogisticRegression:
+    x = train[["mu", "sigma_cap14", "z14", "post_dec15", "abs_mu"]].to_numpy()
+    model = LogisticRegression(C=1.0, solver="lbfgs", max_iter=1000)
+    model.fit(x, train["home_win"].to_numpy())
+    return model
+
+
+def _predict_meta_small(model: LogisticRegression, test: pd.DataFrame) -> np.ndarray:
+    x = test[["mu", "sigma_cap14", "z14", "post_dec15", "abs_mu"]].to_numpy()
+    return np.clip(model.predict_proba(x)[:, 1], 1e-6, 1 - 1e-6)
+
+
+def _fit_phase_logistic_cap14(train: pd.DataFrame) -> dict[int, LogisticRegression]:
+    models: dict[int, LogisticRegression] = {}
+    for phase in (0, 1):
+        train_phase = train[train["post_dec15"] == phase]
+        if train_phase.empty or train_phase["home_win"].nunique() < 2:
+            continue
+        model = LogisticRegression(C=1e6, solver="lbfgs")
+        model.fit(train_phase[["z14"]].to_numpy(), train_phase["home_win"].to_numpy())
+        models[phase] = model
+    return models
+
+
+def _predict_phase_logistic_cap14(models: dict[int, LogisticRegression], test: pd.DataFrame) -> np.ndarray:
+    out = test["cap14_mu_sigma"].to_numpy().copy()
+    for phase in (0, 1):
+        mask = test["post_dec15"].to_numpy() == phase
+        if mask.sum() == 0 or phase not in models:
+            continue
+        out[mask] = models[phase].predict_proba(test.loc[mask, ["z14"]].to_numpy())[:, 1]
+    return np.clip(out, 1e-6, 1 - 1e-6)
+
+
+def _fit_phase_beta_cap14(train: pd.DataFrame) -> dict[int, LogisticRegression]:
+    models: dict[int, LogisticRegression] = {}
+    for phase in (0, 1):
+        train_phase = train[train["post_dec15"] == phase]
+        if train_phase.empty or train_phase["home_win"].nunique() < 2:
+            continue
+        models[phase] = _fit_beta_cap14(train_phase)
+    return models
+
+
+def _predict_phase_beta_cap14(models: dict[int, LogisticRegression], test: pd.DataFrame) -> np.ndarray:
+    out = test["cap14_mu_sigma"].to_numpy().copy()
+    for phase in (0, 1):
+        mask = test["post_dec15"].to_numpy() == phase
+        if mask.sum() == 0 or phase not in models:
+            continue
+        out[mask] = _predict_beta_cap14(models[phase], test.loc[mask])
+    return np.clip(out, 1e-6, 1 - 1e-6)
 
 
 def _load_dataset() -> pd.DataFrame:
@@ -110,14 +182,16 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     df = _load_dataset()
-    variants = [
-        Variant("raw_mu_sigma", "raw"),
-        Variant("cap14_mu_sigma", "cap14"),
-        Variant("cap17_mu_sigma", "cap17"),
-        Variant("const14_mu_sigma", "const14"),
-        Variant("logistic_cap17_z", "cap17", calibrated=True),
-        Variant("isotonic_cap17_z", "cap17", calibrated=True),
-    ]
+    date_series = pd.to_datetime(df["date"])
+    df["post_dec15"] = _is_post_dec15(df["date"]).astype(int)
+    df["sigma_cap14"] = np.minimum(df["sigma"].to_numpy(), 14.0)
+    df["sigma_cap17"] = np.minimum(df["sigma"].to_numpy(), 17.0)
+    df["z14"] = df["mu"] / df["sigma_cap14"].clip(lower=0.5)
+    df["z17"] = df["mu"] / df["sigma_cap17"].clip(lower=0.5)
+    df["abs_mu"] = df["mu"].abs()
+    df["raw_mu_sigma"] = np.asarray(mu_sigma_home_win_prob(df["mu"].to_numpy(), df["sigma"].to_numpy(), sigma_mode="raw"))
+    df["cap14_mu_sigma"] = np.asarray(mu_sigma_home_win_prob(df["mu"].to_numpy(), df["sigma"].to_numpy(), sigma_mode="cap14"))
+    df["cap17_mu_sigma"] = np.asarray(mu_sigma_home_win_prob(df["mu"].to_numpy(), df["sigma"].to_numpy(), sigma_mode="cap17"))
 
     eval_seasons = [2020, 2022, 2023, 2024, 2025, 2026]
     season_frames: list[pd.DataFrame] = []
@@ -128,31 +202,23 @@ def main() -> None:
         if train.empty or test.empty:
             continue
 
-        z_train_cap17 = train["mu"].to_numpy() / np.minimum(train["sigma"].to_numpy(), 17.0).clip(min=0.5)
-        y_train = train["home_win"].to_numpy()
-        logit = LogisticRegression(C=1e6, solver="lbfgs").fit(z_train_cap17.reshape(-1, 1), y_train)
-        isotonic = IsotonicRegression(out_of_bounds="clip").fit(z_train_cap17, y_train)
+        beta_cap14 = _fit_beta_cap14(train)
+        meta_small = _fit_meta_small(train)
+        phase_logit = _fit_phase_logistic_cap14(train)
+        phase_beta = _fit_phase_beta_cap14(train)
 
-        for variant in variants:
-            base_prob = np.asarray(
-                mu_sigma_home_win_prob(
-                    test["mu"].to_numpy(),
-                    test["sigma"].to_numpy(),
-                    sigma_mode=variant.mode,  # type: ignore[arg-type]
-                )
-            )
-            if variant.calibrated:
-                z_test = test["mu"].to_numpy() / np.minimum(test["sigma"].to_numpy(), 17.0).clip(min=0.5)
-                if variant.name == "logistic_cap17_z":
-                    prob = logit.predict_proba(z_test.reshape(-1, 1))[:, 1]
-                else:
-                    prob = isotonic.predict(z_test)
-                prob = np.clip(prob, 1e-6, 1 - 1e-6)
-            else:
-                prob = base_prob
+        variant_probs = {
+            "cap14_mu_sigma": test["cap14_mu_sigma"].to_numpy(),
+            "beta_cap14": _predict_beta_cap14(beta_cap14, test),
+            "meta_small_v1": _predict_meta_small(meta_small, test),
+            "phase_logistic_cap14": _predict_phase_logistic_cap14(phase_logit, test),
+            "phase_beta_cap14": _predict_phase_beta_cap14(phase_beta, test),
+            "raw_mu_sigma": test["raw_mu_sigma"].to_numpy(),
+        }
 
+        for variant_name, prob in variant_probs.items():
             frame = test.copy()
-            frame["variant"] = variant.name
+            frame["variant"] = variant_name
             frame["prob"] = prob
             season_frames.append(frame)
 
@@ -160,8 +226,7 @@ def main() -> None:
     season_metrics = []
     pooled_metrics = []
 
-    date_series = pd.to_datetime(study["date"])
-    dec15_mask = (date_series.dt.month > 12) | ((date_series.dt.month == 12) & (date_series.dt.day >= 15))
+    dec15_mask = _is_post_dec15(study["date"])
 
     for variant, grp in study.groupby("variant"):
         y = grp["home_win"].to_numpy()
@@ -223,19 +288,20 @@ def main() -> None:
         "Compared site-facing moneyline probability modules on the walk-forward archive only.",
         "",
         "Primary variants:",
-        "- raw_mu_sigma",
         "- cap14_mu_sigma",
-        "- cap17_mu_sigma",
-        "- const14_mu_sigma",
-        "- logistic_cap17_z",
-        "- isotonic_cap17_z",
+        "- beta_cap14",
+        "- meta_small_v1",
+        "- phase_logistic_cap14",
+        "- phase_beta_cap14",
+        "- raw_mu_sigma",
         "",
-        "Best practical result: cap14_mu_sigma",
+        "Best practical result: meta_small_v1",
         "",
         "Why:",
-        "- best pooled log loss and Brier among direct/simple paths",
-        "- best Dec 15+ proper scores among the direct paths",
-        "- avoids the additional flattening/complexity of the calibrated variants",
+        "- best pooled log loss and Brier",
+        "- best Dec 15+ proper scores",
+        "- uses only mu, sigma_cap14, z_cap14, abs(mu), and season phase",
+        "- beats cap14_mu_sigma consistently across evaluation seasons",
         "",
     ]
     (out_dir / "summary.md").write_text("\n".join(summary))

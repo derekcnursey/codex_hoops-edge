@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CSSProperties, useMemo, useState } from "react";
 import Layout from "../components/Layout";
 import {
+  getSiteHomeWinProbFromValues,
   displayTeam,
   formatAmericanOddsFromProb,
   normalizeRows,
@@ -263,19 +264,7 @@ function atsOrd(r: "win" | "loss" | "push" | null): number {
 }
 
 function homeWinProb(g: HistoryGame): number | null {
-  if (g.model_mu_home_raw === null || g.pred_sigma === null) return null;
-  const sigmaSafe = Math.max(Math.min(g.pred_sigma, 14), 0.5);
-  const x = g.model_mu_home_raw / sigmaSafe;
-  const sign = x < 0 ? -1 : 1;
-  const ax = Math.abs(x) / Math.sqrt(2);
-  const t = 1 / (1 + 0.3275911 * ax);
-  const erf =
-    sign *
-    (1 -
-      (((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t) *
-        Math.exp(-ax * ax));
-  const prob = 0.5 * (1 + erf);
-  return Math.min(Math.max(prob, 1e-6), 1 - 1e-6);
+  return getSiteHomeWinProbFromValues(g.model_mu_home_raw, g.pred_sigma, g.start_time);
 }
 
 function homeMlFair(g: HistoryGame): string | null {

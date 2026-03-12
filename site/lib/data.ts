@@ -6,6 +6,18 @@ export type DataFile = {
 };
 
 const SITE_ML_SIGMA_CAP = 14;
+type MlOddsMode = "cap14_mu_sigma" | "meta_small_v1";
+const SITE_ML_ODDS_MODE: MlOddsMode = "meta_small_v1";
+const META_SMALL_V1 = {
+  intercept: 0.020175630994879585,
+  coefficients: {
+    mu: 0.15059080225978677,
+    sigma_cap14: -0.008192640820978753,
+    z14: 0.08477442454897068,
+    post_dec15: 0.0740213341463982,
+    abs_mu: 0.004037300255673246,
+  },
+} as const;
 
 function toFiniteNumber(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value)) {
@@ -33,6 +45,32 @@ function normalCdf(x: number): number {
   return 0.5 * (1 + erfApprox(x / Math.sqrt(2)));
 }
 
+function logistic(x: number): number {
+  if (x >= 0) {
+    const z = Math.exp(-x);
+    return 1 / (1 + z);
+  }
+  const z = Math.exp(x);
+  return z / (1 + z);
+}
+
+function isPostDec15(value: unknown): boolean {
+  if (typeof value !== "string" || !value) return false;
+  const dt = new Date(value);
+  if (Number.isNaN(dt.getTime())) return false;
+  const et = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).formatToParts(dt);
+  const month = Number(et.find((p) => p.type === "month")?.value ?? "0");
+  const day = Number(et.find((p) => p.type === "day")?.value ?? "0");
+  if (month === 11) return false;
+  if (month === 12) return day >= 15;
+  return month >= 1 && month <= 3;
+}
+
 export function getModelMuHome(row: PredictionRow): number | null {
   return toFiniteNumber(row.model_mu_home);
 }
@@ -41,12 +79,49 @@ export function getPredSigma(row: PredictionRow): number | null {
   return toFiniteNumber(row.pred_sigma);
 }
 
-export function getMuSigmaHomeWinProb(row: PredictionRow): number | null {
-  const mu = getModelMuHome(row);
-  const sigma = getPredSigma(row);
+export function getCap14MuSigmaHomeWinProbFromValues(
+  mu: number | null,
+  sigma: number | null,
+): number | null {
   if (mu === null || sigma === null) return null;
   const sigmaSafe = Math.max(Math.min(sigma, SITE_ML_SIGMA_CAP), 0.5);
   return Math.min(Math.max(normalCdf(mu / sigmaSafe), 1e-6), 1 - 1e-6);
+}
+
+export function getMuSigmaHomeWinProb(row: PredictionRow): number | null {
+  return getCap14MuSigmaHomeWinProbFromValues(getModelMuHome(row), getPredSigma(row));
+}
+
+export function getSiteHomeWinProbFromValues(
+  mu: number | null,
+  sigma: number | null,
+  startTime: string | null,
+): number | null {
+  const baseline = getCap14MuSigmaHomeWinProbFromValues(mu, sigma);
+  if (baseline === null || SITE_ML_ODDS_MODE === "cap14_mu_sigma") return baseline;
+
+  const sigmaCap14 = Math.max(Math.min(sigma as number, SITE_ML_SIGMA_CAP), 0.5);
+  const absMu = Math.abs(mu as number);
+  const z14 = (mu as number) / sigmaCap14;
+  const postDec15 = isPostDec15(startTime) ? 1 : 0;
+  const score =
+    META_SMALL_V1.intercept +
+    META_SMALL_V1.coefficients.mu * (mu as number) +
+    META_SMALL_V1.coefficients.sigma_cap14 * sigmaCap14 +
+    META_SMALL_V1.coefficients.z14 * z14 +
+    META_SMALL_V1.coefficients.post_dec15 * postDec15 +
+    META_SMALL_V1.coefficients.abs_mu * absMu;
+  return Math.min(Math.max(logistic(score), 1e-6), 1 - 1e-6);
+}
+
+export function getSiteHomeWinProb(row: PredictionRow): number | null {
+  const startTime =
+    typeof row.start_time === "string"
+      ? row.start_time
+      : typeof row.startDate === "string"
+        ? row.startDate
+        : null;
+  return getSiteHomeWinProbFromValues(getModelMuHome(row), getPredSigma(row), startTime);
 }
 
 export function formatAmericanOddsFromProb(prob: number | null): string | null {

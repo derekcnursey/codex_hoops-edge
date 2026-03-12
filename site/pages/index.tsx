@@ -5,7 +5,7 @@ import {
   PredictionRow,
   displayTeam,
   formatAmericanOddsFromProb,
-  getMuSigmaHomeWinProb,
+  getSiteHomeWinProb,
 } from "../lib/data";
 import {
   getLatestPredictionFile,
@@ -147,7 +147,7 @@ function edge(row: PredictionRow): number {
 }
 
 function homeMlFair(row: PredictionRow): string | null {
-  const homeProb = getMuSigmaHomeWinProb(row);
+  const homeProb = getSiteHomeWinProb(row);
   if (homeProb === null) return null;
   return formatAmericanOddsFromProb(homeProb);
 }
