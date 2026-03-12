@@ -5,6 +5,8 @@ export type DataFile = {
   filename: string;
 };
 
+const SITE_ML_SIGMA_CAP = 14;
+
 function toFiniteNumber(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value)) {
     return value;
@@ -43,7 +45,7 @@ export function getMuSigmaHomeWinProb(row: PredictionRow): number | null {
   const mu = getModelMuHome(row);
   const sigma = getPredSigma(row);
   if (mu === null || sigma === null) return null;
-  const sigmaSafe = Math.max(sigma, 0.5);
+  const sigmaSafe = Math.max(Math.min(sigma, SITE_ML_SIGMA_CAP), 0.5);
   return Math.min(Math.max(normalCdf(mu / sigmaSafe), 1e-6), 1 - 1e-6);
 }
 

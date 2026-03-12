@@ -2,7 +2,11 @@ import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { CSSProperties, useMemo, useState } from "react";
 import Layout from "../components/Layout";
-import { displayTeam, formatAmericanOddsFromProb, normalizeRows } from "../lib/data";
+import {
+  displayTeam,
+  formatAmericanOddsFromProb,
+  normalizeRows,
+} from "../lib/data";
 import {
   listFinalScoreFiles,
   listPerformancePredictionFiles,
@@ -260,7 +264,7 @@ function atsOrd(r: "win" | "loss" | "push" | null): number {
 
 function homeWinProb(g: HistoryGame): number | null {
   if (g.model_mu_home_raw === null || g.pred_sigma === null) return null;
-  const sigmaSafe = Math.max(g.pred_sigma, 0.5);
+  const sigmaSafe = Math.max(Math.min(g.pred_sigma, 14), 0.5);
   const x = g.model_mu_home_raw / sigmaSafe;
   const sign = x < 0 ? -1 : 1;
   const ax = Math.abs(x) / Math.sqrt(2);
