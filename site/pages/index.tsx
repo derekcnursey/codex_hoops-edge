@@ -89,6 +89,21 @@ function renderRankedTeam(teamName: string, rank: number | null) {
   );
 }
 
+function renderMatchupSeparator() {
+  return (
+    <span
+      style={{
+        fontSize: 11,
+        color: "#64748b",
+        margin: "0 4px",
+        textTransform: "lowercase",
+      }}
+    >
+      at
+    </span>
+  );
+}
+
 function formatGameTime(row: PredictionRow): string | null {
   const raw = row.start_time ?? row.startDate;
   if (!raw || typeof raw !== "string") return null;
@@ -445,7 +460,7 @@ export default function Home({ date, rows }: HomeProps) {
                             <span style={{ fontWeight: str(row.pick_side).toUpperCase() === "AWAY" ? 700 : 400 }}>
                               {renderRankedTeam(str(row.away_team), row.away_team_rank)}
                             </span>
-                            {" @ "}
+                            {renderMatchupSeparator()}
                             <span style={{ fontWeight: str(row.pick_side).toUpperCase() === "HOME" ? 700 : 400 }}>
                               {renderRankedTeam(str(row.home_team), row.home_team_rank)}
                             </span>

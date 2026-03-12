@@ -229,6 +229,21 @@ function renderRankedTeam(teamName: string, rank: number | null) {
   );
 }
 
+function renderMatchupSeparator() {
+  return (
+    <span
+      style={{
+        fontSize: 11,
+        color: "#64748b",
+        margin: "0 4px",
+        textTransform: "lowercase",
+      }}
+    >
+      at
+    </span>
+  );
+}
+
 /* sort helpers */
 
 function atsOrd(r: "win" | "loss" | "push" | null): number {
@@ -804,7 +819,7 @@ export default function History({
                           <span style={{ fontWeight: g.pick_side === "AWAY" ? 700 : 400 }}>
                             {renderRankedTeam(g.away_team, g.away_team_rank)}
                           </span>
-                          {" @ "}
+                          {renderMatchupSeparator()}
                           <span style={{ fontWeight: g.pick_side === "HOME" ? 700 : 400 }}>
                             {renderRankedTeam(g.home_team, g.home_team_rank)}
                           </span>
