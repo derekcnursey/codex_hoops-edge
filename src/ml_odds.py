@@ -8,6 +8,18 @@ from typing import Literal
 import numpy as np
 
 MlSigmaMode = Literal["raw", "cap14", "cap17", "const14"]
+MlOddsMode = Literal["cap14_mu_sigma", "meta_small_v1"]
+
+META_SMALL_V1 = {
+    "intercept": 0.020175630994879585,
+    "coefficients": {
+        "mu": 0.15059080225978677,
+        "sigma_cap14": -0.008192640820978753,
+        "z14": 0.08477442454897068,
+        "post_dec15": 0.0740213341463982,
+        "abs_mu": 0.004037300255673246,
+    },
+}
 
 
 def normal_cdf(x: np.ndarray | float) -> np.ndarray | float:
@@ -55,6 +67,58 @@ def mu_sigma_home_win_prob(
     if np.isscalar(mu_home) and np.isscalar(sigma):
         return float(p)
     return p
+
+
+def logistic(x: np.ndarray | float) -> np.ndarray | float:
+    """Numerically stable logistic transform."""
+    x_arr = np.asarray(x, dtype=float)
+    out = np.empty_like(x_arr, dtype=float)
+    pos = x_arr >= 0
+    neg = ~pos
+    out[pos] = 1.0 / (1.0 + np.exp(-x_arr[pos]))
+    exp_x = np.exp(x_arr[neg])
+    out[neg] = exp_x / (1.0 + exp_x)
+    if np.isscalar(x):
+        return float(out)
+    return out
+
+
+def site_home_win_prob_from_mu_sigma(
+    mu_home: np.ndarray | float,
+    sigma: np.ndarray | float,
+    *,
+    start_month: int,
+    start_day: int,
+    odds_mode: MlOddsMode = "meta_small_v1",
+) -> np.ndarray | float:
+    """Match the site-facing ML probability path.
+
+    The current site starts from the cap14 mu+sigma baseline and optionally
+    applies the small logistic correction layer (``meta_small_v1``).
+    """
+    baseline = mu_sigma_home_win_prob(mu_home, sigma, sigma_mode="cap14")
+    if odds_mode == "cap14_mu_sigma":
+        return baseline
+    if odds_mode != "meta_small_v1":
+        raise ValueError(f"Unsupported ML odds mode: {odds_mode}")
+
+    sigma_cap14 = stabilize_sigma_for_ml(sigma, mode="cap14")
+    mu_arr = np.asarray(mu_home, dtype=float)
+    sigma_arr = np.asarray(sigma_cap14, dtype=float)
+    z14 = mu_arr / sigma_arr
+    post_dec15 = 1.0 if (start_month > 12 or start_month < 11 or (start_month == 12 and start_day >= 15) or start_month in (1, 2, 3)) else 0.0
+    score = (
+        META_SMALL_V1["intercept"]
+        + META_SMALL_V1["coefficients"]["mu"] * mu_arr
+        + META_SMALL_V1["coefficients"]["sigma_cap14"] * sigma_arr
+        + META_SMALL_V1["coefficients"]["z14"] * z14
+        + META_SMALL_V1["coefficients"]["post_dec15"] * post_dec15
+        + META_SMALL_V1["coefficients"]["abs_mu"] * np.abs(mu_arr)
+    )
+    prob = np.clip(logistic(score), 1e-6, 1 - 1e-6)
+    if np.isscalar(mu_home) and np.isscalar(sigma):
+        return float(prob)
+    return prob
 
 
 def fair_american_odds(prob: float | np.ndarray) -> float | np.ndarray:
