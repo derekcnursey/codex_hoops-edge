@@ -44,7 +44,8 @@ RANKINGS_PATH = DATA_DIR / "rankings_2026.json"
 CURRENT_SEASON = 2026
 
 LEAF_RE = re.compile(r"^\((\s*\d+)\)\s+(.*?)(?:[─┐┘]|$)")
-NODE_RE = re.compile(r"([A-Za-z0-9&'()./\- ]+?)\s+(\d+)%")
+NODE_RE = re.compile(r"(\s*)([A-Za-z0-9&'()./\- ]+?)\s+(\d+)%")
+CHAMPION_RE = re.compile(r"^(.*?[├└]──\s*)(.*?)(\s+★ CHAMPION.*)$")
 
 
 @dataclass
@@ -359,7 +360,17 @@ def _fit_team_and_pct(label: str, prob: float, width: int) -> str:
     text = f"{label} {pct}"
     if width <= 0:
         return text
-    return text.ljust(max(width, len(text)))
+    if len(text) > width:
+        min_label_width = width - len(pct) - 1
+        if min_label_width <= 0:
+            return pct.rjust(width)
+        if len(label) > min_label_width:
+            if min_label_width <= 3:
+                label = label[:min_label_width]
+            else:
+                label = label[: min_label_width - 3] + "..."
+        text = f"{label} {pct}"
+    return text.ljust(width)
 
 
 def _update_bracket_lines(lines: list[str], internals: list[BracketNode]) -> list[str]:
@@ -374,8 +385,9 @@ def _update_bracket_lines(lines: list[str], internals: list[BracketNode]) -> lis
         if not match:
             continue
         start, end = match.span()
-        span_len = end - start
-        replacement = _fit_team_and_pct(winner, node.game_probs[winner], span_len)
+        leading = match.group(1)
+        span_len = end - start - len(leading)
+        replacement = leading + _fit_team_and_pct(winner, node.game_probs[winner], span_len)
         updated[row_idx] = line[:start] + replacement + line[end:]
     return updated
 
@@ -383,11 +395,12 @@ def _update_bracket_lines(lines: list[str], internals: list[BracketNode]) -> lis
 def _update_champion_line(lines: list[str], winner: str, prob: float) -> list[str]:
     updated = list(lines)
     for row_idx, line in enumerate(lines):
-        star_idx = line.find("★ CHAMPION")
-        if star_idx == -1:
+        match = CHAMPION_RE.match(line)
+        if not match:
             continue
-        replacement = _fit_team_and_pct(winner, prob, star_idx)
-        updated[row_idx] = replacement + line[star_idx:]
+        prefix, middle, suffix = match.groups()
+        replacement = _fit_team_and_pct(winner, prob, len(middle))
+        updated[row_idx] = prefix + replacement + suffix
         break
     return updated
 
