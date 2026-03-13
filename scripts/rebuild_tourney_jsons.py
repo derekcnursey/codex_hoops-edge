@@ -36,6 +36,7 @@ from build_rankings_json import _load_latest_ratings
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "site" / "public" / "data"
+BRACKETS_TEMPLATE_PATH = DATA_DIR / "brackets_2026_template.json"
 BRACKETS_PATH = DATA_DIR / "brackets_2026.json"
 TOURNEYS_PATH = DATA_DIR / "tourneys_2026.json"
 RANKINGS_PATH = DATA_DIR / "rankings_2026.json"
@@ -57,6 +58,7 @@ class BracketNode:
     left: "BracketNode | None" = None
     right: "BracketNode | None" = None
     probs: dict[str, float] | None = None
+    game_probs: dict[str, float] | None = None
 
     @property
     def is_leaf(self) -> bool:
@@ -103,7 +105,11 @@ def _parse_bracket_lines(lines: list[str]) -> tuple[BracketNode, list[BracketNod
 
         node_m = None if "CHAMPION" in line else NODE_RE.search(line)
         if node_m:
-            ci = node_m.start()
+            left_connector_idx = min(
+                (idx for idx in (line.find("├"), line.find("└"), line.find("┌")) if idx != -1),
+                default=-1,
+            )
+            ci = left_connector_idx if left_connector_idx != -1 else node_m.start()
             co = max(line.rfind("┐"), line.rfind("┘"))
             internals.append(BracketNode(row=row, ci=ci, co=co, label=node_m.group(1).strip()))
 
@@ -122,12 +128,24 @@ def _parse_bracket_lines(lines: list[str]) -> tuple[BracketNode, list[BracketNod
 
     root_candidates = [n for n in internals if n.co == -1]
     if not root_candidates:
-        # top-most internal node with no parent
+        # top-most internal node(s) with no parent; some bracket templates omit the
+        # final root and connect the two semifinal winners directly to the champion line.
         child_ids = {id(n.left) for n in internals if n.left} | {id(n.right) for n in internals if n.right}
         root_candidates = [n for n in internals if id(n) not in child_ids]
-    if len(root_candidates) != 1:
-        raise ValueError(f"Expected one root, found {len(root_candidates)}")
-    return root_candidates[0], internals
+    if len(root_candidates) == 1:
+        return root_candidates[0], internals
+    if len(root_candidates) == 2:
+        top, bottom = sorted(root_candidates, key=lambda n: n.row)
+        virtual_root = BracketNode(
+            row=(top.row + bottom.row) // 2,
+            ci=-1,
+            co=-1,
+            label="FINAL",
+            left=top,
+            right=bottom,
+        )
+        return virtual_root, internals
+    raise ValueError(f"Expected one root, found {len(root_candidates)}")
 
 
 def _iter_leaves(node: BracketNode) -> list[BracketNode]:
@@ -288,6 +306,7 @@ def _compute_team_distributions(
         return node.probs
     if node.is_leaf:
         node.probs = {node.team: 1.0}
+        node.game_probs = {node.team: 1.0}
         return node.probs
     assert node.left is not None and node.right is not None
     left_probs = _compute_team_distributions(
@@ -297,7 +316,9 @@ def _compute_team_distributions(
         node.right, team_lookup, pair_cache, feature_order, scaler, tree_model, sigma_model, sigma_param, month, day
     )
     out: dict[str, float] = {}
+    game_out: dict[str, float] = {}
     for team_l, p_l in left_probs.items():
+        cond_win_l = 0.0
         for team_r, p_r in right_probs.items():
             key = (team_l, team_r)
             if key not in pair_cache:
@@ -314,10 +335,18 @@ def _compute_team_distributions(
                 )
                 pair_cache[(team_l, team_r)] = prob_l
                 pair_cache[(team_r, team_l)] = 1.0 - prob_l
+            cond_win_l += p_r * pair_cache[key]
             matchup_prob = p_l * p_r
             out[team_l] = out.get(team_l, 0.0) + matchup_prob * pair_cache[key]
             out[team_r] = out.get(team_r, 0.0) + matchup_prob * pair_cache[(team_r, team_l)]
+        game_out[team_l] = cond_win_l
+    for team_r, p_r in right_probs.items():
+        cond_win_r = 0.0
+        for team_l, p_l in left_probs.items():
+            cond_win_r += p_l * pair_cache[(team_r, team_l)]
+        game_out[team_r] = cond_win_r
     node.probs = out
+    node.game_probs = game_out
     return out
 
 
@@ -327,12 +356,10 @@ def _format_pct(prob: float) -> int:
 
 def _fit_team_and_pct(label: str, prob: float, width: int) -> str:
     pct = f"{_format_pct(prob)}%"
-    min_needed = len(pct) + 1
-    if width <= min_needed:
-        return pct.rjust(width)
-    max_label = width - min_needed
-    trimmed = label[:max_label].rstrip()
-    return f"{trimmed} {pct}".ljust(width)
+    text = f"{label} {pct}"
+    if width <= 0:
+        return text
+    return text.ljust(max(width, len(text)))
 
 
 def _update_bracket_lines(lines: list[str], internals: list[BracketNode]) -> list[str]:
@@ -340,7 +367,7 @@ def _update_bracket_lines(lines: list[str], internals: list[BracketNode]) -> lis
     by_row = {node.row: node for node in internals}
     for row_idx, line in enumerate(lines):
         node = by_row.get(row_idx)
-        if node is None or not node.probs:
+        if node is None or not node.probs or not node.game_probs:
             continue
         winner, prob = max(node.probs.items(), key=lambda kv: kv[1])
         match = NODE_RE.search(line)
@@ -348,7 +375,7 @@ def _update_bracket_lines(lines: list[str], internals: list[BracketNode]) -> lis
             continue
         start, end = match.span()
         span_len = end - start
-        replacement = _fit_team_and_pct(winner, prob, span_len)
+        replacement = _fit_team_and_pct(winner, node.game_probs[winner], span_len)
         updated[row_idx] = line[:start] + replacement + line[end:]
     return updated
 
@@ -406,7 +433,8 @@ def main() -> None:
     parser.add_argument("--day", type=int, default=13)
     args = parser.parse_args()
 
-    brackets = _read_json(BRACKETS_PATH)
+    brackets_source = BRACKETS_TEMPLATE_PATH if BRACKETS_TEMPLATE_PATH.exists() else BRACKETS_PATH
+    brackets = _read_json(brackets_source)
     tourneys = _read_json(TOURNEYS_PATH)
     team_inputs = _load_team_inputs()
     team_lookup = {row["team"]: row for _, row in team_inputs.iterrows()}
@@ -429,11 +457,14 @@ def main() -> None:
         )
         conf_probs[conf["name"]] = probs
         winner, prob = max(probs.items(), key=lambda kv: kv[1])
+        champion_game_prob = prob
+        if root.game_probs and winner in root.game_probs:
+            champion_game_prob = root.game_probs[winner]
         seed_lookup = {team["team"]: team["seed"] for team in source_conf["teams"]}
         conf["champion"] = winner
         conf["champion_seed"] = seed_lookup.get(winner)
         conf["bracket_lines"] = _update_bracket_lines(conf["bracket_lines"], internals)
-        conf["bracket_lines"] = _update_champion_line(conf["bracket_lines"], winner, prob)
+        conf["bracket_lines"] = _update_champion_line(conf["bracket_lines"], winner, champion_game_prob)
 
     # Rebuild tourneys JSON
     new_confs: list[dict[str, Any]] = []

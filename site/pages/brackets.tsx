@@ -122,7 +122,7 @@ export default function Brackets({ data }: Props) {
             marginBottom: 16,
           }}
         >
-          Bracket line percentages are per-game advancement odds. Conference title odds live on the Tourneys page.
+          Bracket line percentages are win odds for that displayed matchup. Conference title odds live on the Tourneys page.
         </div>
 
         {/* -- Controls -- */}
