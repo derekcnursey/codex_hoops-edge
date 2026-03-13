@@ -43,7 +43,7 @@ RANKINGS_PATH = DATA_DIR / "rankings_2026.json"
 CURRENT_SEASON = 2026
 
 LEAF_RE = re.compile(r"^\((\s*\d+)\)\s+(.*?)(?:[─┐┘]|$)")
-NODE_RE = re.compile(r"[├└]──\s*(.+?)\s+(\d+)%")
+NODE_RE = re.compile(r"([A-Za-z0-9&'()./\- ]+?)\s+(\d+)%")
 
 
 @dataclass
@@ -101,9 +101,9 @@ def _parse_bracket_lines(lines: list[str]) -> tuple[BracketNode, list[BracketNod
             co = max(line.rfind("┐"), line.rfind("┘"))
             leaves.append(BracketNode(row=row, ci=-1, co=co, seed=seed, team=team))
 
-        node_m = NODE_RE.search(line)
+        node_m = None if "CHAMPION" in line else NODE_RE.search(line)
         if node_m:
-            ci = max(line.find("├"), line.find("└"))
+            ci = node_m.start()
             co = max(line.rfind("┐"), line.rfind("┘"))
             internals.append(BracketNode(row=row, ci=ci, co=co, label=node_m.group(1).strip()))
 
@@ -325,6 +325,16 @@ def _format_pct(prob: float) -> int:
     return int(round(prob * 100.0))
 
 
+def _fit_team_and_pct(label: str, prob: float, width: int) -> str:
+    pct = f"{_format_pct(prob)}%"
+    min_needed = len(pct) + 1
+    if width <= min_needed:
+        return pct.rjust(width)
+    max_label = width - min_needed
+    trimmed = label[:max_label].rstrip()
+    return f"{trimmed} {pct}".ljust(width)
+
+
 def _update_bracket_lines(lines: list[str], internals: list[BracketNode]) -> list[str]:
     updated = list(lines)
     by_row = {node.row: node for node in internals}
@@ -338,9 +348,20 @@ def _update_bracket_lines(lines: list[str], internals: list[BracketNode]) -> lis
             continue
         start, end = match.span()
         span_len = end - start
-        replacement = f"{winner} {_format_pct(prob)}%"
-        replacement = replacement[:span_len].ljust(span_len)
+        replacement = _fit_team_and_pct(winner, prob, span_len)
         updated[row_idx] = line[:start] + replacement + line[end:]
+    return updated
+
+
+def _update_champion_line(lines: list[str], winner: str, prob: float) -> list[str]:
+    updated = list(lines)
+    for row_idx, line in enumerate(lines):
+        star_idx = line.find("★ CHAMPION")
+        if star_idx == -1:
+            continue
+        replacement = _fit_team_and_pct(winner, prob, star_idx)
+        updated[row_idx] = replacement + line[star_idx:]
+        break
     return updated
 
 
@@ -412,6 +433,7 @@ def main() -> None:
         conf["champion"] = winner
         conf["champion_seed"] = seed_lookup.get(winner)
         conf["bracket_lines"] = _update_bracket_lines(conf["bracket_lines"], internals)
+        conf["bracket_lines"] = _update_champion_line(conf["bracket_lines"], winner, prob)
 
     # Rebuild tourneys JSON
     new_confs: list[dict[str, Any]] = []
