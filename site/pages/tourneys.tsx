@@ -151,6 +151,10 @@ export default function Tourneys({ data }: Props) {
   }
 
   const hrbCount = data.conferences.filter((c) => c.has_hrb_odds).length;
+  const methodologyLabel =
+    data.methodology.simulations && data.methodology.simulations > 0
+      ? `${Math.round(data.methodology.simulations / 1000)}K sims`
+      : "exact bracket";
 
   return (
     <Layout>
@@ -179,7 +183,7 @@ export default function Tourneys({ data }: Props) {
           </h1>
           <span style={{ ...mono, fontSize: 13, color: "#64748b" }}>
             {data.conferences.length} conferences &middot; {hrbCount} with HRB
-            odds &middot; 50K sims
+            odds &middot; {methodologyLabel}
           </span>
         </div>
 
