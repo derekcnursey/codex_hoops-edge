@@ -221,12 +221,30 @@ def load_lines(season: int, table_name: str | None = None) -> pd.DataFrame:
 
     Defaults to the legacy production source ``fct_lines``.
     """
-    if table_name is None:
-        table_name = config.TABLE_FCT_LINES
-    tbl = s3_reader.read_silver_table(table_name, season=season)
-    if tbl.num_rows == 0:
-        return pd.DataFrame()
-    return tbl.to_pandas()
+    requested_table = table_name or config.TABLE_FCT_LINES
+    tbl = s3_reader.read_silver_table(requested_table, season=season)
+    lines = tbl.to_pandas() if tbl.num_rows else pd.DataFrame()
+
+    if requested_table != config.TABLE_FCT_LINES:
+        return lines
+
+    from . import hrb_odds
+
+    if not hrb_odds.live_overlay_enabled_for_season(season):
+        return lines
+
+    games = load_games(season)
+    if games.empty:
+        return lines
+
+    try:
+        hrb_lines = hrb_odds.fetch_hrb_lines_for_games(games)
+    except Exception:
+        return lines
+
+    if hrb_lines.empty:
+        return lines
+    return pd.concat([lines, hrb_lines], ignore_index=True, sort=False)
 
 
 def load_research_lines(season: int, table_name: str | None = None) -> pd.DataFrame:

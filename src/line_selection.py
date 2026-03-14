@@ -15,11 +15,12 @@ NUMERIC_LINE_COLS = [
 
 def _provider_rank(provider: pd.Series) -> pd.Series:
     provider = provider.fillna("")
-    rank = pd.Series(3, index=provider.index, dtype=int)
-    rank.loc[provider == "consensus"] = 0
-    rank.loc[provider == "Draft Kings"] = 1
-    rank.loc[provider == "ESPN BET"] = 2
-    rank.loc[provider == "Bovada"] = 4
+    rank = pd.Series(4, index=provider.index, dtype=int)
+    rank.loc[provider == "Hard Rock Bet"] = 0
+    rank.loc[provider == "consensus"] = 1
+    rank.loc[provider == "Draft Kings"] = 2
+    rank.loc[provider == "ESPN BET"] = 3
+    rank.loc[provider == "Bovada"] = 5
     return rank
 
 
@@ -107,11 +108,12 @@ def select_preferred_lines(lines_df: pd.DataFrame) -> pd.DataFrame:
     """Build one preferred line row per game.
 
     Preference order:
-      1. Synthetic or upstream consensus, when at least two books have spreads.
-      2. Draft Kings
-      3. ESPN BET
-      4. Any non-Bovada provider
-      5. Bovada
+      1. Hard Rock Bet
+      2. Synthetic or upstream consensus, when at least two books have spreads.
+      3. Draft Kings
+      4. ESPN BET
+      5. Any non-Bovada provider
+      6. Bovada
     """
     if lines_df is None or lines_df.empty:
         return pd.DataFrame()
@@ -134,8 +136,8 @@ def select_preferred_lines(lines_df: pd.DataFrame) -> pd.DataFrame:
             _prov_rank=_provider_rank(lines["provider"]) if "provider" in lines.columns else 99,
         )
         .sort_values(
-            ["_has_spread", "_has_home_ml", "_has_away_ml", "_has_total", "_prov_rank", "provider"],
-            ascending=[False, False, False, False, True, True],
+            ["_has_spread", "_prov_rank", "_has_home_ml", "_has_away_ml", "_has_total", "provider"],
+            ascending=[False, True, False, False, False, True],
             kind="mergesort",
         )
         .drop_duplicates(subset=["gameId"], keep="first")

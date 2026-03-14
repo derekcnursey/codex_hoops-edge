@@ -1,6 +1,6 @@
 {
-  "current_gold_key": "gold/team_adjusted_efficiencies_no_garbage/season=2026/asof=2026-03-13/part-repaired-v1.parquet",
-  "priorreg_gold_key": "gold/team_adjusted_efficiencies_no_garbage_priorreg_k5_v1/season=2026/asof=2026-03-13/part-repaired-v1.parquet",
-  "current_rows": 38224,
-  "priorreg_rows": 38224
+  "current_gold_key": "gold/team_adjusted_efficiencies_no_garbage/season=2026/asof=2026-03-14/part-repaired-v1.parquet",
+  "priorreg_gold_key": "gold/team_adjusted_efficiencies_no_garbage_priorreg_k5_v1/season=2026/asof=2026-03-14/part-repaired-v1.parquet",
+  "current_rows": 38954,
+  "priorreg_rows": 38954
 }

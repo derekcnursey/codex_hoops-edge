@@ -28,6 +28,11 @@ TABLE_FCT_RATINGS = "fct_ratings_adjusted"
 TABLE_FCT_LINES = "fct_lines"
 TABLE_FCT_LINES_REPAIRED = "fct_lines_repaired_v1"
 RESEARCH_LINES_TABLE = os.getenv("HOOPS_RESEARCH_LINES_TABLE", TABLE_FCT_LINES_REPAIRED)
+HRB_LIVE_ODDS_ENABLED = os.getenv("HOOPS_HRB_LIVE_ODDS_ENABLED", "1") != "0"
+HRB_MATCH_LOOKAHEAD_DAYS = int(os.getenv("HOOPS_HRB_LOOKAHEAD_DAYS", "7"))
+HRB_MATCH_LOOKBACK_HOURS = int(os.getenv("HOOPS_HRB_LOOKBACK_HOURS", "6"))
+HRB_MATCH_TIME_TOLERANCE_HOURS = float(os.getenv("HOOPS_HRB_TIME_TOLERANCE_HOURS", "6"))
+HRB_HTTP_TIMEOUT_SECS = int(os.getenv("HOOPS_HRB_HTTP_TIMEOUT_SECS", "20"))
 
 # Rolling average parameters
 ROLLING_WINDOW = 15  # number of games for exponential decay
