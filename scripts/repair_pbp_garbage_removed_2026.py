@@ -75,6 +75,14 @@ def _list_parquet_keys(client, bucket: str, prefix: str) -> list[str]:
     return sorted(o["Key"] for o in resp.get("Contents", []) if o["Key"].endswith(".parquet"))
 
 
+def _date_in_range(value: str, start_date: str | None, end_date: str | None) -> bool:
+    if start_date and value < start_date:
+        return False
+    if end_date and value > end_date:
+        return False
+    return True
+
+
 def _read_parquet_bytes(client, bucket: str, key: str) -> pa.Table:
     obj = client.get_object(Bucket=bucket, Key=key)
     return pq.read_table(io.BytesIO(obj["Body"].read()))
@@ -93,6 +101,8 @@ def _write_repaired_silver(
     cfg,
     season: int,
     output_dir: Path,
+    start_date: str | None = None,
+    end_date: str | None = None,
 ) -> list[CandidatePart]:
     client = _s3_client(cfg.region)
     s3 = S3IO(cfg.bucket, cfg.region)
@@ -101,6 +111,8 @@ def _write_repaired_silver(
 
     for prefix in _list_date_prefixes(client, cfg.bucket, season):
         date = prefix.split("date=")[1].rstrip("/")
+        if not _date_in_range(date, start_date, end_date):
+            continue
         keys = _list_parquet_keys(client, cfg.bucket, prefix)
         candidates: list[tuple[CandidatePart, pa.Table]] = []
         for key in keys:
@@ -199,6 +211,8 @@ def main() -> None:
         default=str(ETL_ROOT / "config.yaml"),
     )
     parser.add_argument("--output-dir", type=Path, default=_default_output_dir())
+    parser.add_argument("--start-date", type=str, default=None)
+    parser.add_argument("--end-date", type=str, default=None)
     args = parser.parse_args()
 
     output_dir = args.output_dir
@@ -211,7 +225,13 @@ def main() -> None:
     cfg.raw["gold"]["adjusted_efficiencies"]["preseason_regression"] = 0.30
 
     print(f"Repairing {SOURCE_TABLE} season {args.season} into {REPAIRED_TABLE}...")
-    audit_rows = _write_repaired_silver(cfg, args.season, output_dir)
+    audit_rows = _write_repaired_silver(
+        cfg,
+        args.season,
+        output_dir,
+        start_date=args.start_date,
+        end_date=args.end_date,
+    )
     selected_count = sum(1 for r in audit_rows if r.selected)
     print(f"  wrote repaired silver partitions for {selected_count} dates")
 

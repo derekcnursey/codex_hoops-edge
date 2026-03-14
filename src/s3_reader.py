@@ -96,6 +96,21 @@ def _get_latest_asof_prefix(base_prefix: str, bucket: str = config.S3_BUCKET) ->
     return asof_prefixes[0] if asof_prefixes else None
 
 
+def get_latest_gold_asof(
+    table_name: str,
+    season: Optional[int] = None,
+    bucket: str = config.S3_BUCKET,
+) -> Optional[str]:
+    """Return the latest gold asof partition value for a table."""
+    base = f"{config.GOLD_PREFIX}/{table_name}/"
+    if season is not None:
+        base = f"{config.GOLD_PREFIX}/{table_name}/season={season}/"
+    latest = _get_latest_asof_prefix(base, bucket=bucket)
+    if not latest or "asof=" not in latest:
+        return None
+    return latest.rstrip("/").split("asof=")[-1]
+
+
 def read_silver_table(
     table_name: str,
     season: Optional[int] = None,
