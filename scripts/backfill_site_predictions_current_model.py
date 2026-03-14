@@ -93,6 +93,8 @@ def _build_secondary_mu_features_if_needed(
     daily: pd.DataFrame,
     game_date: str,
 ) -> pd.DataFrame | None:
+    if config.EFFICIENCY_SOURCE != "gold":
+        return None
     if not blend_enabled() or daily.empty:
         return None
     if float(gold_weight_for_start_dates(daily["startDate"]).min()) >= 1.0:

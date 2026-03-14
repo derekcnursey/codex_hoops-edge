@@ -30,6 +30,15 @@ ADJ_SUFFIX = f"adj_a{config.ADJUST_ALPHA}_p{config.ADJUST_PRIOR}"
 SEASONS = [season for season in range(2015, 2026) if season not in config.EXCLUDE_SEASONS]
 VAL_FRAC = 0.15  # best-loss checkpointing
 
+
+def _production_regressor_hparams(base: dict, efficiency_source: str) -> dict:
+    """Use a safer sigma fit when training on the gold-backed feature set."""
+    hp = {**base, "epochs": 150}
+    if efficiency_source == "gold":
+        hp["lr"] = min(float(hp.get("lr", 1e-3)), 1e-3)
+        hp["batch_size"] = min(int(hp.get("batch_size", 1024)), 1024)
+    return hp
+
 # Load best hparams from session 12
 with open(config.ARTIFACTS_DIR / "best_hparams.json") as f:
     best_hp = json.load(f)
@@ -53,6 +62,7 @@ df = load_multi_season_features(
     efficiency_source=config.EFFICIENCY_SOURCE,
 )
 df = df.dropna(subset=["homeScore", "awayScore"])
+df = df[(df["homeScore"] != 0) | (df["awayScore"] != 0)]
 print(f"  Training samples: {len(df)}")
 
 # Extract feature matrix and targets
@@ -73,7 +83,7 @@ X_scaled = scaler.transform(X)
 
 # Train regressor with best-loss checkpointing
 print("\nTraining MLPRegressor (Gaussian NLL)...")
-reg_hp_full = {**reg_hp, "epochs": 150}
+reg_hp_full = _production_regressor_hparams(reg_hp, config.EFFICIENCY_SOURCE)
 regressor = train_regressor(X_scaled, y_spread, hparams=reg_hp_full, val_frac=VAL_FRAC)
 save_checkpoint(regressor, "regressor", hparams=reg_hp,
                 feature_order=config.FEATURE_ORDER)

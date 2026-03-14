@@ -260,12 +260,26 @@ def _exclude_training_seasons(seasons: list[int]) -> list[int]:
     return [season for season in seasons if season not in config.EXCLUDE_SEASONS]
 
 
+def _production_regressor_hparams(
+    efficiency_source: str,
+    reg_epochs: int,
+) -> dict[str, int | float]:
+    """Keep the gold-backed sigma fit on a stable learning-rate/batch-size regime."""
+    hp: dict[str, int | float] = {"epochs": reg_epochs}
+    if efficiency_source == "gold":
+        hp["lr"] = 1e-3
+        hp["batch_size"] = 1024
+    return hp
+
+
 def _build_secondary_mu_features_if_needed(
     season: int,
     primary_df: pd.DataFrame,
     game_date: str | None = None,
 ) -> pd.DataFrame | None:
     """Build Torvik-side features only when the blend schedule needs them."""
+    if config.EFFICIENCY_SOURCE != "gold":
+        return None
     if not blend_enabled() or primary_df.empty:
         return None
     if float(gold_weight_for_start_dates(primary_df["startDate"]).min()) >= 1.0:
@@ -449,7 +463,7 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
 
     # Train regressor
     click.echo("Training MLPRegressor (Gaussian NLL)...")
-    reg_hp = {"epochs": reg_epochs}
+    reg_hp = _production_regressor_hparams(efficiency_source, reg_epochs)
     regressor = train_regressor(X_scaled, y_spread, hparams=reg_hp)
     save_checkpoint(regressor, "regressor", hparams=reg_hp, subdir=ckpt_subdir)
 
