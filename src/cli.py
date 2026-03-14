@@ -865,7 +865,7 @@ def _get_etl_root() -> Path:
     return etl
 
 
-def _run(cmd: list[str], cwd: Path, label: str, extra_env: dict[str, str] | None = None) -> None:
+def _run(cmd: list[str], cwd: Path, label: str) -> None:
     """Run a subprocess, abort on failure.
 
     Strips VIRTUAL_ENV from env when cwd is outside the project root so that
@@ -883,20 +883,10 @@ def _run(cmd: list[str], cwd: Path, label: str, extra_env: dict[str, str] | None
                 if line and not line.startswith("#") and "=" in line:
                     key, _, val = line.partition("=")
                     env[key.strip()] = val.strip().strip("'\"")
-    if extra_env:
-        env = dict(os.environ if env is None else env)
-        env.update(extra_env)
     result = subprocess.run(cmd, cwd=cwd, env=env)
     if result.returncode != 0:
         click.echo(f"FAILED: {label} (exit {result.returncode})", err=True)
         sys.exit(result.returncode)
-
-
-def _lookback_window(end_date: str, lookback_days: int) -> tuple[str, str]:
-    end_dt = datetime.strptime(end_date, "%Y-%m-%d").date()
-    days = max(1, lookback_days)
-    start_dt = end_dt - timedelta(days=days - 1)
-    return start_dt.isoformat(), end_dt.isoformat()
 
 
 @cli.command("daily-update")
@@ -918,26 +908,7 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
         game_date = _today_et()
 
     etl_root = _get_etl_root()
-    transform_start_date, transform_end_date = _lookback_window(
-        game_date, config.DAILY_ETL_LOOKBACK_DAYS
-    )
-    etl_env = {
-        "CBBD_ETL_ROLLING_WINDOW_DAYS": str(config.DAILY_ETL_LOOKBACK_DAYS),
-        "CBBD_ETL_MAX_CONCURRENCY": str(config.DAILY_ETL_MAX_CONCURRENCY),
-        "CBBD_ETL_RATE_LIMIT_PER_SEC": str(config.DAILY_ETL_RATE_LIMIT_PER_SEC),
-        "CBBD_ETL_FANOUT_BATCH_SIZE": str(config.DAILY_ETL_FANOUT_BATCH_SIZE),
-    }
     click.echo(f"=== Daily update for {game_date} (season {season}) ===")
-    click.echo(
-        f"  ETL / transform window: {transform_start_date} → {transform_end_date} "
-        f"({config.DAILY_ETL_LOOKBACK_DAYS} day lookback)"
-    )
-    click.echo(
-        "  ETL ingest settings: "
-        f"concurrency={config.DAILY_ETL_MAX_CONCURRENCY}, "
-        f"rate={config.DAILY_ETL_RATE_LIMIT_PER_SEC}/sec, "
-        f"fanout_batch={config.DAILY_ETL_FANOUT_BATCH_SIZE}"
-    )
 
     # ── Step 1: ETL ingest ─────────────────────────────────────────
     if not skip_etl:
@@ -953,7 +924,6 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
              "--only-endpoints", endpoints],
             cwd=etl_root,
             label="ETL incremental ingest",
-            extra_env=etl_env,
         )
 
     # ── Steps 2-3: Silver + Gold transforms ────────────────────────
@@ -963,29 +933,20 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
         click.echo("\n[2/6] Silver transforms (PBP enriched + flat tables)...")
         _run(
             ["poetry", "run", "python", "scripts/build_pbp_plays_enriched.py",
-             "--season", str(season),
-             "--start-date", transform_start_date,
-             "--end-date", transform_end_date,
-             "--replace-existing-dates"],
+             "--season", str(season)],
             cwd=etl_root,
             label="build_pbp_plays_enriched",
         )
         _run(
             ["poetry", "run", "python", "scripts/build_pbp_game_teams_flat.py",
-             "--season", str(season),
-             "--start-date", transform_start_date,
-             "--end-date", transform_end_date,
-             "--replace-existing-dates"],
+             "--season", str(season)],
             cwd=etl_root,
             label="build_pbp_game_teams_flat",
         )
         _run(
             ["poetry", "run", "python", "scripts/build_pbp_game_teams_flat.py",
              "--season", str(season), "--exclude-garbage-time",
-             "--output-table", "fct_pbp_game_teams_flat_garbage_removed",
-             "--start-date", transform_start_date,
-             "--end-date", transform_end_date,
-             "--replace-existing-dates"],
+             "--output-table", "fct_pbp_game_teams_flat_garbage_removed"],
             cwd=etl_root,
             label="build_pbp_game_teams_flat (no garbage)",
         )
@@ -1006,16 +967,7 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
         if repair_script.exists():
             click.echo(f"  Refreshing repaired no-garbage gold tables for season {season}...")
             _run(
-                [
-                    sys.executable,
-                    str(repair_script),
-                    "--season",
-                    str(season),
-                    "--start-date",
-                    transform_start_date,
-                    "--end-date",
-                    transform_end_date,
-                ],
+                [sys.executable, str(repair_script), "--season", str(season)],
                 cwd=config.PROJECT_ROOT,
                 label=f"repair_pbp_garbage_removed_{season}",
             )
@@ -1042,14 +994,18 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
     click.echo("\nChecking gold data freshness...")
     try:
         from . import s3_reader
-        latest_asof = s3_reader.get_latest_gold_asof(
+        gold_tbl = s3_reader.read_gold_table(
             "team_adjusted_efficiencies_no_garbage", season=season
         )
-        if latest_asof:
-            game_dt = pd.Timestamp(game_date)
-            asof_dt = pd.Timestamp(latest_asof)
-            days_stale = (game_dt - asof_dt).days
-            click.echo(f"  Gold ratings through: {latest_asof} ({days_stale} day(s) before {game_date})")
+        gold_df = gold_tbl.to_pandas()
+        import pandas as _pd
+        gold_df["rating_date"] = _pd.to_datetime(gold_df["rating_date"], errors="coerce")
+        max_date = gold_df["rating_date"].max()
+        if _pd.notna(max_date):
+            max_date_str = max_date.strftime("%Y-%m-%d")
+            game_dt = _pd.Timestamp(game_date)
+            days_stale = (game_dt - max_date).days
+            click.echo(f"  Gold ratings through: {max_date_str} ({days_stale} day(s) before {game_date})")
             if days_stale > 2:
                 click.echo(
                     f"  WARNING: Gold data is {days_stale} days stale! "
@@ -1090,15 +1046,7 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
 
         finals_script = script_dir / "s3_finals_to_json.py"
         if finals_script.exists():
-            _run(
-                [
-                    sys.executable,
-                    str(finals_script),
-                    "--date",
-                    game_date,
-                    "--lookback-days",
-                    str(config.FINAL_SCORES_LOOKBACK_DAYS),
-                ],
+            _run([sys.executable, str(finals_script), "--date", game_date],
                  cwd=config.PROJECT_ROOT, label="s3_finals_to_json")
         click.echo("  Publish pipeline complete.")
 

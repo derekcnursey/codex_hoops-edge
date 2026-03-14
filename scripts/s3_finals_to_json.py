@@ -7,7 +7,7 @@ Usage:
   s3_finals_to_json.py --backfill START END    # backfill mode: all games in date range
 
 Daily mode (--date) fetches final scores for yesterday and any recent dates
-(default last 4 days) that are missing. This is the mode used by the daily pipeline.
+(last 7 days) that are missing. This is the mode used by the daily pipeline.
 
 Match mode (--all) scans predictions/json/ for predictions_YYYY-MM-DD.json files.
 For each date before today, loads actual game results from S3 and writes
@@ -16,7 +16,6 @@ final_scores_{date}.json to both predictions/json/ and site/public/data/.
 Backfill mode fetches all games from S3 for each date in [START, END]
 and writes final_scores files directly, without requiring prediction files.
 """
-import argparse
 import json
 import os
 import re
@@ -253,8 +252,8 @@ def write_final_scores(pred_date: str, payload: dict) -> None:
         print(f"Wrote {out_path}")
 
 
-def run_daily_mode(target_date: str, lookback_days: int = 4) -> int:
-    """Daily mode: fetch final scores for recent dates only."""
+def run_daily_mode(target_date: str) -> int:
+    """Daily mode: fetch final scores for recent dates only (last 7 days)."""
     today_d = date.fromisoformat(target_date)
     pred_dates = list_prediction_dates()
 
@@ -262,8 +261,8 @@ def run_daily_mode(target_date: str, lookback_days: int = 4) -> int:
         print("No prediction files found in predictions/json/", file=sys.stderr)
         return 1
 
-    days = max(1, lookback_days)
-    cutoff = (today_d - timedelta(days=days)).isoformat()
+    # Only look at the last 7 days (covers yesterday + any recent gaps)
+    cutoff = (today_d - timedelta(days=7)).isoformat()
     recent_dates = [d for d in pred_dates if cutoff <= d < target_date]
     if not recent_dates:
         print(f"No recent prediction dates to process (window: {cutoff} to {target_date}).")
@@ -442,26 +441,20 @@ def run_backfill(start_str: str, end_str: str) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build final_scores JSON from S3 fct_games.")
-    parser.add_argument("--date", dest="target_date", default=None, help="Daily mode target date (YYYY-MM-DD)")
-    parser.add_argument("--all", action="store_true", help="Process all prediction dates before today")
-    parser.add_argument("--lookback-days", type=int, default=4, help="Recent-day window for daily mode")
-    parser.add_argument(
-        "--backfill",
-        nargs=2,
-        metavar=("START", "END"),
-        help="Backfill all dates in [START, END]",
-    )
-    args = parser.parse_args()
-
-    if args.backfill:
-        start, end = args.backfill
-        return run_backfill(start, end)
-    if args.all:
+    if len(sys.argv) >= 2 and sys.argv[1] == "--backfill":
+        if len(sys.argv) < 4:
+            print("Usage: s3_finals_to_json.py --backfill START END", file=sys.stderr)
+            print("  e.g.: s3_finals_to_json.py --backfill 2025-11-01 2026-02-25", file=sys.stderr)
+            return 1
+        return run_backfill(sys.argv[2], sys.argv[3])
+    if len(sys.argv) >= 2 and sys.argv[1] == "--all":
         return run_match_mode()
-
-    target = args.target_date or date.today().isoformat()
-    return run_daily_mode(target, lookback_days=args.lookback_days)
+    # Default: daily mode (--date DATE or today)
+    if len(sys.argv) >= 2 and sys.argv[1] == "--date":
+        target = sys.argv[2] if len(sys.argv) >= 3 else date.today().isoformat()
+    else:
+        target = date.today().isoformat()
+    return run_daily_mode(target)
 
 
 if __name__ == "__main__":
