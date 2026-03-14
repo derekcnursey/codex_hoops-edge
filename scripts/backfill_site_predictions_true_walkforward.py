@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Rebuild site prediction JSONs from true walk-forward benchmark artifacts.
 
-Historical seasons are sourced from the canonical walk-forward benchmark:
-  - mu from HistGradientBoosting holdout predictions
+Historical seasons are sourced from the promoted canonical walk-forward bundle:
+  - mu from LightGBMRegressionL2Blend holdout predictions
   - sigma from CurrentMLP holdout predictions
 
 Current-season files are left untouched by default so the live site can keep
@@ -27,9 +27,13 @@ from src.infer import american_profit_per_1, american_to_breakeven, normal_cdf, 
 from src.sigma_calibration import apply_sigma_transform
 
 BOOK_ODDS = -110
-MU_MODEL = "HistGradientBoosting"
+MU_MODEL = "LightGBMRegressionL2Blend"
 SIGMA_MODEL = "CurrentMLP"
-DEFAULT_BENCHMARK_DIR = config.ARTIFACTS_DIR / "benchmarks" / "canonical_walkforward_v2_lgb_repaired_lines"
+DEFAULT_BENCHMARK_DIR = (
+    config.ARTIFACTS_DIR
+    / "benchmarks"
+    / "canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix"
+)
 
 
 def _parse_args() -> argparse.Namespace:
@@ -274,9 +278,12 @@ def main() -> int:
     merged = merged.dropna(subset=["site_date"]).copy()
 
     deleted = _clear_historical_predictions(args.site_data_dir, args.keep_current_season)
+    current_season = _current_season()
 
     written = 0
     for game_date, daily in merged.groupby("site_date", sort=True):
+        if args.keep_current_season and _season_from_date(game_date) >= current_season:
+            continue
         games = _build_site_games(daily, game_date)
         payload = {
             "date": game_date,

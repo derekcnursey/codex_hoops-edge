@@ -1,5 +1,5 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
+  "benchmark_dir": "/Users/dereknursey/Desktop/ml_projects/codex_review/hoops-edge-predictor_codex/artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
   "extra_benchmark_dirs": [],
   "mu_model": "LightGBMRegressionL2Blend",
   "sigma_model": "CurrentMLP",
@@ -982,7 +982,7 @@
     "2026-03-04"
   ],
   "rows_written": 41913,
-  "historical_files_deleted": 863,
+  "historical_files_deleted": 990,
   "keep_current_season": true,
   "holdout_seasons": [
     2019,
