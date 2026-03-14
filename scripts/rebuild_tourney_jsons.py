@@ -380,7 +380,7 @@ def _update_bracket_lines(lines: list[str], internals: list[BracketNode]) -> lis
         node = by_row.get(row_idx)
         if node is None or not node.probs or not node.game_probs:
             continue
-        winner, prob = max(node.probs.items(), key=lambda kv: kv[1])
+        winner, prob = max(node.game_probs.items(), key=lambda kv: kv[1])
         match = NODE_RE.search(line)
         if not match:
             continue
