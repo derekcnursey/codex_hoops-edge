@@ -1,0 +1,40 @@
+{
+  "date": "2021-03-17",
+  "games": [
+    {
+      "away_team": "Toledo",
+      "edge_home_points": 6.101474285125732,
+      "game_id": "2021_03_17_toledo_richmond",
+      "home_team": "Richmond",
+      "market_spread_home": 5.0,
+      "model_mu_home": 1.1014742851257324,
+      "pick_cover_prob": 0.6672663146877743,
+      "pick_ev_per_1": 0.2738720553130236,
+      "pick_fair_odds": -200.54065582859005,
+      "pick_prob_edge": 0.14345679087825047,
+      "pick_side": "HOME",
+      "pick_spread_odds": -110,
+      "pred_home_win_prob": 0.4807222783565521,
+      "pred_sigma": 14.111465454101562,
+      "start_time": "2021-03-17T23:00:00.000Z"
+    },
+    {
+      "away_team": "Western Kentucky",
+      "edge_home_points": 0.7297825813293457,
+      "game_id": "2021_03_17_western_kentucky_saint_mary_s",
+      "home_team": "Saint Mary's",
+      "market_spread_home": -2.0,
+      "model_mu_home": 2.7297825813293457,
+      "pick_cover_prob": 0.5241294929437585,
+      "pick_ev_per_1": 0.000610850165357224,
+      "pick_fair_odds": -110.14120126629608,
+      "pick_prob_edge": 0.00031996913423470996,
+      "pick_side": "HOME",
+      "pick_spread_odds": -110,
+      "pred_home_win_prob": 0.6357849836349487,
+      "pred_sigma": 12.058417320251465,
+      "start_time": "2021-03-18T01:00:00.000Z"
+    }
+  ],
+  "generated_at": "2026-03-14T17:32:00.154710Z"
+}

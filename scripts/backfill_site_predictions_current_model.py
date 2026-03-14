@@ -88,20 +88,26 @@ def _season_dates(features_df: pd.DataFrame, season: int) -> list[str]:
     return date_strings
 
 
-def _build_secondary_mu_features_if_needed(
+def _feature_dates(features_df: pd.DataFrame) -> pd.Series:
+    return (
+        pd.to_datetime(features_df["startDate"], errors="coerce", utc=True)
+        .dt.tz_convert("America/New_York")
+        .dt.strftime("%Y-%m-%d")
+    )
+
+
+def _build_secondary_season_features_if_needed(
     season: int,
-    daily: pd.DataFrame,
-    game_date: str,
-) -> pd.DataFrame | None:
+    features_df: pd.DataFrame,
+) -> tuple[pd.DataFrame | None, pd.Series | None]:
     if config.EFFICIENCY_SOURCE != "gold":
-        return None
-    if not blend_enabled() or daily.empty:
-        return None
-    if float(gold_weight_for_start_dates(daily["startDate"]).min()) >= 1.0:
-        return None
+        return None, None
+    if not blend_enabled() or features_df.empty:
+        return None, None
+    if float(gold_weight_for_start_dates(features_df["startDate"]).min()) >= 1.0:
+        return None, None
     secondary = build_features(
         season,
-        game_date=game_date,
         no_garbage=True,
         extra_features=config.EXTRA_FEATURES,
         adjust_ff=config.ADJUST_FF,
@@ -110,8 +116,8 @@ def _build_secondary_mu_features_if_needed(
         efficiency_source="torvik",
     )
     if secondary.empty:
-        return None
-    return secondary
+        return None, None
+    return secondary, _feature_dates(secondary)
 
 
 def main() -> int:
@@ -144,24 +150,38 @@ def main() -> int:
         lines_df = load_research_lines(season, table_name=args.lines_table)
         dates = _season_dates(features_df, season)
         print(f"Game dates: {len(dates)}")
-        feature_dates = (
-            pd.to_datetime(features_df["startDate"], errors="coerce", utc=True)
-            .dt.tz_convert("America/New_York")
-            .dt.strftime("%Y-%m-%d")
+        feature_dates = _feature_dates(features_df)
+        date_mask = feature_dates.isin(dates)
+        features_df = features_df[date_mask].reset_index(drop=True)
+        feature_dates = feature_dates[date_mask].reset_index(drop=True)
+        secondary_features_df, secondary_feature_dates = _build_secondary_season_features_if_needed(
+            season, features_df
+        )
+        if secondary_features_df is not None and secondary_feature_dates is not None:
+            secondary_mask = secondary_feature_dates.isin(dates)
+            secondary_features_df = secondary_features_df[secondary_mask].reset_index(drop=True)
+            secondary_feature_dates = secondary_feature_dates[secondary_mask].reset_index(drop=True)
+
+        season_secondary_df = None
+        if secondary_features_df is not None:
+            season_secondary_df = secondary_features_df
+
+        preds_df = predict(
+            features_df,
+            lines_df=lines_df,
+            secondary_mu_features_df=season_secondary_df,
         )
 
         for game_date in dates:
-            daily = features_df[feature_dates.eq(game_date)].copy()
-            if daily.empty:
+            daily_preds = preds_df[feature_dates.eq(game_date)].copy()
+            if daily_preds.empty:
                 continue
 
-            secondary_df = _build_secondary_mu_features_if_needed(season, daily, game_date)
-            preds = predict(daily, lines_df=lines_df, secondary_mu_features_df=secondary_df)
-            save_predictions(preds, game_date=game_date)
+            save_predictions(daily_preds, game_date=game_date)
 
             total_dates += 1
-            total_games += len(preds)
-            print(f"  {game_date}: {len(preds)} games")
+            total_games += len(daily_preds)
+            print(f"  {game_date}: {len(daily_preds)} games")
 
     print(f"\nRebuilt {total_dates} dates / {total_games} game predictions.")
     print(f"Site output directory: {config.SITE_DATA_DIR}")

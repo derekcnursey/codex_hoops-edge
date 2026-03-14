@@ -1,0 +1,40 @@
+{
+  "date": "2021-04-03",
+  "games": [
+    {
+      "away_team": "Houston",
+      "edge_home_points": -3.1899259090423584,
+      "game_id": "2021_04_03_houston_baylor",
+      "home_team": "Baylor",
+      "market_spread_home": -5.0,
+      "model_mu_home": 1.8100740909576416,
+      "pick_cover_prob": 0.6169489949553487,
+      "pick_ev_per_1": 0.1778117176420293,
+      "pick_fair_odds": -161.0618395018785,
+      "pick_prob_edge": 0.09313947114582488,
+      "pick_side": "AWAY",
+      "pick_spread_odds": -110,
+      "pred_home_win_prob": 0.5090334415435791,
+      "pred_sigma": 10.723252296447754,
+      "start_time": "2021-04-03T21:14:00.000Z"
+    },
+    {
+      "away_team": "UCLA",
+      "edge_home_points": -7.698057651519775,
+      "game_id": "2021_04_03_ucla_gonzaga",
+      "home_team": "Gonzaga",
+      "market_spread_home": -14.5,
+      "model_mu_home": 6.801942348480225,
+      "pick_cover_prob": 0.7355654279928858,
+      "pick_ev_per_1": 0.404261271622782,
+      "pick_fair_odds": -278.1653784562998,
+      "pick_prob_edge": 0.211755904183362,
+      "pick_side": "AWAY",
+      "pick_spread_odds": -110,
+      "pred_home_win_prob": 0.8225473165512085,
+      "pred_sigma": 12.224315643310547,
+      "start_time": "2021-04-04T00:47:00.000Z"
+    }
+  ],
+  "generated_at": "2026-03-14T17:32:00.181488Z"
+}

@@ -69,11 +69,19 @@ def train_lightgbm_regressor(
     X_train: np.ndarray,
     y_spread: np.ndarray,
     hparams: dict | None = None,
+    X_val: np.ndarray | None = None,
+    y_val: np.ndarray | None = None,
+    early_stopping_rounds: int = 100,
 ) -> lgb.LGBMRegressor:
     """Train the promoted LightGBM L2 point regressor."""
     hp = {**config.LGBM_REG_L2_PARAMS, **(hparams or {})}
     model = lgb.LGBMRegressor(**hp)
-    model.fit(X_train, y_spread)
+    fit_kwargs: dict = {}
+    if X_val is not None and y_val is not None and len(X_val) > 0:
+        fit_kwargs["eval_set"] = [(X_val, y_val)]
+        fit_kwargs["eval_metric"] = "l1"
+        fit_kwargs["callbacks"] = [lgb.early_stopping(early_stopping_rounds, verbose=False)]
+    model.fit(X_train, y_spread, **fit_kwargs)
     return model
 
 
@@ -126,6 +134,7 @@ def train_regressor(
     y_spread: np.ndarray,
     hparams: dict | None = None,
     val_frac: float = 0.0,
+    temporal_val_split: bool = False,
 ) -> MLPRegressor:
     """Train the MLPRegressor with Gaussian NLL loss.
 
@@ -157,8 +166,12 @@ def train_regressor(
     X_val, y_val = None, None
     if val_frac > 0:
         n_val = int(len(X_train) * val_frac)
-        indices = np.random.permutation(len(X_train))
-        val_idx, train_idx = indices[:n_val], indices[n_val:]
+        if temporal_val_split:
+            train_idx = np.arange(0, len(X_train) - n_val)
+            val_idx = np.arange(len(X_train) - n_val, len(X_train))
+        else:
+            indices = np.random.permutation(len(X_train))
+            val_idx, train_idx = indices[:n_val], indices[n_val:]
         X_val, y_val = X_train[val_idx], y_spread[val_idx]
         X_train, y_spread = X_train[train_idx], y_spread[train_idx]
 
@@ -179,6 +192,7 @@ def train_regressor(
 
     best_val_loss = float("inf")
     best_state = None
+    best_epoch = hp["epochs"]
 
     model.train()
     for epoch in range(hp["epochs"]):
@@ -207,6 +221,7 @@ def train_regressor(
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+                best_epoch = epoch + 1
             model.train()
 
         if (epoch + 1) % 20 == 0:
@@ -216,6 +231,8 @@ def train_regressor(
 
     if best_state is not None:
         model.load_state_dict(best_state)
+    model.best_val_loss = float(best_val_loss) if X_val is not None else None
+    model.best_epoch = int(best_epoch)
 
     return model.cpu()
 
@@ -225,6 +242,7 @@ def train_classifier(
     y_win: np.ndarray,
     hparams: dict | None = None,
     val_frac: float = 0.0,
+    temporal_val_split: bool = False,
 ) -> MLPClassifier:
     """Train the MLPClassifier with BCEWithLogitsLoss.
 
@@ -255,8 +273,12 @@ def train_classifier(
     X_val, y_val = None, None
     if val_frac > 0:
         n_val = int(len(X_train) * val_frac)
-        indices = np.random.permutation(len(X_train))
-        val_idx, train_idx = indices[:n_val], indices[n_val:]
+        if temporal_val_split:
+            train_idx = np.arange(0, len(X_train) - n_val)
+            val_idx = np.arange(len(X_train) - n_val, len(X_train))
+        else:
+            indices = np.random.permutation(len(X_train))
+            val_idx, train_idx = indices[:n_val], indices[n_val:]
         X_val, y_val = X_train[val_idx], y_win[val_idx]
         X_train, y_win = X_train[train_idx], y_win[train_idx]
 
@@ -277,6 +299,7 @@ def train_classifier(
 
     best_val_loss = float("inf")
     best_state = None
+    best_epoch = hp["epochs"]
 
     model.train()
     for epoch in range(hp["epochs"]):
@@ -302,6 +325,7 @@ def train_classifier(
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+                best_epoch = epoch + 1
             model.train()
 
         if (epoch + 1) % 20 == 0:
@@ -311,6 +335,8 @@ def train_classifier(
 
     if best_state is not None:
         model.load_state_dict(best_state)
+    model.best_val_loss = float(best_val_loss) if X_val is not None else None
+    model.best_epoch = int(best_epoch)
 
     return model.cpu()
 
@@ -334,7 +360,19 @@ def save_checkpoint(
         {
             "state_dict": model.state_dict(),
             "feature_order": feature_order or config.FEATURE_ORDER,
-            "hparams": hparams or {},
+            "hparams": {
+                **(hparams or {}),
+                **(
+                    {"best_epoch": int(model.best_epoch)}
+                    if hasattr(model, "best_epoch") and model.best_epoch is not None
+                    else {}
+                ),
+                **(
+                    {"best_val_loss": float(model.best_val_loss)}
+                    if hasattr(model, "best_val_loss") and model.best_val_loss is not None
+                    else {}
+                ),
+            },
             "arch_type": arch_type,
             "sigma_param": "exp",
         },

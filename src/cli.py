@@ -26,7 +26,9 @@ from .features import (
     load_games,
     load_lines,
 )
+from .live_audits import audit_hrb_lines, audit_live_feature_drift, audit_ratings_asof
 from .line_selection import select_preferred_lines
+from .trainer import load_scaler
 
 _ET = ZoneInfo("America/New_York")
 _CRITICAL_FEATURE_COLS = [
@@ -194,6 +196,28 @@ def _run_prediction_preflight(season: int, game_date: str) -> tuple[pd.DataFrame
         for col in _CRITICAL_FEATURE_COLS:
             click.echo(f"    {col}: {feature_missing.get(col, len(features_df))}")
 
+    audit_reports = []
+    try:
+        scaler = load_scaler()
+    except Exception as exc:
+        click.echo(f"  Live feature drift audit skipped: {exc}")
+    else:
+        audit_reports.append(
+            audit_live_feature_drift(
+                features_df,
+                scaler,
+                config.FEATURE_ORDER,
+                _CRITICAL_FEATURE_COLS,
+            )
+        )
+    audit_reports.append(audit_ratings_asof(slate_games, ratings))
+    audit_reports.append(audit_hrb_lines(slate_games, lines, preferred_lines))
+
+    for report in audit_reports:
+        click.echo(f"  {report.label}:")
+        for line in report.info:
+            click.echo(f"    {line}")
+
     errors: list[str] = []
     warnings: list[str] = []
 
@@ -220,6 +244,9 @@ def _run_prediction_preflight(season: int, game_date: str) -> tuple[pd.DataFrame
         )
     if not missing_line_games.empty:
         warnings.append(f"{len(missing_line_games)} scheduled game(s) have no preferred line")
+    for report in audit_reports:
+        errors.extend(report.errors)
+        warnings.extend(report.warnings)
 
     if errors:
         click.echo("  Preflight errors:", err=True)

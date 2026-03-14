@@ -1,31 +1,23 @@
 {
-  "benchmark_dir": "artifacts/benchmarks/canonical_walkforward_lgb_l2_blend_repaired_lines_neutralfix",
   "date": "2025-04-07",
-  "extra_benchmark_dirs": [],
   "games": [
     {
       "away_team": "Florida",
-      "edge_home_points": 2.178155779838562,
+      "edge_home_points": 2.2104509472846985,
       "game_id": "2025_04_07_florida_houston",
       "home_team": "Houston",
       "market_spread_home": 1.5,
-      "model_mu_home": 0.678155779838562,
-      "pick_cover_prob": 0.5735428236199265,
-      "pick_ev_per_1": 0.09494539054713236,
-      "pick_fair_odds": -134.49013298084708,
-      "pick_prob_edge": 0.04973329981040264,
+      "model_mu_home": 0.7104509472846985,
+      "pick_cover_prob": 0.5541167672248184,
+      "pick_ev_per_1": 0.0578592828837442,
+      "pick_fair_odds": -124.2739637855387,
+      "pick_prob_edge": 0.03030724341529456,
       "pick_side": "HOME",
-      "pick_spread_odds": -110.0,
-      "pred_home_win_prob": 0.5230155869705676,
-      "pred_sigma": 11.748335838317871,
+      "pick_spread_odds": -110,
+      "pred_home_win_prob": 0.5224988460540771,
+      "pred_sigma": 16.245033264160156,
       "start_time": "2025-04-08T00:50:00.000Z"
     }
   ],
-  "generated_at": "2026-03-12T18:15:22.270523Z",
-  "mu_model": "LightGBMRegressionL2Blend",
-  "sigma_mode": "raw",
-  "sigma_model": "CurrentMLP",
-  "source": "true_walkforward_historical",
-  "torvik_benchmark_dir": null,
-  "torvik_extra_benchmark_dirs": []
+  "generated_at": "2026-03-14T17:39:32.508992Z"
 }

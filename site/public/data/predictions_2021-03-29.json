@@ -1,0 +1,40 @@
+{
+  "date": "2021-03-29",
+  "games": [
+    {
+      "away_team": "Oregon State",
+      "edge_home_points": 2.838176727294922,
+      "game_id": "2021_03_29_oregon_state_houston",
+      "home_team": "Houston",
+      "market_spread_home": -8.0,
+      "model_mu_home": 10.838176727294922,
+      "pick_cover_prob": 0.5958477430378275,
+      "pick_ev_per_1": 0.13752750943585246,
+      "pick_fair_odds": -147.43150205730439,
+      "pick_prob_edge": 0.07203821922830367,
+      "pick_side": "HOME",
+      "pick_spread_odds": -110,
+      "pred_home_win_prob": 0.8294382095336914,
+      "pred_sigma": 11.69832706451416,
+      "start_time": "2021-03-29T23:15:00.000Z"
+    },
+    {
+      "away_team": "Arkansas",
+      "edge_home_points": -1.916031837463379,
+      "game_id": "2021_03_29_arkansas_baylor",
+      "home_team": "Baylor",
+      "market_spread_home": -7.5,
+      "model_mu_home": 5.583968162536621,
+      "pick_cover_prob": 0.5599434039289155,
+      "pick_ev_per_1": 0.06898286204611137,
+      "pick_fair_odds": -127.24349752468318,
+      "pick_prob_edge": 0.03613388011939167,
+      "pick_side": "AWAY",
+      "pick_spread_odds": -110,
+      "pred_home_win_prob": 0.6988250017166138,
+      "pred_sigma": 12.703614234924316,
+      "start_time": "2021-03-30T01:57:00.000Z"
+    }
+  ],
+  "generated_at": "2026-03-14T17:32:00.178110Z"
+}
