@@ -1,0 +1,713 @@
+{
+  "season": 2026,
+  "source": "selection_sunday_manual",
+  "note": "Replace this development field with the official Selection Sunday bracket before publishing a real NCAA builder.",
+  "first_four_games": [
+    {
+      "id": "ff1",
+      "region": "East",
+      "seed": 11,
+      "winner_to_slot": "east-11"
+    },
+    {
+      "id": "ff2",
+      "region": "West",
+      "seed": 11,
+      "winner_to_slot": "west-11"
+    },
+    {
+      "id": "ff3",
+      "region": "South",
+      "seed": 16,
+      "winner_to_slot": "south-16"
+    },
+    {
+      "id": "ff4",
+      "region": "Midwest",
+      "seed": 16,
+      "winner_to_slot": "midwest-16"
+    }
+  ],
+  "entries": [
+    {
+      "team_id": 72,
+      "team_name": "Duke",
+      "seed": 1,
+      "region": "East",
+      "slot": "east-1",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 113,
+      "team_name": "Houston",
+      "seed": 2,
+      "region": "East",
+      "slot": "east-2",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 236,
+      "team_name": "Purdue",
+      "seed": 3,
+      "region": "East",
+      "slot": "east-3",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 336,
+      "team_name": "Vanderbilt",
+      "seed": 4,
+      "region": "East",
+      "slot": "east-4",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 150,
+      "team_name": "Louisville",
+      "seed": 5,
+      "region": "East",
+      "slot": "east-5",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 200,
+      "team_name": "North Carolina",
+      "seed": 6,
+      "region": "East",
+      "slot": "east-6",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 216,
+      "team_name": "Ohio State",
+      "seed": 7,
+      "region": "East",
+      "slot": "east-7",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 16,
+      "team_name": "Auburn",
+      "seed": 8,
+      "region": "East",
+      "slot": "east-8",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 313,
+      "team_name": "UCLA",
+      "seed": 9,
+      "region": "East",
+      "slot": "east-9",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 168,
+      "team_name": "Miami",
+      "seed": 10,
+      "region": "East",
+      "slot": "east-10",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 271,
+      "team_name": "South Florida",
+      "seed": 12,
+      "region": "East",
+      "slot": "east-12",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 191,
+      "team_name": "New Mexico",
+      "seed": 13,
+      "region": "East",
+      "slot": "east-13",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 212,
+      "team_name": "Northwestern",
+      "seed": 14,
+      "region": "East",
+      "slot": "east-14",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 312,
+      "team_name": "UCF",
+      "seed": 15,
+      "region": "East",
+      "slot": "east-15",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 61,
+      "team_name": "Creighton",
+      "seed": 16,
+      "region": "East",
+      "slot": "east-16",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 170,
+      "team_name": "Michigan",
+      "seed": 1,
+      "region": "West",
+      "slot": "west-1",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 125,
+      "team_name": "Iowa State",
+      "seed": 2,
+      "region": "West",
+      "slot": "west-2",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 169,
+      "team_name": "Michigan State",
+      "seed": 3,
+      "region": "West",
+      "slot": "west-3",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 253,
+      "team_name": "Saint Mary's",
+      "seed": 4,
+      "region": "West",
+      "slot": "west-4",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 188,
+      "team_name": "Nebraska",
+      "seed": 5,
+      "region": "West",
+      "slot": "west-5",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 298,
+      "team_name": "Texas Tech",
+      "seed": 6,
+      "region": "West",
+      "slot": "west-6",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 98,
+      "team_name": "Georgia",
+      "seed": 7,
+      "region": "West",
+      "slot": "west-7",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 135,
+      "team_name": "Kentucky",
+      "seed": 8,
+      "region": "West",
+      "slot": "west-8",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 52,
+      "team_name": "Clemson",
+      "seed": 9,
+      "region": "West",
+      "slot": "west-9",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 162,
+      "team_name": "McNeese",
+      "seed": 10,
+      "region": "West",
+      "slot": "west-10",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 293,
+      "team_name": "Texas A&M",
+      "seed": 12,
+      "region": "West",
+      "slot": "west-12",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 287,
+      "team_name": "TCU",
+      "seed": 13,
+      "region": "West",
+      "slot": "west-13",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 51,
+      "team_name": "Cincinnati",
+      "seed": 14,
+      "region": "West",
+      "slot": "west-14",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 304,
+      "team_name": "Tulsa",
+      "seed": 15,
+      "region": "West",
+      "slot": "west-15",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 20,
+      "team_name": "Baylor",
+      "seed": 16,
+      "region": "West",
+      "slot": "west-16",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 11,
+      "team_name": "Arizona",
+      "seed": 1,
+      "region": "South",
+      "slot": "south-1",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 87,
+      "team_name": "Florida",
+      "seed": 2,
+      "region": "South",
+      "slot": "south-2",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 314,
+      "team_name": "UConn",
+      "seed": 3,
+      "region": "South",
+      "slot": "south-3",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 5,
+      "team_name": "Alabama",
+      "seed": 4,
+      "region": "South",
+      "slot": "south-4",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 12,
+      "team_name": "Arkansas",
+      "seed": 5,
+      "region": "South",
+      "slot": "south-5",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 131,
+      "team_name": "Kansas",
+      "seed": 6,
+      "region": "South",
+      "slot": "south-6",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 355,
+      "team_name": "Wisconsin",
+      "seed": 7,
+      "region": "South",
+      "slot": "south-7",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 329,
+      "team_name": "Utah State",
+      "seed": 8,
+      "region": "South",
+      "slot": "south-8",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 121,
+      "team_name": "Indiana",
+      "seed": 9,
+      "region": "South",
+      "slot": "south-9",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 3,
+      "team_name": "Akron",
+      "seed": 10,
+      "region": "South",
+      "slot": "south-10",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 261,
+      "team_name": "Santa Clara",
+      "seed": 11,
+      "region": "South",
+      "slot": "south-11",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 338,
+      "team_name": "Villanova",
+      "seed": 12,
+      "region": "South",
+      "slot": "south-12",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 109,
+      "team_name": "High Point",
+      "seed": 13,
+      "region": "South",
+      "slot": "south-13",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 177,
+      "team_name": "Missouri",
+      "seed": 14,
+      "region": "South",
+      "slot": "south-14",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 64,
+      "team_name": "Dayton",
+      "seed": 15,
+      "region": "South",
+      "slot": "south-15",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 118,
+      "team_name": "Illinois",
+      "seed": 1,
+      "region": "Midwest",
+      "slot": "midwest-1",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 102,
+      "team_name": "Gonzaga",
+      "seed": 2,
+      "region": "Midwest",
+      "slot": "midwest-2",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 339,
+      "team_name": "Virginia",
+      "seed": 3,
+      "region": "Midwest",
+      "slot": "midwest-3",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 292,
+      "team_name": "Tennessee",
+      "seed": 4,
+      "region": "Midwest",
+      "slot": "midwest-4",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 124,
+      "team_name": "Iowa",
+      "seed": 5,
+      "region": "Midwest",
+      "slot": "midwest-5",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 279,
+      "team_name": "St. John's",
+      "seed": 6,
+      "region": "Midwest",
+      "slot": "midwest-6",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 18,
+      "team_name": "BYU",
+      "seed": 7,
+      "region": "Midwest",
+      "slot": "midwest-7",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 252,
+      "team_name": "Saint Louis",
+      "seed": 8,
+      "region": "Midwest",
+      "slot": "midwest-8",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 360,
+      "team_name": "Yale",
+      "seed": 9,
+      "region": "Midwest",
+      "slot": "midwest-9",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 248,
+      "team_name": "SMU",
+      "seed": 10,
+      "region": "Midwest",
+      "slot": "midwest-10",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 333,
+      "team_name": "VCU",
+      "seed": 11,
+      "region": "Midwest",
+      "slot": "midwest-11",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 185,
+      "team_name": "NC State",
+      "seed": 12,
+      "region": "Midwest",
+      "slot": "midwest-12",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 295,
+      "team_name": "Texas",
+      "seed": 13,
+      "region": "Midwest",
+      "slot": "midwest-13",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 217,
+      "team_name": "Oklahoma",
+      "seed": 14,
+      "region": "Midwest",
+      "slot": "midwest-14",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 22,
+      "team_name": "Belmont",
+      "seed": 15,
+      "region": "Midwest",
+      "slot": "midwest-15",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 257,
+      "team_name": "San Diego State",
+      "seed": 11,
+      "region": "East",
+      "slot": "ff1-team-1",
+      "is_first_four": true,
+      "first_four_game_id": "ff1",
+      "feeder_slot": "east-11"
+    },
+    {
+      "team_id": 340,
+      "team_name": "Virginia Tech",
+      "seed": 11,
+      "region": "East",
+      "slot": "ff1-team-2",
+      "is_first_four": true,
+      "first_four_game_id": "ff1",
+      "feeder_slot": "east-11"
+    },
+    {
+      "team_id": 34,
+      "team_name": "Butler",
+      "seed": 11,
+      "region": "West",
+      "slot": "ff2-team-1",
+      "is_first_four": true,
+      "first_four_game_id": "ff2",
+      "feeder_slot": "west-11"
+    },
+    {
+      "team_id": 119,
+      "team_name": "Illinois State",
+      "seed": 11,
+      "region": "West",
+      "slot": "ff2-team-2",
+      "is_first_four": true,
+      "first_four_game_id": "ff2",
+      "feeder_slot": "west-11"
+    },
+    {
+      "team_id": 209,
+      "team_name": "Northern Iowa",
+      "seed": 16,
+      "region": "South",
+      "slot": "ff3-team-1",
+      "is_first_four": true,
+      "first_four_game_id": "ff3",
+      "feeder_slot": "south-16"
+    },
+    {
+      "team_id": 167,
+      "team_name": "Miami (OH)",
+      "seed": 16,
+      "region": "South",
+      "slot": "ff3-team-2",
+      "is_first_four": true,
+      "first_four_game_id": "ff3",
+      "feeder_slot": "south-16"
+    },
+    {
+      "team_id": 25,
+      "team_name": "Boise State",
+      "seed": 16,
+      "region": "Midwest",
+      "slot": "ff4-team-1",
+      "is_first_four": true,
+      "first_four_game_id": "ff4",
+      "feeder_slot": "midwest-16"
+    },
+    {
+      "team_id": 104,
+      "team_name": "Grand Canyon",
+      "seed": 16,
+      "region": "Midwest",
+      "slot": "ff4-team-2",
+      "is_first_four": true,
+      "first_four_game_id": "ff4",
+      "feeder_slot": "midwest-16"
+    }
+  ]
+}
