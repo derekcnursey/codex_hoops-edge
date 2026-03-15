@@ -31,6 +31,12 @@ function fmtSpread(v: number | null): string {
   return v > 0 ? `+${v.toFixed(1)}` : v.toFixed(1);
 }
 
+function displayModelSpread(v: number | null): number | null {
+  if (v === null || Number.isNaN(v)) return null;
+  // Internal report stores home margin; site displays book-style home spread.
+  return -v;
+}
+
 function fmtPct(v: number | null): string {
   if (v === null || Number.isNaN(v)) return "—";
   return `${(v * 100).toFixed(1)}%`;
@@ -121,7 +127,7 @@ function RowCard({ row, mode }: { row: InternalBettingRow; mode: "internal" | "r
         </div>
         <div>
           <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>HOOPS EDGE</div>
-          <div style={{ fontSize: 15, fontWeight: 700 }}>{fmtSpread(row.predicted_spread)}</div>
+          <div style={{ fontSize: 15, fontWeight: 700 }}>{fmtSpread(displayModelSpread(row.predicted_spread))}</div>
         </div>
         <div>
           <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>RAW EDGE</div>
