@@ -58,6 +58,11 @@ export type InternalBettingPayload = {
 
 function getInternalBettingRoot(): string {
   const candidates = [
+    path.join(process.cwd(), "site", "public", "data", "internal_betting"),
+    path.join(process.cwd(), "public", "data", "internal_betting"),
+    path.join(process.cwd(), "..", "site", "public", "data", "internal_betting"),
+    path.join(__dirname, "..", "public", "data", "internal_betting"),
+    path.join(__dirname, "..", "..", "public", "data", "internal_betting"),
     path.join(process.cwd(), "artifacts", "daily_internal_bet_filter"),
     path.join(process.cwd(), "..", "artifacts", "daily_internal_bet_filter"),
     path.join(process.cwd(), "site", "..", "artifacts", "daily_internal_bet_filter"),
