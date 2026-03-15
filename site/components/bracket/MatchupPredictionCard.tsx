@@ -75,6 +75,7 @@ export default function MatchupPredictionCard({
   teamA?: BracketTeam | null;
   teamB?: BracketTeam | null;
 }) {
+  const showLoadingState = Boolean(loading && !prediction);
   const teams = [
     prediction && teamA
       ? {
@@ -129,26 +130,18 @@ export default function MatchupPredictionCard({
         }}
       >
         <span>Game Details</span>
-        {loading ? <span>Loading...</span> : null}
+        {showLoadingState ? <span>Fetching projection...</span> : null}
         {error ? <span style={{ color: "#b91c1c" }}>{error}</span> : null}
       </div>
 
       {prediction ? (
         <>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 6,
-              marginBottom: 8,
-            }}
-          >
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
             {statusPill(`Model: ${displayTeam(prediction.modelWinnerName)}`, "blue")}
             {statusPill(`${displayTeam(prediction.favoredTeamName)} -${prediction.projectedSpread.toFixed(1)}`, "slate")}
             {comparison?.selectedWinnerName
               ? statusPill(comparison.agreesWithModel ? "Agree" : "Fade", comparison.agreesWithModel ? "green" : "amber")
               : null}
-            {comparison?.confidenceLabel ? statusPill(comparison.confidenceLabel, "slate") : null}
             {grading?.isFinal
               ? statusPill(
                   grading.status === "correct" ? "Correct" : grading.status === "incorrect" ? "Missed" : "Actual final",
@@ -160,8 +153,8 @@ export default function MatchupPredictionCard({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-              gap: 8,
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: 12,
             }}
           >
             {teams.map(({ key, team, winProb, isFavorite, isSelected, isActualWinner }) => {
@@ -173,11 +166,14 @@ export default function MatchupPredictionCard({
                     borderRadius: 8,
                     border: `1px solid ${tone.border}`,
                     background: tone.background,
-                    padding: "8px 9px",
+                    padding: "10px 12px",
+                    minHeight: 216,
+                    display: "flex",
+                    flexDirection: "column",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 6, marginBottom: 6 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: "#0f172a" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0f172a" }}>
                       ({team.seed}) {displayTeam(team.name)}
                     </div>
                     <div style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "flex-end" }}>
@@ -187,10 +183,10 @@ export default function MatchupPredictionCard({
                     </div>
                   </div>
 
-                  <div style={{ ...mono, fontSize: 11, color: "#334155", marginBottom: 6 }}>
+                  <div style={{ ...mono, fontSize: 11, color: "#334155", marginBottom: 8 }}>
                     Win prob {pct(winProb, 1)}
                   </div>
-                  <div style={{ ...mono, fontSize: 11, color: "#475569", marginBottom: 6 }}>
+                  <div style={{ ...mono, fontSize: 11, color: "#475569", marginBottom: 10 }}>
                     Rank {team.rank} | {team.conference || "--"} | {team.record}
                   </div>
 
@@ -198,7 +194,8 @@ export default function MatchupPredictionCard({
                     style={{
                       display: "grid",
                       gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                      gap: 5,
+                      gap: 6,
+                      marginTop: "auto",
                     }}
                   >
                     {metricGrid(team).map((metric) => (
@@ -208,7 +205,7 @@ export default function MatchupPredictionCard({
                           borderRadius: 6,
                           background: "#ffffff",
                           border: "1px solid #e2e8f0",
-                          padding: "5px 6px",
+                          padding: "7px 8px",
                         }}
                       >
                         <div style={{ ...mono, fontSize: 10, color: "#64748b", marginBottom: 2 }}>{metric.label}</div>
@@ -244,7 +241,13 @@ export default function MatchupPredictionCard({
         </>
       ) : null}
 
-      {!prediction && !loading && !error ? (
+      {!prediction && showLoadingState ? (
+        <div style={{ ...mono, fontSize: 11, color: "#64748b" }}>
+          Fetching model projection for this matchup.
+        </div>
+      ) : null}
+
+      {!prediction && !showLoadingState && !error ? (
         <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
           Prediction loads when both teams are known.
         </div>
