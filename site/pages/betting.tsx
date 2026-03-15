@@ -606,9 +606,9 @@ export default function BettingPage({ payload, initialFocus }: Props) {
           {summaryCards.map((card) => {
             const active = card.focusKey === initialFocus;
             return (
-            <Link
+            <a
               key={card.label}
-              href={`/betting?date=${payload.currentDate}&focus=${card.focusKey ?? "shortlist"}`}
+              href={`/betting?date=${payload.currentDate}&focus=${card.focusKey ?? "shortlist"}#focused-table`}
               style={{
                 background: "#fff",
                 border: active ? "1px solid #0f172a" : "1px solid #e2e8f0",
@@ -616,28 +616,32 @@ export default function BettingPage({ payload, initialFocus }: Props) {
                 padding: 14,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
                 textAlign: "left",
-                cursor: card.focusKey ? "pointer" : "default",
+                cursor: "pointer",
                 display: "grid",
                 gap: 6,
                 textDecoration: "none",
+                transition: "transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease",
               }}
+              title={card.helper ?? "View rows"}
             >
               <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>{card.label.toUpperCase()}</div>
               <div style={{ fontSize: 18, fontWeight: 700, color: "#0f172a" }}>{card.value}</div>
               <div style={{ ...mono, fontSize: 11, color: active ? "#0f172a" : "#64748b" }}>
                 {card.helper ?? "View rows"}
               </div>
-            </Link>
+            </a>
           )})}
         </div>
 
-        <Section
-          title={focusedView.title}
-          subtitle={focusedView.subtitle}
-          rows={focusedView.rows}
-          mode={focusedView.mode}
-          emptyText={focusedView.emptyText}
-        />
+        <div id="focused-table">
+          <Section
+            title={focusedView.title}
+            subtitle={focusedView.subtitle}
+            rows={focusedView.rows}
+            mode={focusedView.mode}
+            emptyText={focusedView.emptyText}
+          />
+        </div>
 
         <div
           style={{
