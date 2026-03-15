@@ -26,6 +26,7 @@ function TeamRow({
   team,
   source,
   prediction,
+  compact,
   isSelected,
   isClickable,
   isFavorite,
@@ -40,6 +41,7 @@ function TeamRow({
   team: BracketTeam | null;
   source: BracketSource;
   prediction?: MatchupPrediction;
+  compact?: boolean;
   isSelected: boolean;
   isClickable: boolean;
   isFavorite: boolean;
@@ -55,14 +57,14 @@ function TeamRow({
     return (
       <div
         style={{
-          padding: "8px 10px",
+          padding: compact ? "6px 8px" : "8px 10px",
           borderRadius: 8,
           border: "1px dashed #cbd5e1",
           background: "#f8fafc",
           color: "#94a3b8",
         }}
       >
-        <div style={{ ...mono, fontSize: 10 }}>Awaiting {source.label}</div>
+        <div style={{ ...mono, fontSize: compact ? 9 : 10 }}>Awaiting {source.label}</div>
       </div>
     );
   }
@@ -89,7 +91,7 @@ function TeamRow({
       style={{
         width: "100%",
         textAlign: "left",
-        padding: "8px 10px",
+        padding: compact ? "5px 8px" : "8px 10px",
         borderRadius: 8,
         border: `1px solid ${borderColor}`,
         background: isSelected ? "#0f172a" : isActualWinner ? "#f0fdf4" : "#ffffff",
@@ -108,41 +110,25 @@ function TeamRow({
     >
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 8, alignItems: "center" }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, lineHeight: 1.25 }}>
-            ({team.seed}) {displayTeam(team.name)}
-          </div>
-          <div style={{ ...mono, fontSize: 10, opacity: isSelected ? 0.88 : 1, marginTop: 4 }}>
-            Rank {team.rank} | {team.record}
+          <div style={{ fontSize: compact ? 11 : 12, fontWeight: 700, lineHeight: 1.2, display: "flex", gap: 4, alignItems: "baseline", minWidth: 0 }}>
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{displayTeam(team.name)}</span>
+            <span style={{ ...mono, fontSize: compact ? 9 : 10, opacity: isSelected ? 0.82 : 0.95, flexShrink: 0 }}>
+              #{team.rank}
+            </span>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
-          {prediction ? (
-            <div style={{ ...mono, fontSize: 10, fontWeight: 600, whiteSpace: "nowrap" }}>
-              {isFavorite ? `-${prediction.projectedSpread.toFixed(1)}` : ""}
-              {isFavorite ? " " : ""}
-              {team.id === prediction.teamAId ? mlPct(prediction.winProbA) : mlPct(prediction.winProbB)}
+          {prediction && isFavorite ? (
+            <div style={{ ...mono, fontSize: compact ? 9 : 10, fontWeight: 600, whiteSpace: "nowrap" }}>
+              -{prediction.projectedSpread.toFixed(1)} • {team.id === prediction.teamAId ? mlPct(prediction.winProbA) : mlPct(prediction.winProbB)}
             </div>
           ) : null}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 4, justifyContent: "flex-end" }}>
-          {isFavorite ? (
+          {isSelected && !isCorrectPick && !isMissedPick && !compact ? (
             <span
               style={{
                 ...mono,
-                fontSize: 9,
-                padding: "2px 5px",
-                borderRadius: 999,
-                background: isSelected ? "rgba(255,255,255,0.14)" : "#dbeafe",
-                color: isSelected ? "#e2e8f0" : "#1d4ed8",
-              }}
-            >
-              FAV
-            </span>
-          ) : null}
-          {isSelected && !isCorrectPick && !isMissedPick ? (
-            <span
-              style={{
-                ...mono,
-                fontSize: 9,
+                fontSize: compact ? 8 : 9,
                 padding: "2px 5px",
                 borderRadius: 999,
                 background: isSelected ? "rgba(255,255,255,0.14)" : "#e2e8f0",
@@ -156,7 +142,7 @@ function TeamRow({
             <span
               style={{
                 ...mono,
-                fontSize: 9,
+                fontSize: compact ? 8 : 9,
                 padding: "2px 5px",
                 borderRadius: 999,
                 background: isSelected ? "rgba(134,239,172,0.18)" : "#dcfce7",
@@ -170,7 +156,7 @@ function TeamRow({
             <span
               style={{
                 ...mono,
-                fontSize: 9,
+                fontSize: compact ? 8 : 9,
                 padding: "2px 5px",
                 borderRadius: 999,
                 background: "rgba(134,239,172,0.18)",
@@ -184,7 +170,7 @@ function TeamRow({
             <span
               style={{
                 ...mono,
-                fontSize: 9,
+                fontSize: compact ? 8 : 9,
                 padding: "2px 5px",
                 borderRadius: 999,
                 background: "rgba(248,113,113,0.18)",
@@ -194,11 +180,11 @@ function TeamRow({
               MISSED
             </span>
           ) : null}
-          {isSelected && isFadingModel ? (
+          {isSelected && isFadingModel && !compact ? (
             <span
               style={{
                 ...mono,
-                fontSize: 9,
+                fontSize: compact ? 8 : 9,
                 padding: "2px 5px",
                 borderRadius: 999,
                 background: "rgba(251,191,36,0.18)",
@@ -212,7 +198,7 @@ function TeamRow({
             <span
               style={{
                 ...mono,
-                fontSize: 9,
+                fontSize: compact ? 8 : 9,
                 padding: "2px 5px",
                 borderRadius: 999,
                 background: isSelected ? "rgba(251,191,36,0.18)" : "rgba(245,158,11,0.12)",
@@ -237,6 +223,8 @@ export default function BracketGame({
   predictionLoading,
   predictionError,
   onSelectWinner,
+  compact = false,
+  fixedHeight,
 }: {
   game: ResolvedBracketGame;
   prediction?: MatchupPrediction;
@@ -245,6 +233,8 @@ export default function BracketGame({
   predictionLoading?: boolean;
   predictionError?: string;
   onSelectWinner: (gameId: string, teamId: number) => void;
+  compact?: boolean;
+  fixedHeight?: number;
 }) {
   const teamA = game.teamA;
   const teamB = game.teamB;
@@ -273,14 +263,16 @@ export default function BracketGame({
         background: "#ffffff",
         border: "1px solid #e2e8f0",
         borderRadius: 10,
-        padding: 10,
+        padding: compact ? 8 : 10,
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
+        height: fixedHeight,
+        minHeight: compact ? 74 : undefined,
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: 8, alignItems: "center" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: compact ? 6 : 8, alignItems: "center" }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#0f172a", lineHeight: 1.2 }}>{gameHeading(game)}</div>
-          <div style={{ ...mono, fontSize: 10, color: "#64748b", marginTop: 2 }}>
+          <div style={{ fontSize: compact ? 11 : 12, fontWeight: 700, color: "#0f172a", lineHeight: 1.2 }}>{gameHeading(game)}</div>
+          <div style={{ ...mono, fontSize: compact ? 9 : 10, color: "#64748b", marginTop: 2 }}>
             {game.region ?? "National"}
           </div>
         </div>
@@ -292,8 +284,8 @@ export default function BracketGame({
             onClick={handleToggleDetails}
             style={{
               ...mono,
-              width: 22,
-              height: 22,
+              width: compact ? 20 : 22,
+              height: compact ? 20 : 22,
               borderRadius: 999,
               border: "1px solid #cbd5e1",
               background: detailsOpen ? "#e2e8f0" : "#ffffff",
@@ -312,6 +304,7 @@ export default function BracketGame({
           team={teamA}
           source={game.sourceA}
           prediction={prediction}
+          compact={compact}
           isSelected={selectedWinnerId === teamA?.id}
           isClickable={Boolean(teamA)}
           isFavorite={prediction?.favoredTeamId === teamA?.id}
@@ -327,6 +320,7 @@ export default function BracketGame({
           team={teamB}
           source={game.sourceB}
           prediction={prediction}
+          compact={compact}
           isSelected={selectedWinnerId === teamB?.id}
           isClickable={Boolean(teamB)}
           isFavorite={prediction?.favoredTeamId === teamB?.id}

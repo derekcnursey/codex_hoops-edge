@@ -28,12 +28,64 @@ import {
   serializeBracketExport,
 } from "../../lib/bracket/state";
 import { validateBracketGraph, validateNcaaField } from "../../lib/bracket/validation";
+import BracketGame from "./BracketGame";
 import BracketRound from "./BracketRound";
 
 type BracketRoundSection = {
   label: string;
   games: ResolvedBracketGame[];
 };
+
+type BoardRoundKey = "round-of-64" | "round-of-32" | "sweet-16" | "elite-8";
+
+type BoardMetrics = {
+  boardHeight: number;
+  positions: Record<BoardRoundKey, number[]>;
+};
+
+const REGION_CARD_HEIGHT = 88;
+const REGION_BASE_GAP = 10;
+const REGION_CONNECTOR_WIDTH = 22;
+const REGION_LEFT_WIDTHS = [166, 154, 144, 138] as const;
+const REGION_RIGHT_WIDTHS = [138, 144, 154, 166] as const;
+const CENTER_CARD_HEIGHT = 90;
+const CENTER_GAP = 118;
+const CENTER_CONNECTOR_WIDTH = 24;
+const CENTER_SEMIFINAL_WIDTH = 168;
+const CENTER_CHAMPIONSHIP_WIDTH = 184;
+
+function sortGames(list: ResolvedBracketGame[]): ResolvedBracketGame[] {
+  return [...list].sort((a, b) => a.matchupOrder - b.matchupOrder || a.roundOrder - b.roundOrder);
+}
+
+function collapsePositions(previous: number[]): number[] {
+  const next: number[] = [];
+  for (let index = 0; index < previous.length; index += 2) {
+    const a = previous[index];
+    const b = previous[index + 1];
+    if (typeof a !== "number" || typeof b !== "number") break;
+    next.push((a + b) / 2);
+  }
+  return next;
+}
+
+function buildRegionBoardMetrics(): BoardMetrics {
+  const roundOf64 = Array.from({ length: 8 }, (_, index) => index * (REGION_CARD_HEIGHT + REGION_BASE_GAP));
+  const roundOf32 = collapsePositions(roundOf64);
+  const sweet16 = collapsePositions(roundOf32);
+  const elite8 = collapsePositions(sweet16);
+  return {
+    boardHeight: roundOf64[roundOf64.length - 1] + REGION_CARD_HEIGHT,
+    positions: {
+      "round-of-64": roundOf64,
+      "round-of-32": roundOf32,
+      "sweet-16": sweet16,
+      "elite-8": elite8,
+    },
+  };
+}
+
+const REGION_BOARD = buildRegionBoardMetrics();
 
 function gradingBreakdown(summary: BracketGradingSummary): string {
   return summary.rounds
@@ -523,28 +575,336 @@ export default function BracketBuilder({
     );
   }
 
+  function renderConnectorGutter(
+    outerPositions: number[],
+    innerPositions: number[],
+    boardHeight: number,
+    outerOn: "left" | "right",
+    keyPrefix: string,
+  ) {
+    const spineX = outerOn === "left" ? Math.round(REGION_CONNECTOR_WIDTH * 0.58) : Math.round(REGION_CONNECTOR_WIDTH * 0.42);
+    return (
+      <div style={{ position: "relative", height: boardHeight }}>
+        {innerPositions.map((innerTop, index) => {
+          const outerTopA = outerPositions[index * 2];
+          const outerTopB = outerPositions[index * 2 + 1];
+          if (typeof outerTopA !== "number" || typeof outerTopB !== "number") return null;
+
+          const outerCenterA = outerTopA + REGION_CARD_HEIGHT / 2;
+          const outerCenterB = outerTopB + REGION_CARD_HEIGHT / 2;
+          const innerCenter = innerTop + REGION_CARD_HEIGHT / 2;
+          const outerSpanStart = outerOn === "left" ? 0 : spineX;
+          const outerSpanWidth = outerOn === "left" ? spineX : REGION_CONNECTOR_WIDTH - spineX;
+          const innerSpanStart = outerOn === "left" ? spineX : 0;
+          const innerSpanWidth = outerOn === "left" ? REGION_CONNECTOR_WIDTH - spineX : spineX;
+
+          return (
+            <div key={`${keyPrefix}-${index}`}>
+              <div
+                style={{
+                  position: "absolute",
+                  top: outerCenterA - 1,
+                  left: outerSpanStart,
+                  width: outerSpanWidth,
+                  height: 2,
+                  borderRadius: 999,
+                  background: "#cbd5e1",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  top: outerCenterB - 1,
+                  left: outerSpanStart,
+                  width: outerSpanWidth,
+                  height: 2,
+                  borderRadius: 999,
+                  background: "#cbd5e1",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  top: Math.min(outerCenterA, outerCenterB),
+                  left: spineX - 1,
+                  width: 2,
+                  height: Math.abs(outerCenterB - outerCenterA),
+                  borderRadius: 999,
+                  background: "#cbd5e1",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  top: innerCenter - 1,
+                  left: innerSpanStart,
+                  width: innerSpanWidth,
+                  height: 2,
+                  borderRadius: 999,
+                  background: "#cbd5e1",
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  function renderBoardGameColumn(
+    gamesForColumn: ResolvedBracketGame[],
+    positions: number[],
+    boardHeight: number,
+    width: number,
+    keyPrefix: string,
+  ) {
+    const roundState = buildRoundSectionState(gamesForColumn);
+    return (
+      <div style={{ position: "relative", height: boardHeight, width }}>
+        {gamesForColumn.map((game, index) => (
+          <div
+            key={`${keyPrefix}-${game.id}`}
+            style={{
+              position: "absolute",
+              top: positions[index] ?? 0,
+              left: 0,
+              right: 0,
+            }}
+          >
+            <BracketGame
+              game={game}
+              prediction={roundState.predictions[game.id]}
+              comparison={roundState.comparisons[game.id]}
+              grading={roundState.grading[game.id]}
+              predictionLoading={roundState.loadingGames[game.id]}
+              predictionError={roundState.errorGames[game.id]}
+              onSelectWinner={handleSelectWinner}
+              compact
+              fixedHeight={REGION_CARD_HEIGHT}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   function renderRegionLane(regionName: string, side: "left" | "right") {
     const roundMap = regionRoundGames.get(regionName);
     if (!roundMap) return null;
+
+    const firstFourGames = sortGames(roundMap.get("first-four") ?? []);
+    const roundOf64Games = sortGames(roundMap.get("round-of-64") ?? []);
+    const roundOf32Games = sortGames(roundMap.get("round-of-32") ?? []);
+    const sweet16Games = sortGames(roundMap.get("sweet-16") ?? []);
+    const elite8Games = sortGames(roundMap.get("elite-8") ?? []);
+
+    if (!isCompactLayout) {
+      const boardHeight = REGION_BOARD.boardHeight;
+      const columns =
+        side === "left"
+          ? [
+              renderBoardGameColumn(
+                roundOf64Games,
+                REGION_BOARD.positions["round-of-64"],
+                boardHeight,
+                REGION_LEFT_WIDTHS[0],
+                `${regionName}-r64`,
+              ),
+              renderConnectorGutter(
+                REGION_BOARD.positions["round-of-64"],
+                REGION_BOARD.positions["round-of-32"],
+                boardHeight,
+                "left",
+                `${regionName}-c1`,
+              ),
+              renderBoardGameColumn(
+                roundOf32Games,
+                REGION_BOARD.positions["round-of-32"],
+                boardHeight,
+                REGION_LEFT_WIDTHS[1],
+                `${regionName}-r32`,
+              ),
+              renderConnectorGutter(
+                REGION_BOARD.positions["round-of-32"],
+                REGION_BOARD.positions["sweet-16"],
+                boardHeight,
+                "left",
+                `${regionName}-c2`,
+              ),
+              renderBoardGameColumn(
+                sweet16Games,
+                REGION_BOARD.positions["sweet-16"],
+                boardHeight,
+                REGION_LEFT_WIDTHS[2],
+                `${regionName}-s16`,
+              ),
+              renderConnectorGutter(
+                REGION_BOARD.positions["sweet-16"],
+                REGION_BOARD.positions["elite-8"],
+                boardHeight,
+                "left",
+                `${regionName}-c3`,
+              ),
+              renderBoardGameColumn(
+                elite8Games,
+                REGION_BOARD.positions["elite-8"],
+                boardHeight,
+                REGION_LEFT_WIDTHS[3],
+                `${regionName}-e8`,
+              ),
+            ]
+          : [
+              renderBoardGameColumn(
+                elite8Games,
+                REGION_BOARD.positions["elite-8"],
+                boardHeight,
+                REGION_RIGHT_WIDTHS[0],
+                `${regionName}-e8`,
+              ),
+              renderConnectorGutter(
+                REGION_BOARD.positions["sweet-16"],
+                REGION_BOARD.positions["elite-8"],
+                boardHeight,
+                "right",
+                `${regionName}-c3`,
+              ),
+              renderBoardGameColumn(
+                sweet16Games,
+                REGION_BOARD.positions["sweet-16"],
+                boardHeight,
+                REGION_RIGHT_WIDTHS[1],
+                `${regionName}-s16`,
+              ),
+              renderConnectorGutter(
+                REGION_BOARD.positions["round-of-32"],
+                REGION_BOARD.positions["sweet-16"],
+                boardHeight,
+                "right",
+                `${regionName}-c2`,
+              ),
+              renderBoardGameColumn(
+                roundOf32Games,
+                REGION_BOARD.positions["round-of-32"],
+                boardHeight,
+                REGION_RIGHT_WIDTHS[2],
+                `${regionName}-r32`,
+              ),
+              renderConnectorGutter(
+                REGION_BOARD.positions["round-of-64"],
+                REGION_BOARD.positions["round-of-32"],
+                boardHeight,
+                "right",
+                `${regionName}-c1`,
+              ),
+              renderBoardGameColumn(
+                roundOf64Games,
+                REGION_BOARD.positions["round-of-64"],
+                boardHeight,
+                REGION_RIGHT_WIDTHS[3],
+                `${regionName}-r64`,
+              ),
+            ];
+
+      return (
+        <section
+          style={{
+            borderRadius: 14,
+            border: "1px solid #e2e8f0",
+            background: "#f8fafc",
+            padding: 10,
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.7)",
+          }}
+        >
+          <div
+            style={{
+              marginBottom: 8,
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 8,
+              alignItems: "baseline",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                margin: 0,
+                color: "#0f172a",
+              }}
+            >
+              {regionName} Region
+            </h2>
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: "#94a3b8" }}>
+              {side === "left" ? "Rounds move inward →" : "← Rounds move inward"}
+            </span>
+          </div>
+
+          {firstFourGames.length ? (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${Math.min(2, firstFourGames.length)}, minmax(0, 1fr))`,
+                gap: 8,
+                marginBottom: 10,
+              }}
+            >
+              {firstFourGames.map((game) => {
+                const state = buildRoundSectionState([game]);
+                return (
+                  <BracketGame
+                    key={game.id}
+                    game={game}
+                    prediction={state.predictions[game.id]}
+                    comparison={state.comparisons[game.id]}
+                    grading={state.grading[game.id]}
+                    predictionLoading={state.loadingGames[game.id]}
+                    predictionError={state.errorGames[game.id]}
+                    onSelectWinner={handleSelectWinner}
+                    compact
+                  />
+                );
+              })}
+            </div>
+          ) : null}
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                side === "left"
+                  ? `${REGION_LEFT_WIDTHS[0]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[1]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[2]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[3]}px`
+                  : `${REGION_RIGHT_WIDTHS[0]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[1]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[2]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[3]}px`,
+              alignItems: "start",
+              justifyContent: side === "left" ? "start" : "end",
+            }}
+          >
+            {columns.map((column, index) => (
+              <div key={`${regionName}-${side}-desktop-${index}`}>{column}</div>
+            ))}
+          </div>
+        </section>
+      );
+    }
 
     const sectionsByColumn: BracketRoundSection[][] =
       side === "left"
         ? [
             [
-              { label: "First Four", games: roundMap.get("first-four") ?? [] },
-              { label: "Round of 64", games: roundMap.get("round-of-64") ?? [] },
+              { label: "First Four", games: firstFourGames },
+              { label: "Round of 64", games: roundOf64Games },
             ],
-            [{ label: "Round of 32", games: roundMap.get("round-of-32") ?? [] }],
-            [{ label: "Sweet 16", games: roundMap.get("sweet-16") ?? [] }],
-            [{ label: "Elite 8", games: roundMap.get("elite-8") ?? [] }],
+            [{ label: "Round of 32", games: roundOf32Games }],
+            [{ label: "Sweet 16", games: sweet16Games }],
+            [{ label: "Elite 8", games: elite8Games }],
           ]
         : [
-            [{ label: "Elite 8", games: roundMap.get("elite-8") ?? [] }],
-            [{ label: "Sweet 16", games: roundMap.get("sweet-16") ?? [] }],
-            [{ label: "Round of 32", games: roundMap.get("round-of-32") ?? [] }],
+            [{ label: "Elite 8", games: elite8Games }],
+            [{ label: "Sweet 16", games: sweet16Games }],
+            [{ label: "Round of 32", games: roundOf32Games }],
             [
-              { label: "Round of 64", games: roundMap.get("round-of-64") ?? [] },
-              { label: "First Four", games: roundMap.get("first-four") ?? [] },
+              { label: "Round of 64", games: roundOf64Games },
+              { label: "First Four", games: firstFourGames },
             ],
           ];
 
@@ -596,6 +956,181 @@ export default function BracketBuilder({
               {sections.map((section) => renderRoundSection(section, 124))}
             </div>
           ))}
+        </div>
+      </section>
+    );
+  }
+
+  function renderCenterBoard() {
+    const finalFourGames = sortGames(roundGames.get("final-four") ?? []);
+    const championshipGames = sortGames(roundGames.get("national-championship") ?? []);
+    const semifinalState = buildRoundSectionState(finalFourGames);
+    const championshipState = buildRoundSectionState(championshipGames);
+    const semifinalPositions = [0, CENTER_CARD_HEIGHT + CENTER_GAP];
+    const championshipPositions = collapsePositions(semifinalPositions);
+    const boardHeight = semifinalPositions[semifinalPositions.length - 1] + CENTER_CARD_HEIGHT;
+    const spineX = Math.round(CENTER_CONNECTOR_WIDTH * 0.58);
+
+    return (
+      <section
+        style={{
+          gridColumn: 2,
+          gridRow: "1 / span 2",
+          alignSelf: "stretch",
+          borderRadius: 14,
+          border: "1px solid #e2e8f0",
+          background: "#f8fafc",
+          padding: 12,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: 10,
+        }}
+      >
+        <div>
+          <h2
+            style={{
+              fontSize: 14,
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
+              margin: "0 0 4px",
+              color: "#0f172a",
+              textAlign: "center",
+            }}
+          >
+            Final Four
+          </h2>
+          <div
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: 10,
+              color: "#94a3b8",
+              textAlign: "center",
+            }}
+          >
+            Semifinals feed the title game in the center
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: `${CENTER_SEMIFINAL_WIDTH}px ${CENTER_CONNECTOR_WIDTH}px ${CENTER_CHAMPIONSHIP_WIDTH}px`,
+            justifyContent: "center",
+            alignItems: "start",
+          }}
+        >
+          <div style={{ position: "relative", height: boardHeight, width: CENTER_SEMIFINAL_WIDTH }}>
+            {finalFourGames.map((game, index) => (
+              <div
+                key={`final-four-${game.id}`}
+                style={{
+                  position: "absolute",
+                  top: semifinalPositions[index] ?? 0,
+                  left: 0,
+                  right: 0,
+                }}
+              >
+                <BracketGame
+                  game={game}
+                  prediction={semifinalState.predictions[game.id]}
+                  comparison={semifinalState.comparisons[game.id]}
+                  grading={semifinalState.grading[game.id]}
+                  predictionLoading={semifinalState.loadingGames[game.id]}
+                  predictionError={semifinalState.errorGames[game.id]}
+                  onSelectWinner={handleSelectWinner}
+                  compact
+                  fixedHeight={CENTER_CARD_HEIGHT}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div style={{ position: "relative", height: boardHeight }}>
+            {championshipPositions.map((championshipTop, index) => {
+              const semifinalTopA = semifinalPositions[index * 2];
+              const semifinalTopB = semifinalPositions[index * 2 + 1];
+              if (typeof semifinalTopA !== "number" || typeof semifinalTopB !== "number") return null;
+              const semifinalCenterA = semifinalTopA + CENTER_CARD_HEIGHT / 2;
+              const semifinalCenterB = semifinalTopB + CENTER_CARD_HEIGHT / 2;
+              const championshipCenter = championshipTop + CENTER_CARD_HEIGHT / 2;
+
+              return (
+                <div key={`center-connector-${index}`}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: semifinalCenterA - 1,
+                      left: 0,
+                      width: spineX,
+                      height: 2,
+                      borderRadius: 999,
+                      background: "#cbd5e1",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: semifinalCenterB - 1,
+                      left: 0,
+                      width: spineX,
+                      height: 2,
+                      borderRadius: 999,
+                      background: "#cbd5e1",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: Math.min(semifinalCenterA, semifinalCenterB),
+                      left: spineX - 1,
+                      width: 2,
+                      height: Math.abs(semifinalCenterB - semifinalCenterA),
+                      borderRadius: 999,
+                      background: "#cbd5e1",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: championshipCenter - 1,
+                      left: spineX,
+                      width: CENTER_CONNECTOR_WIDTH - spineX,
+                      height: 2,
+                      borderRadius: 999,
+                      background: "#cbd5e1",
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          <div style={{ position: "relative", height: boardHeight, width: CENTER_CHAMPIONSHIP_WIDTH }}>
+            {championshipGames.map((game, index) => (
+              <div
+                key={`national-championship-${game.id}`}
+                style={{
+                  position: "absolute",
+                  top: championshipPositions[index] ?? 0,
+                  left: 0,
+                  right: 0,
+                }}
+              >
+                <BracketGame
+                  game={game}
+                  prediction={championshipState.predictions[game.id]}
+                  comparison={championshipState.comparisons[game.id]}
+                  grading={championshipState.grading[game.id]}
+                  predictionLoading={championshipState.loadingGames[game.id]}
+                  predictionError={championshipState.errorGames[game.id]}
+                  onSelectWinner={handleSelectWinner}
+                  compact
+                  fixedHeight={CENTER_CARD_HEIGHT}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     );
@@ -1000,35 +1535,16 @@ export default function BracketBuilder({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "minmax(0, 1fr) minmax(188px, 212px) minmax(0, 1fr)",
+              gridTemplateColumns: "minmax(0, 1fr) 400px minmax(0, 1fr)",
               gridTemplateRows: "auto auto",
               gap: 10,
               alignItems: "start",
-              minWidth: 1220,
+              minWidth: 1720,
             }}
           >
             <div style={{ gridColumn: 1, gridRow: 1 }}>{renderRegionLane(laneRegions.topLeft, "left")}</div>
             <div style={{ gridColumn: 1, gridRow: 2 }}>{renderRegionLane(laneRegions.bottomLeft, "left")}</div>
-
-            <section
-              style={{
-                gridColumn: 2,
-                gridRow: "1 / span 2",
-                alignSelf: "stretch",
-                borderRadius: 12,
-                border: "1px solid #e2e8f0",
-                background: "#f8fafc",
-                padding: 10,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                gap: 10,
-              }}
-            >
-              {renderRoundSection({ label: "Final Four", games: (roundGames.get("final-four") ?? []).slice(0, 1) }, 190)}
-              {renderRoundSection({ label: "National Championship", games: roundGames.get("national-championship") ?? [] }, 190)}
-              {renderRoundSection({ label: "Final Four", games: (roundGames.get("final-four") ?? []).slice(1) }, 190)}
-            </section>
+            {renderCenterBoard()}
 
             <div style={{ gridColumn: 3, gridRow: 1 }}>{renderRegionLane(laneRegions.topRight, "right")}</div>
             <div style={{ gridColumn: 3, gridRow: 2 }}>{renderRegionLane(laneRegions.bottomRight, "right")}</div>
