@@ -15,9 +15,11 @@ import {
 type Props = {
   payload: BettingPerformancePayload | null;
   initialFocus: PerformanceFocusKey;
+  initialMonth: MonthFilterKey;
 };
 
 type PerformanceFocusKey = "promoted" | "raw" | "conf" | "disagreement" | "ncaa";
+type MonthFilterKey = "all" | "nov" | "dec" | "jan" | "feb" | "mar";
 
 const mono: CSSProperties = {
   fontFamily: "'IBM Plex Mono', monospace",
@@ -25,13 +27,18 @@ const mono: CSSProperties = {
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const qFocus = typeof context.query.focus === "string" ? context.query.focus : null;
+  const qMonth = typeof context.query.month === "string" ? context.query.month : null;
   const validFocus: PerformanceFocusKey[] = ["promoted", "raw", "conf", "disagreement", "ncaa"];
+  const validMonth: MonthFilterKey[] = ["all", "nov", "dec", "jan", "feb", "mar"];
   return {
     props: {
       payload: readBettingPerformancePayload(),
       initialFocus: validFocus.includes((qFocus ?? "") as PerformanceFocusKey)
         ? (qFocus as PerformanceFocusKey)
         : "promoted",
+      initialMonth: validMonth.includes((qMonth ?? "") as MonthFilterKey)
+        ? (qMonth as MonthFilterKey)
+        : "all",
     },
   };
 };
@@ -75,7 +82,15 @@ function cardStyle(highlight = false): CSSProperties {
   };
 }
 
-function SummaryCards({ payload, initialFocus }: { payload: BettingPerformancePayload; initialFocus: PerformanceFocusKey }) {
+function SummaryCards({
+  payload,
+  initialFocus,
+  initialMonth,
+}: {
+  payload: BettingPerformancePayload;
+  initialFocus: PerformanceFocusKey;
+  initialMonth: MonthFilterKey;
+}) {
   const promotedFull = getOverallRow(payload.overall, "promoted_internal_filter", "full");
   const rawFull = getOverallRow(payload.overall, "raw_edge_baseline", "full");
   const promotedConf = getOverallRow(payload.overall, "promoted_internal_filter", "conference_tournaments");
@@ -136,7 +151,7 @@ function SummaryCards({ payload, initialFocus }: { payload: BettingPerformancePa
       {cards.map((card) => (
         <a
           key={card.label}
-          href={`/betting/performance?focus=${card.focus}#historical-picks`}
+          href={`/betting/performance?focus=${card.focus}&month=${initialMonth}#historical-picks`}
           style={{
             ...cardStyle(card.highlight),
             textDecoration: "none",
@@ -161,6 +176,35 @@ function SummaryCards({ payload, initialFocus }: { payload: BettingPerformancePa
 function fmtLine(v: number | null | undefined): string {
   if (v === null || v === undefined || Number.isNaN(v)) return "—";
   return v > 0 ? `+${v.toFixed(1)}` : v.toFixed(1);
+}
+
+function monthFloor(key: MonthFilterKey): number {
+  const order: Record<MonthFilterKey, number> = {
+    all: 0,
+    nov: 1,
+    dec: 2,
+    jan: 3,
+    feb: 4,
+    mar: 5,
+  };
+  return order[key];
+}
+
+function monthFilterLabel(key: MonthFilterKey): string {
+  switch (key) {
+    case "nov":
+      return "Nov forward";
+    case "dec":
+      return "Dec forward";
+    case "jan":
+      return "Jan forward";
+    case "feb":
+      return "Feb forward";
+    case "mar":
+      return "Mar forward";
+    default:
+      return "All months";
+  }
 }
 
 function resolveFocusedPicks(
@@ -203,21 +247,43 @@ function resolveFocusedPicks(
   }
 }
 
-function HistoricalPickTable({ payload, initialFocus }: { payload: BettingPerformancePayload; initialFocus: PerformanceFocusKey }) {
+function HistoricalPickTable({
+  payload,
+  initialFocus,
+  initialMonth,
+}: {
+  payload: BettingPerformancePayload;
+  initialFocus: PerformanceFocusKey;
+  initialMonth: MonthFilterKey;
+}) {
   const focused = resolveFocusedPicks(payload, initialFocus);
+  const floor = monthFloor(initialMonth);
+  const filteredRows = floor
+    ? focused.rows.filter((row) => {
+        const month = Number(String(row.game_date).slice(5, 7));
+        const seasonOrder =
+          month === 11 ? 1 :
+          month === 12 ? 2 :
+          month === 1 ? 3 :
+          month === 2 ? 4 :
+          month === 3 ? 5 :
+          month === 4 ? 6 : 0;
+        return seasonOrder >= floor;
+      })
+    : focused.rows;
   return (
     <section id="historical-picks" style={{ display: "grid", gap: 14 }}>
       <div>
         <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#0f172a" }}>{focused.title}</h2>
         <div style={{ ...mono, fontSize: 12, color: "#64748b", marginTop: 4 }}>
-          {focused.subtitle}
+          {focused.subtitle} · {monthFilterLabel(initialMonth)}
         </div>
       </div>
       <div style={{ overflowX: "auto", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 12 }}>
         <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1280 }}>
           <thead>
             <tr style={{ background: "#f8fafc", textAlign: "left" }}>
-              {["Date", "Game", "Pick", "HE Line", "Market Line", "Raw Edge", "Score", "Disagreement", "Context", "Driver", "Result"].map((label) => (
+              {["Date", "Game", "Final", "Pick", "HE Line", "Market Line", "Raw Edge", "Score", "Disagreement", "Context", "Driver", "Result"].map((label) => (
                 <th key={label} style={{ ...mono, fontSize: 11, color: "#64748b", padding: "12px 14px", borderBottom: "1px solid #e2e8f0" }}>
                   {label.toUpperCase()}
                 </th>
@@ -225,10 +291,11 @@ function HistoricalPickTable({ payload, initialFocus }: { payload: BettingPerfor
             </tr>
           </thead>
           <tbody>
-            {focused.rows.slice(0, 500).map((row) => (
+            {filteredRows.slice(0, 500).map((row) => (
               <tr key={`${row.gameId}-${row.pick_team}`}>
                 <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.game_date}</td>
                 <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9", color: "#0f172a", fontWeight: 600 }}>{row.game}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.final_score ?? "—"}</td>
                 <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.pick_team}</td>
                 <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtLine(row.hoops_edge_line_for_pick)}</td>
                 <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtLine(row.market_line_for_pick)}</td>
@@ -245,9 +312,29 @@ function HistoricalPickTable({ payload, initialFocus }: { payload: BettingPerfor
           </tbody>
         </table>
       </div>
-      {focused.rows.length > 500 ? (
+      <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+        <span style={{ ...mono, fontSize: 12, color: "#64748b" }}>Month forward:</span>
+        {(["all", "nov", "dec", "jan", "feb", "mar"] as MonthFilterKey[]).map((month) => (
+          <Link
+            key={month}
+            href={`/betting/performance?focus=${initialFocus}&month=${month}#historical-picks`}
+            style={{
+              ...mono,
+              fontSize: 12,
+              padding: "6px 10px",
+              borderRadius: 999,
+              border: month === initialMonth ? "1px solid #0f172a" : "1px solid #e2e8f0",
+              background: "#fff",
+              color: "#334155",
+            }}
+          >
+            {monthFilterLabel(month)}
+          </Link>
+        ))}
+      </div>
+      {filteredRows.length > 500 ? (
         <div style={{ ...mono, fontSize: 12, color: "#64748b" }}>
-          Showing first 500 rows of {focused.rows.length}. The full pick list remains in the historical artifact CSVs.
+          Showing first 500 rows of {filteredRows.length}. The full pick list remains in the historical artifact CSVs.
         </div>
       ) : null}
     </section>
@@ -502,7 +589,7 @@ function SignalDriverTable({ payload }: { payload: BettingPerformancePayload }) 
   );
 }
 
-export default function BettingPerformancePage({ payload, initialFocus }: Props) {
+export default function BettingPerformancePage({ payload, initialFocus, initialMonth }: Props) {
   if (!payload) {
     return (
       <Layout>
@@ -568,7 +655,7 @@ export default function BettingPerformancePage({ payload, initialFocus }: Props)
           </div>
         </div>
 
-        <SummaryCards payload={payload} initialFocus={initialFocus} />
+        <SummaryCards payload={payload} initialFocus={initialFocus} initialMonth={initialMonth} />
 
         <div
           style={{
@@ -604,7 +691,7 @@ export default function BettingPerformancePage({ payload, initialFocus }: Props)
           </div>
         </div>
 
-        <HistoricalPickTable payload={payload} initialFocus={initialFocus} />
+        <HistoricalPickTable payload={payload} initialFocus={initialFocus} initialMonth={initialMonth} />
         <ComparisonTable payload={payload} />
         <RobustnessCards payload={payload} />
         <SubgroupTable payload={payload} />

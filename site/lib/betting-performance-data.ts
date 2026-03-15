@@ -80,6 +80,7 @@ export type HistoricalPickRow = {
   slice: string;
   gameId: number;
   game: string;
+  final_score: string | null;
   pick_team: string;
   model_pick_side: string;
   hoops_edge_line_for_pick: number | null;
