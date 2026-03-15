@@ -1,13 +1,13 @@
 {
   "season": 2026,
-  "source": "selection_sunday_manual",
-  "note": "Replace this development field with the official Selection Sunday bracket before publishing a real NCAA builder.",
+  "source": "official_ncaa_bracket",
+  "note": "Official 2026 NCAA Tournament bracket field updated from the live NCAA bracket on March 15, 2026.",
   "first_four_games": [
     {
       "id": "ff1",
-      "region": "East",
+      "region": "Midwest",
       "seed": 11,
-      "winner_to_slot": "east-11"
+      "winner_to_slot": "midwest-11"
     },
     {
       "id": "ff2",
@@ -40,8 +40,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 113,
-      "team_name": "Houston",
+      "team_id": 314,
+      "team_name": "UConn",
       "seed": 2,
       "region": "East",
       "slot": "east-2",
@@ -50,8 +50,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 236,
-      "team_name": "Purdue",
+      "team_id": 169,
+      "team_name": "Michigan State",
       "seed": 3,
       "region": "East",
       "slot": "east-3",
@@ -60,8 +60,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 336,
-      "team_name": "Vanderbilt",
+      "team_id": 131,
+      "team_name": "Kansas",
       "seed": 4,
       "region": "East",
       "slot": "east-4",
@@ -70,8 +70,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 150,
-      "team_name": "Louisville",
+      "team_id": 279,
+      "team_name": "St. John's",
       "seed": 5,
       "region": "East",
       "slot": "east-5",
@@ -80,8 +80,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 200,
-      "team_name": "North Carolina",
+      "team_id": 150,
+      "team_name": "Louisville",
       "seed": 6,
       "region": "East",
       "slot": "east-6",
@@ -90,8 +90,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 216,
-      "team_name": "Ohio State",
+      "team_id": 313,
+      "team_name": "UCLA",
       "seed": 7,
       "region": "East",
       "slot": "east-7",
@@ -100,8 +100,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 16,
-      "team_name": "Auburn",
+      "team_id": 216,
+      "team_name": "Ohio State",
       "seed": 8,
       "region": "East",
       "slot": "east-8",
@@ -110,8 +110,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 313,
-      "team_name": "UCLA",
+      "team_id": 287,
+      "team_name": "TCU",
       "seed": 9,
       "region": "East",
       "slot": "east-9",
@@ -120,8 +120,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 168,
-      "team_name": "Miami",
+      "team_id": 312,
+      "team_name": "UCF",
       "seed": 10,
       "region": "East",
       "slot": "east-10",
@@ -132,6 +132,16 @@
     {
       "team_id": 271,
       "team_name": "South Florida",
+      "seed": 11,
+      "region": "East",
+      "slot": "east-11",
+      "is_first_four": false,
+      "first_four_game_id": null,
+      "feeder_slot": null
+    },
+    {
+      "team_id": 209,
+      "team_name": "Northern Iowa",
       "seed": 12,
       "region": "East",
       "slot": "east-12",
@@ -140,8 +150,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 191,
-      "team_name": "New Mexico",
+      "team_id": 39,
+      "team_name": "California Baptist",
       "seed": 13,
       "region": "East",
       "slot": "east-13",
@@ -150,8 +160,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 212,
-      "team_name": "Northwestern",
+      "team_id": 202,
+      "team_name": "North Dakota State",
       "seed": 14,
       "region": "East",
       "slot": "east-14",
@@ -160,8 +170,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 312,
-      "team_name": "UCF",
+      "team_id": 93,
+      "team_name": "Furman",
       "seed": 15,
       "region": "East",
       "slot": "east-15",
@@ -170,8 +180,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 61,
-      "team_name": "Creighton",
+      "team_id": 264,
+      "team_name": "Siena",
       "seed": 16,
       "region": "East",
       "slot": "east-16",
@@ -180,8 +190,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 170,
-      "team_name": "Michigan",
+      "team_id": 11,
+      "team_name": "Arizona",
       "seed": 1,
       "region": "West",
       "slot": "west-1",
@@ -190,8 +200,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 125,
-      "team_name": "Iowa State",
+      "team_id": 236,
+      "team_name": "Purdue",
       "seed": 2,
       "region": "West",
       "slot": "west-2",
@@ -200,8 +210,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 169,
-      "team_name": "Michigan State",
+      "team_id": 102,
+      "team_name": "Gonzaga",
       "seed": 3,
       "region": "West",
       "slot": "west-3",
@@ -210,8 +220,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 253,
-      "team_name": "Saint Mary's",
+      "team_id": 12,
+      "team_name": "Arkansas",
       "seed": 4,
       "region": "West",
       "slot": "west-4",
@@ -220,8 +230,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 188,
-      "team_name": "Nebraska",
+      "team_id": 355,
+      "team_name": "Wisconsin",
       "seed": 5,
       "region": "West",
       "slot": "west-5",
@@ -230,8 +240,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 298,
-      "team_name": "Texas Tech",
+      "team_id": 18,
+      "team_name": "BYU",
       "seed": 6,
       "region": "West",
       "slot": "west-6",
@@ -240,8 +250,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 98,
-      "team_name": "Georgia",
+      "team_id": 168,
+      "team_name": "Miami",
       "seed": 7,
       "region": "West",
       "slot": "west-7",
@@ -250,8 +260,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 135,
-      "team_name": "Kentucky",
+      "team_id": 338,
+      "team_name": "Villanova",
       "seed": 8,
       "region": "West",
       "slot": "west-8",
@@ -260,8 +270,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 52,
-      "team_name": "Clemson",
+      "team_id": 329,
+      "team_name": "Utah State",
       "seed": 9,
       "region": "West",
       "slot": "west-9",
@@ -270,8 +280,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 162,
-      "team_name": "McNeese",
+      "team_id": 177,
+      "team_name": "Missouri",
       "seed": 10,
       "region": "West",
       "slot": "west-10",
@@ -280,8 +290,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 293,
-      "team_name": "Texas A&M",
+      "team_id": 109,
+      "team_name": "High Point",
       "seed": 12,
       "region": "West",
       "slot": "west-12",
@@ -290,8 +300,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 287,
-      "team_name": "TCU",
+      "team_id": 108,
+      "team_name": "Hawai'i",
       "seed": 13,
       "region": "West",
       "slot": "west-13",
@@ -300,8 +310,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 51,
-      "team_name": "Cincinnati",
+      "team_id": 133,
+      "team_name": "Kennesaw State",
       "seed": 14,
       "region": "West",
       "slot": "west-14",
@@ -310,8 +320,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 304,
-      "team_name": "Tulsa",
+      "team_id": 362,
+      "team_name": "Queens University",
       "seed": 15,
       "region": "West",
       "slot": "west-15",
@@ -320,8 +330,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 20,
-      "team_name": "Baylor",
+      "team_id": 146,
+      "team_name": "Long Island University",
       "seed": 16,
       "region": "West",
       "slot": "west-16",
@@ -330,8 +340,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 11,
-      "team_name": "Arizona",
+      "team_id": 87,
+      "team_name": "Florida",
       "seed": 1,
       "region": "South",
       "slot": "south-1",
@@ -340,8 +350,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 87,
-      "team_name": "Florida",
+      "team_id": 113,
+      "team_name": "Houston",
       "seed": 2,
       "region": "South",
       "slot": "south-2",
@@ -350,8 +360,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 314,
-      "team_name": "UConn",
+      "team_id": 118,
+      "team_name": "Illinois",
       "seed": 3,
       "region": "South",
       "slot": "south-3",
@@ -360,8 +370,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 5,
-      "team_name": "Alabama",
+      "team_id": 188,
+      "team_name": "Nebraska",
       "seed": 4,
       "region": "South",
       "slot": "south-4",
@@ -370,8 +380,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 12,
-      "team_name": "Arkansas",
+      "team_id": 336,
+      "team_name": "Vanderbilt",
       "seed": 5,
       "region": "South",
       "slot": "south-5",
@@ -380,8 +390,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 131,
-      "team_name": "Kansas",
+      "team_id": 200,
+      "team_name": "North Carolina",
       "seed": 6,
       "region": "South",
       "slot": "south-6",
@@ -390,8 +400,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 355,
-      "team_name": "Wisconsin",
+      "team_id": 253,
+      "team_name": "Saint Mary's",
       "seed": 7,
       "region": "South",
       "slot": "south-7",
@@ -400,8 +410,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 329,
-      "team_name": "Utah State",
+      "team_id": 52,
+      "team_name": "Clemson",
       "seed": 8,
       "region": "South",
       "slot": "south-8",
@@ -410,8 +420,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 121,
-      "team_name": "Indiana",
+      "team_id": 124,
+      "team_name": "Iowa",
       "seed": 9,
       "region": "South",
       "slot": "south-9",
@@ -420,8 +430,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 3,
-      "team_name": "Akron",
+      "team_id": 293,
+      "team_name": "Texas A&M",
       "seed": 10,
       "region": "South",
       "slot": "south-10",
@@ -430,8 +440,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 261,
-      "team_name": "Santa Clara",
+      "team_id": 333,
+      "team_name": "VCU",
       "seed": 11,
       "region": "South",
       "slot": "south-11",
@@ -440,8 +450,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 338,
-      "team_name": "Villanova",
+      "team_id": 162,
+      "team_name": "McNeese",
       "seed": 12,
       "region": "South",
       "slot": "south-12",
@@ -450,8 +460,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 109,
-      "team_name": "High Point",
+      "team_id": 302,
+      "team_name": "Troy",
       "seed": 13,
       "region": "South",
       "slot": "south-13",
@@ -460,8 +470,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 177,
-      "team_name": "Missouri",
+      "team_id": 227,
+      "team_name": "Pennsylvania",
       "seed": 14,
       "region": "South",
       "slot": "south-14",
@@ -470,8 +480,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 64,
-      "team_name": "Dayton",
+      "team_id": 117,
+      "team_name": "Idaho",
       "seed": 15,
       "region": "South",
       "slot": "south-15",
@@ -480,8 +490,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 118,
-      "team_name": "Illinois",
+      "team_id": 170,
+      "team_name": "Michigan",
       "seed": 1,
       "region": "Midwest",
       "slot": "midwest-1",
@@ -490,8 +500,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 102,
-      "team_name": "Gonzaga",
+      "team_id": 125,
+      "team_name": "Iowa State",
       "seed": 2,
       "region": "Midwest",
       "slot": "midwest-2",
@@ -510,8 +520,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 292,
-      "team_name": "Tennessee",
+      "team_id": 5,
+      "team_name": "Alabama",
       "seed": 4,
       "region": "Midwest",
       "slot": "midwest-4",
@@ -520,8 +530,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 124,
-      "team_name": "Iowa",
+      "team_id": 298,
+      "team_name": "Texas Tech",
       "seed": 5,
       "region": "Midwest",
       "slot": "midwest-5",
@@ -530,8 +540,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 279,
-      "team_name": "St. John's",
+      "team_id": 292,
+      "team_name": "Tennessee",
       "seed": 6,
       "region": "Midwest",
       "slot": "midwest-6",
@@ -540,8 +550,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 18,
-      "team_name": "BYU",
+      "team_id": 135,
+      "team_name": "Kentucky",
       "seed": 7,
       "region": "Midwest",
       "slot": "midwest-7",
@@ -550,8 +560,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 252,
-      "team_name": "Saint Louis",
+      "team_id": 98,
+      "team_name": "Georgia",
       "seed": 8,
       "region": "Midwest",
       "slot": "midwest-8",
@@ -560,8 +570,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 360,
-      "team_name": "Yale",
+      "team_id": 252,
+      "team_name": "Saint Louis",
       "seed": 9,
       "region": "Midwest",
       "slot": "midwest-9",
@@ -570,8 +580,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 248,
-      "team_name": "SMU",
+      "team_id": 261,
+      "team_name": "Santa Clara",
       "seed": 10,
       "region": "Midwest",
       "slot": "midwest-10",
@@ -580,18 +590,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 333,
-      "team_name": "VCU",
-      "seed": 11,
-      "region": "Midwest",
-      "slot": "midwest-11",
-      "is_first_four": false,
-      "first_four_game_id": null,
-      "feeder_slot": null
-    },
-    {
-      "team_id": 185,
-      "team_name": "NC State",
+      "team_id": 3,
+      "team_name": "Akron",
       "seed": 12,
       "region": "Midwest",
       "slot": "midwest-12",
@@ -600,8 +600,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 295,
-      "team_name": "Texas",
+      "team_id": 110,
+      "team_name": "Hofstra",
       "seed": 13,
       "region": "Midwest",
       "slot": "midwest-13",
@@ -610,8 +610,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 217,
-      "team_name": "Oklahoma",
+      "team_id": 357,
+      "team_name": "Wright State",
       "seed": 14,
       "region": "Midwest",
       "slot": "midwest-14",
@@ -620,8 +620,8 @@
       "feeder_slot": null
     },
     {
-      "team_id": 22,
-      "team_name": "Belmont",
+      "team_id": 290,
+      "team_name": "Tennessee State",
       "seed": 15,
       "region": "Midwest",
       "slot": "midwest-15",
@@ -630,28 +630,28 @@
       "feeder_slot": null
     },
     {
-      "team_id": 257,
-      "team_name": "San Diego State",
+      "team_id": 167,
+      "team_name": "Miami (OH)",
       "seed": 11,
-      "region": "East",
+      "region": "Midwest",
       "slot": "ff1-team-1",
       "is_first_four": true,
       "first_four_game_id": "ff1",
-      "feeder_slot": "east-11"
+      "feeder_slot": "midwest-11"
     },
     {
-      "team_id": 340,
-      "team_name": "Virginia Tech",
+      "team_id": 248,
+      "team_name": "SMU",
       "seed": 11,
-      "region": "East",
+      "region": "Midwest",
       "slot": "ff1-team-2",
       "is_first_four": true,
       "first_four_game_id": "ff1",
-      "feeder_slot": "east-11"
+      "feeder_slot": "midwest-11"
     },
     {
-      "team_id": 34,
-      "team_name": "Butler",
+      "team_id": 295,
+      "team_name": "Texas",
       "seed": 11,
       "region": "West",
       "slot": "ff2-team-1",
@@ -660,8 +660,8 @@
       "feeder_slot": "west-11"
     },
     {
-      "team_id": 119,
-      "team_name": "Illinois State",
+      "team_id": 185,
+      "team_name": "NC State",
       "seed": 11,
       "region": "West",
       "slot": "ff2-team-2",
@@ -670,8 +670,8 @@
       "feeder_slot": "west-11"
     },
     {
-      "team_id": 209,
-      "team_name": "Northern Iowa",
+      "team_id": 232,
+      "team_name": "Prairie View A&M",
       "seed": 16,
       "region": "South",
       "slot": "ff3-team-1",
@@ -680,8 +680,8 @@
       "feeder_slot": "south-16"
     },
     {
-      "team_id": 167,
-      "team_name": "Miami (OH)",
+      "team_id": 141,
+      "team_name": "Lehigh",
       "seed": 16,
       "region": "South",
       "slot": "ff3-team-2",
@@ -690,8 +690,8 @@
       "feeder_slot": "south-16"
     },
     {
-      "team_id": 25,
-      "team_name": "Boise State",
+      "team_id": 317,
+      "team_name": "UMBC",
       "seed": 16,
       "region": "Midwest",
       "slot": "ff4-team-1",
@@ -700,8 +700,8 @@
       "feeder_slot": "midwest-16"
     },
     {
-      "team_id": 104,
-      "team_name": "Grand Canyon",
+      "team_id": 114,
+      "team_name": "Howard",
       "seed": 16,
       "region": "Midwest",
       "slot": "ff4-team-2",
