@@ -1,18 +1,59 @@
 import { CSSProperties } from "react";
 import { displayTeam } from "../../lib/data";
-import { MatchupPrediction } from "../../lib/bracket/types";
 import { GameComparison } from "../../lib/bracket/comparison";
+import { BracketTeam, GradedGameResult, MatchupPrediction } from "../../lib/bracket/types";
 
 const mono: CSSProperties = {
   fontFamily: "'IBM Plex Mono', monospace",
 };
 
-function pct(value: number): string {
-  return `${(value * 100).toFixed(1)}%`;
+function pct(value: number, digits = 0): string {
+  return `${(value * 100).toFixed(digits)}%`;
 }
 
-function spreadLabel(prediction: MatchupPrediction): string {
-  return `${displayTeam(prediction.favoredTeamName)} -${prediction.projectedSpread.toFixed(1)}`;
+function metricValue(value: number | null | undefined, digits = 1): string {
+  return value == null ? "--" : value.toFixed(digits);
+}
+
+function metricGrid(team: BracketTeam) {
+  return [
+    { label: "Adj Pace", value: metricValue(team.adjTempo) },
+    { label: "Adj OE", value: metricValue(team.adjOe) },
+    { label: "Adj DE", value: metricValue(team.adjDe) },
+    { label: "Adj Net", value: metricValue(team.adjNet) },
+  ];
+}
+
+function statusPill(label: string, tone: "blue" | "green" | "amber" | "red" | "slate") {
+  const toneMap = {
+    blue: { background: "#dbeafe", color: "#1d4ed8" },
+    green: { background: "#dcfce7", color: "#166534" },
+    amber: { background: "#fffbeb", color: "#b45309" },
+    red: { background: "#fef2f2", color: "#b91c1c" },
+    slate: { background: "#e2e8f0", color: "#334155" },
+  }[tone];
+
+  return (
+    <span
+      style={{
+        ...mono,
+        fontSize: 10,
+        padding: "2px 6px",
+        borderRadius: 999,
+        background: toneMap.background,
+        color: toneMap.color,
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
+function teamTone(isFavorite: boolean, isSelected: boolean, isActualWinner: boolean) {
+  if (isSelected) return { border: "#0f172a", background: "#f8fafc" };
+  if (isActualWinner) return { border: "#86efac", background: "#f0fdf4" };
+  if (isFavorite) return { border: "#93c5fd", background: "#eff6ff" };
+  return { border: "#e2e8f0", background: "#ffffff" };
 }
 
 export default function MatchupPredictionCard({
@@ -21,27 +62,56 @@ export default function MatchupPredictionCard({
   error,
   selectedWinnerId,
   comparison,
+  grading,
+  teamA,
+  teamB,
 }: {
   prediction?: MatchupPrediction;
   loading?: boolean;
   error?: string;
   selectedWinnerId?: number;
   comparison?: GameComparison;
+  grading?: GradedGameResult;
+  teamA?: BracketTeam | null;
+  teamB?: BracketTeam | null;
 }) {
-  const comparisonTone =
-    comparison?.agreesWithModel === false
-      ? { border: "#f59e0b", background: "#fffbeb", color: "#b45309", label: "Fading model" }
-      : comparison?.agreesWithModel === true
-        ? { border: "#86efac", background: "#f0fdf4", color: "#15803d", label: "Aligned with model" }
-        : null;
+  const teams = [
+    prediction && teamA
+      ? {
+          key: "A",
+          team: teamA,
+          winProb: prediction.winProbA,
+          isFavorite: prediction.favoredTeamId === teamA.id,
+          isSelected: selectedWinnerId === teamA.id,
+          isActualWinner: grading?.actualWinnerId === teamA.id,
+        }
+      : null,
+    prediction && teamB
+      ? {
+          key: "B",
+          team: teamB,
+          winProb: prediction.winProbB,
+          isFavorite: prediction.favoredTeamId === teamB.id,
+          isSelected: selectedWinnerId === teamB.id,
+          isActualWinner: grading?.actualWinnerId === teamB.id,
+        }
+      : null,
+  ].filter(Boolean) as {
+    key: string;
+    team: BracketTeam;
+    winProb: number;
+    isFavorite: boolean;
+    isSelected: boolean;
+    isActualWinner: boolean;
+  }[];
 
   return (
     <div
       style={{
-        marginTop: 10,
+        marginTop: 8,
         padding: "10px 12px",
-        borderRadius: 8,
-        border: "1px solid #e2e8f0",
+        borderRadius: 10,
+        border: "1px solid #dbe4ef",
         background: "#f8fafc",
       }}
     >
@@ -58,7 +128,7 @@ export default function MatchupPredictionCard({
           marginBottom: 8,
         }}
       >
-        <span>Model Matchup</span>
+        <span>Game Details</span>
         {loading ? <span>Loading...</span> : null}
         {error ? <span style={{ color: "#b91c1c" }}>{error}</span> : null}
       </div>
@@ -67,104 +137,110 @@ export default function MatchupPredictionCard({
         <>
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr auto",
-              gap: 8,
-              alignItems: "center",
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 6,
               marginBottom: 8,
             }}
           >
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}>
-              Favorite: {displayTeam(prediction.favoredTeamName)}
-            </div>
-            <div style={{ ...mono, fontSize: 12, color: "#0f172a" }}>
-              Spread: {spreadLabel(prediction)}
-            </div>
+            {statusPill(`Model: ${displayTeam(prediction.modelWinnerName)}`, "blue")}
+            {statusPill(`${displayTeam(prediction.favoredTeamName)} -${prediction.projectedSpread.toFixed(1)}`, "slate")}
+            {comparison?.selectedWinnerName
+              ? statusPill(comparison.agreesWithModel ? "Agree" : "Fade", comparison.agreesWithModel ? "green" : "amber")
+              : null}
+            {comparison?.confidenceLabel ? statusPill(comparison.confidenceLabel, "slate") : null}
+            {grading?.isFinal
+              ? statusPill(
+                  grading.status === "correct" ? "Correct" : grading.status === "incorrect" ? "Missed" : "Actual final",
+                  grading.status === "correct" ? "green" : grading.status === "incorrect" ? "red" : "slate",
+                )
+              : null}
           </div>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
+              gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
               gap: 8,
-              marginBottom: 8,
             }}
           >
-            <div
-              style={{
-                borderRadius: 6,
-                border: `1px solid ${prediction.favoredTeamId === prediction.teamAId ? "#93c5fd" : "#dbeafe"}`,
-                background: prediction.favoredTeamId === prediction.teamAId ? "#dbeafe" : "#eff6ff",
-                padding: "8px 10px",
-              }}
-            >
-              <div style={{ fontSize: 12, fontWeight: 600, color: "#0f172a", display: "flex", gap: 6, alignItems: "center" }}>
-                {displayTeam(prediction.teamAName)}
-                {prediction.favoredTeamId === prediction.teamAId ? (
-                  <span style={{ ...mono, fontSize: 10, color: "#1d4ed8" }}>FAV</span>
-                ) : null}
-                {selectedWinnerId === prediction.teamAId ? (
-                  <span style={{ ...mono, fontSize: 10, color: "#0f172a" }}>YOUR PICK</span>
-                ) : null}
-              </div>
-              <div style={{ ...mono, fontSize: 12, color: "#334155" }}>
-                Win %: {pct(prediction.winProbA)}
-              </div>
-            </div>
-            <div
-              style={{
-                borderRadius: 6,
-                border: `1px solid ${prediction.favoredTeamId === prediction.teamBId ? "#93c5fd" : "#dbeafe"}`,
-                background: prediction.favoredTeamId === prediction.teamBId ? "#dbeafe" : "#eff6ff",
-                padding: "8px 10px",
-              }}
-            >
-              <div style={{ fontSize: 12, fontWeight: 600, color: "#0f172a", display: "flex", gap: 6, alignItems: "center" }}>
-                {displayTeam(prediction.teamBName)}
-                {prediction.favoredTeamId === prediction.teamBId ? (
-                  <span style={{ ...mono, fontSize: 10, color: "#1d4ed8" }}>FAV</span>
-                ) : null}
-                {selectedWinnerId === prediction.teamBId ? (
-                  <span style={{ ...mono, fontSize: 10, color: "#0f172a" }}>YOUR PICK</span>
-                ) : null}
-              </div>
-              <div style={{ ...mono, fontSize: 12, color: "#334155" }}>
-                Win %: {pct(prediction.winProbB)}
-              </div>
-            </div>
+            {teams.map(({ key, team, winProb, isFavorite, isSelected, isActualWinner }) => {
+              const tone = teamTone(isFavorite, isSelected, isActualWinner);
+              return (
+                <div
+                  key={key}
+                  style={{
+                    borderRadius: 8,
+                    border: `1px solid ${tone.border}`,
+                    background: tone.background,
+                    padding: "8px 9px",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 6, marginBottom: 6 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#0f172a" }}>
+                      ({team.seed}) {displayTeam(team.name)}
+                    </div>
+                    <div style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                      {isFavorite ? statusPill("Fav", "blue") : null}
+                      {isSelected ? statusPill("Your pick", "slate") : null}
+                      {isActualWinner ? statusPill("Actual", "green") : null}
+                    </div>
+                  </div>
+
+                  <div style={{ ...mono, fontSize: 11, color: "#334155", marginBottom: 6 }}>
+                    Win prob {pct(winProb, 1)}
+                  </div>
+                  <div style={{ ...mono, fontSize: 11, color: "#475569", marginBottom: 6 }}>
+                    Rank {team.rank} | {team.conference || "--"} | {team.record}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                      gap: 5,
+                    }}
+                  >
+                    {metricGrid(team).map((metric) => (
+                      <div
+                        key={metric.label}
+                        style={{
+                          borderRadius: 6,
+                          background: "#ffffff",
+                          border: "1px solid #e2e8f0",
+                          padding: "5px 6px",
+                        }}
+                      >
+                        <div style={{ ...mono, fontSize: 10, color: "#64748b", marginBottom: 2 }}>{metric.label}</div>
+                        <div style={{ ...mono, fontSize: 11, color: "#0f172a" }}>{metric.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
-          <div style={{ ...mono, fontSize: 11, color: "#475569" }}>
-            Model winner: {displayTeam(prediction.modelWinnerName)}
+          <div
+            style={{
+              ...mono,
+              fontSize: 11,
+              color: "#475569",
+              marginTop: 8,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 10,
+            }}
+          >
+            <span>Favorite {displayTeam(prediction.favoredTeamName)}</span>
+            <span>Underdog {displayTeam(prediction.underdogTeamName)}</span>
+            {prediction.projectedScoreA != null && prediction.projectedScoreB != null ? (
+              <span>
+                Score {displayTeam(prediction.teamAName)} {prediction.projectedScoreA.toFixed(0)} - {prediction.projectedScoreB.toFixed(0)} {displayTeam(prediction.teamBName)}
+              </span>
+            ) : null}
+            {grading?.actualWinnerName ? <span>Actual winner {displayTeam(grading.actualWinnerName)}</span> : null}
           </div>
-          {comparison?.selectedWinnerName ? (
-            <div
-              style={{
-                marginTop: 8,
-                padding: "8px 10px",
-                borderRadius: 6,
-                border: `1px solid ${comparisonTone?.border ?? "#e2e8f0"}`,
-                background: comparisonTone?.background ?? "#ffffff",
-                color: comparisonTone?.color ?? "#334155",
-              }}
-            >
-              <div
-                style={{
-                  ...mono,
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 8,
-                  fontSize: 11,
-                  lineHeight: 1.5,
-                }}
-              >
-                <span>Your pick: {displayTeam(comparison.selectedWinnerName)}</span>
-                <span>Model: {displayTeam(comparison.modelWinnerName ?? "--")}</span>
-                <span>{comparisonTone?.label ?? "Awaiting model compare"}</span>
-                <span>{comparison.confidenceLabel}</span>
-              </div>
-            </div>
-          ) : null}
         </>
       ) : null}
 

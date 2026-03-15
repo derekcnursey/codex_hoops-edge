@@ -4,6 +4,7 @@ import { buildNcaaBracketGames, getBracketTeams, getRoundOrder } from "../../lib
 import {
   BracketGradingSummary,
   BracketSource,
+  BracketRoundId,
   BracketTeam,
   MatchupPrediction,
   NcaaBracketField,
@@ -30,11 +31,28 @@ import {
 import { validateBracketGraph, validateNcaaField } from "../../lib/bracket/validation";
 import BracketRound from "./BracketRound";
 
+type BracketRoundSection = {
+  label: string;
+  games: ResolvedBracketGame[];
+};
+
 function gradingBreakdown(summary: BracketGradingSummary): string {
   return summary.rounds
     .filter((round) => round.possibleScore > 0 || round.correct > 0 || round.incorrect > 0)
     .map((round) => `${round.roundLabel}: ${round.correct}-${round.incorrect}-${round.pending}`)
     .join(" | ");
+}
+
+function normalizeRegionName(name: string): string {
+  return name.trim().toLowerCase().replace(/\s+/g, "-");
+}
+
+function canonicalRegionName(field: NcaaBracketField, target: string, fallbackIndex: number): string {
+  return (
+    field.regions.find((region) => normalizeRegionName(region.name) === target)?.name ??
+    field.regions[fallbackIndex]?.name ??
+    target
+  );
 }
 
 export default function BracketBuilder({
@@ -436,6 +454,160 @@ export default function BracketBuilder({
     }
     return grouped;
   }, [resolvedGames]);
+  const regionRoundGames = useMemo(() => {
+    const grouped = new Map<string, Map<BracketRoundId, ResolvedBracketGame[]>>();
+    for (const region of field.regions) {
+      const roundMap = new Map<BracketRoundId, ResolvedBracketGame[]>();
+      for (const roundId of getRoundOrder()) {
+        roundMap.set(roundId, []);
+      }
+      grouped.set(region.name, roundMap);
+    }
+
+    for (const game of resolvedGames) {
+      if (!game.region) continue;
+      const roundMap = grouped.get(game.region);
+      if (!roundMap) continue;
+      roundMap.set(game.roundId, [...(roundMap.get(game.roundId) ?? []), game]);
+    }
+
+    return grouped;
+  }, [field.regions, resolvedGames]);
+  const laneRegions = useMemo(
+    () => ({
+      topLeft: canonicalRegionName(field, "east", 0),
+      bottomLeft: canonicalRegionName(field, "west", 1),
+      topRight: canonicalRegionName(field, "south", 2),
+      bottomRight: canonicalRegionName(field, "midwest", 3),
+    }),
+    [field],
+  );
+
+  function buildRoundSectionState(roundList: ResolvedBracketGame[]) {
+    const predictions = Object.fromEntries(roundList.map((game) => [game.id, predictionsByGame[game.id]])) as Record<
+      string,
+      MatchupPrediction | undefined
+    >;
+    const comparisons = Object.fromEntries(roundList.map((game) => [game.id, comparisonsByGame[game.id]]));
+    const grading = Object.fromEntries(roundList.map((game) => [game.id, userGrade?.byGame[game.id]]));
+    const loadingGames = Object.fromEntries(
+      roundList.map((game) => {
+        const key = game.teamA && game.teamB ? canonicalMatchupKey(game.teamA.id, game.teamB.id) : "";
+        return [game.id, key ? loadingMatchups[key] : false];
+      }),
+    ) as Record<string, boolean | undefined>;
+    const errorGames = Object.fromEntries(
+      roundList.map((game) => {
+        const key = game.teamA && game.teamB ? canonicalMatchupKey(game.teamA.id, game.teamB.id) : "";
+        return [game.id, key ? errorMatchups[key] : undefined];
+      }),
+    ) as Record<string, string | undefined>;
+
+    return { predictions, comparisons, grading, loadingGames, errorGames };
+  }
+
+  function renderRoundSection(section: BracketRoundSection, minWidth: number) {
+    if (!section.games.length) return null;
+    const roundState = buildRoundSectionState(section.games);
+    return (
+      <BracketRound
+        key={`${section.label}-${section.games[0]?.id ?? "empty"}`}
+        label={section.label}
+        games={section.games}
+        predictions={roundState.predictions}
+        comparisons={roundState.comparisons}
+        grading={roundState.grading}
+        loadingGames={roundState.loadingGames}
+        errorGames={roundState.errorGames}
+        onSelectWinner={handleSelectWinner}
+        compact={isCompactLayout}
+        stickyTitle={false}
+        dense
+        minWidth={minWidth}
+      />
+    );
+  }
+
+  function renderRegionLane(regionName: string, side: "left" | "right") {
+    const roundMap = regionRoundGames.get(regionName);
+    if (!roundMap) return null;
+
+    const sectionsByColumn: BracketRoundSection[][] =
+      side === "left"
+        ? [
+            [
+              { label: "First Four", games: roundMap.get("first-four") ?? [] },
+              { label: "Round of 64", games: roundMap.get("round-of-64") ?? [] },
+            ],
+            [{ label: "Round of 32", games: roundMap.get("round-of-32") ?? [] }],
+            [{ label: "Sweet 16", games: roundMap.get("sweet-16") ?? [] }],
+            [{ label: "Elite 8", games: roundMap.get("elite-8") ?? [] }],
+          ]
+        : [
+            [{ label: "Elite 8", games: roundMap.get("elite-8") ?? [] }],
+            [{ label: "Sweet 16", games: roundMap.get("sweet-16") ?? [] }],
+            [{ label: "Round of 32", games: roundMap.get("round-of-32") ?? [] }],
+            [
+              { label: "Round of 64", games: roundMap.get("round-of-64") ?? [] },
+              { label: "First Four", games: roundMap.get("first-four") ?? [] },
+            ],
+          ];
+
+    return (
+      <section
+        style={{
+          borderRadius: 12,
+          border: "1px solid #e2e8f0",
+          background: "#f8fafc",
+          padding: 12,
+        }}
+      >
+        <div
+          style={{
+            marginBottom: 10,
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 8,
+            alignItems: "baseline",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
+              margin: 0,
+              color: "#0f172a",
+            }}
+          >
+            {regionName} Region
+          </h2>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#64748b" }}>
+            {side === "left" ? "Outer edge -> center" : "Center <- outer edge"}
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isCompactLayout
+              ? "repeat(2, minmax(0, 1fr))"
+              : side === "left"
+                ? "minmax(150px,1.2fr) repeat(2, minmax(138px,1fr)) minmax(146px,0.95fr)"
+                : "minmax(146px,0.95fr) repeat(2, minmax(138px,1fr)) minmax(150px,1.2fr)",
+            gap: 10,
+            alignItems: "start",
+          }}
+        >
+          {sectionsByColumn.map((sections, index) => (
+            <div key={`${regionName}-${side}-${index}`} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {sections.map((section) => renderRoundSection(section, 136))}
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   if (validation && !validation.valid) {
     return (
@@ -653,7 +825,7 @@ export default function BracketBuilder({
               Adj Pace, Adj OE, Adj DE, Adj Net
             </div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#475569", marginTop: 4 }}>
-              Shown inline for every resolved team slot
+              Available in each game's details panel
             </div>
           </div>
 
@@ -760,7 +932,7 @@ export default function BracketBuilder({
               Legend
             </div>
             <div style={{ fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
-              Dark = your pick, Blue = model favorite, Amber = fade/upset
+              Dark = your pick, Blue = favorite, Amber = fade/upset, i = game details
             </div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#475569", marginTop: 4 }}>
               Major upset = pick seeded {MAJOR_UPSET_SEED_GAP}+ lines worse
@@ -842,52 +1014,71 @@ export default function BracketBuilder({
           paddingBottom: 8,
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: isCompactLayout ? "column" : "row",
-            gap: 16,
-            alignItems: "flex-start",
-          }}
-        >
-          {getRoundOrder().map((roundId) => {
-            const roundList = roundGames.get(roundId) ?? [];
-            if (!roundList.length) return null;
-            const predictions = Object.fromEntries(roundList.map((game) => [game.id, predictionsByGame[game.id]])) as Record<
-              string,
-              MatchupPrediction | undefined
-            >;
-            const comparisons = Object.fromEntries(roundList.map((game) => [game.id, comparisonsByGame[game.id]]));
-            const grading = Object.fromEntries(roundList.map((game) => [game.id, userGrade?.byGame[game.id]]));
-            const loadingGames = Object.fromEntries(
-              roundList.map((game) => {
-                const key = game.teamA && game.teamB ? canonicalMatchupKey(game.teamA.id, game.teamB.id) : "";
-                return [game.id, key ? loadingMatchups[key] : false];
-              }),
-            ) as Record<string, boolean | undefined>;
-            const errorGames = Object.fromEntries(
-              roundList.map((game) => {
-                const key = game.teamA && game.teamB ? canonicalMatchupKey(game.teamA.id, game.teamB.id) : "";
-                return [game.id, key ? errorMatchups[key] : undefined];
-              }),
-            ) as Record<string, string | undefined>;
+        {isCompactLayout ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 14,
+            }}
+          >
+            {renderRegionLane(laneRegions.topLeft, "left")}
+            {renderRegionLane(laneRegions.bottomLeft, "left")}
+            <section
+              style={{
+                borderRadius: 12,
+                border: "1px solid #e2e8f0",
+                background: "#f8fafc",
+                padding: 12,
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              {renderRoundSection({ label: "Final Four", games: roundGames.get("final-four") ?? [] }, 150)}
+              {renderRoundSection({ label: "National Championship", games: roundGames.get("national-championship") ?? [] }, 150)}
+            </section>
+            {renderRegionLane(laneRegions.topRight, "right")}
+            {renderRegionLane(laneRegions.bottomRight, "right")}
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 1fr) minmax(220px, 250px) minmax(0, 1fr)",
+              gridTemplateRows: "auto auto",
+              gap: 14,
+              alignItems: "start",
+              minWidth: 1320,
+            }}
+          >
+            <div style={{ gridColumn: 1, gridRow: 1 }}>{renderRegionLane(laneRegions.topLeft, "left")}</div>
+            <div style={{ gridColumn: 1, gridRow: 2 }}>{renderRegionLane(laneRegions.bottomLeft, "left")}</div>
 
-            return (
-              <BracketRound
-                key={roundId}
-                label={roundList[0].roundLabel}
-                games={roundList}
-                predictions={predictions}
-                comparisons={comparisons}
-                grading={grading}
-                loadingGames={loadingGames}
-                errorGames={errorGames}
-                onSelectWinner={handleSelectWinner}
-                compact={isCompactLayout}
-              />
-            );
-          })}
-        </div>
+            <section
+              style={{
+                gridColumn: 2,
+                gridRow: "1 / span 2",
+                alignSelf: "stretch",
+                borderRadius: 12,
+                border: "1px solid #e2e8f0",
+                background: "#f8fafc",
+                padding: 12,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                gap: 16,
+              }}
+            >
+              {renderRoundSection({ label: "Final Four", games: (roundGames.get("final-four") ?? []).slice(0, 1) }, 190)}
+              {renderRoundSection({ label: "National Championship", games: roundGames.get("national-championship") ?? [] }, 190)}
+              {renderRoundSection({ label: "Final Four", games: (roundGames.get("final-four") ?? []).slice(1) }, 190)}
+            </section>
+
+            <div style={{ gridColumn: 3, gridRow: 1 }}>{renderRegionLane(laneRegions.topRight, "right")}</div>
+            <div style={{ gridColumn: 3, gridRow: 2 }}>{renderRegionLane(laneRegions.bottomRight, "right")}</div>
+          </div>
+        )}
       </div>
     </section>
   );

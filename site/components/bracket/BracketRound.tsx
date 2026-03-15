@@ -12,6 +12,9 @@ export default function BracketRound({
   errorGames,
   onSelectWinner,
   compact,
+  stickyTitle = false,
+  minWidth,
+  dense = false,
 }: {
   label: string;
   games: ResolvedBracketGame[];
@@ -22,32 +25,36 @@ export default function BracketRound({
   errorGames: Record<string, string | undefined>;
   onSelectWinner: (gameId: string, teamId: number) => void;
   compact?: boolean;
+  stickyTitle?: boolean;
+  minWidth?: number;
+  dense?: boolean;
 }) {
   return (
     <section
       style={{
-        minWidth: compact ? "auto" : 300,
+        minWidth: compact ? "auto" : minWidth ?? 300,
         display: "flex",
         flexDirection: "column",
-        gap: 12,
+        gap: dense ? 8 : 12,
       }}
     >
       <div
         style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 1,
-          background: "#f8fafc",
+          position: stickyTitle ? "sticky" : "static",
+          top: stickyTitle ? 0 : undefined,
+          zIndex: stickyTitle ? 1 : undefined,
+          background: stickyTitle ? "#f8fafc" : "transparent",
           paddingBottom: 4,
         }}
       >
         <h2
           style={{
-            fontSize: 15,
+            fontSize: dense ? 12 : 15,
             fontWeight: 700,
             letterSpacing: "-0.02em",
             margin: 0,
-            color: "#0f172a",
+            color: dense ? "#475569" : "#0f172a",
+            textTransform: dense ? "uppercase" : "none",
           }}
         >
           {label}
