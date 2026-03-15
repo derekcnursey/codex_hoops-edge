@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { CSSProperties } from "react";
 import Layout from "../../components/Layout";
 import {
@@ -16,6 +17,7 @@ type Props = {
   payload: BettingPerformancePayload | null;
   initialFocus: PerformanceFocusKey;
   initialMonth: MonthFilterKey;
+  initialSeason: string;
 };
 
 type PerformanceFocusKey = "promoted" | "raw" | "conf" | "disagreement" | "ncaa";
@@ -28,6 +30,7 @@ const mono: CSSProperties = {
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const qFocus = typeof context.query.focus === "string" ? context.query.focus : null;
   const qMonth = typeof context.query.month === "string" ? context.query.month : null;
+  const qSeason = typeof context.query.season === "string" ? context.query.season : null;
   const validFocus: PerformanceFocusKey[] = ["promoted", "raw", "conf", "disagreement", "ncaa"];
   const validMonth: MonthFilterKey[] = ["all", "nov", "dec", "jan", "feb", "mar"];
   return {
@@ -39,6 +42,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
       initialMonth: validMonth.includes((qMonth ?? "") as MonthFilterKey)
         ? (qMonth as MonthFilterKey)
         : "all",
+      initialSeason: qSeason ?? "all",
     },
   };
 };
@@ -86,10 +90,12 @@ function SummaryCards({
   payload,
   initialFocus,
   initialMonth,
+  initialSeason,
 }: {
   payload: BettingPerformancePayload;
   initialFocus: PerformanceFocusKey;
   initialMonth: MonthFilterKey;
+  initialSeason: string;
 }) {
   const promotedFull = getOverallRow(payload.overall, "promoted_internal_filter", "full");
   const rawFull = getOverallRow(payload.overall, "raw_edge_baseline", "full");
@@ -151,7 +157,7 @@ function SummaryCards({
       {cards.map((card) => (
         <a
           key={card.label}
-          href={`/betting/performance?focus=${card.focus}&month=${initialMonth}#historical-picks`}
+          href={`/betting/performance?focus=${card.focus}&month=${initialMonth}&season=${initialSeason}#historical-picks`}
           style={{
             ...cardStyle(card.highlight),
             textDecoration: "none",
@@ -251,14 +257,17 @@ function HistoricalPickTable({
   payload,
   initialFocus,
   initialMonth,
+  initialSeason,
 }: {
   payload: BettingPerformancePayload;
   initialFocus: PerformanceFocusKey;
   initialMonth: MonthFilterKey;
+  initialSeason: string;
 }) {
+  const router = useRouter();
   const focused = resolveFocusedPicks(payload, initialFocus);
   const floor = monthFloor(initialMonth);
-  const filteredRows = floor
+  const monthFilteredRows = floor
     ? focused.rows.filter((row) => {
         const month = Number(String(row.game_date).slice(5, 7));
         const seasonOrder =
@@ -271,6 +280,10 @@ function HistoricalPickTable({
         return seasonOrder >= floor;
       })
     : focused.rows;
+  const availableSeasons = Array.from(new Set(focused.rows.map((row) => String(row.season)))).sort();
+  const filteredRows = initialSeason !== "all"
+    ? monthFilteredRows.filter((row) => String(row.season) === initialSeason)
+    : monthFilteredRows;
   return (
     <section id="historical-picks" style={{ display: "grid", gap: 14 }}>
       <div>
@@ -317,7 +330,7 @@ function HistoricalPickTable({
         {(["all", "nov", "dec", "jan", "feb", "mar"] as MonthFilterKey[]).map((month) => (
           <Link
             key={month}
-            href={`/betting/performance?focus=${initialFocus}&month=${month}#historical-picks`}
+            href={`/betting/performance?focus=${initialFocus}&month=${month}&season=${initialSeason}#historical-picks`}
             style={{
               ...mono,
               fontSize: 12,
@@ -331,6 +344,26 @@ function HistoricalPickTable({
             {monthFilterLabel(month)}
           </Link>
         ))}
+        <span style={{ ...mono, fontSize: 12, color: "#64748b", marginLeft: 8 }}>Season:</span>
+        <select
+          value={initialSeason}
+          onChange={(e) => router.push(`/betting/performance?focus=${initialFocus}&month=${initialMonth}&season=${e.target.value}#historical-picks`)}
+          style={{
+            ...mono,
+            padding: "6px 10px",
+            border: "1px solid #e2e8f0",
+            borderRadius: 8,
+            background: "#fff",
+            color: "#334155",
+          }}
+        >
+          <option value="all">All seasons</option>
+          {availableSeasons.map((season) => (
+            <option key={season} value={season}>
+              {season}
+            </option>
+          ))}
+        </select>
       </div>
       {filteredRows.length > 500 ? (
         <div style={{ ...mono, fontSize: 12, color: "#64748b" }}>
@@ -589,7 +622,7 @@ function SignalDriverTable({ payload }: { payload: BettingPerformancePayload }) 
   );
 }
 
-export default function BettingPerformancePage({ payload, initialFocus, initialMonth }: Props) {
+export default function BettingPerformancePage({ payload, initialFocus, initialMonth, initialSeason }: Props) {
   if (!payload) {
     return (
       <Layout>
@@ -655,7 +688,12 @@ export default function BettingPerformancePage({ payload, initialFocus, initialM
           </div>
         </div>
 
-        <SummaryCards payload={payload} initialFocus={initialFocus} initialMonth={initialMonth} />
+        <SummaryCards
+          payload={payload}
+          initialFocus={initialFocus}
+          initialMonth={initialMonth}
+          initialSeason={initialSeason}
+        />
 
         <div
           style={{
@@ -691,7 +729,12 @@ export default function BettingPerformancePage({ payload, initialFocus, initialM
           </div>
         </div>
 
-        <HistoricalPickTable payload={payload} initialFocus={initialFocus} initialMonth={initialMonth} />
+        <HistoricalPickTable
+          payload={payload}
+          initialFocus={initialFocus}
+          initialMonth={initialMonth}
+          initialSeason={initialSeason}
+        />
         <ComparisonTable payload={payload} />
         <RobustnessCards payload={payload} />
         <SubgroupTable payload={payload} />
