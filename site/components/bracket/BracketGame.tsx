@@ -111,7 +111,26 @@ function TeamRow({
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 8, alignItems: "center" }}>
         <div style={{ minWidth: 0 }}>
           <div style={{ fontSize: compact ? 11 : 12, fontWeight: 700, lineHeight: 1.2, display: "flex", gap: 4, alignItems: "baseline", minWidth: 0 }}>
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{displayTeam(team.name)}</span>
+            <span
+              style={{
+                ...mono,
+                fontSize: compact ? 9 : 10,
+                opacity: isSelected ? 0.82 : 0.95,
+                flexShrink: 0,
+              }}
+            >
+              ({team.seed})
+            </span>
+            <span
+              style={{
+                overflow: "visible",
+                whiteSpace: "normal",
+                wordBreak: "break-word",
+                lineHeight: 1.2,
+              }}
+            >
+              {displayTeam(team.name)}
+            </span>
             <span style={{ ...mono, fontSize: compact ? 9 : 10, opacity: isSelected ? 0.82 : 0.95, flexShrink: 0 }}>
               #{team.rank}
             </span>

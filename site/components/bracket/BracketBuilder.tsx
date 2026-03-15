@@ -43,16 +43,17 @@ type BoardMetrics = {
   positions: Record<BoardRoundKey, number[]>;
 };
 
-const REGION_CARD_HEIGHT = 88;
+const REGION_CARD_HEIGHT = 100;
 const REGION_BASE_GAP = 10;
 const REGION_CONNECTOR_WIDTH = 22;
-const REGION_LEFT_WIDTHS = [166, 154, 144, 138] as const;
-const REGION_RIGHT_WIDTHS = [138, 144, 154, 166] as const;
-const CENTER_CARD_HEIGHT = 90;
+const FIRST_FOUR_RAIL_WIDTH = 132;
+const REGION_LEFT_WIDTHS = [198, 186, 174, 166] as const;
+const REGION_RIGHT_WIDTHS = [166, 174, 186, 198] as const;
+const CENTER_CARD_HEIGHT = 102;
 const CENTER_GAP = 118;
 const CENTER_CONNECTOR_WIDTH = 24;
-const CENTER_SEMIFINAL_WIDTH = 168;
-const CENTER_CHAMPIONSHIP_WIDTH = 184;
+const CENTER_SEMIFINAL_WIDTH = 200;
+const CENTER_CHAMPIONSHIP_WIDTH = 216;
 
 function sortGames(list: ResolvedBracketGame[]): ResolvedBracketGame[] {
   return [...list].sort((a, b) => a.matchupOrder - b.matchupOrder || a.roundOrder - b.roundOrder);
@@ -688,6 +689,52 @@ export default function BracketBuilder({
     );
   }
 
+  function renderFirstFourRail(gamesForRail: ResolvedBracketGame[], side: "left" | "right") {
+    if (!gamesForRail.length) return null;
+
+    return (
+      <div
+        style={{
+          width: FIRST_FOUR_RAIL_WIDTH,
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          alignSelf: "start",
+        }}
+      >
+        <div
+          style={{
+            padding: "4px 6px",
+            borderRadius: 8,
+            background: "#eef2ff",
+            color: "#475569",
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 10,
+            textAlign: side === "left" ? "right" : "left",
+          }}
+        >
+          First Four
+        </div>
+        {gamesForRail.map((game) => {
+          const state = buildRoundSectionState([game]);
+          return (
+            <BracketGame
+              key={game.id}
+              game={game}
+              prediction={state.predictions[game.id]}
+              comparison={state.comparisons[game.id]}
+              grading={state.grading[game.id]}
+              predictionLoading={state.loadingGames[game.id]}
+              predictionError={state.errorGames[game.id]}
+              onSelectWinner={handleSelectWinner}
+              compact
+            />
+          );
+        })}
+      </div>
+    );
+  }
+
   function renderRegionLane(regionName: string, side: "left" | "right") {
     const roundMap = regionRoundGames.get(regionName);
     if (!roundMap) return null;
@@ -840,48 +887,32 @@ export default function BracketBuilder({
             </span>
           </div>
 
-          {firstFourGames.length ? (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(${Math.min(2, firstFourGames.length)}, minmax(0, 1fr))`,
-                gap: 8,
-                marginBottom: 10,
-              }}
-            >
-              {firstFourGames.map((game) => {
-                const state = buildRoundSectionState([game]);
-                return (
-                  <BracketGame
-                    key={game.id}
-                    game={game}
-                    prediction={state.predictions[game.id]}
-                    comparison={state.comparisons[game.id]}
-                    grading={state.grading[game.id]}
-                    predictionLoading={state.loadingGames[game.id]}
-                    predictionError={state.errorGames[game.id]}
-                    onSelectWinner={handleSelectWinner}
-                    compact
-                  />
-                );
-              })}
-            </div>
-          ) : null}
-
           <div
             style={{
               display: "grid",
               gridTemplateColumns:
                 side === "left"
-                  ? `${REGION_LEFT_WIDTHS[0]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[1]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[2]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[3]}px`
-                  : `${REGION_RIGHT_WIDTHS[0]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[1]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[2]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[3]}px`,
+                  ? `${firstFourGames.length ? `${FIRST_FOUR_RAIL_WIDTH}px 10px ` : ""}${REGION_LEFT_WIDTHS[0]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[1]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[2]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[3]}px`
+                  : `${REGION_RIGHT_WIDTHS[0]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[1]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[2]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[3]}px${firstFourGames.length ? ` 10px ${FIRST_FOUR_RAIL_WIDTH}px` : ""}`,
               alignItems: "start",
               justifyContent: side === "left" ? "start" : "end",
             }}
           >
+            {side === "left" && firstFourGames.length ? (
+              <>
+                {renderFirstFourRail(firstFourGames, side)}
+                <div />
+              </>
+            ) : null}
             {columns.map((column, index) => (
               <div key={`${regionName}-${side}-desktop-${index}`}>{column}</div>
             ))}
+            {side === "right" && firstFourGames.length ? (
+              <>
+                <div />
+                {renderFirstFourRail(firstFourGames, side)}
+              </>
+            ) : null}
           </div>
         </section>
       );
@@ -1535,11 +1566,11 @@ export default function BracketBuilder({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "minmax(0, 1fr) 400px minmax(0, 1fr)",
+              gridTemplateColumns: "minmax(0, 1fr) 452px minmax(0, 1fr)",
               gridTemplateRows: "auto auto",
               gap: 10,
               alignItems: "start",
-              minWidth: 1720,
+              minWidth: 1940,
             }}
           >
             <div style={{ gridColumn: 1, gridRow: 1 }}>{renderRegionLane(laneRegions.topLeft, "left")}</div>
