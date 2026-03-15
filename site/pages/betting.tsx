@@ -459,6 +459,20 @@ export default function BettingPage({ payload }: Props) {
             >
               Public predictions
             </Link>
+            <Link
+              href="/betting/performance"
+              style={{
+                ...mono,
+                fontSize: 12,
+                padding: "8px 10px",
+                borderRadius: 8,
+                border: "1px solid #e2e8f0",
+                background: "#fff",
+                color: "#334155",
+              }}
+            >
+              Historical performance
+            </Link>
           </div>
         </div>
 

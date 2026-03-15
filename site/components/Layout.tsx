@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const bettingActive = router.pathname === "/betting" || router.pathname.startsWith("/betting/");
   return (
     <div className="page">
       <header className="site-header">
@@ -85,7 +86,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           </Link>
           <Link
             href="/betting"
-            className={router.pathname === "/betting" ? "active" : ""}
+            className={bettingActive ? "active" : ""}
           >
             Betting
           </Link>
