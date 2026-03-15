@@ -132,22 +132,19 @@ function netTextColor(val: number): string {
 
 /* -- column defs -- */
 
-const columns: {
-  key: SortKey;
-  label: string;
-  align: "left" | "center";
-  defaultDir: "asc" | "desc";
-}[] = [
-  { key: "rank", label: "#", align: "center", defaultDir: "asc" },
-  { key: "team", label: "TEAM", align: "left", defaultDir: "asc" },
-  { key: "conference", label: "CONF", align: "center", defaultDir: "asc" },
-  { key: "record", label: "RECORD", align: "center", defaultDir: "desc" },
-  { key: "model_index", label: "DCN INDEX", align: "center", defaultDir: "desc" },
-  { key: "adj_oe", label: "ADJ O", align: "center", defaultDir: "desc" },
-  { key: "adj_de", label: "ADJ D", align: "center", defaultDir: "asc" },
-  { key: "adj_margin", label: "NET RATING", align: "center", defaultDir: "desc" },
-  { key: "adj_tempo", label: "TEMPO", align: "center", defaultDir: "desc" },
-];
+function getColumns(modelIndexLabel: string) {
+  return [
+    { key: "rank", label: "#", align: "center", defaultDir: "asc" },
+    { key: "team", label: "TEAM", align: "left", defaultDir: "asc" },
+    { key: "conference", label: "CONF", align: "center", defaultDir: "asc" },
+    { key: "record", label: "RECORD", align: "center", defaultDir: "desc" },
+    { key: "model_index", label: modelIndexLabel.toUpperCase(), align: "center", defaultDir: "desc" },
+    { key: "adj_oe", label: "ADJ O", align: "center", defaultDir: "desc" },
+    { key: "adj_de", label: "ADJ D", align: "center", defaultDir: "asc" },
+    { key: "adj_margin", label: "NET RATING", align: "center", defaultDir: "desc" },
+    { key: "adj_tempo", label: "TEMPO", align: "center", defaultDir: "desc" },
+  ] as const;
+}
 
 /* -- component -- */
 
@@ -160,6 +157,8 @@ export default function Rankings({ data, availableSeasons, currentSeason }: Prop
   const [search, setSearch] = useState("");
   const [confFilter, setConfFilter] = useState("all");
   const [sort, setSort] = useState<SortState>({ key: "adj_margin", dir: "desc" });
+  const modelIndexLabel = "BALLIN'";
+  const columns = getColumns(modelIndexLabel);
 
   const conferences = useMemo(() => {
     if (!data) return [];

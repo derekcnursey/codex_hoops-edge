@@ -83,6 +83,12 @@ export default function Layout({ children }: { children: ReactNode }) {
           >
             Performance
           </Link>
+          <Link
+            href="/betting"
+            className={router.pathname === "/betting" ? "active" : ""}
+          >
+            Betting
+          </Link>
         </nav>
       </header>
       <main className="content">{children}</main>
