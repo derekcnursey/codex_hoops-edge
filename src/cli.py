@@ -1004,7 +1004,7 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
 
         # Keep the preferred in-house ratings source current for rankings.
         repair_script = config.PROJECT_ROOT / "scripts" / f"repair_pbp_garbage_removed_{season}.py"
-        priorreg_script = config.PROJECT_ROOT / "scripts" / "build_gold_priorreg_v1.py"
+        promoted_gold_script = config.PROJECT_ROOT / "scripts" / "build_gold_softgarbage_priorreg_v1.py"
         if repair_script.exists():
             click.echo(f"  Refreshing repaired no-garbage gold tables for season {season}...")
             _run(
@@ -1012,32 +1012,26 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
                 cwd=config.PROJECT_ROOT,
                 label=f"repair_pbp_garbage_removed_{season}",
             )
-        elif priorreg_script.exists():
-            click.echo("  Refreshing team_adjusted_efficiencies_no_garbage_priorreg_k5_v1...")
+        elif promoted_gold_script.exists():
+            click.echo(f"  Refreshing {config.PRODUCTION_GOLD_RATINGS_TABLE}...")
             _run(
                 [
                     sys.executable,
-                    str(priorreg_script),
+                    str(promoted_gold_script),
                     "--season-start",
                     str(season),
                     "--season-end",
                     str(season),
-                    "--k-values",
-                    "5",
-                    "--half-lives",
-                    "none",
                 ],
                 cwd=config.PROJECT_ROOT,
-                label="build_gold_priorreg_k5_v1",
+                label="build_gold_softkeep25_priorreg_k5_v1",
             )
 
     # ── Freshness check: ensure gold data is current ────────────────
     click.echo("\nChecking gold data freshness...")
     try:
         from . import s3_reader
-        gold_tbl = s3_reader.read_gold_table(
-            "team_adjusted_efficiencies_no_garbage", season=season
-        )
+        gold_tbl = s3_reader.read_gold_table(config.PRODUCTION_GOLD_RATINGS_TABLE, season=season)
         gold_df = gold_tbl.to_pandas()
         import pandas as _pd
         gold_df["rating_date"] = _pd.to_datetime(gold_df["rating_date"], errors="coerce")
@@ -1046,7 +1040,10 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
             max_date_str = max_date.strftime("%Y-%m-%d")
             game_dt = _pd.Timestamp(game_date)
             days_stale = (game_dt - max_date).days
-            click.echo(f"  Gold ratings through: {max_date_str} ({days_stale} day(s) before {game_date})")
+            click.echo(
+                f"  Gold ratings through: {max_date_str} "
+                f"({days_stale} day(s) before {game_date}) from {config.PRODUCTION_GOLD_RATINGS_TABLE}"
+            )
             if days_stale > 2:
                 click.echo(
                     f"  WARNING: Gold data is {days_stale} days stale! "
@@ -1089,6 +1086,47 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
         if finals_script.exists():
             _run([sys.executable, str(finals_script), "--date", game_date],
                  cwd=config.PROJECT_ROOT, label="s3_finals_to_json")
+
+        internal_bet_script = script_dir / "build_daily_internal_bet_filter_report.py"
+        if internal_bet_script.exists():
+            _run(
+                [
+                    sys.executable,
+                    str(internal_bet_script),
+                    "--season",
+                    str(season),
+                    "--date",
+                    game_date,
+                ],
+                cwd=config.PROJECT_ROOT,
+                label="build_daily_internal_bet_filter_report",
+            )
+
+        internal_tracking_script = script_dir / "build_internal_bet_filter_tracking_report.py"
+        if internal_tracking_script.exists():
+            _run(
+                [
+                    sys.executable,
+                    str(internal_tracking_script),
+                    "--season",
+                    str(season),
+                ],
+                cwd=config.PROJECT_ROOT,
+                label="build_internal_bet_filter_tracking_report",
+            )
+
+        internal_maintenance_script = script_dir / "build_internal_bet_filter_maintenance_report.py"
+        if internal_maintenance_script.exists():
+            _run(
+                [
+                    sys.executable,
+                    str(internal_maintenance_script),
+                    "--season",
+                    str(season),
+                ],
+                cwd=config.PROJECT_ROOT,
+                label="build_internal_bet_filter_maintenance_report",
+            )
         click.echo("  Publish pipeline complete.")
 
     # ── Step 6: Deploy ────────────────────────────────────────────
