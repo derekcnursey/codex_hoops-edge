@@ -293,39 +293,6 @@ function HistoricalPickTable({
           {focused.subtitle}{filterEnabled ? ` · ${monthFilterLabel(initialMonth)}` : ""}
         </div>
       </div>
-      <div style={{ overflowX: "auto", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 12 }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1280 }}>
-          <thead>
-            <tr style={{ background: "#f8fafc", textAlign: "left" }}>
-              {["Date", "Game", "Final", "Pick", "HE Line", "Market Line", "Raw Edge", "Score", "Disagreement", "Context", "Driver", "Result"].map((label) => (
-                <th key={label} style={{ ...mono, fontSize: 11, color: "#64748b", padding: "12px 14px", borderBottom: "1px solid #e2e8f0" }}>
-                  {label.toUpperCase()}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredRows.slice(0, 500).map((row) => (
-              <tr key={`${row.gameId}-${row.pick_team}`}>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.game_date}</td>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9", color: "#0f172a", fontWeight: 600 }}>{row.game}</td>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.final_score ?? "—"}</td>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.pick_team}</td>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtLine(row.hoops_edge_line_for_pick)}</td>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtLine(row.market_line_for_pick)}</td>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtPct(row.pick_prob_edge)}</td>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtPct(row.disagreement_logit_score)}</td>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtNum(row.he_market_edge_for_pick)}</td>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>
-                  {[row.disagreement_context, row.slice.replace(/_/g, " ")].filter(Boolean).join(" · ")}
-                </td>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.signal_driver ?? "—"}</td>
-                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9", ...metricTone(row.roi_per_1_at_minus_110) }}>{row.bet_result ?? "—"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
       {filterEnabled ? (
         <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
           <span style={{ ...mono, fontSize: 12, color: "#64748b" }}>Month forward:</span>
@@ -368,6 +335,39 @@ function HistoricalPickTable({
           </select>
         </div>
       ) : null}
+      <div style={{ overflowX: "auto", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 12 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1280 }}>
+          <thead>
+            <tr style={{ background: "#f8fafc", textAlign: "left" }}>
+              {["Date", "Game", "Final", "Pick", "HE Line", "Market Line", "Raw Edge", "Score", "Disagreement", "Context", "Driver", "Result"].map((label) => (
+                <th key={label} style={{ ...mono, fontSize: 11, color: "#64748b", padding: "12px 14px", borderBottom: "1px solid #e2e8f0" }}>
+                  {label.toUpperCase()}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredRows.slice(0, 500).map((row) => (
+              <tr key={`${row.gameId}-${row.pick_team}`}>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.game_date}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9", color: "#0f172a", fontWeight: 600 }}>{row.game}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.final_score ?? "—"}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.pick_team}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtLine(row.hoops_edge_line_for_pick)}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtLine(row.market_line_for_pick)}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtPct(row.pick_prob_edge)}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtPct(row.disagreement_logit_score)}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtNum(row.he_market_edge_for_pick)}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>
+                  {[row.disagreement_context, row.slice.replace(/_/g, " ")].filter(Boolean).join(" · ")}
+                </td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.signal_driver ?? "—"}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9", ...metricTone(row.roi_per_1_at_minus_110) }}>{row.bet_result ?? "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {filteredRows.length > 500 ? (
         <div style={{ ...mono, fontSize: 12, color: "#64748b" }}>
           Showing first 500 rows of {filteredRows.length}. The full pick list remains in the historical artifact CSVs.
