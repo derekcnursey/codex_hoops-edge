@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { CSSProperties, useMemo, useState } from "react";
+import { CSSProperties, useMemo } from "react";
 import Layout from "../components/Layout";
 import {
   InternalBettingPayload,
@@ -11,6 +11,7 @@ import {
 
 type Props = {
   payload: InternalBettingPayload | null;
+  initialFocus: FocusKey;
 };
 
 const mono: CSSProperties = {
@@ -45,9 +46,12 @@ type FocusKey =
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const qDate = typeof context.query.date === "string" ? context.query.date : null;
+  const qFocus = typeof context.query.focus === "string" ? context.query.focus : null;
+  const validFocus: FocusKey[] = ["shortlist", "strongest", "solid", "raw", "ncaa", "disagreement"];
   return {
     props: {
       payload: readInternalBettingPayload(qDate),
+      initialFocus: validFocus.includes((qFocus ?? "") as FocusKey) ? (qFocus as FocusKey) : "shortlist",
     },
   };
 };
@@ -390,7 +394,7 @@ function Section({
   );
 }
 
-export default function BettingPage({ payload }: Props) {
+export default function BettingPage({ payload, initialFocus }: Props) {
   const router = useRouter();
 
   if (!payload) {
@@ -410,10 +414,8 @@ export default function BettingPage({ payload }: Props) {
   const allDecorated = decorateRows(payload.slateScores, payload.slateScores, "raw");
   const strongestCount = allDecorated.filter((row) => row.scoreTier === "strongest" && row.filter_pass).length;
   const solidBandCount = allDecorated.filter((row) => row.scoreTier === "solid" && row.filter_pass).length;
-  const [focusKey, setFocusKey] = useState<FocusKey>("shortlist");
-
   const focusedView = useMemo(() => {
-    switch (focusKey) {
+    switch (initialFocus) {
       case "strongest":
         return {
           title: "Strongest Tier",
@@ -463,7 +465,7 @@ export default function BettingPage({ payload }: Props) {
           emptyText: "No non-NCAA internal candidates on this slate.",
         };
     }
-  }, [focusKey, shortlist, rawWatchlist, ncaaCaution]);
+  }, [initialFocus, shortlist, rawWatchlist, ncaaCaution]);
 
   const summaryCards: Array<{
     label: string;
@@ -547,7 +549,7 @@ export default function BettingPage({ payload }: Props) {
           <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
             <select
               value={payload.currentDate}
-              onChange={(e) => router.push(`/betting?date=${e.target.value}`)}
+              onChange={(e) => router.push(`/betting?date=${e.target.value}&focus=${initialFocus}`)}
               style={{
                 ...mono,
                 padding: "8px 10px",
@@ -602,12 +604,11 @@ export default function BettingPage({ payload }: Props) {
           }}
         >
           {summaryCards.map((card) => {
-            const active = card.focusKey === focusKey;
+            const active = card.focusKey === initialFocus;
             return (
-            <button
+            <Link
               key={card.label}
-              type="button"
-              onClick={() => card.focusKey && setFocusKey(card.focusKey)}
+              href={`/betting?date=${payload.currentDate}&focus=${card.focusKey ?? "shortlist"}`}
               style={{
                 background: "#fff",
                 border: active ? "1px solid #0f172a" : "1px solid #e2e8f0",
@@ -618,6 +619,7 @@ export default function BettingPage({ payload }: Props) {
                 cursor: card.focusKey ? "pointer" : "default",
                 display: "grid",
                 gap: 6,
+                textDecoration: "none",
               }}
             >
               <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>{card.label.toUpperCase()}</div>
@@ -625,7 +627,7 @@ export default function BettingPage({ payload }: Props) {
               <div style={{ ...mono, fontSize: 11, color: active ? "#0f172a" : "#64748b" }}>
                 {card.helper ?? "View rows"}
               </div>
-            </button>
+            </Link>
           )})}
         </div>
 
