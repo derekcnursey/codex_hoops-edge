@@ -15,7 +15,6 @@ import {
 import {
   MAJOR_UPSET_SEED_GAP,
   buildGameComparison,
-  summarizeBracketComparisons,
 } from "../../lib/bracket/comparison";
 import { canonicalMatchupKey, canonicalizePrediction, orientPrediction } from "../../lib/bracket/predictions";
 import { gradeBracketPicks } from "../../lib/bracket/grading";
@@ -149,10 +148,6 @@ export default function BracketBuilder({
       resolvedGames.map((game) => [game.id, buildGameComparison(game, predictionsByGame[game.id])]),
     );
   }, [predictionsByGame, resolvedGames]);
-  const comparisonSummary = useMemo(
-    () => summarizeBracketComparisons(resolvedGames, predictionsByGame),
-    [predictionsByGame, resolvedGames],
-  );
   const finalResultsByGame = useMemo(() => buildFinalResultsMap(results ?? null), [results]);
   const gradingActive = Object.keys(finalResultsByGame).length > 0;
   const userGrade = useMemo(
@@ -781,7 +776,7 @@ export default function BracketBuilder({
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
             gap: 10,
             marginBottom: 10,
           }}
@@ -913,7 +908,7 @@ export default function BracketBuilder({
               Dark = your pick, Blue = favorite, Amber = upset/fade
             </div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#475569", marginTop: 4 }}>
-              Info button opens the full matchup modal
+              Major upset = pick seeded {MAJOR_UPSET_SEED_GAP}+ lines worse
             </div>
           </div>
         </div>
