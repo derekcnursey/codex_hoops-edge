@@ -123,10 +123,11 @@ function TeamRow({
             </span>
             <span
               style={{
-                overflow: "visible",
-                whiteSpace: "normal",
-                wordBreak: "break-word",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
                 lineHeight: 1.2,
+                minWidth: 0,
               }}
             >
               {displayTeam(team.name)}
