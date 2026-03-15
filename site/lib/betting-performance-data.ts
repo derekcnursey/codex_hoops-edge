@@ -70,7 +70,33 @@ export type BettingPerformancePayload = {
   signalDrivers: SignalDriverRow[];
   robustness: RobustnessRow[];
   tabMapping: BettingTabMappingRow[];
+  pickTables: Record<string, HistoricalPickRow[]>;
   memo: string | null;
+};
+
+export type HistoricalPickRow = {
+  season: number;
+  game_date: string;
+  slice: string;
+  gameId: number;
+  game: string;
+  pick_team: string;
+  model_pick_side: string;
+  hoops_edge_line_for_pick: number | null;
+  market_line_for_pick: number | null;
+  pick_prob_edge: number | null;
+  disagreement_logit_score: number | null;
+  he_market_edge_for_pick: number | null;
+  abs_he_vs_market_edge: number | null;
+  disagreement_context: string | null;
+  pick_team_recent_same_sign_count_21d: number | null;
+  pick_team_prior_same_sign_streak: number | null;
+  neutral_site_flag: boolean | null;
+  is_conference_tournament: boolean | null;
+  is_ncaa_tournament: boolean | null;
+  signal_driver: string | null;
+  bet_result: string | null;
+  roi_per_1_at_minus_110: number | null;
 };
 
 function parseCsvLine(line: string): string[] {
@@ -152,6 +178,14 @@ export function readBettingPerformancePayload(): BettingPerformancePayload | nul
   const signalDrivers = readCsvRows<SignalDriverRow>(path.join(root, "signal_driver_profitability.csv"));
   const robustness = readCsvRows<RobustnessRow>(path.join(root, "robustness_summary.csv"));
   const tabMapping = readCsvRows<BettingTabMappingRow>(path.join(root, "betting_tab_mapping_profitability.csv"));
+  const pickTables: Record<string, HistoricalPickRow[]> = {
+    promoted_internal_filter: readCsvRows<HistoricalPickRow>(path.join(root, "promoted_internal_filter.csv")),
+    raw_edge_baseline: readCsvRows<HistoricalPickRow>(path.join(root, "raw_edge_baseline.csv")),
+    overlap: readCsvRows<HistoricalPickRow>(path.join(root, "overlap.csv")),
+    filter_only: readCsvRows<HistoricalPickRow>(path.join(root, "filter_only.csv")),
+    raw_only: readCsvRows<HistoricalPickRow>(path.join(root, "raw_only.csv")),
+    ncaa_caution: readCsvRows<HistoricalPickRow>(path.join(root, "ncaa_caution.csv")),
+  };
   const memoPath = path.join(root, "memo.md");
   const memo = fs.existsSync(memoPath) ? fs.readFileSync(memoPath, "utf-8") : null;
   if (!overall.length) return null;
@@ -161,6 +195,7 @@ export function readBettingPerformancePayload(): BettingPerformancePayload | nul
     signalDrivers,
     robustness,
     tabMapping,
+    pickTables,
     memo,
   };
 }

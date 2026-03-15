@@ -5,6 +5,7 @@ import Layout from "../../components/Layout";
 import {
   BettingPerformancePayload,
   BySeasonProfitabilityRow,
+  HistoricalPickRow,
   ProfitabilityRow,
   readBettingPerformancePayload,
   RobustnessRow,
@@ -13,16 +14,24 @@ import {
 
 type Props = {
   payload: BettingPerformancePayload | null;
+  initialFocus: PerformanceFocusKey;
 };
+
+type PerformanceFocusKey = "promoted" | "raw" | "conf" | "disagreement" | "ncaa";
 
 const mono: CSSProperties = {
   fontFamily: "'IBM Plex Mono', monospace",
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
+export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+  const qFocus = typeof context.query.focus === "string" ? context.query.focus : null;
+  const validFocus: PerformanceFocusKey[] = ["promoted", "raw", "conf", "disagreement", "ncaa"];
   return {
     props: {
       payload: readBettingPerformancePayload(),
+      initialFocus: validFocus.includes((qFocus ?? "") as PerformanceFocusKey)
+        ? (qFocus as PerformanceFocusKey)
+        : "promoted",
     },
   };
 };
@@ -66,7 +75,7 @@ function cardStyle(highlight = false): CSSProperties {
   };
 }
 
-function SummaryCards({ payload }: { payload: BettingPerformancePayload }) {
+function SummaryCards({ payload, initialFocus }: { payload: BettingPerformancePayload; initialFocus: PerformanceFocusKey }) {
   const promotedFull = getOverallRow(payload.overall, "promoted_internal_filter", "full");
   const rawFull = getOverallRow(payload.overall, "raw_edge_baseline", "full");
   const promotedConf = getOverallRow(payload.overall, "promoted_internal_filter", "conference_tournaments");
@@ -80,6 +89,7 @@ function SummaryCards({ payload }: { payload: BettingPerformancePayload }) {
       value: promotedFull ? fmtPct(promotedFull.roi_per_1_at_minus_110) : "—",
       detail: promotedFull ? `${fmtPct(promotedFull.win_rate)} ATS · ${fmtNum(promotedFull.bets)} bets` : "—",
       highlight: true,
+      focus: "promoted" as const,
     },
     {
       label: "Raw Baseline",
@@ -87,6 +97,7 @@ function SummaryCards({ payload }: { payload: BettingPerformancePayload }) {
       value: rawFull ? fmtPct(rawFull.roi_per_1_at_minus_110) : "—",
       detail: rawFull ? `${fmtPct(rawFull.win_rate)} ATS · ${fmtNum(rawFull.bets)} bets` : "—",
       highlight: false,
+      focus: "raw" as const,
     },
     {
       label: "Conference Tourneys",
@@ -94,6 +105,7 @@ function SummaryCards({ payload }: { payload: BettingPerformancePayload }) {
       value: promotedConf ? fmtPct(promotedConf.roi_per_1_at_minus_110) : "—",
       detail: promotedConf ? `${fmtPct(promotedConf.win_rate)} ATS · ${fmtNum(promotedConf.bets)} bets` : "—",
       highlight: true,
+      focus: "conf" as const,
     },
     {
       label: "Disagreement-Led March",
@@ -101,6 +113,7 @@ function SummaryCards({ payload }: { payload: BettingPerformancePayload }) {
       value: disagreementMarch ? fmtPct(disagreementMarch.roi_per_1_at_minus_110) : "—",
       detail: disagreementMarch ? `${fmtPct(disagreementMarch.win_rate)} ATS · ${fmtNum(disagreementMarch.bets)} bets` : "—",
       highlight: true,
+      focus: "disagreement" as const,
     },
     {
       label: "NCAA Caution",
@@ -108,6 +121,7 @@ function SummaryCards({ payload }: { payload: BettingPerformancePayload }) {
       value: ncaaCaution ? fmtPct(ncaaCaution.roi_per_1_at_minus_110) : "—",
       detail: ncaaCaution ? `${fmtPct(ncaaCaution.win_rate)} ATS · ${fmtNum(ncaaCaution.bets)} bets` : "—",
       highlight: false,
+      focus: "ncaa" as const,
     },
   ];
 
@@ -120,16 +134,123 @@ function SummaryCards({ payload }: { payload: BettingPerformancePayload }) {
       }}
     >
       {cards.map((card) => (
-        <div key={card.label} style={cardStyle(card.highlight)}>
+        <a
+          key={card.label}
+          href={`/betting/performance?focus=${card.focus}#historical-picks`}
+          style={{
+            ...cardStyle(card.highlight),
+            textDecoration: "none",
+            border: card.focus === initialFocus ? "1px solid #0f172a" : cardStyle(card.highlight).border,
+            cursor: "pointer",
+            display: "block",
+          }}
+          title="Open matching historical pick table"
+        >
           <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>{card.label.toUpperCase()}</div>
           <div style={{ marginTop: 8, fontSize: 24, fontWeight: 800, letterSpacing: "-0.03em", ...metricTone(card.value === "—" ? null : Number.NaN) }}>
             <span style={metricTone(card.value === "—" ? null : Number(card.value.replace("%", "")) / 100)}>{card.value}</span>
           </div>
           <div style={{ marginTop: 6, fontSize: 13, color: "#334155" }}>{card.subtitle}</div>
           <div style={{ ...mono, marginTop: 6, fontSize: 12, color: "#64748b" }}>{card.detail}</div>
-        </div>
+        </a>
       ))}
     </div>
+  );
+}
+
+function fmtLine(v: number | null | undefined): string {
+  if (v === null || v === undefined || Number.isNaN(v)) return "—";
+  return v > 0 ? `+${v.toFixed(1)}` : v.toFixed(1);
+}
+
+function resolveFocusedPicks(
+  payload: BettingPerformancePayload,
+  focus: PerformanceFocusKey,
+): { title: string; subtitle: string; rows: HistoricalPickRow[] } {
+  switch (focus) {
+    case "raw":
+      return {
+        title: "Raw Baseline Pick Table",
+        subtitle: "All historical picks from the raw-edge baseline bucket.",
+        rows: payload.pickTables.raw_edge_baseline,
+      };
+    case "conf":
+      return {
+        title: "Conference Tournament Pick Table",
+        subtitle: "Promoted internal-filter picks from conference-tournament games only.",
+        rows: payload.pickTables.promoted_internal_filter.filter((row) => Boolean(row.is_conference_tournament)),
+      };
+    case "disagreement":
+      return {
+        title: "Disagreement-Led March Pick Table",
+        subtitle: "Historically additive filter-only picks in March and conference tournaments.",
+        rows: payload.pickTables.filter_only.filter((row) =>
+          ["march_only", "conference_tournaments"].includes(row.slice)
+        ),
+      };
+    case "ncaa":
+      return {
+        title: "NCAA Caution Pick Table",
+        subtitle: "Diagnostic-only NCAA rows that should not be treated like the main decision bucket.",
+        rows: payload.pickTables.ncaa_caution,
+      };
+    default:
+      return {
+        title: "Promoted Filter Pick Table",
+        subtitle: "All historical picks from the promoted internal disagreement-aware filter.",
+        rows: payload.pickTables.promoted_internal_filter,
+      };
+  }
+}
+
+function HistoricalPickTable({ payload, initialFocus }: { payload: BettingPerformancePayload; initialFocus: PerformanceFocusKey }) {
+  const focused = resolveFocusedPicks(payload, initialFocus);
+  return (
+    <section id="historical-picks" style={{ display: "grid", gap: 14 }}>
+      <div>
+        <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#0f172a" }}>{focused.title}</h2>
+        <div style={{ ...mono, fontSize: 12, color: "#64748b", marginTop: 4 }}>
+          {focused.subtitle}
+        </div>
+      </div>
+      <div style={{ overflowX: "auto", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 12 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1280 }}>
+          <thead>
+            <tr style={{ background: "#f8fafc", textAlign: "left" }}>
+              {["Date", "Game", "Pick", "HE Line", "Market Line", "Raw Edge", "Score", "Disagreement", "Context", "Driver", "Result"].map((label) => (
+                <th key={label} style={{ ...mono, fontSize: 11, color: "#64748b", padding: "12px 14px", borderBottom: "1px solid #e2e8f0" }}>
+                  {label.toUpperCase()}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {focused.rows.slice(0, 500).map((row) => (
+              <tr key={`${row.gameId}-${row.pick_team}`}>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.game_date}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9", color: "#0f172a", fontWeight: 600 }}>{row.game}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.pick_team}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtLine(row.hoops_edge_line_for_pick)}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtLine(row.market_line_for_pick)}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtPct(row.pick_prob_edge)}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtPct(row.disagreement_logit_score)}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{fmtNum(row.he_market_edge_for_pick)}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>
+                  {[row.disagreement_context, row.slice.replace(/_/g, " ")].filter(Boolean).join(" · ")}
+                </td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9" }}>{row.signal_driver ?? "—"}</td>
+                <td style={{ padding: "12px 14px", borderBottom: "1px solid #f1f5f9", ...metricTone(row.roi_per_1_at_minus_110) }}>{row.bet_result ?? "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {focused.rows.length > 500 ? (
+        <div style={{ ...mono, fontSize: 12, color: "#64748b" }}>
+          Showing first 500 rows of {focused.rows.length}. The full pick list remains in the historical artifact CSVs.
+        </div>
+      ) : null}
+    </section>
   );
 }
 
@@ -381,7 +502,7 @@ function SignalDriverTable({ payload }: { payload: BettingPerformancePayload }) 
   );
 }
 
-export default function BettingPerformancePage({ payload }: Props) {
+export default function BettingPerformancePage({ payload, initialFocus }: Props) {
   if (!payload) {
     return (
       <Layout>
@@ -447,7 +568,7 @@ export default function BettingPerformancePage({ payload }: Props) {
           </div>
         </div>
 
-        <SummaryCards payload={payload} />
+        <SummaryCards payload={payload} initialFocus={initialFocus} />
 
         <div
           style={{
@@ -483,6 +604,7 @@ export default function BettingPerformancePage({ payload }: Props) {
           </div>
         </div>
 
+        <HistoricalPickTable payload={payload} initialFocus={initialFocus} />
         <ComparisonTable payload={payload} />
         <RobustnessCards payload={payload} />
         <SubgroupTable payload={payload} />

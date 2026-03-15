@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { CSSProperties, useMemo } from "react";
+import { CSSProperties } from "react";
 import Layout from "../components/Layout";
 import {
   InternalBettingPayload,
@@ -11,7 +11,6 @@ import {
 
 type Props = {
   payload: InternalBettingPayload | null;
-  initialFocus: FocusKey;
 };
 
 const mono: CSSProperties = {
@@ -36,22 +35,11 @@ type DecoratedRow = InternalBettingRow & {
   regimeNote: string;
 };
 
-type FocusKey =
-  | "shortlist"
-  | "strongest"
-  | "solid"
-  | "raw"
-  | "ncaa"
-  | "disagreement";
-
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const qDate = typeof context.query.date === "string" ? context.query.date : null;
-  const qFocus = typeof context.query.focus === "string" ? context.query.focus : null;
-  const validFocus: FocusKey[] = ["shortlist", "strongest", "solid", "raw", "ncaa", "disagreement"];
   return {
     props: {
       payload: readInternalBettingPayload(qDate),
-      initialFocus: validFocus.includes((qFocus ?? "") as FocusKey) ? (qFocus as FocusKey) : "shortlist",
     },
   };
 };
@@ -394,7 +382,7 @@ function Section({
   );
 }
 
-export default function BettingPage({ payload, initialFocus }: Props) {
+export default function BettingPage({ payload }: Props) {
   const router = useRouter();
 
   if (!payload) {
@@ -414,115 +402,6 @@ export default function BettingPage({ payload, initialFocus }: Props) {
   const allDecorated = decorateRows(payload.slateScores, payload.slateScores, "raw");
   const strongestCount = allDecorated.filter((row) => row.scoreTier === "strongest" && row.filter_pass).length;
   const solidBandCount = allDecorated.filter((row) => row.scoreTier === "solid" && row.filter_pass).length;
-  const focusedView = useMemo(() => {
-    switch (initialFocus) {
-      case "strongest":
-        return {
-          title: "Strongest Tier",
-          subtitle: "Top-of-board internal rows with score ≥ 0.62. Highest historical band, but smaller sample.",
-          rows: shortlist.filter((row) => row.scoreTier === "strongest"),
-          mode: "internal" as const,
-          emptyText: "No strongest-tier internal candidates on this slate.",
-        };
-      case "solid":
-        return {
-          title: "Solid Tier",
-          subtitle: "Promoted operating band from 0.58 to 0.619. Main actionable shortlist zone.",
-          rows: shortlist.filter((row) => row.scoreTier === "solid"),
-          mode: "internal" as const,
-          emptyText: "No solid-tier internal candidates on this slate.",
-        };
-      case "raw":
-        return {
-          title: "Raw Edge Watchlist",
-          subtitle: "Games that clear the raw edge baseline but not the promoted disagreement-aware rule.",
-          rows: rawWatchlist,
-          mode: "raw" as const,
-          emptyText: "No raw-edge-only watchlist rows on this slate.",
-        };
-      case "ncaa":
-        return {
-          title: "NCAA Caution",
-          subtitle: "Tracked separately as caution / diagnostic context only.",
-          rows: ncaaCaution,
-          mode: "caution" as const,
-          emptyText: "No NCAA caution rows on this slate.",
-        };
-      case "disagreement":
-        return {
-          title: "Disagreement-Led",
-          subtitle: "Rows flagged mainly because disagreement features added value beyond raw edge alone.",
-          rows: shortlist.filter((row) => row.flagged_mainly_by_disagreement),
-          mode: "internal" as const,
-          emptyText: "No disagreement-led internal candidates on this slate.",
-        };
-      default:
-        return {
-          title: "Internal Candidate Bets",
-          subtitle: "Promoted disagreement-aware shortlist for daily use, with tier and slate-rank context.",
-          rows: shortlist,
-          mode: "internal" as const,
-          emptyText: "No non-NCAA internal candidates on this slate.",
-        };
-    }
-  }, [initialFocus, shortlist, rawWatchlist, ncaaCaution]);
-
-  const summaryCards: Array<{
-    label: string;
-    value: string;
-    focusKey?: FocusKey;
-    helper?: string;
-  }> = [
-    {
-      label: "Threshold",
-      value: manifest?.filter_threshold !== undefined ? `disagreement_logit ≥ ${manifest.filter_threshold}` : "—",
-      focusKey: "shortlist",
-      helper: "Show promoted shortlist",
-    },
-    {
-      label: "Raw baseline",
-      value: manifest?.raw_edge_threshold !== undefined ? `pick_prob_edge ≥ ${manifest.raw_edge_threshold}` : "—",
-      focusKey: "raw",
-      helper: "Show raw watchlist",
-    },
-    {
-      label: "Shortlist",
-      value: String(manifest?.non_ncaa_shortlist_games ?? shortlist.length),
-      focusKey: "shortlist",
-      helper: "Show all internal candidates",
-    },
-    {
-      label: "Strongest tier",
-      value: String(strongestCount),
-      focusKey: "strongest",
-      helper: "Show strongest-tier rows",
-    },
-    {
-      label: "Solid tier",
-      value: String(solidBandCount),
-      focusKey: "solid",
-      helper: "Show solid-tier rows",
-    },
-    {
-      label: "Raw watchlist",
-      value: String(manifest?.raw_watchlist_games ?? rawWatchlist.length),
-      focusKey: "raw",
-      helper: "Show raw-edge-only rows",
-    },
-    {
-      label: "NCAA caution",
-      value: String(manifest?.ncaa_caution_games ?? ncaaCaution.length),
-      focusKey: "ncaa",
-      helper: "Show NCAA caution rows",
-    },
-    {
-      label: "Disagreement-led",
-      value: String(manifest?.flagged_mainly_by_disagreement ?? shortlist.filter((r) => r.flagged_mainly_by_disagreement).length),
-      focusKey: "disagreement",
-      helper: "Show disagreement-led rows",
-    },
-  ];
-
   return (
     <Layout>
       <div style={{ display: "grid", gap: 24 }}>
@@ -549,7 +428,7 @@ export default function BettingPage({ payload, initialFocus }: Props) {
           <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
             <select
               value={payload.currentDate}
-              onChange={(e) => router.push(`/betting?date=${e.target.value}&focus=${initialFocus}`)}
+              onChange={(e) => router.push(`/betting?date=${e.target.value}`)}
               style={{
                 ...mono,
                 padding: "8px 10px",
@@ -603,44 +482,33 @@ export default function BettingPage({ payload, initialFocus }: Props) {
             gap: 12,
           }}
         >
-          {summaryCards.map((card) => {
-            const active = card.focusKey === initialFocus;
-            return (
-            <a
-              key={card.label}
-              href={`/betting?date=${payload.currentDate}&focus=${card.focusKey ?? "shortlist"}#focused-table`}
+          {[
+            ["Threshold", manifest?.filter_threshold !== undefined ? `disagreement_logit ≥ ${manifest.filter_threshold}` : "—"],
+            ["Raw baseline", manifest?.raw_edge_threshold !== undefined ? `pick_prob_edge ≥ ${manifest.raw_edge_threshold}` : "—"],
+            ["Shortlist", String(manifest?.non_ncaa_shortlist_games ?? shortlist.length)],
+            ["Strongest tier", String(strongestCount)],
+            ["Solid tier", String(solidBandCount)],
+            ["Raw watchlist", String(manifest?.raw_watchlist_games ?? rawWatchlist.length)],
+            ["NCAA caution", String(manifest?.ncaa_caution_games ?? ncaaCaution.length)],
+            ["Disagreement-led", String(manifest?.flagged_mainly_by_disagreement ?? shortlist.filter((r) => r.flagged_mainly_by_disagreement).length)],
+          ].map(([label, value]) => (
+            <div
+              key={label}
               style={{
                 background: "#fff",
-                border: active ? "1px solid #0f172a" : "1px solid #e2e8f0",
+                border: "1px solid #e2e8f0",
                 borderRadius: 12,
                 padding: 14,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
                 textAlign: "left",
-                cursor: "pointer",
                 display: "grid",
                 gap: 6,
-                textDecoration: "none",
-                transition: "transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease",
               }}
-              title={card.helper ?? "View rows"}
             >
-              <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>{card.label.toUpperCase()}</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: "#0f172a" }}>{card.value}</div>
-              <div style={{ ...mono, fontSize: 11, color: active ? "#0f172a" : "#64748b" }}>
-                {card.helper ?? "View rows"}
-              </div>
-            </a>
-          )})}
-        </div>
-
-        <div id="focused-table">
-          <Section
-            title={focusedView.title}
-            subtitle={focusedView.subtitle}
-            rows={focusedView.rows}
-            mode={focusedView.mode}
-            emptyText={focusedView.emptyText}
-          />
+              <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>{label.toUpperCase()}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#0f172a" }}>{value}</div>
+            </div>
+          ))}
         </div>
 
         <div
