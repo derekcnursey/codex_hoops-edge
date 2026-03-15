@@ -266,8 +266,9 @@ function HistoricalPickTable({
 }) {
   const router = useRouter();
   const focused = resolveFocusedPicks(payload, initialFocus);
+  const filterEnabled = initialFocus === "promoted";
   const floor = monthFloor(initialMonth);
-  const monthFilteredRows = floor
+  const monthFilteredRows = filterEnabled && floor
     ? focused.rows.filter((row) => {
         const month = Number(String(row.game_date).slice(5, 7));
         const seasonOrder =
@@ -281,7 +282,7 @@ function HistoricalPickTable({
       })
     : focused.rows;
   const availableSeasons = Array.from(new Set(focused.rows.map((row) => String(row.season)))).sort();
-  const filteredRows = initialSeason !== "all"
+  const filteredRows = filterEnabled && initialSeason !== "all"
     ? monthFilteredRows.filter((row) => String(row.season) === initialSeason)
     : monthFilteredRows;
   return (
@@ -289,7 +290,7 @@ function HistoricalPickTable({
       <div>
         <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#0f172a" }}>{focused.title}</h2>
         <div style={{ ...mono, fontSize: 12, color: "#64748b", marginTop: 4 }}>
-          {focused.subtitle} · {monthFilterLabel(initialMonth)}
+          {focused.subtitle}{filterEnabled ? ` · ${monthFilterLabel(initialMonth)}` : ""}
         </div>
       </div>
       <div style={{ overflowX: "auto", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 12 }}>
@@ -325,46 +326,48 @@ function HistoricalPickTable({
           </tbody>
         </table>
       </div>
-      <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-        <span style={{ ...mono, fontSize: 12, color: "#64748b" }}>Month forward:</span>
-        {(["all", "nov", "dec", "jan", "feb", "mar"] as MonthFilterKey[]).map((month) => (
-          <Link
-            key={month}
-            href={`/betting/performance?focus=${initialFocus}&month=${month}&season=${initialSeason}#historical-picks`}
+      {filterEnabled ? (
+        <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+          <span style={{ ...mono, fontSize: 12, color: "#64748b" }}>Month forward:</span>
+          {(["all", "nov", "dec", "jan", "feb", "mar"] as MonthFilterKey[]).map((month) => (
+            <Link
+              key={month}
+              href={`/betting/performance?focus=${initialFocus}&month=${month}&season=${initialSeason}#historical-picks`}
+              style={{
+                ...mono,
+                fontSize: 12,
+                padding: "6px 10px",
+                borderRadius: 999,
+                border: month === initialMonth ? "1px solid #0f172a" : "1px solid #e2e8f0",
+                background: "#fff",
+                color: "#334155",
+              }}
+            >
+              {monthFilterLabel(month)}
+            </Link>
+          ))}
+          <span style={{ ...mono, fontSize: 12, color: "#64748b", marginLeft: 8 }}>Season:</span>
+          <select
+            value={initialSeason}
+            onChange={(e) => router.push(`/betting/performance?focus=${initialFocus}&month=${initialMonth}&season=${e.target.value}#historical-picks`)}
             style={{
               ...mono,
-              fontSize: 12,
               padding: "6px 10px",
-              borderRadius: 999,
-              border: month === initialMonth ? "1px solid #0f172a" : "1px solid #e2e8f0",
+              border: "1px solid #e2e8f0",
+              borderRadius: 8,
               background: "#fff",
               color: "#334155",
             }}
           >
-            {monthFilterLabel(month)}
-          </Link>
-        ))}
-        <span style={{ ...mono, fontSize: 12, color: "#64748b", marginLeft: 8 }}>Season:</span>
-        <select
-          value={initialSeason}
-          onChange={(e) => router.push(`/betting/performance?focus=${initialFocus}&month=${initialMonth}&season=${e.target.value}#historical-picks`)}
-          style={{
-            ...mono,
-            padding: "6px 10px",
-            border: "1px solid #e2e8f0",
-            borderRadius: 8,
-            background: "#fff",
-            color: "#334155",
-          }}
-        >
-          <option value="all">All seasons</option>
-          {availableSeasons.map((season) => (
-            <option key={season} value={season}>
-              {season}
-            </option>
-          ))}
-        </select>
-      </div>
+            <option value="all">All seasons</option>
+            {availableSeasons.map((season) => (
+              <option key={season} value={season}>
+                {season}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : null}
       {filteredRows.length > 500 ? (
         <div style={{ ...mono, fontSize: 12, color: "#64748b" }}>
           Showing first 500 rows of {filteredRows.length}. The full pick list remains in the historical artifact CSVs.
