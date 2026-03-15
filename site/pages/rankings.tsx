@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { CSSProperties, useMemo, useState } from "react";
 import Layout from "../components/Layout";
 import { displayTeam } from "../lib/data";
+import { normalizeRankingsTeams } from "../lib/rankings";
 import { listRankingsSeasons, readJsonFile } from "../lib/server-data";
 
 /* -- types -- */
@@ -57,6 +58,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   // Fall back to generic rankings.json if season-specific file doesn't exist
   if (!raw) raw = readJsonFile("rankings.json");
   const data = raw as RankingsData | null;
+
+  if (data && Array.isArray(data.teams)) {
+    data.teams = normalizeRankingsTeams(data.teams);
+  }
 
   return { props: { data, availableSeasons, currentSeason } };
 };

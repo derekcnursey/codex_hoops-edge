@@ -1,4 +1,5 @@
 import { readJsonFile } from "./server-data";
+import { normalizeRankingsTeams } from "./rankings";
 
 type RankedTeam = {
   rank?: unknown;
@@ -28,7 +29,7 @@ export function seasonFromDate(date: string): number {
 
 export function getTeamRankMapForSeason(season: number): Map<string, number> {
   const payload = readJsonFile(`rankings_${season}.json`) as RankingsPayload | null;
-  const teams = Array.isArray(payload?.teams) ? payload.teams : [];
+  const teams = Array.isArray(payload?.teams) ? normalizeRankingsTeams(payload.teams) : [];
   const teamRanks = new Map<string, number>();
 
   for (const team of teams) {
