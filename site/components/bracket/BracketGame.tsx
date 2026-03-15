@@ -108,9 +108,20 @@ function TeamRow({
                 : "none",
       }}
     >
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 8, alignItems: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: compact ? 11 : 12, fontWeight: 700, lineHeight: 1.2, display: "flex", gap: 4, alignItems: "baseline", minWidth: 0 }}>
+          <div
+            style={{
+              fontSize: compact ? 11 : 12,
+              fontWeight: 700,
+              lineHeight: 1.2,
+              display: "flex",
+              gap: 4,
+              alignItems: "baseline",
+              minWidth: 0,
+              whiteSpace: "nowrap",
+            }}
+          >
             <span
               style={{
                 ...mono,
@@ -135,15 +146,24 @@ function TeamRow({
             <span style={{ ...mono, fontSize: compact ? 9 : 10, opacity: isSelected ? 0.82 : 0.95, flexShrink: 0 }}>
               #{team.rank}
             </span>
+            {prediction && isFavorite ? (
+              <span
+                style={{
+                  ...mono,
+                  fontSize: compact ? 9 : 10,
+                  fontWeight: 600,
+                  whiteSpace: "nowrap",
+                  marginLeft: "auto",
+                  flexShrink: 0,
+                }}
+              >
+                -{prediction.projectedSpread.toFixed(1)} •{" "}
+                {team.id === prediction.teamAId ? mlPct(prediction.winProbA) : mlPct(prediction.winProbB)}
+              </span>
+            ) : null}
           </div>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
-          {prediction && isFavorite ? (
-            <div style={{ ...mono, fontSize: compact ? 9 : 10, fontWeight: 600, whiteSpace: "nowrap" }}>
-              -{prediction.projectedSpread.toFixed(1)} • {team.id === prediction.teamAId ? mlPct(prediction.winProbA) : mlPct(prediction.winProbB)}
-            </div>
-          ) : null}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 4, justifyContent: "flex-end" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, justifyContent: "flex-end" }}>
           {isSelected && !isCorrectPick && !isMissedPick && !compact ? (
             <span
               style={{
@@ -230,7 +250,6 @@ function TeamRow({
           ) : null}
         </div>
       </div>
-      </div>
     </button>
   );
 }
@@ -264,6 +283,7 @@ export default function BracketGame({
   const showInfoButton = isResolved || Boolean(predictionLoading || predictionError || prediction);
 
   function handleToggleDetails(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
     event.stopPropagation();
     setDetailsOpen((current) => !current);
   }
@@ -304,15 +324,20 @@ export default function BracketGame({
             onClick={handleToggleDetails}
             style={{
               ...mono,
-              width: compact ? 20 : 22,
-              height: compact ? 20 : 22,
+              width: compact ? 24 : 26,
+              height: compact ? 24 : 26,
               borderRadius: 999,
-              border: "1px solid #cbd5e1",
-              background: detailsOpen ? "#e2e8f0" : "#ffffff",
-              color: "#475569",
+              border: `1px solid ${detailsOpen ? "#0f172a" : "#cbd5e1"}`,
+              background: detailsOpen ? "#0f172a" : "#ffffff",
+              color: detailsOpen ? "#ffffff" : "#475569",
               cursor: "pointer",
               flexShrink: 0,
+              fontWeight: 700,
+              lineHeight: 1,
+              position: "relative",
+              zIndex: 2,
             }}
+            title="Game details"
           >
             i
           </button>

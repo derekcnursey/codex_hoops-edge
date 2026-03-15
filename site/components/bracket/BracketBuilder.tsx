@@ -46,14 +46,14 @@ type BoardMetrics = {
 const REGION_CARD_HEIGHT = 100;
 const REGION_BASE_GAP = 10;
 const REGION_CONNECTOR_WIDTH = 22;
-const FIRST_FOUR_RAIL_WIDTH = 176;
-const REGION_LEFT_WIDTHS = [198, 186, 174, 166] as const;
-const REGION_RIGHT_WIDTHS = [166, 174, 186, 198] as const;
+const FIRST_FOUR_RAIL_WIDTH = 220;
+const REGION_LEFT_WIDTHS = [242, 228, 214, 206] as const;
+const REGION_RIGHT_WIDTHS = [206, 214, 228, 242] as const;
 const CENTER_CARD_HEIGHT = 102;
 const CENTER_GAP = 118;
 const CENTER_CONNECTOR_WIDTH = 24;
-const CENTER_SEMIFINAL_WIDTH = 200;
-const CENTER_CHAMPIONSHIP_WIDTH = 216;
+const CENTER_SEMIFINAL_WIDTH = 232;
+const CENTER_CHAMPIONSHIP_WIDTH = 248;
 
 function sortGames(list: ResolvedBracketGame[]): ResolvedBracketGame[] {
   return [...list].sort((a, b) => a.matchupOrder - b.matchupOrder || a.roundOrder - b.roundOrder);
@@ -689,16 +689,32 @@ export default function BracketBuilder({
     );
   }
 
-  function renderFirstFourRail(gamesForRail: ResolvedBracketGame[], side: "left" | "right") {
+  function renderFirstFourRail(
+    gamesForRail: ResolvedBracketGame[],
+    roundOf64Games: ResolvedBracketGame[],
+    side: "left" | "right",
+    boardHeight: number,
+  ) {
     if (!gamesForRail.length) return null;
+
+    const alignedEntries = gamesForRail.map((game, index) => {
+      const targetIndex = roundOf64Games.findIndex(
+        (targetGame) =>
+          (targetGame.sourceA.type === "winner" && targetGame.sourceA.gameId === game.id) ||
+          (targetGame.sourceB.type === "winner" && targetGame.sourceB.gameId === game.id),
+      );
+      return {
+        game,
+        top: targetIndex >= 0 ? REGION_BOARD.positions["round-of-64"][targetIndex] : index * (REGION_CARD_HEIGHT + 12),
+      };
+    });
 
     return (
       <div
         style={{
           width: FIRST_FOUR_RAIL_WIDTH,
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
+          position: "relative",
+          height: boardHeight,
           alignSelf: "start",
         }}
       >
@@ -715,20 +731,30 @@ export default function BracketBuilder({
         >
           First Four
         </div>
-        {gamesForRail.map((game) => {
+        {alignedEntries.map(({ game, top }) => {
           const state = buildRoundSectionState([game]);
           return (
-            <BracketGame
+            <div
               key={game.id}
-              game={game}
-              prediction={state.predictions[game.id]}
-              comparison={state.comparisons[game.id]}
-              grading={state.grading[game.id]}
-              predictionLoading={state.loadingGames[game.id]}
-              predictionError={state.errorGames[game.id]}
-              onSelectWinner={handleSelectWinner}
-              compact
-            />
+              style={{
+                position: "absolute",
+                top,
+                left: 0,
+                right: 0,
+              }}
+            >
+              <BracketGame
+                game={game}
+                prediction={state.predictions[game.id]}
+                comparison={state.comparisons[game.id]}
+                grading={state.grading[game.id]}
+                predictionLoading={state.loadingGames[game.id]}
+                predictionError={state.errorGames[game.id]}
+                onSelectWinner={handleSelectWinner}
+                compact
+                fixedHeight={REGION_CARD_HEIGHT}
+              />
+            </div>
           );
         })}
       </div>
@@ -900,7 +926,7 @@ export default function BracketBuilder({
           >
             {side === "left" && firstFourGames.length ? (
               <>
-                {renderFirstFourRail(firstFourGames, side)}
+                {renderFirstFourRail(firstFourGames, roundOf64Games, side, boardHeight)}
                 <div />
               </>
             ) : null}
@@ -910,7 +936,7 @@ export default function BracketBuilder({
             {side === "right" && firstFourGames.length ? (
               <>
                 <div />
-                {renderFirstFourRail(firstFourGames, side)}
+                {renderFirstFourRail(firstFourGames, roundOf64Games, side, boardHeight)}
               </>
             ) : null}
           </div>
@@ -1565,11 +1591,11 @@ export default function BracketBuilder({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "minmax(0, 1fr) 452px minmax(0, 1fr)",
+              gridTemplateColumns: "minmax(0, 1fr) 516px minmax(0, 1fr)",
               gridTemplateRows: "auto auto",
               gap: 10,
               alignItems: "start",
-              minWidth: 1940,
+              minWidth: 2320,
               width: "max-content",
             }}
           >
