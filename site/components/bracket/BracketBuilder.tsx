@@ -46,14 +46,14 @@ type BoardMetrics = {
 const REGION_CARD_HEIGHT = 100;
 const REGION_BASE_GAP = 10;
 const REGION_CONNECTOR_WIDTH = 22;
-const FIRST_FOUR_RAIL_WIDTH = 220;
-const REGION_LEFT_WIDTHS = [242, 228, 214, 206] as const;
-const REGION_RIGHT_WIDTHS = [206, 214, 228, 242] as const;
+const FIRST_FOUR_RAIL_WIDTH = 260;
+const REGION_LEFT_WIDTHS = [300, 286, 272, 264] as const;
+const REGION_RIGHT_WIDTHS = [264, 272, 286, 300] as const;
 const CENTER_CARD_HEIGHT = 102;
 const CENTER_GAP = 118;
 const CENTER_CONNECTOR_WIDTH = 24;
-const CENTER_SEMIFINAL_WIDTH = 232;
-const CENTER_CHAMPIONSHIP_WIDTH = 248;
+const CENTER_SEMIFINAL_WIDTH = 288;
+const CENTER_CHAMPIONSHIP_WIDTH = 304;
 
 function sortGames(list: ResolvedBracketGame[]): ResolvedBracketGame[] {
   return [...list].sort((a, b) => a.matchupOrder - b.matchupOrder || a.roundOrder - b.roundOrder);
@@ -1591,11 +1591,11 @@ export default function BracketBuilder({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "minmax(0, 1fr) 516px minmax(0, 1fr)",
+              gridTemplateColumns: "minmax(0, 1fr) 624px minmax(0, 1fr)",
               gridTemplateRows: "auto auto",
               gap: 10,
               alignItems: "start",
-              minWidth: 2320,
+              minWidth: 3040,
               width: "max-content",
             }}
           >
