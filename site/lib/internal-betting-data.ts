@@ -57,11 +57,17 @@ export type InternalBettingPayload = {
 };
 
 function getInternalBettingRoot(): string {
-  const primary = path.join(process.cwd(), "..", "artifacts", "daily_internal_bet_filter");
-  if (fs.existsSync(primary)) return primary;
-  const fallback = path.join(process.cwd(), "artifacts", "daily_internal_bet_filter");
-  if (fs.existsSync(fallback)) return fallback;
-  return primary;
+  const candidates = [
+    path.join(process.cwd(), "artifacts", "daily_internal_bet_filter"),
+    path.join(process.cwd(), "..", "artifacts", "daily_internal_bet_filter"),
+    path.join(process.cwd(), "site", "..", "artifacts", "daily_internal_bet_filter"),
+    path.join(__dirname, "..", "..", "artifacts", "daily_internal_bet_filter"),
+    path.join(__dirname, "..", "..", "..", "artifacts", "daily_internal_bet_filter"),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return candidates[0];
 }
 
 function parseCsvLine(line: string): string[] {
