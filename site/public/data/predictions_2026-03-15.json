@@ -54,15 +54,15 @@
     },
     {
       "away_team": "Wichita State",
-      "edge_home_points": -8.724158525466919,
+      "edge_home_points": -2.224158525466919,
       "game_id": "2026_03_15_wichita_state_south_florida",
       "home_team": "South Florida",
-      "market_spread_home": -12.5,
+      "market_spread_home": -6.0,
       "model_mu_home": 3.775841474533081,
-      "pick_cover_prob": 0.7219488368878416,
-      "pick_ev_per_1": 0.37826596133133394,
-      "pick_fair_odds": -259.6460409685921,
-      "pick_prob_edge": 0.19813931307831778,
+      "pick_cover_prob": 0.5596451139953207,
+      "pick_ev_per_1": 0.0684133994456122,
+      "pick_fair_odds": -127.08956611631051,
+      "pick_prob_edge": 0.03583559018579685,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.6647543907165527,
@@ -87,5 +87,5 @@
       "start_time": "2026-03-15T19:30:00.000Z"
     }
   ],
-  "generated_at": "2026-03-15T21:21:51.507977Z"
+  "generated_at": "2026-03-15T21:37:00.417870Z"
 }

@@ -87,6 +87,37 @@ def test_select_preferred_lines_prefers_hrb_over_consensus_and_more_complete_boo
     assert selected.loc[0, "book_spread"] == -4.5
 
 
+def test_select_preferred_lines_demotes_hrb_when_spread_is_peer_outlier():
+    lines = pd.DataFrame(
+        [
+            {
+                "gameId": 4,
+                "provider": "Hard Rock Bet",
+                "spread": -12.5,
+                "homeMoneyline": -260,
+                "awayMoneyline": 215,
+            },
+            {
+                "gameId": 4,
+                "provider": "Draft Kings",
+                "spread": -6.0,
+                "homeMoneyline": -245,
+                "awayMoneyline": 200,
+            },
+            {
+                "gameId": 4,
+                "provider": "ESPN BET",
+                "spread": -6.0,
+            },
+        ]
+    )
+
+    selected = select_preferred_lines(lines)
+
+    assert selected.loc[0, "provider"] == "consensus"
+    assert selected.loc[0, "book_spread"] == -6.0
+
+
 def test_best_provider_rows_prefers_more_complete_snapshot_over_latest():
     rows = pd.DataFrame(
         [

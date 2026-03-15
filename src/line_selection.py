@@ -5,6 +5,8 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from . import config
+
 NUMERIC_LINE_COLS = [
     "spread",
     "overUnder",
@@ -104,6 +106,40 @@ def _append_consensus_rows(lines_df: pd.DataFrame) -> pd.DataFrame:
     return pd.concat([lines_df, consensus_df], ignore_index=True, sort=False)
 
 
+def _hrb_spread_outlier_mask(lines_df: pd.DataFrame) -> pd.Series:
+    if (
+        lines_df.empty
+        or "gameId" not in lines_df.columns
+        or "provider" not in lines_df.columns
+        or "spread" not in lines_df.columns
+    ):
+        return pd.Series(False, index=lines_df.index, dtype=bool)
+
+    outlier = pd.Series(False, index=lines_df.index, dtype=bool)
+    hrb_mask = lines_df["provider"].fillna("").eq("Hard Rock Bet")
+    if not hrb_mask.any():
+        return outlier
+
+    spreads = pd.to_numeric(lines_df["spread"], errors="coerce")
+    for game_id, game_df in lines_df.groupby("gameId", sort=False):
+        hrb_idx = game_df.index[game_df["provider"].fillna("").eq("Hard Rock Bet")]
+        if len(hrb_idx) == 0:
+            continue
+        peer_mask = ~game_df["provider"].fillna("").isin(["Hard Rock Bet", "consensus"])
+        peer_spreads = pd.to_numeric(game_df.loc[peer_mask, "spread"], errors="coerce").dropna()
+        if peer_spreads.empty:
+            continue
+        peer_median = float(peer_spreads.median())
+        hrb_spreads = spreads.loc[hrb_idx]
+        bad_idx = hrb_spreads.index[
+            hrb_spreads.notna()
+            & ((hrb_spreads - peer_median).abs() >= config.HRB_SPREAD_DISLOCATION_WARN)
+        ]
+        if len(bad_idx) > 0:
+            outlier.loc[bad_idx] = True
+    return outlier
+
+
 def select_preferred_lines(lines_df: pd.DataFrame) -> pd.DataFrame:
     """Build one preferred line row per game.
 
@@ -121,11 +157,18 @@ def select_preferred_lines(lines_df: pd.DataFrame) -> pd.DataFrame:
     lines = _prepare_lines(lines_df)
     lines = _fix_spread_signs(lines)
     lines = _append_consensus_rows(lines)
+    hrb_outlier_mask = _hrb_spread_outlier_mask(lines)
 
     def _has_col(col: str) -> pd.Series:
         if col in lines.columns:
             return lines[col].notna().astype(int)
         return pd.Series(0, index=lines.index, dtype=int)
+
+    provider_rank = (
+        _provider_rank(lines["provider"]) if "provider" in lines.columns else pd.Series(99, index=lines.index, dtype=int)
+    )
+    if not hrb_outlier_mask.empty:
+        provider_rank = provider_rank.mask(hrb_outlier_mask, 98)
 
     selected = (
         lines.assign(
@@ -133,7 +176,7 @@ def select_preferred_lines(lines_df: pd.DataFrame) -> pd.DataFrame:
             _has_home_ml=_has_col("homeMoneyline"),
             _has_away_ml=_has_col("awayMoneyline"),
             _has_total=_has_col("overUnder"),
-            _prov_rank=_provider_rank(lines["provider"]) if "provider" in lines.columns else 99,
+            _prov_rank=provider_rank,
         )
         .sort_values(
             ["_has_spread", "_prov_rank", "_has_home_ml", "_has_away_ml", "_has_total", "provider"],
