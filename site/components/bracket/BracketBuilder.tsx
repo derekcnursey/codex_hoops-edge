@@ -559,12 +559,12 @@ export default function BracketBuilder({
           borderRadius: 12,
           border: "1px solid #e2e8f0",
           background: "#f8fafc",
-          padding: 12,
+          padding: 10,
         }}
       >
         <div
           style={{
-            marginBottom: 10,
+            marginBottom: 8,
             display: "flex",
             justifyContent: "space-between",
             gap: 8,
@@ -573,7 +573,7 @@ export default function BracketBuilder({
         >
           <h2
             style={{
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: 700,
               letterSpacing: "-0.02em",
               margin: 0,
@@ -582,9 +582,6 @@ export default function BracketBuilder({
           >
             {regionName} Region
           </h2>
-          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#64748b" }}>
-            {side === "left" ? "Outer edge -> center" : "Center <- outer edge"}
-          </div>
         </div>
 
         <div
@@ -593,15 +590,15 @@ export default function BracketBuilder({
             gridTemplateColumns: isCompactLayout
               ? "repeat(2, minmax(0, 1fr))"
               : side === "left"
-                ? "minmax(150px,1.2fr) repeat(2, minmax(138px,1fr)) minmax(146px,0.95fr)"
-                : "minmax(146px,0.95fr) repeat(2, minmax(138px,1fr)) minmax(150px,1.2fr)",
-            gap: 10,
+                ? "minmax(138px,1.18fr) repeat(2, minmax(128px,1fr)) minmax(134px,0.94fr)"
+                : "minmax(134px,0.94fr) repeat(2, minmax(128px,1fr)) minmax(138px,1.18fr)",
+            gap: 8,
             alignItems: "start",
           }}
         >
           {sectionsByColumn.map((sections, index) => (
-            <div key={`${regionName}-${side}-${index}`} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {sections.map((section) => renderRoundSection(section, 136))}
+            <div key={`${regionName}-${side}-${index}`} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {sections.map((section) => renderRoundSection(section, 124))}
             </div>
           ))}
         </div>
@@ -641,7 +638,7 @@ export default function BracketBuilder({
           background: "#ffffff",
           border: "1px solid #e2e8f0",
           borderRadius: 12,
-          padding: 18,
+          padding: 14,
           boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
         }}
       >
@@ -650,18 +647,18 @@ export default function BracketBuilder({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "flex-start",
-            gap: 16,
+            gap: 12,
             flexWrap: "wrap",
-            marginBottom: 14,
+            marginBottom: 10,
           }}
         >
           <div>
             <h1
               style={{
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: 700,
                 letterSpacing: "-0.02em",
-                margin: "0 0 6px",
+                margin: "0 0 4px",
                 color: "#0f172a",
               }}
             >
@@ -670,7 +667,7 @@ export default function BracketBuilder({
             <div
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: 12,
+                fontSize: 11,
                 color: "#64748b",
               }}
             >
@@ -678,13 +675,13 @@ export default function BracketBuilder({
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             <button
               type="button"
               onClick={handleCopyShareLink}
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",
-                padding: "10px 14px",
+                padding: "8px 11px",
                 borderRadius: 8,
                 border: "1px solid #cbd5e1",
                 background: "#ffffff",
@@ -699,7 +696,7 @@ export default function BracketBuilder({
               onClick={handleExportJson}
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",
-                padding: "10px 14px",
+                padding: "8px 11px",
                 borderRadius: 8,
                 border: "1px solid #cbd5e1",
                 background: "#ffffff",
@@ -714,7 +711,7 @@ export default function BracketBuilder({
               onClick={() => importInputRef.current?.click()}
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",
-                padding: "10px 14px",
+                padding: "8px 11px",
                 borderRadius: 8,
                 border: "1px solid #cbd5e1",
                 background: "#ffffff",
@@ -730,7 +727,7 @@ export default function BracketBuilder({
               disabled={autoFillMode !== null}
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",
-                padding: "10px 14px",
+                padding: "8px 11px",
                 borderRadius: 8,
                 border: "1px solid #0f172a",
                 background: "#0f172a",
@@ -746,7 +743,7 @@ export default function BracketBuilder({
               disabled={autoFillMode !== null}
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",
-                padding: "10px 14px",
+                padding: "8px 11px",
                 borderRadius: 8,
                 border: "1px solid #cbd5e1",
                 background: "#ffffff",
@@ -761,7 +758,7 @@ export default function BracketBuilder({
               onClick={handleReset}
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",
-                padding: "10px 14px",
+                padding: "8px 11px",
                 borderRadius: 8,
                 border: "1px solid #cbd5e1",
                 background: "#ffffff",
@@ -784,23 +781,23 @@ export default function BracketBuilder({
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: 12,
-            marginBottom: 14,
+            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+            gap: 10,
+            marginBottom: 10,
           }}
         >
           <div
             style={{
-              borderRadius: 10,
+              borderRadius: 9,
               border: "1px solid #e2e8f0",
               background: "#f8fafc",
-              padding: 12,
+              padding: 10,
             }}
           >
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#64748b", marginBottom: 4 }}>
-              Current Champion
+              Champion
             </div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>
               {champion ? displayTeam(champion.name) : "Awaiting picks"}
             </div>
             {champion ? (
@@ -812,29 +809,10 @@ export default function BracketBuilder({
 
           <div
             style={{
-              borderRadius: 10,
+              borderRadius: 9,
               border: "1px solid #e2e8f0",
               background: "#f8fafc",
-              padding: 12,
-            }}
-          >
-            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#64748b", marginBottom: 4 }}>
-              Team Metrics Included
-            </div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
-              Adj Pace, Adj OE, Adj DE, Adj Net
-            </div>
-            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#475569", marginTop: 4 }}>
-              Available in each game's details panel
-            </div>
-          </div>
-
-          <div
-            style={{
-              borderRadius: 10,
-              border: "1px solid #e2e8f0",
-              background: "#f8fafc",
-              padding: 12,
+              padding: 10,
             }}
           >
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#64748b", marginBottom: 4 }}>
@@ -844,17 +822,36 @@ export default function BracketBuilder({
               {picksMade}/{totalPickableGames} picks made
             </div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#475569", marginTop: 4 }}>
-              Earlier changes automatically clear invalid downstream picks
+              Picks save locally until reset
+            </div>
+          </div>
+
+          <div
+            style={{
+              borderRadius: 9,
+              border: "1px solid #e2e8f0",
+              background: "#f8fafc",
+              padding: 10,
+            }}
+          >
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#64748b", marginBottom: 4 }}>
+              Details
+            </div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
+              Spread and ML% live in each team tile
+            </div>
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#475569", marginTop: 4 }}>
+              Adj Pace / OE / DE / Net live in the info modal
             </div>
           </div>
 
           {gradingActive && userGrade ? (
             <div
               style={{
-                borderRadius: 10,
+                borderRadius: 9,
                 border: "1px solid #dcfce7",
                 background: "#f0fdf4",
-                padding: 12,
+                padding: 10,
               }}
             >
               <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#166534", marginBottom: 4 }}>
@@ -875,10 +872,10 @@ export default function BracketBuilder({
           {gradingActive ? (
             <div
               style={{
-                borderRadius: 10,
+                borderRadius: 9,
                 border: "1px solid #e2e8f0",
                 background: "#f8fafc",
-                padding: 12,
+                padding: 10,
               }}
             >
               <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#64748b", marginBottom: 4 }}>
@@ -903,58 +900,20 @@ export default function BracketBuilder({
 
           <div
             style={{
-              borderRadius: 10,
+              borderRadius: 9,
               border: "1px solid #e2e8f0",
               background: "#f8fafc",
-              padding: 12,
-            }}
-          >
-            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#64748b", marginBottom: 4 }}>
-              Model Compare
-            </div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
-              {comparisonSummary.modelAgreements} agree • {comparisonSummary.modelFades} fade
-            </div>
-            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#475569", marginTop: 4 }}>
-              {comparisonSummary.upsetPicks} upsets • {comparisonSummary.majorUpsets} major upsets
-            </div>
-          </div>
-
-          <div
-            style={{
-              borderRadius: 10,
-              border: "1px solid #e2e8f0",
-              background: "#f8fafc",
-              padding: 12,
+              padding: 10,
             }}
           >
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#64748b", marginBottom: 4 }}>
               Legend
             </div>
             <div style={{ fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
-              Dark = your pick, Blue = favorite, Amber = fade/upset, i = game details
+              Dark = your pick, Blue = favorite, Amber = upset/fade
             </div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#475569", marginTop: 4 }}>
-              Major upset = pick seeded {MAJOR_UPSET_SEED_GAP}+ lines worse
-            </div>
-          </div>
-
-          <div
-            style={{
-              borderRadius: 10,
-              border: "1px solid #e2e8f0",
-              background: "#f8fafc",
-              padding: 12,
-            }}
-          >
-            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#64748b", marginBottom: 4 }}>
-              Confidence
-            </div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
-              Strong: 70%+ • Moderate: 60-69.9% • Toss-up: below 60%
-            </div>
-            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#475569", marginTop: 4 }}>
-              Picks save automatically in this browser until reset
+              Info button opens the full matchup modal
             </div>
           </div>
         </div>
@@ -965,6 +924,7 @@ export default function BracketBuilder({
             fontSize: 11,
             lineHeight: 1.6,
             color: "#64748b",
+            marginTop: -2,
           }}
         >
           {field.note}
@@ -1045,11 +1005,11 @@ export default function BracketBuilder({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "minmax(0, 1fr) minmax(220px, 250px) minmax(0, 1fr)",
+              gridTemplateColumns: "minmax(0, 1fr) minmax(188px, 212px) minmax(0, 1fr)",
               gridTemplateRows: "auto auto",
-              gap: 14,
+              gap: 10,
               alignItems: "start",
-              minWidth: 1320,
+              minWidth: 1220,
             }}
           >
             <div style={{ gridColumn: 1, gridRow: 1 }}>{renderRegionLane(laneRegions.topLeft, "left")}</div>
@@ -1063,11 +1023,11 @@ export default function BracketBuilder({
                 borderRadius: 12,
                 border: "1px solid #e2e8f0",
                 background: "#f8fafc",
-                padding: 12,
+                padding: 10,
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                gap: 16,
+                gap: 10,
               }}
             >
               {renderRoundSection({ label: "Final Four", games: (roundGames.get("final-four") ?? []).slice(0, 1) }, 190)}

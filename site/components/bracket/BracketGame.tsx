@@ -1,6 +1,6 @@
-import { CSSProperties, MouseEvent, useState } from "react";
+import { CSSProperties, MouseEvent, useEffect, useState } from "react";
 import { displayTeam } from "../../lib/data";
-import { GameComparison, MAJOR_UPSET_SEED_GAP } from "../../lib/bracket/comparison";
+import { GameComparison } from "../../lib/bracket/comparison";
 import { BracketSource, BracketTeam, GradedGameResult, MatchupPrediction, ResolvedBracketGame } from "../../lib/bracket/types";
 import MatchupPredictionCard from "./MatchupPredictionCard";
 
@@ -8,19 +8,24 @@ const mono: CSSProperties = {
   fontFamily: "'IBM Plex Mono', monospace",
 };
 
-function compactPct(value: number): string {
-  return `${Math.round(value * 100)}%`;
+function mlPct(value: number): string {
+  return `${(value * 100).toFixed(1)}%`;
 }
 
-function compactFavoriteSummary(prediction?: MatchupPrediction): string | null {
-  if (!prediction) return null;
-  const favoriteWinProb = prediction.favoredTeamId === prediction.teamAId ? prediction.winProbA : prediction.winProbB;
-  return `${displayTeam(prediction.favoredTeamName)} -${prediction.projectedSpread.toFixed(1)} • ${compactPct(favoriteWinProb)}`;
+function gameHeading(game: ResolvedBracketGame): string {
+  if (game.roundId === "final-four" || game.roundId === "national-championship") {
+    return game.title;
+  }
+  if (game.roundId === "first-four") {
+    return `${game.region} play-in`;
+  }
+  return game.roundLabel;
 }
 
 function TeamRow({
   team,
   source,
+  prediction,
   isSelected,
   isClickable,
   isFavorite,
@@ -34,6 +39,7 @@ function TeamRow({
 }: {
   team: BracketTeam | null;
   source: BracketSource;
+  prediction?: MatchupPrediction;
   isSelected: boolean;
   isClickable: boolean;
   isFavorite: boolean;
@@ -100,11 +106,24 @@ function TeamRow({
                 : "none",
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
-        <div style={{ fontSize: 12, fontWeight: 700, lineHeight: 1.25 }}>
-          ({team.seed}) {displayTeam(team.name)}
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 8, alignItems: "center" }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, lineHeight: 1.25 }}>
+            ({team.seed}) {displayTeam(team.name)}
+          </div>
+          <div style={{ ...mono, fontSize: 10, opacity: isSelected ? 0.88 : 1, marginTop: 4 }}>
+            Rank {team.rank} | {team.record}
+          </div>
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, justifyContent: "flex-end" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+          {prediction ? (
+            <div style={{ ...mono, fontSize: 10, fontWeight: 600, whiteSpace: "nowrap" }}>
+              {isFavorite ? `-${prediction.projectedSpread.toFixed(1)}` : ""}
+              {isFavorite ? " " : ""}
+              {team.id === prediction.teamAId ? mlPct(prediction.winProbA) : mlPct(prediction.winProbB)}
+            </div>
+          ) : null}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 4, justifyContent: "flex-end" }}>
           {isFavorite ? (
             <span
               style={{
@@ -119,7 +138,7 @@ function TeamRow({
               FAV
             </span>
           ) : null}
-          {isSelected ? (
+          {isSelected && !isCorrectPick && !isMissedPick ? (
             <span
               style={{
                 ...mono,
@@ -200,13 +219,11 @@ function TeamRow({
                 color: isSelected ? "#fde68a" : "#b45309",
               }}
             >
-              {isMajorUpset ? "MAJOR" : "UPSET"}
+              {isMajorUpset ? "UPSET+" : "UPSET"}
             </span>
           ) : null}
         </div>
       </div>
-      <div style={{ ...mono, fontSize: 10, opacity: isSelected ? 0.88 : 1, marginTop: 4 }}>
-        Rank {team.rank} | {team.record}
       </div>
     </button>
   );
@@ -234,13 +251,21 @@ export default function BracketGame({
   const isResolved = Boolean(teamA && teamB);
   const selectedWinnerId = game.selectedWinnerId;
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const favoriteSummary = compactFavoriteSummary(prediction);
   const showInfoButton = isResolved || Boolean(predictionLoading || predictionError || prediction);
 
   function handleToggleDetails(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
     setDetailsOpen((current) => !current);
   }
+
+  useEffect(() => {
+    if (!detailsOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setDetailsOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [detailsOpen]);
 
   return (
     <div
@@ -252,12 +277,11 @@ export default function BracketGame({
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: 8, alignItems: "flex-start" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: 8, alignItems: "center" }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#0f172a", lineHeight: 1.2 }}>{game.title}</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#0f172a", lineHeight: 1.2 }}>{gameHeading(game)}</div>
           <div style={{ ...mono, fontSize: 10, color: "#64748b", marginTop: 2 }}>
-            {game.region ? `${game.region} • ` : ""}
-            {game.roundLabel}
+            {game.region ?? "National"}
           </div>
         </div>
         {showInfoButton ? (
@@ -283,67 +307,11 @@ export default function BracketGame({
         ) : null}
       </div>
 
-      {(comparison?.selectedWinnerName && comparison?.modelWinnerName) || comparison?.confidenceLabel ? (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 8 }}>
-          {comparison?.selectedWinnerName && comparison?.modelWinnerName ? (
-            <span
-              style={{
-                ...mono,
-                fontSize: 9,
-                padding: "2px 6px",
-                borderRadius: 999,
-                background: comparison.agreesWithModel ? "#dcfce7" : "#fffbeb",
-                color: comparison.agreesWithModel ? "#166534" : "#b45309",
-              }}
-            >
-              {comparison.agreesWithModel ? "AGREE" : "FADE"}
-            </span>
-          ) : null}
-          {comparison?.confidenceLabel ? (
-            <span
-              style={{
-                ...mono,
-                fontSize: 9,
-                padding: "2px 6px",
-                borderRadius: 999,
-                background: "#eff6ff",
-                color: "#1d4ed8",
-              }}
-            >
-              {comparison.confidenceLabel}
-            </span>
-          ) : null}
-          {comparison?.isMajorUpset ? (
-            <span
-              style={{
-                ...mono,
-                fontSize: 9,
-                padding: "2px 6px",
-                borderRadius: 999,
-                background: "#fff7ed",
-                color: "#c2410c",
-              }}
-            >
-              {MAJOR_UPSET_SEED_GAP}+ SEED UPSET
-            </span>
-          ) : null}
-        </div>
-      ) : null}
-
-      <div style={{ ...mono, fontSize: 10, color: predictionError ? "#b91c1c" : "#475569", marginBottom: 8 }}>
-        {favoriteSummary
-          ? `Model favorite: ${favoriteSummary}`
-          : predictionLoading
-            ? "Loading prediction..."
-            : predictionError
-              ? predictionError
-              : "Prediction appears when both teams are known."}
-      </div>
-
       <div style={{ display: "grid", gap: 7 }}>
         <TeamRow
           team={teamA}
           source={game.sourceA}
+          prediction={prediction}
           isSelected={selectedWinnerId === teamA?.id}
           isClickable={Boolean(teamA)}
           isFavorite={prediction?.favoredTeamId === teamA?.id}
@@ -358,6 +326,7 @@ export default function BracketGame({
         <TeamRow
           team={teamB}
           source={game.sourceB}
+          prediction={prediction}
           isSelected={selectedWinnerId === teamB?.id}
           isClickable={Boolean(teamB)}
           isFavorite={prediction?.favoredTeamId === teamB?.id}
@@ -372,16 +341,67 @@ export default function BracketGame({
       </div>
 
       {detailsOpen ? (
-        <MatchupPredictionCard
-          prediction={prediction}
-          loading={predictionLoading}
-          error={predictionError}
-          selectedWinnerId={game.selectedWinnerId}
-          comparison={comparison}
-          grading={grading}
-          teamA={teamA}
-          teamB={teamB}
-        />
+        <div
+          onClick={() => setDetailsOpen(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(15, 23, 42, 0.42)",
+            zIndex: 60,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20,
+          }}
+        >
+          <div
+            onClick={(event) => event.stopPropagation()}
+            style={{
+              width: "min(720px, 100%)",
+              maxHeight: "min(85vh, 860px)",
+              overflowY: "auto",
+              borderRadius: 14,
+              background: "#ffffff",
+              boxShadow: "0 16px 40px rgba(15,23,42,0.22)",
+              padding: 14,
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center", marginBottom: 10 }}>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>{gameHeading(game)}</div>
+                <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: 2 }}>
+                  {game.region ?? "National"} • {game.roundLabel}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDetailsOpen(false)}
+                style={{
+                  ...mono,
+                  borderRadius: 999,
+                  border: "1px solid #cbd5e1",
+                  background: "#ffffff",
+                  color: "#475569",
+                  cursor: "pointer",
+                  width: 28,
+                  height: 28,
+                }}
+              >
+                x
+              </button>
+            </div>
+            <MatchupPredictionCard
+              prediction={prediction}
+              loading={predictionLoading}
+              error={predictionError}
+              selectedWinnerId={game.selectedWinnerId}
+              comparison={comparison}
+              grading={grading}
+              teamA={teamA}
+              teamB={teamB}
+            />
+          </div>
+        </div>
       ) : null}
     </div>
   );

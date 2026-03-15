@@ -54,7 +54,7 @@ export default function Brackets({ conferenceData, ncaaField, ncaaErrors, ncaaRe
   const [tab, setTab] = useState<"ncaa" | "conference">("ncaa");
 
   return (
-    <Layout>
+    <Layout wide={tab === "ncaa"}>
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
         <div
           style={{
