@@ -213,7 +213,7 @@ function TeamRow({
               FADE
             </span>
           ) : null}
-          {isUpset ? (
+          {isUpset && !compact ? (
             <span
               style={{
                 ...mono,
