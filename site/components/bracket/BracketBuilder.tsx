@@ -1531,7 +1531,6 @@ export default function BracketBuilder({
 
       <div
         style={{
-          overflowX: "auto",
           paddingBottom: 8,
         }}
       >
@@ -1571,6 +1570,7 @@ export default function BracketBuilder({
               gap: 10,
               alignItems: "start",
               minWidth: 1940,
+              width: "max-content",
             }}
           >
             <div style={{ gridColumn: 1, gridRow: 1 }}>{renderRegionLane(laneRegions.topLeft, "left")}</div>
