@@ -127,11 +127,14 @@ function readCsvRows<T extends Record<string, unknown>>(filePath: string): T[] {
 
 function getBettingPerformanceRoot(): string {
   const candidates = [
+    path.join(process.cwd(), "site", "public", "data", "betting_performance"),
+    path.join(process.cwd(), "public", "data", "betting_performance"),
+    path.join(process.cwd(), "..", "site", "public", "data", "betting_performance"),
+    path.join(__dirname, "..", "public", "data", "betting_performance"),
+    path.join(__dirname, "..", "..", "public", "data", "betting_performance"),
     path.join(process.cwd(), "artifacts", "market_bet_profitability_v1"),
     path.join(process.cwd(), "..", "artifacts", "market_bet_profitability_v1"),
     path.join(process.cwd(), "site", "..", "artifacts", "market_bet_profitability_v1"),
-    path.join(process.cwd(), "site", "public", "data", "betting_performance"),
-    path.join(process.cwd(), "public", "data", "betting_performance"),
     path.join(__dirname, "..", "..", "artifacts", "market_bet_profitability_v1"),
     path.join(__dirname, "..", "..", "..", "artifacts", "market_bet_profitability_v1"),
   ];
