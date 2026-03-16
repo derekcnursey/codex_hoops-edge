@@ -56,6 +56,7 @@ const CENTER_SEMIFINAL_WIDTH = 340;
 const CENTER_CHAMPIONSHIP_WIDTH = 360;
 const FEEDER_TOP_ROW_OFFSET = -12;
 const FEEDER_BOTTOM_ROW_OFFSET = 28;
+const MATCHUP_API_VERSION = "2026-03-16-display-v2";
 
 function sortGames(list: ResolvedBracketGame[]): ResolvedBracketGame[] {
   return [...list].sort((a, b) => a.matchupOrder - b.matchupOrder || a.roundOrder - b.roundOrder);
@@ -317,7 +318,10 @@ export default function BracketBuilder({
     // Cache canonically by ids, then orient to the slot order currently shown.
     if (predictionCache[key]) return orientPrediction(predictionCache[key], teamAId, teamBId);
 
-    const response = await fetch(`/api/predict-matchup?teamAId=${teamAId}&teamBId=${teamBId}`);
+    const response = await fetch(
+      `/api/predict-matchup?teamAId=${teamAId}&teamBId=${teamBId}&v=${MATCHUP_API_VERSION}`,
+      { cache: "no-store" },
+    );
     if (!response.ok) {
       const payload = (await response.json().catch(() => null)) as { error?: string } | null;
       throw new Error(payload?.error || "Prediction lookup failed");

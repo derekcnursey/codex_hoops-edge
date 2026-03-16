@@ -48,6 +48,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   const payload = buildPredictionFromCacheEntry(entry, teamAId, teamBId);
-  res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+  res.setHeader("Cache-Control", "public, max-age=300, stale-while-revalidate=3600");
   return res.status(200).json(payload);
 }
