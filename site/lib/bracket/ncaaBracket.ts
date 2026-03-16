@@ -63,6 +63,8 @@ export function getBracketTeams(field: NcaaBracketField): BracketTeam[] {
         adjNet: entry.adj_margin,
         adjTempo: entry.adj_tempo,
         modelIndex: entry.model_index,
+        ftPct: entry.ft_pct ?? null,
+        threePPct: entry.three_p_pct ?? null,
       });
     }
   }
@@ -83,6 +85,8 @@ export function getBracketTeams(field: NcaaBracketField): BracketTeam[] {
         adjNet: team.adj_margin,
         adjTempo: team.adj_tempo,
         modelIndex: team.model_index,
+        ftPct: team.ft_pct ?? null,
+        threePPct: team.three_p_pct ?? null,
       });
     }
   }

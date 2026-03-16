@@ -1,7 +1,7 @@
 """Build power rankings JSON from S3 efficiency ratings and game results.
 
 Reads:
-  - preferred: gold/team_adjusted_efficiencies_no_garbage_priorreg_k5_v1
+  - preferred: gold/<config.PRODUCTION_GOLD_RATINGS_TABLE>
   - fallback:  gold/team_adjusted_efficiencies_no_garbage
   - silver/fct_games (season 2026) → win-loss records
   - silver/fct_games team names → display names + conference fallback
@@ -27,12 +27,14 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src import config, s3_reader
-from src.features import _dedupe_efficiency_ratings
+from src.adjusted_four_factors import adjust_four_factors
+from src.features import _dedupe_boxscores, _dedupe_efficiency_ratings
+from src.four_factors import compute_game_four_factors
 from src.trainer import load_scaler, load_tree_regressor
 
 
 CURRENT_SEASON = 2026
-PRIMARY_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage_priorreg_k5_v1"
+PRIMARY_RATINGS_TABLE = config.PRODUCTION_GOLD_RATINGS_TABLE
 FALLBACK_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage"
 PRIMARY_SOURCE_LABEL = "Hoops Edge Ratings"
 PRIMARY_SOURCE_DESCRIPTION = (
@@ -315,6 +317,88 @@ def _load_team_info(season: int) -> pd.DataFrame:
     return info_df
 
 
+def _compute_team_shooting_snapshot(season: int) -> pd.DataFrame:
+    """Compute current FT% and adjusted 3PT% snapshots per team.
+
+    FT% is intentionally opponent-independent in this codebase and is carried
+    through from the raw four-factor computation. 3PT% is opponent-adjusted
+    using the production four-factor settings, then summarized with the same
+    EWM span used elsewhere in the feature pipeline.
+    """
+    box_cols = [
+        "gameid",
+        "teamid",
+        "opponentid",
+        "ishometeam",
+        "startdate",
+        "team_fg_made",
+        "team_fg_att",
+        "team_3fg_made",
+        "team_3fg_att",
+        "team_ft_made",
+        "team_ft_att",
+        "team_reb_off",
+        "team_reb_def",
+        "opp_fg_made",
+        "opp_fg_att",
+        "opp_3fg_made",
+        "opp_3fg_att",
+        "opp_ft_made",
+        "opp_ft_att",
+        "opp_reb_off",
+        "opp_reb_def",
+    ]
+    base = f"{config.SILVER_PREFIX}/{config.TABLE_FCT_GAME_TEAMS}/season={season}/"
+    keys = s3_reader.list_parquet_keys(base)
+    if not keys:
+        return pd.DataFrame(columns=["teamId", "ft_pct", "three_p_pct"])
+    box_tbl = s3_reader.read_parquet_table(keys, columns=box_cols)
+    box = _dedupe_boxscores(box_tbl.to_pandas())
+    if box.empty:
+        return pd.DataFrame(columns=["teamId", "ft_pct", "three_p_pct"])
+
+    ff = compute_game_four_factors(box)
+    if ff.empty:
+        return pd.DataFrame(columns=["teamId", "ft_pct", "three_p_pct"])
+
+    adjusted = (
+        adjust_four_factors(
+            ff,
+            prior_weight=config.ADJUST_PRIOR,
+            alpha=config.ADJUST_ALPHA,
+        )
+        if config.ADJUST_FF
+        else ff.copy()
+    )
+    adjusted["_date"] = pd.to_datetime(adjusted["startdate"], errors="coerce")
+    adjusted = adjusted.sort_values(["teamid", "_date", "gameid"]).reset_index(drop=True)
+
+    rows: list[dict[str, float | int | None]] = []
+    for team_id, group in adjusted.groupby("teamid", sort=False):
+        ft_series = pd.to_numeric(group["ft_pct"], errors="coerce").dropna()
+        three_series = pd.to_numeric(group["three_p_pct"], errors="coerce").dropna()
+
+        ft_pct = (
+            float(ft_series.ewm(span=config.EWM_SPAN, min_periods=1).mean().iloc[-1])
+            if not ft_series.empty
+            else None
+        )
+        three_p_pct = (
+            float(three_series.ewm(span=config.EWM_SPAN, min_periods=1).mean().iloc[-1])
+            if not three_series.empty
+            else None
+        )
+        rows.append(
+            {
+                "teamId": int(team_id),
+                "ft_pct": ft_pct,
+                "three_p_pct": three_p_pct,
+            }
+        )
+
+    return pd.DataFrame(rows)
+
+
 def build_rankings(season: int = CURRENT_SEASON) -> dict:
     """Build the full rankings payload."""
     print(f"Loading efficiency ratings for season {season}...")
@@ -337,8 +421,16 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
     team_info = _load_team_info(season)
     print(f"  {len(team_info)} teams with info")
 
+    print("Computing shooting snapshots...")
+    shooting = _compute_team_shooting_snapshot(season)
+    print(f"  {len(shooting)} teams with FT% / adjusted 3PT% snapshots")
+
     # Merge ratings + records + team info
-    df = ratings[["teamId", "rating_date", "adj_oe", "adj_de", "adj_tempo", "barthag"]].copy()
+    rating_cols = ["teamId", "rating_date", "adj_oe", "adj_de", "adj_tempo", "barthag"]
+    for optional_col in ["ft_pct", "three_p_pct"]:
+        if optional_col in ratings.columns:
+            rating_cols.append(optional_col)
+    df = ratings[rating_cols].copy()
     df["adj_margin"] = df["adj_oe"] - df["adj_de"]
     if not model_index.empty:
         df = df.merge(model_index, on="teamId", how="left")
@@ -358,6 +450,22 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
     else:
         df["team"] = df["teamId"].astype(str)
         df["conference"] = ""
+
+    if not shooting.empty:
+        df = df.merge(
+            shooting,
+            on="teamId",
+            how="left",
+            suffixes=("", "_snapshot"),
+        )
+        for col in ["ft_pct", "three_p_pct"]:
+            snapshot_col = f"{col}_snapshot"
+            if snapshot_col in df.columns:
+                if col in df.columns:
+                    df[col] = df[col].where(df[col].notna(), df[snapshot_col])
+                    df = df.drop(columns=[snapshot_col])
+                else:
+                    df = df.rename(columns={snapshot_col: col})
 
     # Fill NaN records
     for col in ["W", "L", "conf_W", "conf_L"]:
@@ -387,6 +495,16 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
             if pd.notna(row["model_index"])
             else None
         )
+        ft_pct_value = (
+            round(float(row["ft_pct"]), 3)
+            if "ft_pct" in row.index and pd.notna(row["ft_pct"])
+            else None
+        )
+        three_p_pct_value = (
+            round(float(row["three_p_pct"]), 3)
+            if "three_p_pct" in row.index and pd.notna(row["three_p_pct"])
+            else None
+        )
 
         record = f"{row['W']}-{row['L']}"
         conf_record = f"{row['conf_W']}-{row['conf_L']}"
@@ -403,6 +521,8 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
             "adj_margin": adj_margin,
             "adj_tempo": adj_tempo,
             "model_index": model_index_value,
+            "ft_pct": ft_pct_value,
+            "three_p_pct": three_p_pct_value,
         })
 
     payload = {

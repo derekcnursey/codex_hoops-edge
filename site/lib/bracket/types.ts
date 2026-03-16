@@ -10,6 +10,8 @@ export type NcaaFieldTeam = {
   adj_margin: number;
   adj_tempo: number;
   model_index: number | null;
+  ft_pct?: number | null;
+  three_p_pct?: number | null;
 };
 
 export type NcaaRegionEntry =
@@ -125,6 +127,8 @@ export type BracketTeam = {
   adjNet: number;
   adjTempo: number;
   modelIndex: number | null;
+  ftPct?: number | null;
+  threePPct?: number | null;
 };
 
 export type BracketSource =

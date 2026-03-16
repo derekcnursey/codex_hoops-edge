@@ -16,12 +16,19 @@ function metricValue(value: number | null | undefined, digits = 1): string {
   return value == null ? "--" : value.toFixed(digits);
 }
 
+function percentValue(value: number | null | undefined, digits = 1): string {
+  return value == null ? "--" : `${(value * 100).toFixed(digits)}%`;
+}
+
 function metricGrid(team: BracketTeam) {
   return [
-    { label: "Adj Pace", value: metricValue(team.adjTempo) },
+    { label: "Ballin' Index", value: metricValue(team.modelIndex, 2) },
     { label: "Adj OE", value: metricValue(team.adjOe) },
     { label: "Adj DE", value: metricValue(team.adjDe) },
     { label: "Adj Net", value: metricValue(team.adjNet) },
+    { label: "Adj Pace", value: metricValue(team.adjTempo) },
+    { label: "FT%", value: percentValue(team.ftPct) },
+    { label: "3PT%", value: percentValue(team.threePPct) },
   ];
 }
 
@@ -293,8 +300,6 @@ export default function MatchupPredictionCard({
               gap: 10,
             }}
           >
-            <span>Favorite {displayTeam(prediction.favoredTeamName)}</span>
-            <span>Underdog {displayTeam(prediction.underdogTeamName)}</span>
             {prediction.scheduledRoundLabel ? <span>{prediction.scheduledRoundLabel}</span> : null}
             {prediction.marketLineSource ? <span>Line source {prediction.marketLineSource}</span> : null}
             {prediction.projectedScoreA != null && prediction.projectedScoreB != null ? (

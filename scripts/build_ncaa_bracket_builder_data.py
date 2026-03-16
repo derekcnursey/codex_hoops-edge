@@ -401,6 +401,12 @@ def _enrich_entry(
         "model_index": None
         if rankings_row.get("model_index") is None
         else float(rankings_row["model_index"]),
+        "ft_pct": None
+        if rankings_row.get("ft_pct") is None
+        else float(rankings_row["ft_pct"]),
+        "three_p_pct": None
+        if rankings_row.get("three_p_pct") is None
+        else float(rankings_row["three_p_pct"]),
     }
 
 
