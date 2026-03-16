@@ -4,7 +4,11 @@ import {
   HardRockComparisonRow,
   HardRockRegionWinnerRow,
 } from "../../lib/bracket/hardRockComparison";
-import { formatRoundOdds, NcaaOddsData, NcaaOddsRoundKey } from "../../lib/bracket/ncaaOdds";
+import {
+  formatRoundOdds,
+  NcaaOddsData,
+  NcaaOddsRoundKey,
+} from "../../lib/bracket/ncaaOdds";
 
 const mono: CSSProperties = {
   fontFamily: "'IBM Plex Mono', monospace",
@@ -58,6 +62,10 @@ function ComparisonSummaryCard({
       <div style={{ ...mono, fontSize: 11, color: "#64748b", lineHeight: 1.5 }}>{secondary}</div>
     </div>
   );
+}
+
+function roundExpectedPoints(round: number): string {
+  return round.toFixed(2).replace(/\.00$/, "");
 }
 
 function TopList({
@@ -275,6 +283,7 @@ export default function MarchAnalysisTab({
   const biggestUnderlay = hardRockReport?.topUnderlays[0] ?? null;
   const bestRegionOverlay = hardRockReport?.regionWinnerReport?.topOverlays[0] ?? null;
   const biggestRegionUnderlay = hardRockReport?.regionWinnerReport?.topUnderlays[0] ?? null;
+  const optimalBracket = ncaaData.optimalBracket;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
@@ -335,6 +344,163 @@ export default function MarchAnalysisTab({
               : "No region data"
           }
         />
+        <ComparisonSummaryCard
+          label="Max Expected Score"
+          primary={`${roundExpectedPoints(optimalBracket.totalExpectedPoints)} / ${optimalBracket.totalPossiblePoints}`}
+          secondary="Exact expected bracket points using display win probabilities and 1-2-4-8-16-32 scoring."
+        />
+        <ComparisonSummaryCard
+          label="Best Round"
+          primary={
+            optimalBracket.rounds
+              .slice()
+              .sort((a, b) => b.expectedPoints - a.expectedPoints)[0]?.roundLabel ?? "--"
+          }
+          secondary={
+            optimalBracket.rounds.length
+              ? `${roundExpectedPoints(
+                  optimalBracket.rounds
+                    .slice()
+                    .sort((a, b) => b.expectedPoints - a.expectedPoints)[0].expectedPoints,
+                )} expected points`
+              : "No round data"
+          }
+        />
+      </div>
+
+      <div
+        style={{
+          background: "#fff",
+          border: "1px solid #e2e8f0",
+          borderRadius: 12,
+          overflow: "hidden",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+        }}
+      >
+        <div
+          style={{
+            padding: "14px 16px",
+            borderBottom: "1px solid #f1f5f9",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 12,
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
+              Optimal Expected-Score Bracket
+            </div>
+            <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: 4 }}>
+              Uses the exact bracket tree and display-based moneyline probabilities. Picks maximize expected total points, not title probability.
+            </div>
+          </div>
+          <div style={{ ...mono, fontSize: 12, color: "#0f172a", fontWeight: 700 }}>
+            {roundExpectedPoints(optimalBracket.totalExpectedPoints)} / {optimalBracket.totalPossiblePoints}
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: 12,
+            padding: "14px 16px",
+            borderBottom: "1px solid #f8fafc",
+            background: "#fafbfc",
+          }}
+        >
+          {optimalBracket.rounds.map((round) => (
+            <div
+              key={round.roundId}
+              style={{
+                borderRadius: 10,
+                border: "1px solid #e2e8f0",
+                background: "#fff",
+                padding: "10px 12px",
+              }}
+            >
+              <div style={{ fontWeight: 700, color: "#0f172a", marginBottom: 6 }}>
+                {round.roundLabel}
+              </div>
+              <div style={{ ...mono, fontSize: 11, color: "#64748b" }}>
+                {roundExpectedPoints(round.expectedPoints)} expected / {round.maxPoints} max
+              </div>
+              <div style={{ ...mono, fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
+                {round.pointsPerGame} pts per game
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: 12,
+            padding: "14px 16px",
+          }}
+        >
+          {optimalBracket.rounds.map((round) => (
+            <div
+              key={`picks-${round.roundId}`}
+              style={{
+                borderRadius: 12,
+                border: "1px solid #e2e8f0",
+                background: "#fff",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  padding: "12px 14px",
+                  borderBottom: "1px solid #f1f5f9",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 10,
+                  alignItems: "baseline",
+                }}
+              >
+                <div style={{ fontWeight: 700, color: "#0f172a" }}>{round.roundLabel}</div>
+                <div style={{ ...mono, fontSize: 11, color: "#64748b" }}>
+                  {roundExpectedPoints(round.expectedPoints)} pts
+                </div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {round.picks.map((pick) => (
+                  <div
+                    key={pick.gameId}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "minmax(0, 1fr) auto",
+                      gap: 12,
+                      padding: "10px 14px",
+                      borderBottom: "1px solid #f8fafc",
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 600, color: "#0f172a" }}>
+                        ({pick.seed}) {pick.team}
+                      </div>
+                      <div style={{ ...mono, fontSize: 11, color: "#64748b" }}>
+                        {pick.region ?? "National"} · {formatPercent(pick.winProbability)} win
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
+                        +{roundExpectedPoints(pick.expectedPoints)}
+                      </div>
+                      <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+                        {pick.points} pts
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div

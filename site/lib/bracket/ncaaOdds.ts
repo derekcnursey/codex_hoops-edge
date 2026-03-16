@@ -47,9 +47,64 @@ export type NcaaOddsData = {
   };
   rows: NcaaOddsRow[];
   summary: NcaaOddsSummary;
+  optimalBracket: NcaaOptimalBracketPlan;
+};
+
+export type NcaaExpectedBracketPick = {
+  gameId: string;
+  roundId: BracketRoundId;
+  roundLabel: string;
+  roundOrder: number;
+  region: string | null;
+  matchupOrder: number;
+  points: number;
+  teamId: number;
+  team: string;
+  seed: number;
+  winProbability: number;
+  expectedPoints: number;
+};
+
+export type NcaaExpectedScoreRound = {
+  roundId: BracketRoundId;
+  roundLabel: string;
+  pointsPerGame: number;
+  maxPoints: number;
+  expectedPoints: number;
+  picks: NcaaExpectedBracketPick[];
+};
+
+export type NcaaOptimalBracketPlan = {
+  totalExpectedPoints: number;
+  totalPossiblePoints: number;
+  rounds: NcaaExpectedScoreRound[];
 };
 
 type ProbabilityMap = Map<number, number>;
+type RowMap = Map<number, NcaaOddsRow>;
+type PickOption = {
+  score: number;
+  picks: NcaaExpectedBracketPick[];
+};
+
+const SCORE_BY_ROUND: Record<BracketRoundId, number> = {
+  "first-four": 0,
+  "round-of-64": 1,
+  "round-of-32": 2,
+  "sweet-16": 4,
+  "elite-8": 8,
+  "final-four": 16,
+  "national-championship": 32,
+};
+const ROUND_ORDER: Record<BracketRoundId, number> = {
+  "first-four": 0,
+  "round-of-64": 1,
+  "round-of-32": 2,
+  "sweet-16": 3,
+  "elite-8": 4,
+  "final-four": 5,
+  "national-championship": 6,
+};
 
 function roundKeyFromGame(
   roundId: BracketRoundId,
@@ -131,15 +186,82 @@ function sortedRows(rows: NcaaOddsRow[]): NcaaOddsRow[] {
   });
 }
 
-export function buildNcaaOddsData(
+function scoreForRound(roundId: BracketRoundId): number {
+  return SCORE_BY_ROUND[roundId];
+}
+
+function totalPossiblePoints(games: ReturnType<typeof buildNcaaBracketGames>): number {
+  return games.reduce((sum, game) => sum + scoreForRound(game.roundId), 0);
+}
+
+function chooseBetterOption(
+  current: PickOption | undefined,
+  candidate: PickOption,
+): PickOption {
+  if (!current) return candidate;
+  if (candidate.score > current.score + 1e-9) return candidate;
+  if (current.score > candidate.score + 1e-9) return current;
+  const currentKey = current.picks.map((pick) => `${pick.gameId}:${pick.team}`).join("|");
+  const candidateKey = candidate.picks.map((pick) => `${pick.gameId}:${pick.team}`).join("|");
+  return candidateKey.localeCompare(currentKey) < 0 ? candidate : current;
+}
+
+function pickForGame(
+  game: ReturnType<typeof buildNcaaBracketGames>[number],
+  teamsById: Map<number, ReturnType<typeof getBracketTeams>[number]>,
+  teamId: number,
+  probability: number,
+): NcaaExpectedBracketPick {
+  const team = teamsById.get(teamId);
+  if (!team) {
+    throw new Error(`Missing bracket team ${teamId} for ${game.id}`);
+  }
+  const points = scoreForRound(game.roundId);
+  return {
+    gameId: game.id,
+    roundId: game.roundId,
+    roundLabel: game.roundLabel,
+    roundOrder: game.roundOrder,
+    region: game.region ?? null,
+    matchupOrder: game.matchupOrder,
+    points,
+    teamId,
+    team: team.name,
+    seed: team.seed,
+    winProbability: probability,
+    expectedPoints: probability * points,
+  };
+}
+
+function sourcePickOptions(
+  source: BracketSource,
+  optimalByGame: Map<string, Map<number, PickOption>>,
+): Map<number, PickOption> {
+  if (source.type === "team") {
+    return new Map([[source.teamId, { score: 0, picks: [] }]]);
+  }
+  const options = optimalByGame.get(source.gameId);
+  if (!options) {
+    throw new Error(`Missing optimal options for feeder game ${source.gameId}`);
+  }
+  return options;
+}
+
+function buildTournamentState(
   field: NcaaBracketField,
   cache: MatchupPredictionCache,
-): NcaaOddsData {
+): {
+  rowsByTeamId: RowMap;
+  games: ReturnType<typeof buildNcaaBracketGames>;
+  winnerByGame: Map<string, ProbabilityMap>;
+  teamsById: Map<number, ReturnType<typeof getBracketTeams>[number]>;
+} {
   const teams = getBracketTeams(field);
+  const teamsById = new Map(teams.map((team) => [team.id, team]));
   const games = buildNcaaBracketGames(field).sort(
     (a, b) => a.roundOrder - b.roundOrder || a.matchupOrder - b.matchupOrder,
   );
-  const rowsByTeamId = new Map<number, NcaaOddsRow>(
+  const rowsByTeamId: RowMap = new Map(
     teams.map((team) => [
       team.id,
       {
@@ -191,11 +313,134 @@ export function buildNcaaOddsData(
     if (row) row.roundProbabilities.champion = probability;
   }
 
+  return { rowsByTeamId, games, winnerByGame, teamsById };
+}
+
+function buildOptimalBracketPlan(
+  games: ReturnType<typeof buildNcaaBracketGames>,
+  winnerByGame: Map<string, ProbabilityMap>,
+  teamsById: Map<number, ReturnType<typeof getBracketTeams>[number]>,
+): NcaaOptimalBracketPlan {
+  const optimalByGame = new Map<string, Map<number, PickOption>>();
+  const bestOverallByGame = new Map<string, PickOption>();
+
+  for (const game of games) {
+    const dist = winnerByGame.get(game.id);
+    if (!dist) {
+      throw new Error(`Missing winner distribution for ${game.id}`);
+    }
+    const leftOptions = sourcePickOptions(game.sourceA, optimalByGame);
+    const rightOptions = sourcePickOptions(game.sourceB, optimalByGame);
+
+    let bestLeftOverall: PickOption | null = null;
+    for (const option of leftOptions.values()) {
+      bestLeftOverall = chooseBetterOption(bestLeftOverall ?? undefined, option);
+    }
+    let bestRightOverall: PickOption | null = null;
+    for (const option of rightOptions.values()) {
+      bestRightOverall = chooseBetterOption(bestRightOverall ?? undefined, option);
+    }
+    if (!bestLeftOverall || !bestRightOverall) {
+      throw new Error(`Missing feeder options for ${game.id}`);
+    }
+
+    const bestByWinner = new Map<number, PickOption>();
+    for (const [teamId, probability] of dist.entries()) {
+      const gamePick = pickForGame(game, teamsById, teamId, probability);
+      const leftWinner = leftOptions.get(teamId);
+      if (leftWinner) {
+        bestByWinner.set(
+          teamId,
+          chooseBetterOption(bestByWinner.get(teamId), {
+            score: leftWinner.score + bestRightOverall.score + gamePick.expectedPoints,
+            picks: [...leftWinner.picks, ...bestRightOverall.picks, gamePick],
+          }),
+        );
+      }
+      const rightWinner = rightOptions.get(teamId);
+      if (rightWinner) {
+        bestByWinner.set(
+          teamId,
+          chooseBetterOption(bestByWinner.get(teamId), {
+            score: bestLeftOverall.score + rightWinner.score + gamePick.expectedPoints,
+            picks: [...bestLeftOverall.picks, ...rightWinner.picks, gamePick],
+          }),
+        );
+      }
+    }
+
+    let bestOverall: PickOption | undefined;
+    for (const option of bestByWinner.values()) {
+      bestOverall = chooseBetterOption(bestOverall, option);
+    }
+    if (!bestOverall) {
+      throw new Error(`Unable to build optimal bracket options for ${game.id}`);
+    }
+    optimalByGame.set(game.id, bestByWinner);
+    bestOverallByGame.set(game.id, bestOverall);
+  }
+
+  const finalPlan = bestOverallByGame.get("national-championship");
+  if (!finalPlan) {
+    throw new Error("Missing national championship optimal plan");
+  }
+
+  const roundMap = new Map<BracketRoundId, NcaaExpectedScoreRound>();
+  for (const game of games) {
+    const pointsPerGame = scoreForRound(game.roundId);
+    if (pointsPerGame === 0) continue;
+    const existing = roundMap.get(game.roundId);
+    if (existing) {
+      existing.maxPoints += pointsPerGame;
+    } else {
+      roundMap.set(game.roundId, {
+        roundId: game.roundId,
+        roundLabel: game.roundLabel,
+        pointsPerGame,
+        maxPoints: pointsPerGame,
+        expectedPoints: 0,
+        picks: [],
+      });
+    }
+  }
+
+  for (const pick of finalPlan.picks) {
+    if (pick.points === 0) continue;
+    const round = roundMap.get(pick.roundId);
+    if (!round) continue;
+    round.expectedPoints += pick.expectedPoints;
+    round.picks.push(pick);
+  }
+
+  const rounds = Array.from(roundMap.values())
+    .map((round) => ({
+      ...round,
+      expectedPoints: Number(round.expectedPoints.toFixed(3)),
+      picks: [...round.picks].sort((a, b) => a.matchupOrder - b.matchupOrder),
+    }))
+    .sort((a, b) => ROUND_ORDER[a.roundId] - ROUND_ORDER[b.roundId]);
+
+  return {
+    totalExpectedPoints: Number(finalPlan.score.toFixed(3)),
+    totalPossiblePoints: totalPossiblePoints(games),
+    rounds,
+  };
+}
+
+export function buildNcaaOddsData(
+  field: NcaaBracketField,
+  cache: MatchupPredictionCache,
+): NcaaOddsData {
+  const { rowsByTeamId, games, winnerByGame, teamsById } = buildTournamentState(
+    field,
+    cache,
+  );
   const rows = sortedRows(Array.from(rowsByTeamId.values()));
   const titleFavorite = rows[0] ?? null;
   const finalFourLocks = rows
     .filter((row) => row.roundProbabilities["final-four"] >= 0.5)
     .slice(0, 8);
+  const optimalBracket = buildOptimalBracketPlan(games, winnerByGame, teamsById);
 
   return {
     generatedAt: cache.generated_at,
@@ -209,6 +454,7 @@ export function buildNcaaOddsData(
       titleFavorite,
       finalFourLocks,
     },
+    optimalBracket,
   };
 }
 
