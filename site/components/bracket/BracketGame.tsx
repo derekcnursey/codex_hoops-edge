@@ -303,7 +303,7 @@ export default function BracketGame({
         background: "#ffffff",
         border: "1px solid #e2e8f0",
         borderRadius: 10,
-        padding: compact ? 10 : 12,
+        padding: compact ? "10px 10px 14px" : "12px 12px 16px",
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
         height: fixedHeight,
         minHeight: compact ? 94 : undefined,
