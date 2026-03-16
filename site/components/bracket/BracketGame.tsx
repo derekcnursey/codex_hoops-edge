@@ -96,6 +96,7 @@ function TeamRow({
       disabled={!isClickable}
       style={{
         width: "100%",
+        boxSizing: "border-box",
         textAlign: "left",
         padding: compact ? "7px 10px" : "10px 12px",
         borderRadius: 8,
@@ -284,6 +285,7 @@ export default function BracketGame({
   const teamB = game.teamB;
   const displaySummary = prediction ? getDisplayFavoriteSummary(prediction) : null;
   const isResolved = Boolean(teamA && teamB);
+  const isPlaceholderOnly = !teamA && !teamB && !prediction;
   const selectedWinnerId = game.selectedWinnerId;
   const [detailsOpen, setDetailsOpen] = useState(false);
   const showInfoButton = isResolved || Boolean(predictionLoading || predictionError || prediction);
@@ -309,7 +311,11 @@ export default function BracketGame({
         background: "#ffffff",
         border: "1px solid #e2e8f0",
         borderRadius: 10,
-        padding: compact ? "10px 10px 14px" : "12px 12px 16px",
+        padding: compact
+          ? isPlaceholderOnly
+            ? "10px 10px 12px"
+            : "10px 10px 14px"
+          : "12px 12px 16px",
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
         height: fixedHeight,
         minHeight: compact ? 108 : undefined,
@@ -351,8 +357,15 @@ export default function BracketGame({
         ) : null}
       </div>
 
-      <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
-        <div style={{ display: "grid", gap: 7, width: "100%" }}>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: isPlaceholderOnly ? "flex-start" : "center",
+          paddingTop: isPlaceholderOnly ? 2 : 0,
+        }}
+      >
+        <div style={{ display: "grid", gap: isPlaceholderOnly ? 6 : 7, width: "100%" }}>
           <TeamRow
             team={teamA}
             source={game.sourceA}
