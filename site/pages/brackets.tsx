@@ -4,11 +4,13 @@ import BracketBuilder from "../components/bracket/BracketBuilder";
 import ConferenceBrackets, {
   ConferenceBracketsData,
 } from "../components/bracket/ConferenceBrackets";
+import MarchBettingTab from "../components/bracket/MarchBettingTab";
 import Layout from "../components/Layout";
 import { readJsonFile } from "../lib/server-data";
-import { NcaaBracketField, NcaaTournamentResults } from "../lib/bracket/types";
+import { buildScheduledNcaaMarchData } from "../lib/bracket/marchBetting";
+import { MatchupPrediction, MatchupPredictionCache, MarchBettingGame, NcaaBracketField, NcaaTournamentResults } from "../lib/bracket/types";
 import { buildNcaaBracketGames } from "../lib/bracket/ncaaBracket";
-import { validateBracketGraph, validateNcaaField, validateNcaaResults } from "../lib/bracket/validation";
+import { validateBracketGraph, validateMatchupCache, validateNcaaField, validateNcaaResults } from "../lib/bracket/validation";
 
 type Props = {
   conferenceData: ConferenceBracketsData | null;
@@ -16,6 +18,8 @@ type Props = {
   ncaaErrors: string[];
   ncaaResults: NcaaTournamentResults | null;
   ncaaResultsErrors: string[];
+  initialPredictionCache: Record<string, MatchupPrediction>;
+  marchGames: MarchBettingGame[];
 };
 
 const mono: CSSProperties = {
@@ -25,7 +29,9 @@ const mono: CSSProperties = {
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const conferenceRaw = readJsonFile("brackets_2026.json");
   const ncaaRaw = readJsonFile("ncaa_bracket_builder_2026.json");
+  const matchupRaw = readJsonFile("ncaa_matchup_predictions_2026.json");
   const ncaaField = ncaaRaw as NcaaBracketField | null;
+  const matchupCache = matchupRaw as MatchupPredictionCache | null;
   const bracketGames = ncaaField ? buildNcaaBracketGames(ncaaField) : [];
   const ncaaResultsRaw = readJsonFile("ncaa_results_2026.json");
   const ncaaResultsPayload = ncaaResultsRaw as NcaaTournamentResults | null;
@@ -38,6 +44,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const resultsErrors = ncaaField
     ? validateNcaaResults(ncaaResultsPayload, ncaaField, bracketGames).errors
     : [];
+  const matchupValidation =
+    ncaaField && matchupCache ? validateMatchupCache(matchupCache, ncaaField) : null;
+  const { initialPredictionCache, marchGames } =
+    ncaaField && matchupCache && matchupValidation?.valid
+      ? buildScheduledNcaaMarchData(ncaaField, matchupCache)
+      : { initialPredictionCache: {}, marchGames: [] };
 
   return {
     props: {
@@ -46,15 +58,25 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
       ncaaErrors: errors,
       ncaaResults: resultsErrors.length === 0 ? ncaaResultsPayload : null,
       ncaaResultsErrors: resultsErrors,
+      initialPredictionCache,
+      marchGames,
     },
   };
 };
 
-export default function Brackets({ conferenceData, ncaaField, ncaaErrors, ncaaResults, ncaaResultsErrors }: Props) {
-  const [tab, setTab] = useState<"ncaa" | "conference">("ncaa");
+export default function Brackets({
+  conferenceData,
+  ncaaField,
+  ncaaErrors,
+  ncaaResults,
+  ncaaResultsErrors,
+  initialPredictionCache,
+  marchGames,
+}: Props) {
+  const [tab, setTab] = useState<"ncaa" | "march" | "conference">("ncaa");
 
   return (
-    <Layout wide={tab === "ncaa"}>
+    <Layout wide={tab === "ncaa" || tab === "march"}>
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
         <div
           style={{
@@ -101,6 +123,21 @@ export default function Brackets({ conferenceData, ncaaField, ncaaErrors, ncaaRe
             </button>
             <button
               type="button"
+              onClick={() => setTab("march")}
+              style={{
+                ...mono,
+                padding: "10px 14px",
+                borderRadius: 8,
+                border: "none",
+                background: tab === "march" ? "#0f172a" : "transparent",
+                color: tab === "march" ? "#ffffff" : "#475569",
+                cursor: "pointer",
+              }}
+            >
+              March Betting
+            </button>
+            <button
+              type="button"
               onClick={() => setTab("conference")}
               style={{
                 ...mono,
@@ -119,7 +156,12 @@ export default function Brackets({ conferenceData, ncaaField, ncaaErrors, ncaaRe
 
         {tab === "ncaa" ? (
           ncaaField && ncaaErrors.length === 0 ? (
-            <BracketBuilder field={ncaaField} results={ncaaResults} resultsErrors={ncaaResultsErrors} />
+            <BracketBuilder
+              field={ncaaField}
+              results={ncaaResults}
+              resultsErrors={ncaaResultsErrors}
+              initialPredictionCache={initialPredictionCache}
+            />
           ) : (
             <div
               style={{
@@ -134,6 +176,8 @@ export default function Brackets({ conferenceData, ncaaField, ncaaErrors, ncaaRe
               <div style={{ ...mono, fontSize: 12 }}>{ncaaErrors[0] ?? "Unknown validation error"}</div>
             </div>
           )
+        ) : tab === "march" ? (
+          <MarchBettingTab games={marchGames} />
         ) : (
           <ConferenceBrackets data={conferenceData} />
         )}

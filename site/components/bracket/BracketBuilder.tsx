@@ -113,10 +113,12 @@ export default function BracketBuilder({
   field,
   results,
   resultsErrors = [],
+  initialPredictionCache = {},
 }: {
   field: NcaaBracketField;
   results?: NcaaTournamentResults | null;
   resultsErrors?: string[];
+  initialPredictionCache?: Record<string, MatchupPrediction>;
 }) {
   const games = useMemo(() => buildNcaaBracketGames(field), [field]);
   const teams = useMemo(() => getBracketTeams(field), [field]);
@@ -133,7 +135,7 @@ export default function BracketBuilder({
   const [validation, setValidation] = useState<NcaaValidationResult | null>(null);
 
   const [selectedWinners, setSelectedWinners] = useState<Record<string, number>>({});
-  const [predictionCache, setPredictionCache] = useState<Record<string, MatchupPrediction>>({});
+  const [predictionCache, setPredictionCache] = useState<Record<string, MatchupPrediction>>(initialPredictionCache);
   const [loadingMatchups, setLoadingMatchups] = useState<Record<string, boolean>>({});
   const [errorMatchups, setErrorMatchups] = useState<Record<string, string>>({});
   const [autoFillMode, setAutoFillMode] = useState<"seed" | "model" | null>(null);
@@ -290,6 +292,10 @@ export default function BracketBuilder({
     setModelBracketPicks(null);
     setModelBracketLoading(false);
   }, [field.season, gradingActive]);
+
+  useEffect(() => {
+    setPredictionCache(initialPredictionCache);
+  }, [field.season]);
 
   useEffect(() => {
     const validationResults = [validateNcaaField(field), validateBracketGraph(games)];

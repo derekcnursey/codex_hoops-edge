@@ -34,6 +34,21 @@ function buildPredictionRecord(base: {
   displayMarginA: number;
   marketMarginA?: number | null;
   marketLineSource?: string | null;
+  predSigma?: number | null;
+  scheduledStartTime?: string | null;
+  scheduledHomeTeamId?: number | null;
+  scheduledAwayTeamId?: number | null;
+  scheduledHomeTeamName?: string | null;
+  scheduledAwayTeamName?: string | null;
+  marketSpreadHome?: number | null;
+  modelSpreadHome?: number | null;
+  displayModelSpreadHome?: number | null;
+  edgeHomePoints?: number | null;
+  displayEdgeHomePoints?: number | null;
+  pickSide?: MatchupPrediction["pickSide"];
+  pickCoverProb?: number | null;
+  pickProbEdge?: number | null;
+  pickFairOdds?: number | null;
   scheduledGameId?: number | null;
   scheduledRoundId?: MatchupPrediction["scheduledRoundId"];
   scheduledRoundLabel?: string | null;
@@ -85,6 +100,21 @@ function buildPredictionRecord(base: {
     marketFavoredTeamId: marketFavorite.favoriteId,
     marketFavoredTeamName: marketFavorite.favoriteName,
     marketLineSource: base.marketLineSource ?? null,
+    predSigma: base.predSigma ?? null,
+    scheduledStartTime: base.scheduledStartTime ?? null,
+    scheduledHomeTeamId: base.scheduledHomeTeamId ?? null,
+    scheduledAwayTeamId: base.scheduledAwayTeamId ?? null,
+    scheduledHomeTeamName: base.scheduledHomeTeamName ?? null,
+    scheduledAwayTeamName: base.scheduledAwayTeamName ?? null,
+    marketSpreadHome: base.marketSpreadHome ?? null,
+    modelSpreadHome: base.modelSpreadHome ?? null,
+    displayModelSpreadHome: base.displayModelSpreadHome ?? null,
+    edgeHomePoints: base.edgeHomePoints ?? null,
+    displayEdgeHomePoints: base.displayEdgeHomePoints ?? null,
+    pickSide: base.pickSide ?? null,
+    pickCoverProb: base.pickCoverProb ?? null,
+    pickProbEdge: base.pickProbEdge ?? null,
+    pickFairOdds: base.pickFairOdds ?? null,
     scheduledGameId: base.scheduledGameId ?? null,
     scheduledRoundId: base.scheduledRoundId ?? null,
     scheduledRoundLabel: base.scheduledRoundLabel ?? null,
@@ -109,6 +139,21 @@ export function flipPrediction(prediction: MatchupPrediction): MatchupPrediction
         ? null
         : -prediction.marketMarginA,
     marketLineSource: prediction.marketLineSource ?? null,
+    predSigma: prediction.predSigma ?? null,
+    scheduledStartTime: prediction.scheduledStartTime ?? null,
+    scheduledHomeTeamId: prediction.scheduledHomeTeamId ?? null,
+    scheduledAwayTeamId: prediction.scheduledAwayTeamId ?? null,
+    scheduledHomeTeamName: prediction.scheduledHomeTeamName ?? null,
+    scheduledAwayTeamName: prediction.scheduledAwayTeamName ?? null,
+    marketSpreadHome: prediction.marketSpreadHome ?? null,
+    modelSpreadHome: prediction.modelSpreadHome ?? null,
+    displayModelSpreadHome: prediction.displayModelSpreadHome ?? null,
+    edgeHomePoints: prediction.edgeHomePoints ?? null,
+    displayEdgeHomePoints: prediction.displayEdgeHomePoints ?? null,
+    pickSide: prediction.pickSide ?? null,
+    pickCoverProb: prediction.pickCoverProb ?? null,
+    pickProbEdge: prediction.pickProbEdge ?? null,
+    pickFairOdds: prediction.pickFairOdds ?? null,
     scheduledGameId: prediction.scheduledGameId ?? null,
     scheduledRoundId: prediction.scheduledRoundId ?? null,
     scheduledRoundLabel: prediction.scheduledRoundLabel ?? null,
@@ -158,6 +203,21 @@ export function buildPredictionFromCacheEntry(
     displayMarginA,
     marketMarginA,
     marketLineSource: entry.market_line_source ?? null,
+    predSigma: entry.pred_sigma ?? null,
+    scheduledStartTime: entry.start_time ?? null,
+    scheduledHomeTeamId: entry.home_team_id ?? null,
+    scheduledAwayTeamId: entry.away_team_id ?? null,
+    scheduledHomeTeamName: entry.home_team_name ?? null,
+    scheduledAwayTeamName: entry.away_team_name ?? null,
+    marketSpreadHome: entry.market_spread_home ?? null,
+    modelSpreadHome: entry.model_mu_home ?? null,
+    displayModelSpreadHome: entry.display_model_mu_home ?? null,
+    edgeHomePoints: entry.edge_home_points ?? null,
+    displayEdgeHomePoints: entry.display_edge_home_points ?? null,
+    pickSide: entry.pick_side ?? null,
+    pickCoverProb: entry.pick_cover_prob ?? null,
+    pickProbEdge: entry.pick_prob_edge ?? null,
+    pickFairOdds: entry.pick_fair_odds ?? null,
     scheduledGameId: entry.scheduled_game_id ?? null,
     scheduledRoundId: entry.scheduled_round_id ?? null,
     scheduledRoundLabel: entry.scheduled_round_label ?? null,

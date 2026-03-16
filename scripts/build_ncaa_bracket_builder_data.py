@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import sys
 import warnings
@@ -26,6 +27,8 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+import numpy as np
+import torch
 
 # Avoid pathological CPU thread contention during batch inference.
 os.environ.setdefault("OMP_NUM_THREADS", "1")
@@ -40,10 +43,16 @@ warnings.filterwarnings(
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from scripts.build_rankings_json import _load_latest_ratings
-from scripts.rebuild_tourney_jsons import _predict_pairwise_probability
+from scripts.rebuild_tourney_jsons import _build_synthetic_rows, _predict_pairwise_probability
 from src import config, s3_reader
 from src.features import load_lines, load_research_lines
-from src.infer import load_regressor
+from src.infer import (
+    _fill_nan_with_scaler_means,
+    american_to_breakeven,
+    load_regressor,
+    normal_cdf,
+    prob_to_american,
+)
 from src.line_selection import select_preferred_lines
 from src.tournament_adjustments import market_blended_display_margin
 from src.trainer import load_scaler, load_tree_regressor
@@ -503,6 +512,7 @@ def _load_opening_round_market_lookup(season: int) -> dict[str, dict[str, Any]]:
             "awayTeamId",
             "homeTeam",
             "awayTeam",
+            "startDate",
             "gameNotes",
             "tournament",
         ]
@@ -557,6 +567,11 @@ def _load_opening_round_market_lookup(season: int) -> dict[str, dict[str, Any]]:
             "scheduled_game_id": int(row["gameId"]),
             "scheduled_round_id": row["scheduled_round_id"],
             "scheduled_round_label": row["scheduled_round_label"],
+            "start_time": row.get("startDate"),
+            "home_team_id": home_id,
+            "away_team_id": away_id,
+            "home_team_name": row.get("homeTeam"),
+            "away_team_name": row.get("awayTeam"),
             "market_mu_team1_minus_team2": market_margin,
             "market_spread_home": float(row["book_spread"]),
             "market_home_team_id": home_id,
@@ -566,6 +581,53 @@ def _load_opening_round_market_lookup(season: int) -> dict[str, dict[str, Any]]:
             "market_line_source": row.get("provider"),
         }
     return lookup
+
+
+def _predict_pairwise_projection(
+    team_a: pd.Series,
+    team_b: pd.Series,
+    feature_order: list[str],
+    scaler,
+    tree_model,
+    sigma_model,
+    sigma_param: str,
+    month: int,
+    day: int,
+) -> tuple[float, float, float]:
+    mu, win_prob_a = _predict_pairwise_probability(
+        team_a,
+        team_b,
+        feature_order,
+        scaler,
+        tree_model,
+        sigma_model,
+        sigma_param,
+        month,
+        day,
+    )
+
+    row_ab, row_ba = _build_synthetic_rows(team_a, team_b, feature_order, scaler)
+    X_ab = _fill_nan_with_scaler_means(row_ab, scaler)
+    X_ba = _fill_nan_with_scaler_means(row_ba, scaler)
+    mu_ab = float(tree_model.predict(X_ab.astype(np.float32))[0])
+    mu_ba = float(tree_model.predict(X_ba.astype(np.float32))[0])
+
+    X_ab_scaled = scaler.transform(X_ab)
+    X_ba_scaled = scaler.transform(X_ba)
+    X_ab_tensor = torch.tensor(X_ab_scaled, dtype=torch.float32)
+    X_ba_tensor = torch.tensor(X_ba_scaled, dtype=torch.float32)
+    with torch.no_grad():
+        _, log_sigma_ab = sigma_model(X_ab_tensor)
+        _, log_sigma_ba = sigma_model(X_ba_tensor)
+        if sigma_param == "exp":
+            sigma_ab = np.exp(log_sigma_ab.numpy())[0]
+            sigma_ba = np.exp(log_sigma_ba.numpy())[0]
+        else:
+            sigma_ab = (torch.nn.functional.softplus(log_sigma_ab) + 1e-3).numpy()[0]
+            sigma_ba = (torch.nn.functional.softplus(log_sigma_ba) + 1e-3).numpy()[0]
+    sigma_var = 0.5 * (sigma_ab**2 + sigma_ba**2) + ((mu_ab + mu_ba) ** 2) / 4.0
+    sigma = float(max(math.sqrt(max(sigma_var, 0.25)), 0.5))
+    return float(mu), sigma, float(win_prob_a)
 
 
 def _validate_field_payload(field: dict[str, Any]) -> None:
@@ -660,7 +722,7 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
     for pair_index, (team_a_id, team_b_id) in enumerate(combinations(selected_ids, 2), start=1):
         team_a = team_lookup[team_a_id]
         team_b = team_lookup[team_b_id]
-        mu, win_prob_a = _predict_pairwise_probability(
+        mu, sigma, win_prob_a = _predict_pairwise_projection(
             team_a,
             team_b,
             feature_order,
@@ -679,6 +741,30 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
                 float(mu),
                 float(line_info["market_mu_team1_minus_team2"]),
             )
+        model_mu_home = None
+        display_model_mu_home = None
+        edge_home_points = None
+        display_edge_home_points = None
+        pick_side = None
+        pick_cover_prob = None
+        pick_prob_edge = None
+        pick_fair_odds = None
+        if line_info is not None:
+            home_team_id = int(line_info["home_team_id"])
+            book_spread = float(line_info["market_spread_home"])
+            model_mu_home = float(mu) if home_team_id == team_a_id else -float(mu)
+            display_model_mu_home = float(display_mu) if home_team_id == team_a_id else -float(display_mu)
+            edge_home_points = model_mu_home + book_spread
+            display_edge_home_points = display_model_mu_home + book_spread
+            sigma_safe = max(float(sigma), 0.5)
+            edge_z = edge_home_points / sigma_safe
+            home_cover_prob = float(normal_cdf(edge_z))
+            away_cover_prob = 1.0 - home_cover_prob
+            pick_side = "HOME" if edge_home_points >= 0 else "AWAY"
+            pick_cover_prob = home_cover_prob if pick_side == "HOME" else away_cover_prob
+            pick_breakeven = float(american_to_breakeven(np.array([-110.0]))[0])
+            pick_prob_edge = pick_cover_prob - pick_breakeven
+            pick_fair_odds = float(prob_to_american(np.array([pick_cover_prob]))[0])
         predictions[f"{team_a_id}::{team_b_id}"] = {
             "team1_id": int(team_a_id),
             "team1_name": str(team_a["team"]),
@@ -687,9 +773,23 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
             "mu_team1_minus_team2": float(mu),
             "display_mu_team1_minus_team2": display_mu,
             "win_prob_team1": float(win_prob_a),
+            "pred_sigma": float(sigma),
             "scheduled_game_id": None if line_info is None else line_info["scheduled_game_id"],
             "scheduled_round_id": None if line_info is None else line_info["scheduled_round_id"],
             "scheduled_round_label": None if line_info is None else line_info["scheduled_round_label"],
+            "start_time": None if line_info is None else line_info["start_time"],
+            "home_team_id": None if line_info is None else line_info["home_team_id"],
+            "away_team_id": None if line_info is None else line_info["away_team_id"],
+            "home_team_name": None if line_info is None else line_info["home_team_name"],
+            "away_team_name": None if line_info is None else line_info["away_team_name"],
+            "model_mu_home": model_mu_home,
+            "display_model_mu_home": display_model_mu_home,
+            "edge_home_points": edge_home_points,
+            "display_edge_home_points": display_edge_home_points,
+            "pick_side": pick_side,
+            "pick_cover_prob": pick_cover_prob,
+            "pick_prob_edge": pick_prob_edge,
+            "pick_fair_odds": pick_fair_odds,
             "market_mu_team1_minus_team2": None if line_info is None else line_info["market_mu_team1_minus_team2"],
             "market_spread_home": None if line_info is None else line_info["market_spread_home"],
             "market_home_team_id": None if line_info is None else line_info["market_home_team_id"],
