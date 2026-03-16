@@ -43,13 +43,13 @@ type BoardMetrics = {
   positions: Record<BoardRoundKey, number[]>;
 };
 
-const REGION_CARD_HEIGHT = 128;
+const REGION_CARD_HEIGHT = 134;
 const REGION_BASE_GAP = 12;
 const REGION_CONNECTOR_WIDTH = 22;
 const FIRST_FOUR_RAIL_WIDTH = 320;
 const REGION_LEFT_WIDTHS = [368, 344, 320, 308] as const;
 const REGION_RIGHT_WIDTHS = [308, 320, 344, 368] as const;
-const CENTER_CARD_HEIGHT = 130;
+const CENTER_CARD_HEIGHT = 136;
 const CENTER_GAP = 118;
 const CENTER_CONNECTOR_WIDTH = 24;
 const CENTER_SEMIFINAL_WIDTH = 340;
