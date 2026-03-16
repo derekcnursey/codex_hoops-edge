@@ -27,7 +27,7 @@ function metricGrid(team: BracketTeam) {
     { label: "Adj Net", value: metricValue(team.adjNet) },
     { label: "Adj Pace", value: metricValue(team.adjTempo) },
     { label: "3PT%", value: percentValue(team.threePPct) },
-    { label: "Adj Def 3PT%", value: percentValue(team.defThreePPct) },
+    { label: "Def 3PT%", value: percentValue(team.defThreePPct) },
     { label: "FT%", value: percentValue(team.ftPct) },
     { label: "Ballin' Index", value: metricValue(team.modelIndex, 2) },
   ];
