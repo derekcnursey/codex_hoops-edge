@@ -312,7 +312,7 @@ export default function BracketGame({
         padding: compact ? "10px 10px 14px" : "12px 12px 16px",
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
         height: fixedHeight,
-        minHeight: compact ? 94 : undefined,
+        minHeight: compact ? 108 : undefined,
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: compact ? 8 : 10, alignItems: "center" }}>
