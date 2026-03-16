@@ -153,8 +153,8 @@ export default function MatchupPredictionCard({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: 12,
+              gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+              gap: 14,
             }}
           >
             {teams.map(({ key, team, winProb, isFavorite, isSelected, isActualWinner }) => {
@@ -166,14 +166,14 @@ export default function MatchupPredictionCard({
                     borderRadius: 8,
                     border: `1px solid ${tone.border}`,
                     background: tone.background,
-                    padding: "10px 12px",
-                    minHeight: 216,
+                    padding: "14px 16px",
+                    minHeight: 292,
                     display: "flex",
                     flexDirection: "column",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0f172a" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>
                       ({team.seed}) {displayTeam(team.name)}
                     </div>
                     <div style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "flex-end" }}>
@@ -183,10 +183,10 @@ export default function MatchupPredictionCard({
                     </div>
                   </div>
 
-                  <div style={{ ...mono, fontSize: 11, color: "#334155", marginBottom: 8 }}>
+                  <div style={{ ...mono, fontSize: 12, color: "#334155", marginBottom: 10 }}>
                     Win prob {pct(winProb, 1)}
                   </div>
-                  <div style={{ ...mono, fontSize: 11, color: "#475569", marginBottom: 10 }}>
+                  <div style={{ ...mono, fontSize: 12, color: "#475569", marginBottom: 14 }}>
                     Rank {team.rank} | {team.conference || "--"} | {team.record}
                   </div>
 
@@ -209,7 +209,7 @@ export default function MatchupPredictionCard({
                         }}
                       >
                         <div style={{ ...mono, fontSize: 10, color: "#64748b", marginBottom: 2 }}>{metric.label}</div>
-                        <div style={{ ...mono, fontSize: 11, color: "#0f172a" }}>{metric.value}</div>
+                        <div style={{ ...mono, fontSize: 12, color: "#0f172a" }}>{metric.value}</div>
                       </div>
                     ))}
                   </div>

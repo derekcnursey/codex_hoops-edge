@@ -396,13 +396,13 @@ export default function BracketGame({
           <div
             onClick={(event) => event.stopPropagation()}
             style={{
-              width: "min(720px, 100%)",
-              maxHeight: "min(85vh, 860px)",
+              width: "min(1160px, 100%)",
+              maxHeight: "min(92vh, 980px)",
               overflowY: "auto",
               borderRadius: 14,
               background: "#ffffff",
               boxShadow: "0 16px 40px rgba(15,23,42,0.22)",
-              padding: 14,
+              padding: 20,
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center", marginBottom: 10 }}>
