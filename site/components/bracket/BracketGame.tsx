@@ -55,6 +55,14 @@ function TeamRow({
 }) {
   const displayFavoriteId = prediction?.displayFavoredTeamId ?? prediction?.favoredTeamId;
   const displaySpread = prediction?.displayProjectedSpread ?? prediction?.projectedSpread;
+  const displayWinProb =
+    prediction == null
+      ? null
+      : team?.id === prediction.teamAId
+        ? prediction.displayWinProbA ?? prediction.winProbA
+        : team?.id === prediction.teamBId
+          ? prediction.displayWinProbB ?? prediction.winProbB
+          : null;
   if (!team) {
     return (
       <div
@@ -159,7 +167,7 @@ function TeamRow({
                   flexShrink: 0,
                 }}
               >
-                {team.id === prediction.teamAId ? mlPct(prediction.winProbA) : mlPct(prediction.winProbB)} •{" "}
+                {displayWinProb != null ? `${mlPct(displayWinProb)} • ` : ""}
                 -{displaySpread.toFixed(1)}
               </span>
             ) : null}
@@ -279,6 +287,7 @@ export default function BracketGame({
 }) {
   const teamA = game.teamA;
   const teamB = game.teamB;
+  const displayFavoriteId = prediction?.displayFavoredTeamId ?? prediction?.favoredTeamId;
   const isResolved = Boolean(teamA && teamB);
   const selectedWinnerId = game.selectedWinnerId;
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -356,7 +365,7 @@ export default function BracketGame({
             compact={compact}
             isSelected={selectedWinnerId === teamA?.id}
             isClickable={Boolean(teamA)}
-            isFavorite={prediction?.favoredTeamId === teamA?.id}
+            isFavorite={displayFavoriteId === teamA?.id}
             isUpset={selectedWinnerId === teamA?.id ? comparison?.isUpset ?? false : false}
             isMajorUpset={selectedWinnerId === teamA?.id ? comparison?.isMajorUpset ?? false : false}
             isFadingModel={selectedWinnerId === teamA?.id ? comparison?.agreesWithModel === false : false}
@@ -372,7 +381,7 @@ export default function BracketGame({
             compact={compact}
             isSelected={selectedWinnerId === teamB?.id}
             isClickable={Boolean(teamB)}
-            isFavorite={prediction?.favoredTeamId === teamB?.id}
+            isFavorite={displayFavoriteId === teamB?.id}
             isUpset={selectedWinnerId === teamB?.id ? comparison?.isUpset ?? false : false}
             isMajorUpset={selectedWinnerId === teamB?.id ? comparison?.isMajorUpset ?? false : false}
             isFadingModel={selectedWinnerId === teamB?.id ? comparison?.agreesWithModel === false : false}

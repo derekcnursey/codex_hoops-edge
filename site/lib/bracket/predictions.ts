@@ -1,3 +1,4 @@
+import { getSiteHomeWinProbFromValues } from "../data";
 import { MatchupPrediction, MatchupPredictionCacheEntry } from "./types";
 
 export function canonicalMatchupKey(teamAId: number, teamBId: number): string {
@@ -76,6 +77,15 @@ function buildPredictionRecord(base: {
   );
   const modelWinnerId = rawFavorite.favoriteId ?? base.teamAId;
   const modelWinnerName = rawFavorite.favoriteName ?? base.teamAName;
+  const hasDisplayAdjustment = Math.abs(base.displayMarginA - base.rawMarginA) > 1e-9;
+  const recalculatedDisplayWinProbA = hasDisplayAdjustment
+    ? getSiteHomeWinProbFromValues(
+        base.displayMarginA,
+        base.predSigma ?? null,
+        base.scheduledStartTime ?? null,
+      )
+    : null;
+  const displayWinProbA = recalculatedDisplayWinProbA ?? base.winProbA;
 
   return {
     teamAId: base.teamAId,
@@ -88,6 +98,8 @@ function buildPredictionRecord(base: {
     underdogTeamName: modelWinnerId === base.teamAId ? base.teamBName : base.teamAName,
     winProbA: base.winProbA,
     winProbB: 1 - base.winProbA,
+    displayWinProbA,
+    displayWinProbB: 1 - displayWinProbA,
     projectedSpread: rawFavorite.spread ?? 0,
     rawProjectedSpread: rawFavorite.spread,
     displayProjectedSpread: displayFavorite.spread,

@@ -125,8 +125,9 @@ export default function MatchupPredictionCard({
       ? {
           key: "A",
           team: teamA,
-          winProb: prediction.winProbA,
-          isFavorite: prediction.favoredTeamId === teamA.id,
+          winProb: prediction.displayWinProbA ?? prediction.winProbA,
+          rawWinProb: prediction.winProbA,
+          isFavorite: (prediction.displayFavoredTeamId ?? prediction.favoredTeamId) === teamA.id,
           isSelected: selectedWinnerId === teamA.id,
           isActualWinner: grading?.actualWinnerId === teamA.id,
         }
@@ -135,8 +136,9 @@ export default function MatchupPredictionCard({
       ? {
           key: "B",
           team: teamB,
-          winProb: prediction.winProbB,
-          isFavorite: prediction.favoredTeamId === teamB.id,
+          winProb: prediction.displayWinProbB ?? prediction.winProbB,
+          rawWinProb: prediction.winProbB,
+          isFavorite: (prediction.displayFavoredTeamId ?? prediction.favoredTeamId) === teamB.id,
           isSelected: selectedWinnerId === teamB.id,
           isActualWinner: grading?.actualWinnerId === teamB.id,
         }
@@ -145,6 +147,7 @@ export default function MatchupPredictionCard({
     key: string;
     team: BracketTeam;
     winProb: number;
+    rawWinProb: number;
     isFavorite: boolean;
     isSelected: boolean;
     isActualWinner: boolean;
@@ -215,8 +218,9 @@ export default function MatchupPredictionCard({
               gap: 14,
             }}
           >
-            {teams.map(({ key, team, winProb, isFavorite, isSelected, isActualWinner }) => {
+            {teams.map(({ key, team, winProb, rawWinProb, isFavorite, isSelected, isActualWinner }) => {
               const tone = teamTone(isFavorite, isSelected, isActualWinner);
+              const showRawWinProb = Math.abs(winProb - rawWinProb) >= 0.001;
               return (
                 <div
                   key={key}
@@ -244,6 +248,11 @@ export default function MatchupPredictionCard({
                   <div style={{ ...mono, fontSize: 12, color: "#334155", marginBottom: 10 }}>
                     Win prob {pct(winProb, 1)}
                   </div>
+                  {showRawWinProb ? (
+                    <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: -4, marginBottom: 10 }}>
+                      Raw model {pct(rawWinProb, 1)}
+                    </div>
+                  ) : null}
                   <div style={{ ...mono, fontSize: 12, color: "#475569", marginBottom: 14 }}>
                     Rank {team.rank} | {team.conference || "--"} | {team.record}
                   </div>

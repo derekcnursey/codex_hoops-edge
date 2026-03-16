@@ -48,7 +48,10 @@ export function isMajorUpsetPick(winner: BracketTeam | null, opponent: BracketTe
 
 export function getConfidenceBucket(prediction: MatchupPrediction | undefined): ComparisonConfidence {
   if (!prediction) return "toss-up";
-  const favoriteWinProb = Math.max(prediction.winProbA, prediction.winProbB);
+  const favoriteWinProb = Math.max(
+    prediction.displayWinProbA ?? prediction.winProbA,
+    prediction.displayWinProbB ?? prediction.winProbB,
+  );
   if (favoriteWinProb >= 0.7) return "strong";
   if (favoriteWinProb >= 0.6) return "moderate";
   return "toss-up";

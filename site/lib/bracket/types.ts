@@ -168,6 +168,8 @@ export type MatchupPrediction = {
   underdogTeamName: string;
   winProbA: number;
   winProbB: number;
+  displayWinProbA?: number | null;
+  displayWinProbB?: number | null;
   projectedSpread: number;
   rawProjectedSpread?: number | null;
   displayProjectedSpread?: number | null;

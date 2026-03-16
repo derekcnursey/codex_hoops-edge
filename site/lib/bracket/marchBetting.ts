@@ -46,7 +46,9 @@ export function buildScheduledNcaaMarchData(
     const displayFavoredTeamId = prediction.displayFavoredTeamId ?? prediction.favoredTeamId;
     const displayFavoredTeamName = prediction.displayFavoredTeamName ?? prediction.favoredTeamName;
     const favoriteWinProb =
-      displayFavoredTeamId === teamA.id ? prediction.winProbA : prediction.winProbB;
+      displayFavoredTeamId === teamA.id
+        ? (prediction.displayWinProbA ?? prediction.winProbA)
+        : (prediction.displayWinProbB ?? prediction.winProbB);
     const rawDisplaySpreadHome =
       prediction.modelSpreadHome == null ? null : -prediction.modelSpreadHome;
     const displayDisplaySpreadHome =
