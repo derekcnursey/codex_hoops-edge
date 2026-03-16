@@ -22,13 +22,13 @@ function percentValue(value: number | null | undefined, digits = 1): string {
 
 function metricGrid(team: BracketTeam) {
   return [
-    { label: "Ballin' Index", value: metricValue(team.modelIndex, 2) },
     { label: "Adj OE", value: metricValue(team.adjOe) },
     { label: "Adj DE", value: metricValue(team.adjDe) },
     { label: "Adj Net", value: metricValue(team.adjNet) },
     { label: "Adj Pace", value: metricValue(team.adjTempo) },
-    { label: "FT%", value: percentValue(team.ftPct) },
     { label: "3PT%", value: percentValue(team.threePPct) },
+    { label: "FT%", value: percentValue(team.ftPct) },
+    { label: "Ballin' Index", value: metricValue(team.modelIndex, 2) },
   ];
 }
 
