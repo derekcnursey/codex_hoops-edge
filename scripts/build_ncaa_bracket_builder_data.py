@@ -407,6 +407,9 @@ def _enrich_entry(
         "three_p_pct": None
         if rankings_row.get("three_p_pct") is None
         else float(rankings_row["three_p_pct"]),
+        "def_3p_pct": None
+        if rankings_row.get("def_3p_pct") is None
+        else float(rankings_row["def_3p_pct"]),
     }
 
 

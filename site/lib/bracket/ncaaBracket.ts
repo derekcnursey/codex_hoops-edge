@@ -65,6 +65,7 @@ export function getBracketTeams(field: NcaaBracketField): BracketTeam[] {
         modelIndex: entry.model_index,
         ftPct: entry.ft_pct ?? null,
         threePPct: entry.three_p_pct ?? null,
+        defThreePPct: entry.def_3p_pct ?? null,
       });
     }
   }
@@ -87,6 +88,7 @@ export function getBracketTeams(field: NcaaBracketField): BracketTeam[] {
         modelIndex: team.model_index,
         ftPct: team.ft_pct ?? null,
         threePPct: team.three_p_pct ?? null,
+        defThreePPct: team.def_3p_pct ?? null,
       });
     }
   }

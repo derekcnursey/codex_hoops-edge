@@ -12,6 +12,7 @@ export type NcaaFieldTeam = {
   model_index: number | null;
   ft_pct?: number | null;
   three_p_pct?: number | null;
+  def_3p_pct?: number | null;
 };
 
 export type NcaaRegionEntry =
@@ -129,6 +130,7 @@ export type BracketTeam = {
   modelIndex: number | null;
   ftPct?: number | null;
   threePPct?: number | null;
+  defThreePPct?: number | null;
 };
 
 export type BracketSource =
