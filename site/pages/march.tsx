@@ -6,6 +6,6 @@ export const getServerSideProps: GetServerSideProps<MarchPageProps> = async () =
   return { props: await loadMarchPageProps() };
 };
 
-export default function BracketsPage(props: MarchPageProps) {
+export default function MarchPage(props: MarchPageProps) {
   return <MarchHub {...props} />;
 }

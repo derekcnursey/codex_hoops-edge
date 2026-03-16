@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 export default function Layout({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   const router = useRouter();
   const bettingActive = router.pathname === "/betting" || router.pathname.startsWith("/betting/");
+  const marchActive = router.pathname === "/march" || router.pathname === "/brackets";
   return (
     <div className={`page${wide ? " page-wide" : ""}`}>
       <header className="site-header">
@@ -67,10 +68,10 @@ export default function Layout({ children, wide = false }: { children: ReactNode
             Rankings
           </Link>
           <Link
-            href="/brackets"
-            className={router.pathname === "/brackets" ? "active" : ""}
+            href="/march"
+            className={marchActive ? "active" : ""}
           >
-            Brackets
+            March
           </Link>
           <Link
             href="/tourneys"
