@@ -27,7 +27,8 @@ function metricGrid(team: BracketTeam) {
 
 function lineLabel(teamName: string | null | undefined, spread: number | null | undefined): string | null {
   if (!teamName || spread == null) return null;
-  return `${displayTeam(teamName)} -${spread.toFixed(1)}`;
+  const spreadText = Math.abs(spread) < 0.05 ? "PK" : `-${spread.toFixed(1)}`;
+  return `${displayTeam(teamName)} ${spreadText}`;
 }
 
 function detailBox(label: string, value: string | null, tone: "slate" | "amber" | "blue" = "slate") {

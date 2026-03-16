@@ -14,6 +14,7 @@ function num(value: number | null | undefined): number | null {
 }
 
 function formatSpread(value: number): string {
+  if (Math.abs(value) < 0.05) return "PK";
   return value > 0 ? `+${value.toFixed(1)}` : value.toFixed(1);
 }
 

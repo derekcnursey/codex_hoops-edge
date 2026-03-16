@@ -13,6 +13,10 @@ function mlPct(value: number): string {
   return `${(value * 100).toFixed(1)}%`;
 }
 
+function spreadLabel(value: number): string {
+  return Math.abs(value) < 0.05 ? "PK" : `-${value.toFixed(1)}`;
+}
+
 function gameHeading(game: ResolvedBracketGame): string {
   if (game.roundId === "final-four" || game.roundId === "national-championship") {
     return game.title;
@@ -159,7 +163,7 @@ function TeamRow({
                   flexShrink: 0,
                 }}
               >
-                {mlPct(displaySummary.favoriteWinProb)} • -{displaySummary.spread.toFixed(1)}
+                {mlPct(displaySummary.favoriteWinProb)} • {spreadLabel(displaySummary.spread)}
               </span>
             ) : null}
           </div>
@@ -393,7 +397,7 @@ export default function BracketGame({
             marginTop: 8,
           }}
         >
-          Market {displayTeam(prediction.marketFavoredTeamName)} -{prediction.marketProjectedSpread.toFixed(1)}
+          Market {displayTeam(prediction.marketFavoredTeamName)} {spreadLabel(prediction.marketProjectedSpread)}
           {prediction.marketLineSource ? ` • ${prediction.marketLineSource}` : ""}
         </div>
       ) : null}
