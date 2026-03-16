@@ -344,39 +344,41 @@ export default function BracketGame({
         ) : null}
       </div>
 
-      <div style={{ display: "grid", gap: 7 }}>
-        <TeamRow
-          team={teamA}
-          source={game.sourceA}
-          prediction={prediction}
-          compact={compact}
-          isSelected={selectedWinnerId === teamA?.id}
-          isClickable={Boolean(teamA)}
-          isFavorite={prediction?.favoredTeamId === teamA?.id}
-          isUpset={selectedWinnerId === teamA?.id ? comparison?.isUpset ?? false : false}
-          isMajorUpset={selectedWinnerId === teamA?.id ? comparison?.isMajorUpset ?? false : false}
-          isFadingModel={selectedWinnerId === teamA?.id ? comparison?.agreesWithModel === false : false}
-          isActualWinner={grading?.actualWinnerId === teamA?.id}
-          isCorrectPick={grading?.status === "correct" && selectedWinnerId === teamA?.id}
-          isMissedPick={grading?.status === "incorrect" && selectedWinnerId === teamA?.id}
-          onSelect={() => teamA && onSelectWinner(game.id, teamA.id)}
-        />
-        <TeamRow
-          team={teamB}
-          source={game.sourceB}
-          prediction={prediction}
-          compact={compact}
-          isSelected={selectedWinnerId === teamB?.id}
-          isClickable={Boolean(teamB)}
-          isFavorite={prediction?.favoredTeamId === teamB?.id}
-          isUpset={selectedWinnerId === teamB?.id ? comparison?.isUpset ?? false : false}
-          isMajorUpset={selectedWinnerId === teamB?.id ? comparison?.isMajorUpset ?? false : false}
-          isFadingModel={selectedWinnerId === teamB?.id ? comparison?.agreesWithModel === false : false}
-          isActualWinner={grading?.actualWinnerId === teamB?.id}
-          isCorrectPick={grading?.status === "correct" && selectedWinnerId === teamB?.id}
-          isMissedPick={grading?.status === "incorrect" && selectedWinnerId === teamB?.id}
-          onSelect={() => teamB && onSelectWinner(game.id, teamB.id)}
-        />
+      <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+        <div style={{ display: "grid", gap: 7, width: "100%" }}>
+          <TeamRow
+            team={teamA}
+            source={game.sourceA}
+            prediction={prediction}
+            compact={compact}
+            isSelected={selectedWinnerId === teamA?.id}
+            isClickable={Boolean(teamA)}
+            isFavorite={prediction?.favoredTeamId === teamA?.id}
+            isUpset={selectedWinnerId === teamA?.id ? comparison?.isUpset ?? false : false}
+            isMajorUpset={selectedWinnerId === teamA?.id ? comparison?.isMajorUpset ?? false : false}
+            isFadingModel={selectedWinnerId === teamA?.id ? comparison?.agreesWithModel === false : false}
+            isActualWinner={grading?.actualWinnerId === teamA?.id}
+            isCorrectPick={grading?.status === "correct" && selectedWinnerId === teamA?.id}
+            isMissedPick={grading?.status === "incorrect" && selectedWinnerId === teamA?.id}
+            onSelect={() => teamA && onSelectWinner(game.id, teamA.id)}
+          />
+          <TeamRow
+            team={teamB}
+            source={game.sourceB}
+            prediction={prediction}
+            compact={compact}
+            isSelected={selectedWinnerId === teamB?.id}
+            isClickable={Boolean(teamB)}
+            isFavorite={prediction?.favoredTeamId === teamB?.id}
+            isUpset={selectedWinnerId === teamB?.id ? comparison?.isUpset ?? false : false}
+            isMajorUpset={selectedWinnerId === teamB?.id ? comparison?.isMajorUpset ?? false : false}
+            isFadingModel={selectedWinnerId === teamB?.id ? comparison?.agreesWithModel === false : false}
+            isActualWinner={grading?.actualWinnerId === teamB?.id}
+            isCorrectPick={grading?.status === "correct" && selectedWinnerId === teamB?.id}
+            isMissedPick={grading?.status === "incorrect" && selectedWinnerId === teamB?.id}
+            onSelect={() => teamB && onSelectWinner(game.id, teamB.id)}
+          />
+        </div>
       </div>
 
       {detailsOpen ? (
