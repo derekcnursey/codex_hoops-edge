@@ -49,6 +49,16 @@ const REGION_CONNECTOR_WIDTH = 22;
 const FIRST_FOUR_RAIL_WIDTH = 320;
 const REGION_LEFT_WIDTHS = [368, 344, 320, 308] as const;
 const REGION_RIGHT_WIDTHS = [308, 320, 344, 368] as const;
+const REGION_LANE_WIDTH =
+  FIRST_FOUR_RAIL_WIDTH +
+  10 +
+  REGION_LEFT_WIDTHS[0] +
+  REGION_CONNECTOR_WIDTH +
+  REGION_LEFT_WIDTHS[1] +
+  REGION_CONNECTOR_WIDTH +
+  REGION_LEFT_WIDTHS[2] +
+  REGION_CONNECTOR_WIDTH +
+  REGION_LEFT_WIDTHS[3];
 const CENTER_CARD_HEIGHT = 156;
 const CENTER_GAP = 118;
 const CENTER_CONNECTOR_WIDTH = 24;
@@ -57,6 +67,12 @@ const CENTER_CHAMPIONSHIP_WIDTH = 400;
 const CENTER_BOARD_WIDTH =
   CENTER_SEMIFINAL_WIDTH + CENTER_CONNECTOR_WIDTH + CENTER_CHAMPIONSHIP_WIDTH;
 const CENTER_SECTION_WIDTH = CENTER_BOARD_WIDTH + 24;
+const DESKTOP_BRACKET_GRID_GAP = 10;
+const DESKTOP_BRACKET_WIDTH =
+  REGION_LANE_WIDTH +
+  CENTER_SECTION_WIDTH +
+  REGION_LANE_WIDTH +
+  DESKTOP_BRACKET_GRID_GAP * 2;
 const FEEDER_TOP_ROW_OFFSET = -12;
 const FEEDER_BOTTOM_ROW_OFFSET = 28;
 const MATCHUP_API_VERSION = "2026-03-16-display-v2";
@@ -1614,11 +1630,11 @@ export default function BracketBuilder({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: `minmax(0, 1fr) ${CENTER_SECTION_WIDTH}px minmax(0, 1fr)`,
+              gridTemplateColumns: `${REGION_LANE_WIDTH}px ${CENTER_SECTION_WIDTH}px ${REGION_LANE_WIDTH}px`,
               gridTemplateRows: "auto auto",
-              gap: 10,
+              gap: DESKTOP_BRACKET_GRID_GAP,
               alignItems: "start",
-              minWidth: 3040 + (CENTER_SECTION_WIDTH - 624),
+              minWidth: DESKTOP_BRACKET_WIDTH,
               width: "max-content",
             }}
           >
