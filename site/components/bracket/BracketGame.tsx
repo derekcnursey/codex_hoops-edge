@@ -89,6 +89,7 @@ function TeamRow({
       ? "#93c5fd"
       : "#e2e8f0";
   const summary = favoriteSummary(team, prediction);
+  const summaryWidth = compact ? 92 : 100;
 
   return (
     <button
@@ -118,8 +119,7 @@ function TeamRow({
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: summary ? "minmax(0, 1fr) max-content" : "minmax(0, 1fr)",
+            display: "flex",
             alignItems: "baseline",
             gap: 8,
             minWidth: 0,
@@ -129,6 +129,7 @@ function TeamRow({
           <div
             style={{
               minWidth: 0,
+              flex: "1 1 auto",
               display: "flex",
               alignItems: "baseline",
               gap: 4,
@@ -170,20 +171,20 @@ function TeamRow({
               #{team.rank}
             </span>
           </div>
-          {summary ? (
-            <div
-              style={{
-                ...mono,
-                fontSize: compact ? 10 : 11,
-                fontWeight: 600,
-                textAlign: "right",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-              }}
-            >
-              {summary}
-            </div>
-          ) : null}
+          <div
+            style={{
+              ...mono,
+              fontSize: compact ? 10 : 11,
+              fontWeight: 600,
+              textAlign: "right",
+              whiteSpace: "nowrap",
+              flex: `0 0 ${summaryWidth}px`,
+              width: summaryWidth,
+              visibility: summary ? "visible" : "hidden",
+            }}
+          >
+            {summary ?? "0"}
+          </div>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 4, justifyContent: "flex-end" }}>
           {isSelected && !isCorrectPick && !isMissedPick && !compact ? (
