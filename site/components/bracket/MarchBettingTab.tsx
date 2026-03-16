@@ -17,6 +17,11 @@ function formatSpread(value: number): string {
   return value > 0 ? `+${value.toFixed(1)}` : value.toFixed(1);
 }
 
+function displayModelSpread(value: number | null | undefined): number | null {
+  const v = num(value);
+  return v == null ? null : -v;
+}
+
 function formatPct(value: number | null | undefined): string {
   if (value == null || Number.isNaN(value)) return "—";
   return `${(value * 100).toFixed(1)}%`;
@@ -70,7 +75,7 @@ function rowSortValue(game: MarchBettingGame, key: SortKey): string | number {
     case "book":
       return game.marketSpreadHome ?? -Infinity;
     case "model":
-      return game.displayModelSpreadHome ?? -Infinity;
+      return displayModelSpread(game.displayModelSpreadHome) ?? -Infinity;
     case "sigma":
       return game.predSigma ?? -Infinity;
     case "diff":
@@ -245,7 +250,7 @@ export default function MarchBettingTab({ games }: { games: MarchBettingGame[] }
             <div style={{ ...mono, fontSize: 12, color: "#64748b", marginBottom: 4 }}>March Betting</div>
             <div style={{ fontSize: 20, fontWeight: 700, color: "#0f172a" }}>Today-style opening-round board</div>
             <div style={{ fontSize: 13, color: "#64748b", marginTop: 4, maxWidth: 760 }}>
-              `MODEL` uses the NCAA display spread. `SIGMA` and `EDGE` are the raw model metrics from the same
+              `MODEL` uses the NCAA display spread in the same book-style sign convention as the Today page. `SIGMA` and `EDGE` are the raw model metrics from the same
               scheduled-game inference pass, not reconstructed estimates.
             </div>
           </div>
@@ -435,9 +440,15 @@ export default function MarchBettingTab({ games }: { games: MarchBettingGame[] }
                             minWidth: 150,
                           }}
                         >
-                          <div>{game.displayModelSpreadHome != null ? formatSpread(game.displayModelSpreadHome) : "—"}</div>
+                          <div>
+                            {displayModelSpread(game.displayModelSpreadHome) != null
+                              ? formatSpread(displayModelSpread(game.displayModelSpreadHome) as number)
+                              : "—"}
+                          </div>
                           <div style={{ fontSize: 10, color: "#64748b", fontWeight: 500, marginTop: 4 }}>
-                            raw {game.modelSpreadHome != null ? formatSpread(game.modelSpreadHome) : "—"}
+                            raw {displayModelSpread(game.modelSpreadHome) != null
+                              ? formatSpread(displayModelSpread(game.modelSpreadHome) as number)
+                              : "—"}
                           </div>
                         </td>
                         <td style={{ ...mono, padding: "10px 14px", textAlign: "center", fontSize: 13, color: "#64748b" }}>
