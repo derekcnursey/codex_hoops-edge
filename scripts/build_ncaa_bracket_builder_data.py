@@ -41,7 +41,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from scripts.build_rankings_json import _load_latest_ratings
 from scripts.rebuild_tourney_jsons import _predict_pairwise_probability
+from src import config, s3_reader
+from src.features import load_lines, load_research_lines
 from src.infer import load_regressor
+from src.line_selection import select_preferred_lines
+from src.tournament_adjustments import market_blended_display_margin
 from src.trainer import load_scaler, load_tree_regressor
 
 
@@ -457,6 +461,113 @@ def _build_field_payload(
     }
 
 
+def _round_from_game_notes(note: object) -> tuple[str | None, str | None]:
+    value = str(note or "").upper()
+    if "FIRST FOUR" in value:
+        return "first-four", "First Four"
+    if "1ST ROUND" in value:
+        return "round-of-64", "Round of 64"
+    return None, None
+
+
+def _preferred_ncaa_lines(season: int) -> pd.DataFrame:
+    live_lines = select_preferred_lines(load_lines(season))
+    research_lines = select_preferred_lines(load_research_lines(season))
+    combined = pd.concat([live_lines, research_lines], ignore_index=True, sort=False)
+    if combined.empty:
+        return combined
+
+    provider_rank = pd.Series(1, index=combined.index, dtype=int)
+    provider_rank.loc[combined["provider"].fillna("").eq("Hard Rock Bet")] = 0
+    provider_rank.loc[combined["provider"].fillna("").eq("consensus")] = 2
+    provider_rank.loc[combined["book_spread"].isna()] = 3
+    combined = combined.assign(_provider_rank=provider_rank)
+    combined = combined.sort_values(
+        ["gameId", "_provider_rank"],
+        ascending=[True, True],
+        kind="stable",
+    )
+    return combined.drop_duplicates("gameId", keep="first").drop(columns=["_provider_rank"])
+
+
+def _load_opening_round_market_lookup(season: int) -> dict[str, dict[str, Any]]:
+    games_table = s3_reader.read_silver_table(config.TABLE_FCT_GAMES, season=season)
+    if games_table.num_rows == 0:
+        return {}
+    games = games_table.to_pandas()
+    keep = [
+        c
+        for c in [
+            "gameId",
+            "homeTeamId",
+            "awayTeamId",
+            "homeTeam",
+            "awayTeam",
+            "gameNotes",
+            "tournament",
+        ]
+        if c in games.columns
+    ]
+    games = games[keep].drop_duplicates("gameId").copy()
+    games = games[games["tournament"].eq("NCAA")].copy()
+    if games.empty:
+        return {}
+
+    round_info = games["gameNotes"].map(_round_from_game_notes)
+    games["scheduled_round_id"] = round_info.map(lambda item: item[0])
+    games["scheduled_round_label"] = round_info.map(lambda item: item[1])
+    games = games[games["scheduled_round_id"].isin(["first-four", "round-of-64"])].copy()
+    if games.empty:
+        return {}
+
+    lines = _preferred_ncaa_lines(season)
+    if lines.empty:
+        return {}
+
+    merged = games.merge(
+        lines[
+            [
+                c
+                for c in [
+                    "gameId",
+                    "book_spread",
+                    "home_moneyline",
+                    "away_moneyline",
+                    "provider",
+                ]
+                if c in lines.columns
+            ]
+        ],
+        on="gameId",
+        how="left",
+    )
+    merged["book_spread"] = pd.to_numeric(merged["book_spread"], errors="coerce")
+    merged = merged.dropna(subset=["book_spread", "homeTeamId", "awayTeamId"]).copy()
+    if merged.empty:
+        return {}
+
+    lookup: dict[str, dict[str, Any]] = {}
+    for _, row in merged.iterrows():
+        home_id = int(row["homeTeamId"])
+        away_id = int(row["awayTeamId"])
+        team1_id, team2_id = sorted([home_id, away_id])
+        market_margin = -float(row["book_spread"]) if team1_id == home_id else float(row["book_spread"])
+        key = f"{team1_id}::{team2_id}"
+        lookup[key] = {
+            "scheduled_game_id": int(row["gameId"]),
+            "scheduled_round_id": row["scheduled_round_id"],
+            "scheduled_round_label": row["scheduled_round_label"],
+            "market_mu_team1_minus_team2": market_margin,
+            "market_spread_home": float(row["book_spread"]),
+            "market_home_team_id": home_id,
+            "market_away_team_id": away_id,
+            "market_home_moneyline": None if pd.isna(row.get("home_moneyline")) else float(row["home_moneyline"]),
+            "market_away_moneyline": None if pd.isna(row.get("away_moneyline")) else float(row["away_moneyline"]),
+            "market_line_source": row.get("provider"),
+        }
+    return lookup
+
+
 def _validate_field_payload(field: dict[str, Any]) -> None:
     if len(field["regions"]) != 4:
         raise ValueError(f"Expected 4 regions, found {len(field['regions'])}")
@@ -542,6 +653,7 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
         raise ValueError("Tree and sigma feature orders do not match")
 
     team_lookup = {int(row["team_id"]): row for _, row in merged.iterrows()}
+    opening_round_lines = _load_opening_round_market_lookup(season)
 
     predictions: dict[str, Any] = {}
     total_pairs = len(selected_ids) * (len(selected_ids) - 1) // 2
@@ -559,13 +671,32 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
             3,
             15,
         )
+        canonical_key = f"{team_a_id}::{team_b_id}"
+        line_info = opening_round_lines.get(canonical_key)
+        display_mu = float(mu)
+        if config.NCAA_TOURNAMENT_MARKET_BLEND_ENABLED and line_info is not None:
+            display_mu = market_blended_display_margin(
+                float(mu),
+                float(line_info["market_mu_team1_minus_team2"]),
+            )
         predictions[f"{team_a_id}::{team_b_id}"] = {
             "team1_id": int(team_a_id),
             "team1_name": str(team_a["team"]),
             "team2_id": int(team_b_id),
             "team2_name": str(team_b["team"]),
             "mu_team1_minus_team2": float(mu),
+            "display_mu_team1_minus_team2": display_mu,
             "win_prob_team1": float(win_prob_a),
+            "scheduled_game_id": None if line_info is None else line_info["scheduled_game_id"],
+            "scheduled_round_id": None if line_info is None else line_info["scheduled_round_id"],
+            "scheduled_round_label": None if line_info is None else line_info["scheduled_round_label"],
+            "market_mu_team1_minus_team2": None if line_info is None else line_info["market_mu_team1_minus_team2"],
+            "market_spread_home": None if line_info is None else line_info["market_spread_home"],
+            "market_home_team_id": None if line_info is None else line_info["market_home_team_id"],
+            "market_away_team_id": None if line_info is None else line_info["market_away_team_id"],
+            "market_home_moneyline": None if line_info is None else line_info["market_home_moneyline"],
+            "market_away_moneyline": None if line_info is None else line_info["market_away_moneyline"],
+            "market_line_source": None if line_info is None else line_info["market_line_source"],
         }
         if pair_index % 250 == 0 or pair_index == total_pairs:
             print(f"Computed {pair_index}/{total_pairs} matchup predictions", flush=True)
@@ -577,7 +708,8 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
         "source": "production_matchup_model",
         "note": (
             "Neutral-site pairwise predictions generated from the current promoted "
-            "Hoops Edge production mean model plus sigma model and site ML correction."
+            "Hoops Edge production mean model plus sigma model and site ML correction. "
+            "Opening-round NCAA games also carry optional display-spread and market-line metadata."
         ),
         "predictions": predictions,
     }

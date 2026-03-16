@@ -14,10 +14,17 @@ import torch
 
 from . import config
 from .architecture import MLPClassifier, MLPRegressor, MLPRegressorSplit
-from .efficiency_blend import blend_enabled, gold_weight_for_start_dates
+from .efficiency_blend import blend_enabled
 from .line_selection import select_preferred_lines
 from .sigma_calibration import apply_sigma_transform
+from .tournament_adjustments import (
+    add_tournament_market_display_columns,
+    tournament_primary_weights,
+)
 from .trainer import load_scaler, load_tree_regressor
+
+
+_TORCH_INFERENCE_THREADS_CONFIGURED = False
 
 
 # ── Betting math helpers ──────────────────────────────────────────────
@@ -251,6 +258,20 @@ def _postprocess_sigma(sigma: torch.Tensor) -> torch.Tensor:
     return torch.from_numpy(sigma_np).to(sigma.device)
 
 
+def _configure_torch_inference_threads() -> None:
+    """Cap CPU inference threading to avoid libomp stalls on small live slates."""
+    global _TORCH_INFERENCE_THREADS_CONFIGURED
+    if _TORCH_INFERENCE_THREADS_CONFIGURED:
+        return
+    torch.set_num_threads(1)
+    try:
+        torch.set_num_interop_threads(1)
+    except RuntimeError:
+        # Safe to ignore if PyTorch has already initialized the inter-op pool.
+        pass
+    _TORCH_INFERENCE_THREADS_CONFIGURED = True
+
+
 @torch.no_grad()
 def predict(
     features_df: pd.DataFrame,
@@ -266,6 +287,7 @@ def predict(
     Returns:
         DataFrame with predictions: mu, sigma, home_win_prob, plus edge metrics.
     """
+    _configure_torch_inference_threads()
     scaler = load_scaler()
     mu_regressor, mu_feature_order, mu_model_type = load_mu_regressor()
     regressor, _, reg_feature_order, sigma_param = load_regressor()
@@ -322,7 +344,7 @@ def predict(
                 sec_regressor,
                 sec_model_type,
             )
-            gold_w = gold_weight_for_start_dates(features_df["startDate"])
+            gold_w = tournament_primary_weights(features_df)
             mu = gold_w * mu + (1.0 - gold_w) * mu_torvik
 
     # MLP regressor remains the uncertainty model for sigma.
@@ -387,6 +409,9 @@ def predict(
     meta_cols.append("startDate")
     if "neutralSite" in features_df.columns:
         meta_cols.append("neutralSite")
+    for optional_col in ["gameType", "tournament", "conferenceGame"]:
+        if optional_col in features_df.columns:
+            meta_cols.append(optional_col)
     out = features_df[meta_cols].copy()
     if "neutralSite" in out.columns:
         out = out.rename(columns={"neutralSite": "neutral_site"})
@@ -433,7 +458,7 @@ def predict(
             out["pick_ev_per_1"] = out["pick_cover_prob"] * pick_profit - (1.0 - out["pick_cover_prob"])
             out["pick_fair_odds"] = prob_to_american(out["pick_cover_prob"].values)
 
-    return out
+    return add_tournament_market_display_columns(out)
 
 
 def _slugify(text: str) -> str:
@@ -470,6 +495,11 @@ _SITE_FIELD_MAP = {
     "pick_spread_odds": "pick_spread_odds",
     "pick_fair_odds": "pick_fair_odds",
     "startDate": "start_time",
+}
+
+_SITE_DISPLAY_OVERRIDES = {
+    "display_predicted_spread": "model_mu_home",
+    "display_edge_home_points": "edge_home_points",
 }
 
 
@@ -520,12 +550,21 @@ def save_predictions(preds: pd.DataFrame, game_date: str | None = None) -> tuple
     preds.to_csv(csv_path, index=False)
     preds.to_csv(dated_csv_path, index=False)
 
+    site_field_map = dict(_SITE_FIELD_MAP)
+    if config.NCAA_TOURNAMENT_DISPLAY_USE_POSTPROCESS:
+        for src_col, dst_col in _SITE_DISPLAY_OVERRIDES.items():
+            if src_col in preds.columns:
+                for existing_src, mapped in list(site_field_map.items()):
+                    if mapped == dst_col:
+                        del site_field_map[existing_src]
+                site_field_map[src_col] = dst_col
+
     # Site-compatible JSON (replaces csv_to_json.py pipeline)
     config.SITE_DATA_DIR.mkdir(parents=True, exist_ok=True)
     site_games = []
     for rec in records:
         game = {}
-        for src_col, dst_col in _SITE_FIELD_MAP.items():
+        for src_col, dst_col in site_field_map.items():
             if src_col in rec:
                 game[dst_col] = rec[src_col]
         # Generate stable game_id from date + team names

@@ -4,24 +4,115 @@ export function canonicalMatchupKey(teamAId: number, teamBId: number): string {
   return teamAId < teamBId ? `${teamAId}::${teamBId}` : `${teamBId}::${teamAId}`;
 }
 
-export function flipPrediction(prediction: MatchupPrediction): MatchupPrediction {
+function favoredFromMargin(
+  marginForA: number | null | undefined,
+  teamAId: number,
+  teamAName: string,
+  teamBId: number,
+  teamBName: string,
+): {
+  favoriteId: number | null;
+  favoriteName: string | null;
+  spread: number | null;
+} {
+  if (marginForA == null || Number.isNaN(marginForA)) {
+    return { favoriteId: null, favoriteName: null, spread: null };
+  }
+  if (marginForA >= 0) {
+    return { favoriteId: teamAId, favoriteName: teamAName, spread: Math.abs(marginForA) };
+  }
+  return { favoriteId: teamBId, favoriteName: teamBName, spread: Math.abs(marginForA) };
+}
+
+function buildPredictionRecord(base: {
+  teamAId: number;
+  teamAName: string;
+  teamBId: number;
+  teamBName: string;
+  winProbA: number;
+  rawMarginA: number;
+  displayMarginA: number;
+  marketMarginA?: number | null;
+  marketLineSource?: string | null;
+  scheduledGameId?: number | null;
+  scheduledRoundId?: MatchupPrediction["scheduledRoundId"];
+  scheduledRoundLabel?: string | null;
+}): MatchupPrediction {
+  const rawFavorite = favoredFromMargin(
+    base.rawMarginA,
+    base.teamAId,
+    base.teamAName,
+    base.teamBId,
+    base.teamBName,
+  );
+  const displayFavorite = favoredFromMargin(
+    base.displayMarginA,
+    base.teamAId,
+    base.teamAName,
+    base.teamBId,
+    base.teamBName,
+  );
+  const marketFavorite = favoredFromMargin(
+    base.marketMarginA,
+    base.teamAId,
+    base.teamAName,
+    base.teamBId,
+    base.teamBName,
+  );
+  const modelWinnerId = rawFavorite.favoriteId ?? base.teamAId;
+  const modelWinnerName = rawFavorite.favoriteName ?? base.teamAName;
+
   return {
+    teamAId: base.teamAId,
+    teamAName: base.teamAName,
+    teamBId: base.teamBId,
+    teamBName: base.teamBName,
+    favoredTeamId: modelWinnerId,
+    favoredTeamName: modelWinnerName,
+    underdogTeamId: modelWinnerId === base.teamAId ? base.teamBId : base.teamAId,
+    underdogTeamName: modelWinnerId === base.teamAId ? base.teamBName : base.teamAName,
+    winProbA: base.winProbA,
+    winProbB: 1 - base.winProbA,
+    projectedSpread: rawFavorite.spread ?? 0,
+    rawProjectedSpread: rawFavorite.spread,
+    displayProjectedSpread: displayFavorite.spread,
+    rawMarginA: base.rawMarginA,
+    displayMarginA: base.displayMarginA,
+    displayFavoredTeamId: displayFavorite.favoriteId,
+    displayFavoredTeamName: displayFavorite.favoriteName,
+    marketMarginA: base.marketMarginA ?? null,
+    marketProjectedSpread: marketFavorite.spread,
+    marketFavoredTeamId: marketFavorite.favoriteId,
+    marketFavoredTeamName: marketFavorite.favoriteName,
+    marketLineSource: base.marketLineSource ?? null,
+    scheduledGameId: base.scheduledGameId ?? null,
+    scheduledRoundId: base.scheduledRoundId ?? null,
+    scheduledRoundLabel: base.scheduledRoundLabel ?? null,
+    modelWinnerId,
+    modelWinnerName,
+    projectedScoreA: null,
+    projectedScoreB: null,
+  };
+}
+
+export function flipPrediction(prediction: MatchupPrediction): MatchupPrediction {
+  return buildPredictionRecord({
     teamAId: prediction.teamBId,
     teamAName: prediction.teamBName,
     teamBId: prediction.teamAId,
     teamBName: prediction.teamAName,
-    favoredTeamId: prediction.favoredTeamId,
-    favoredTeamName: prediction.favoredTeamName,
-    underdogTeamId: prediction.underdogTeamId,
-    underdogTeamName: prediction.underdogTeamName,
     winProbA: prediction.winProbB,
-    winProbB: prediction.winProbA,
-    projectedSpread: prediction.projectedSpread,
-    modelWinnerId: prediction.modelWinnerId,
-    modelWinnerName: prediction.modelWinnerName,
-    projectedScoreA: prediction.projectedScoreB ?? null,
-    projectedScoreB: prediction.projectedScoreA ?? null,
-  };
+    rawMarginA: -(prediction.rawMarginA ?? 0),
+    displayMarginA: -(prediction.displayMarginA ?? prediction.rawMarginA ?? 0),
+    marketMarginA:
+      prediction.marketMarginA == null || Number.isNaN(prediction.marketMarginA)
+        ? null
+        : -prediction.marketMarginA,
+    marketLineSource: prediction.marketLineSource ?? null,
+    scheduledGameId: prediction.scheduledGameId ?? null,
+    scheduledRoundId: prediction.scheduledRoundId ?? null,
+    scheduledRoundLabel: prediction.scheduledRoundLabel ?? null,
+  });
 }
 
 export function orientPrediction(
@@ -47,31 +138,28 @@ export function buildPredictionFromCacheEntry(
   teamBId: number,
 ): MatchupPrediction {
   const directOrder = entry.team1_id === teamAId && entry.team2_id === teamBId;
-  const muForTeamA = directOrder ? entry.mu_team1_minus_team2 : -entry.mu_team1_minus_team2;
+  const rawMarginA = directOrder ? entry.mu_team1_minus_team2 : -entry.mu_team1_minus_team2;
+  const displayMu = entry.display_mu_team1_minus_team2 ?? entry.mu_team1_minus_team2;
+  const displayMarginA = directOrder ? displayMu : -displayMu;
+  const marketMu = entry.market_mu_team1_minus_team2;
+  const marketMarginA =
+    marketMu == null || Number.isNaN(marketMu) ? null : directOrder ? marketMu : -marketMu;
   const winProbA = directOrder ? entry.win_prob_team1 : 1 - entry.win_prob_team1;
-  const winProbB = 1 - winProbA;
   const teamAName = directOrder ? entry.team1_name : entry.team2_name;
   const teamBName = directOrder ? entry.team2_name : entry.team1_name;
-  const favoredTeamId = muForTeamA >= 0 ? teamAId : teamBId;
-  const favoredTeamName = favoredTeamId === teamAId ? teamAName : teamBName;
-  const underdogTeamId = favoredTeamId === teamAId ? teamBId : teamAId;
-  const underdogTeamName = underdogTeamId === teamAId ? teamAName : teamBName;
 
-  return {
+  return buildPredictionRecord({
     teamAId,
     teamAName,
     teamBId,
     teamBName,
-    favoredTeamId,
-    favoredTeamName,
-    underdogTeamId,
-    underdogTeamName,
     winProbA,
-    winProbB,
-    projectedSpread: Math.abs(muForTeamA),
-    modelWinnerId: favoredTeamId,
-    modelWinnerName: favoredTeamName,
-    projectedScoreA: null,
-    projectedScoreB: null,
-  };
+    rawMarginA,
+    displayMarginA,
+    marketMarginA,
+    marketLineSource: entry.market_line_source ?? null,
+    scheduledGameId: entry.scheduled_game_id ?? null,
+    scheduledRoundId: entry.scheduled_round_id ?? null,
+    scheduledRoundLabel: entry.scheduled_round_label ?? null,
+  });
 }

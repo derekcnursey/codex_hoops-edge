@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 
 from . import config
-from .efficiency_blend import blend_enabled, gold_weight_for_start_dates
+from .efficiency_blend import blend_enabled
 from .features import (
     build_features,
     get_feature_matrix,
@@ -28,6 +28,7 @@ from .features import (
 )
 from .live_audits import audit_hrb_lines, audit_live_feature_drift, audit_ratings_asof
 from .line_selection import select_preferred_lines
+from .tournament_adjustments import needs_secondary_mu_features
 from .trainer import load_scaler
 
 _ET = ZoneInfo("America/New_York")
@@ -309,7 +310,7 @@ def _build_secondary_mu_features_if_needed(
         return None
     if not blend_enabled() or primary_df.empty:
         return None
-    if float(gold_weight_for_start_dates(primary_df["startDate"]).min()) >= 1.0:
+    if not needs_secondary_mu_features(primary_df):
         return None
     secondary_df = build_features(
         season,

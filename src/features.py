@@ -66,6 +66,9 @@ def load_games(season: int) -> pd.DataFrame:
         ("awayScore", ["awayScore", "awayPoints"]),
         ("neutralSite", ["neutralSite", "neutralsite"]),
         ("startDate", ["startDate", "startTime", "date"]),
+        ("gameType", ["gameType"]),
+        ("tournament", ["tournament"]),
+        ("conferenceGame", ["conferenceGame"]),
     ]:
         for cand in candidates:
             if cand in df.columns:
@@ -1054,6 +1057,10 @@ def build_features(
         feat["startDate"] = game.get("startDate")
         feat["homeScore"] = game.get("homeScore")
         feat["awayScore"] = game.get("awayScore")
+        feat["neutralSite"] = game.get("neutralSite")
+        feat["gameType"] = game.get("gameType")
+        feat["tournament"] = game.get("tournament")
+        feat["conferenceGame"] = game.get("conferenceGame")
 
         records.append(feat)
 

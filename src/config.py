@@ -53,10 +53,25 @@ NO_GARBAGE = True
 
 # Efficiency source: "gold" (gold-layer adj efficiencies) or "torvik" (Torvik daily ratings)
 EFFICIENCY_SOURCE = "gold"
-PRODUCTION_GOLD_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage_priorreg_k5_v1"
+PRODUCTION_GOLD_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage_softkeep25_priorreg_k5_v1"
 PRODUCTION_MU_BLEND_ENABLED = True
 PRODUCTION_MU_BLEND_START_DAY = 0   # Nov 1
 PRODUCTION_MU_BLEND_END_DAY = 75    # Jan 15
+NCAA_TOURNAMENT_TORVIK_OVERRIDE_ENABLED = (
+    os.getenv("HOOPS_NCAA_TOURNAMENT_TORVIK_OVERRIDE_ENABLED", "0") == "1"
+)
+NCAA_TOURNAMENT_PRIMARY_WEIGHT = float(
+    os.getenv("HOOPS_NCAA_TOURNAMENT_PRIMARY_WEIGHT", "0.35")
+)
+NCAA_TOURNAMENT_MARKET_BLEND_ENABLED = (
+    os.getenv("HOOPS_NCAA_TOURNAMENT_MARKET_BLEND_ENABLED", "0") == "1"
+)
+NCAA_TOURNAMENT_MARKET_WEIGHT = float(
+    os.getenv("HOOPS_NCAA_TOURNAMENT_MARKET_WEIGHT", "0.55")
+)
+NCAA_TOURNAMENT_DISPLAY_USE_POSTPROCESS = (
+    os.getenv("HOOPS_NCAA_TOURNAMENT_DISPLAY_USE_POSTPROCESS", "0") == "1"
+)
 
 # Seasons to exclude from training and evaluation (e.g. COVID-shortened 2021)
 EXCLUDE_SEASONS: list[int] = [2021]
@@ -86,6 +101,14 @@ FEATURE_ORDER: list[str] = json.loads(
     (ARTIFACTS_DIR / "feature_order.json").read_text()
 )
 assert len(FEATURE_ORDER) == 53, f"Expected 53 features, got {len(FEATURE_ORDER)}"
+FEATURE_ORDER_NO_FORM_V1: list[str] = [
+    feature
+    for feature in FEATURE_ORDER
+    if feature not in {"home_form_delta", "away_form_delta"}
+]
+assert len(FEATURE_ORDER_NO_FORM_V1) == 51, (
+    f"Expected 51 no-form-v1 features, got {len(FEATURE_ORDER_NO_FORM_V1)}"
+)
 FEATURE_ORDER_SWAP_SAFE_V2: list[str] = json.loads(
     (ARTIFACTS_DIR / "feature_order_swap_safe_v2.json").read_text()
 )

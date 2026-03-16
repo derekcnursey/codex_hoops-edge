@@ -24,6 +24,32 @@ function metricGrid(team: BracketTeam) {
   ];
 }
 
+function lineLabel(teamName: string | null | undefined, spread: number | null | undefined): string | null {
+  if (!teamName || spread == null) return null;
+  return `${displayTeam(teamName)} -${spread.toFixed(1)}`;
+}
+
+function detailBox(label: string, value: string | null, tone: "slate" | "amber" | "blue" = "slate") {
+  const palette = {
+    slate: { border: "#dbe4ef", background: "#ffffff", label: "#64748b", value: "#0f172a" },
+    amber: { border: "#fde68a", background: "#fffbeb", label: "#b45309", value: "#92400e" },
+    blue: { border: "#bfdbfe", background: "#eff6ff", label: "#1d4ed8", value: "#1e3a8a" },
+  }[tone];
+  return (
+    <div
+      style={{
+        borderRadius: 8,
+        border: `1px solid ${palette.border}`,
+        background: palette.background,
+        padding: "8px 10px",
+      }}
+    >
+      <div style={{ ...mono, fontSize: 10, color: palette.label, marginBottom: 3 }}>{label}</div>
+      <div style={{ ...mono, fontSize: 12, color: palette.value, fontWeight: 600 }}>{value ?? "--"}</div>
+    </div>
+  );
+}
+
 function statusPill(label: string, tone: "blue" | "green" | "amber" | "red" | "slate") {
   const toneMap = {
     blue: { background: "#dbeafe", color: "#1d4ed8" },
@@ -76,6 +102,24 @@ export default function MatchupPredictionCard({
   teamB?: BracketTeam | null;
 }) {
   const showLoadingState = Boolean(loading && !prediction);
+  const displayLine = prediction
+    ? lineLabel(
+        prediction.displayFavoredTeamName ?? prediction.favoredTeamName,
+        prediction.displayProjectedSpread ?? prediction.projectedSpread,
+      )
+    : null;
+  const marketLine = prediction
+    ? lineLabel(prediction.marketFavoredTeamName, prediction.marketProjectedSpread)
+    : null;
+  const rawModelLine = prediction
+    ? lineLabel(prediction.favoredTeamName, prediction.rawProjectedSpread ?? prediction.projectedSpread)
+    : null;
+  const displaySummaryLine = prediction
+    ? lineLabel(
+        prediction.displayFavoredTeamName ?? prediction.favoredTeamName,
+        prediction.displayProjectedSpread ?? prediction.projectedSpread,
+      )
+    : null;
   const teams = [
     prediction && teamA
       ? {
@@ -138,7 +182,8 @@ export default function MatchupPredictionCard({
         <>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
             {statusPill(`Model: ${displayTeam(prediction.modelWinnerName)}`, "blue")}
-            {statusPill(`${displayTeam(prediction.favoredTeamName)} -${prediction.projectedSpread.toFixed(1)}`, "slate")}
+            {displayLine ? statusPill(`Display: ${displayLine}`, "slate") : null}
+            {marketLine ? statusPill(`Market: ${marketLine}`, "amber") : null}
             {comparison?.selectedWinnerName
               ? statusPill(comparison.agreesWithModel ? "Agree" : "Fade", comparison.agreesWithModel ? "green" : "amber")
               : null}
@@ -148,6 +193,19 @@ export default function MatchupPredictionCard({
                   grading.status === "correct" ? "green" : grading.status === "incorrect" ? "red" : "slate",
                 )
               : null}
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+              gap: 8,
+              marginBottom: 12,
+            }}
+          >
+            {detailBox("Display spread", displaySummaryLine, "blue")}
+            {detailBox("Raw model spread", rawModelLine, "slate")}
+            {detailBox("Market line", marketLine, "amber")}
           </div>
 
           <div
@@ -231,6 +289,8 @@ export default function MatchupPredictionCard({
           >
             <span>Favorite {displayTeam(prediction.favoredTeamName)}</span>
             <span>Underdog {displayTeam(prediction.underdogTeamName)}</span>
+            {prediction.scheduledRoundLabel ? <span>{prediction.scheduledRoundLabel}</span> : null}
+            {prediction.marketLineSource ? <span>Line source {prediction.marketLineSource}</span> : null}
             {prediction.projectedScoreA != null && prediction.projectedScoreB != null ? (
               <span>
                 Score {displayTeam(prediction.teamAName)} {prediction.projectedScoreA.toFixed(0)} - {prediction.projectedScoreB.toFixed(0)} {displayTeam(prediction.teamBName)}

@@ -20,9 +20,10 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 
 from src import config
-from src.efficiency_blend import blend_enabled, gold_weight_for_start_dates
+from src.efficiency_blend import blend_enabled
 from src.features import build_features, load_research_lines
 from src.infer import predict, save_predictions
+from src.tournament_adjustments import needs_secondary_mu_features
 
 
 def _default_current_season() -> int:
@@ -104,7 +105,7 @@ def _build_secondary_season_features_if_needed(
         return None, None
     if not blend_enabled() or features_df.empty:
         return None, None
-    if float(gold_weight_for_start_dates(features_df["startDate"]).min()) >= 1.0:
+    if not needs_secondary_mu_features(features_df):
         return None, None
     secondary = build_features(
         season,

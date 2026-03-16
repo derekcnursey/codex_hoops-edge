@@ -51,7 +51,18 @@ export type MatchupPredictionCacheEntry = {
   team2_id: number;
   team2_name: string;
   mu_team1_minus_team2: number;
+  display_mu_team1_minus_team2?: number | null;
   win_prob_team1: number;
+  scheduled_game_id?: number | null;
+  scheduled_round_id?: BracketRoundId | null;
+  scheduled_round_label?: string | null;
+  market_mu_team1_minus_team2?: number | null;
+  market_spread_home?: number | null;
+  market_home_team_id?: number | null;
+  market_away_team_id?: number | null;
+  market_home_moneyline?: number | null;
+  market_away_moneyline?: number | null;
+  market_line_source?: string | null;
 };
 
 export type MatchupPredictionCache = {
@@ -144,6 +155,20 @@ export type MatchupPrediction = {
   winProbA: number;
   winProbB: number;
   projectedSpread: number;
+  rawProjectedSpread?: number | null;
+  displayProjectedSpread?: number | null;
+  rawMarginA?: number | null;
+  displayMarginA?: number | null;
+  displayFavoredTeamId?: number | null;
+  displayFavoredTeamName?: string | null;
+  marketMarginA?: number | null;
+  marketProjectedSpread?: number | null;
+  marketFavoredTeamId?: number | null;
+  marketFavoredTeamName?: string | null;
+  marketLineSource?: string | null;
+  scheduledGameId?: number | null;
+  scheduledRoundId?: BracketRoundId | null;
+  scheduledRoundLabel?: string | null;
   modelWinnerId: number;
   modelWinnerName: string;
   projectedScoreA?: number | null;

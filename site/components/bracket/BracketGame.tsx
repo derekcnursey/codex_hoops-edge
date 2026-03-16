@@ -53,6 +53,8 @@ function TeamRow({
   isMissedPick: boolean;
   onSelect: () => void;
 }) {
+  const displayFavoriteId = prediction?.displayFavoredTeamId ?? prediction?.favoredTeamId;
+  const displaySpread = prediction?.displayProjectedSpread ?? prediction?.projectedSpread;
   if (!team) {
     return (
       <div
@@ -146,7 +148,7 @@ function TeamRow({
             <span style={{ ...mono, fontSize: compact ? 10 : 11, opacity: isSelected ? 0.82 : 0.95, flexShrink: 0 }}>
               #{team.rank}
             </span>
-            {prediction && isFavorite ? (
+            {prediction && displayFavoriteId === team.id && displaySpread != null ? (
               <span
                 style={{
                   ...mono,
@@ -157,8 +159,8 @@ function TeamRow({
                   flexShrink: 0,
                 }}
               >
-                -{prediction.projectedSpread.toFixed(1)} •{" "}
-                {team.id === prediction.teamAId ? mlPct(prediction.winProbA) : mlPct(prediction.winProbB)}
+                {team.id === prediction.teamAId ? mlPct(prediction.winProbA) : mlPct(prediction.winProbB)} •{" "}
+                -{displaySpread.toFixed(1)}
               </span>
             ) : null}
           </div>
@@ -381,6 +383,20 @@ export default function BracketGame({
           />
         </div>
       </div>
+
+      {prediction?.marketProjectedSpread != null && prediction.marketFavoredTeamName ? (
+        <div
+          style={{
+            ...mono,
+            fontSize: compact ? 9 : 10,
+            color: "#64748b",
+            marginTop: 8,
+          }}
+        >
+          Market {displayTeam(prediction.marketFavoredTeamName)} -{prediction.marketProjectedSpread.toFixed(1)}
+          {prediction.marketLineSource ? ` • ${prediction.marketLineSource}` : ""}
+        </div>
+      ) : null}
 
       {detailsOpen ? (
         <div
