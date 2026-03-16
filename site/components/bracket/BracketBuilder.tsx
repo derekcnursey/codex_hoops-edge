@@ -49,9 +49,7 @@ const REGION_CONNECTOR_WIDTH = 22;
 const FIRST_FOUR_RAIL_WIDTH = 320;
 const REGION_LEFT_WIDTHS = [368, 344, 320, 308] as const;
 const REGION_RIGHT_WIDTHS = [308, 320, 344, 368] as const;
-const REGION_LANE_WIDTH =
-  FIRST_FOUR_RAIL_WIDTH +
-  10 +
+const REGION_MAIN_BOARD_WIDTH =
   REGION_LEFT_WIDTHS[0] +
   REGION_CONNECTOR_WIDTH +
   REGION_LEFT_WIDTHS[1] +
@@ -59,6 +57,10 @@ const REGION_LANE_WIDTH =
   REGION_LEFT_WIDTHS[2] +
   REGION_CONNECTOR_WIDTH +
   REGION_LEFT_WIDTHS[3];
+const REGION_LANE_WIDTH =
+  FIRST_FOUR_RAIL_WIDTH +
+  10 +
+  REGION_MAIN_BOARD_WIDTH;
 const CENTER_CARD_HEIGHT = 156;
 const CENTER_GAP = 118;
 const CENTER_CONNECTOR_WIDTH = 24;
@@ -920,11 +922,15 @@ export default function BracketBuilder({
       return (
         <section
           style={{
+            position: "relative",
             borderRadius: 14,
             border: "1px solid #e2e8f0",
             background: "#f8fafc",
             padding: 10,
             boxShadow: "inset 0 1px 0 rgba(255,255,255,0.7)",
+            width: REGION_MAIN_BOARD_WIDTH,
+            justifySelf: side === "left" ? "end" : "start",
+            overflow: "visible",
           }}
         >
           <div
@@ -952,32 +958,33 @@ export default function BracketBuilder({
             </span>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                side === "left"
-                  ? `${firstFourGames.length ? `${FIRST_FOUR_RAIL_WIDTH}px 10px ` : ""}${REGION_LEFT_WIDTHS[0]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[1]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[2]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[3]}px`
-                  : `${REGION_RIGHT_WIDTHS[0]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[1]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[2]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[3]}px${firstFourGames.length ? ` 10px ${FIRST_FOUR_RAIL_WIDTH}px` : ""}`,
-              alignItems: "start",
-              justifyContent: side === "left" ? "start" : "end",
-            }}
-          >
-            {side === "left" && firstFourGames.length ? (
-              <>
+          <div style={{ position: "relative", width: REGION_MAIN_BOARD_WIDTH, height: boardHeight }}>
+            {firstFourGames.length ? (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  [side === "left" ? "left" : "right"]: -(FIRST_FOUR_RAIL_WIDTH + 10),
+                }}
+              >
                 {renderFirstFourRail(firstFourGames, roundOf64Games, side, boardHeight)}
-                <div />
-              </>
+              </div>
             ) : null}
-            {columns.map((column, index) => (
-              <div key={`${regionName}-${side}-desktop-${index}`}>{column}</div>
-            ))}
-            {side === "right" && firstFourGames.length ? (
-              <>
-                <div />
-                {renderFirstFourRail(firstFourGames, roundOf64Games, side, boardHeight)}
-              </>
-            ) : null}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns:
+                  side === "left"
+                    ? `${REGION_LEFT_WIDTHS[0]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[1]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[2]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_LEFT_WIDTHS[3]}px`
+                    : `${REGION_RIGHT_WIDTHS[0]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[1]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[2]}px ${REGION_CONNECTOR_WIDTH}px ${REGION_RIGHT_WIDTHS[3]}px`,
+                alignItems: "start",
+                justifyContent: side === "left" ? "start" : "end",
+              }}
+            >
+              {columns.map((column, index) => (
+                <div key={`${regionName}-${side}-desktop-${index}`}>{column}</div>
+              ))}
+            </div>
           </div>
         </section>
       );
