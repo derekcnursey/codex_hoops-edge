@@ -1,6 +1,7 @@
 import { CSSProperties } from "react";
 import { displayTeam } from "../../lib/data";
 import { GameComparison } from "../../lib/bracket/comparison";
+import { getDisplayFavoriteSummary } from "../../lib/bracket/predictions";
 import { BracketTeam, GradedGameResult, MatchupPrediction } from "../../lib/bracket/types";
 
 const mono: CSSProperties = {
@@ -102,11 +103,9 @@ export default function MatchupPredictionCard({
   teamB?: BracketTeam | null;
 }) {
   const showLoadingState = Boolean(loading && !prediction);
+  const displaySummary = prediction ? getDisplayFavoriteSummary(prediction) : null;
   const displayLine = prediction
-    ? lineLabel(
-        prediction.displayFavoredTeamName ?? prediction.favoredTeamName,
-        prediction.displayProjectedSpread ?? prediction.projectedSpread,
-      )
+    ? lineLabel(displaySummary?.favoriteTeamName, displaySummary?.spread)
     : null;
   const marketLine = prediction
     ? lineLabel(prediction.marketFavoredTeamName, prediction.marketProjectedSpread)
@@ -115,10 +114,7 @@ export default function MatchupPredictionCard({
     ? lineLabel(prediction.favoredTeamName, prediction.rawProjectedSpread ?? prediction.projectedSpread)
     : null;
   const displaySummaryLine = prediction
-    ? lineLabel(
-        prediction.displayFavoredTeamName ?? prediction.favoredTeamName,
-        prediction.displayProjectedSpread ?? prediction.projectedSpread,
-      )
+    ? lineLabel(displaySummary?.favoriteTeamName, displaySummary?.spread)
     : null;
   const teams = [
     prediction && teamA
@@ -127,7 +123,7 @@ export default function MatchupPredictionCard({
           team: teamA,
           winProb: prediction.displayWinProbA ?? prediction.winProbA,
           rawWinProb: prediction.winProbA,
-          isFavorite: (prediction.displayFavoredTeamId ?? prediction.favoredTeamId) === teamA.id,
+          isFavorite: displaySummary?.favoriteTeamId === teamA.id,
           isSelected: selectedWinnerId === teamA.id,
           isActualWinner: grading?.actualWinnerId === teamA.id,
         }
@@ -138,7 +134,7 @@ export default function MatchupPredictionCard({
           team: teamB,
           winProb: prediction.displayWinProbB ?? prediction.winProbB,
           rawWinProb: prediction.winProbB,
-          isFavorite: (prediction.displayFavoredTeamId ?? prediction.favoredTeamId) === teamB.id,
+          isFavorite: displaySummary?.favoriteTeamId === teamB.id,
           isSelected: selectedWinnerId === teamB.id,
           isActualWinner: grading?.actualWinnerId === teamB.id,
         }

@@ -1,5 +1,10 @@
 import { buildNcaaBracketGames, getBracketTeams } from "./ncaaBracket";
-import { buildPredictionFromCacheEntry, canonicalMatchupKey, canonicalizePrediction } from "./predictions";
+import {
+  buildPredictionFromCacheEntry,
+  canonicalMatchupKey,
+  canonicalizePrediction,
+  getDisplayFavoriteSummary,
+} from "./predictions";
 import {
   BracketSource,
   BracketTeam,
@@ -43,12 +48,10 @@ export function buildScheduledNcaaMarchData(
     const prediction = buildPredictionFromCacheEntry(entry, teamA.id, teamB.id);
     initialPredictionCache[matchupKey] = canonicalizePrediction(prediction);
 
-    const displayFavoredTeamId = prediction.displayFavoredTeamId ?? prediction.favoredTeamId;
-    const displayFavoredTeamName = prediction.displayFavoredTeamName ?? prediction.favoredTeamName;
-    const favoriteWinProb =
-      displayFavoredTeamId === teamA.id
-        ? (prediction.displayWinProbA ?? prediction.winProbA)
-        : (prediction.displayWinProbB ?? prediction.winProbB);
+    const displaySummary = getDisplayFavoriteSummary(prediction);
+    const displayFavoredTeamId = displaySummary.favoriteTeamId;
+    const displayFavoredTeamName = displaySummary.favoriteTeamName;
+    const favoriteWinProb = displaySummary.favoriteWinProb;
     const rawDisplaySpreadHome =
       prediction.modelSpreadHome == null ? null : -prediction.modelSpreadHome;
     const displayDisplaySpreadHome =
@@ -62,8 +65,8 @@ export function buildScheduledNcaaMarchData(
         ? Math.abs(displayDisplaySpreadHome - prediction.marketSpreadHome)
         : null;
     const spreadDiffAbs =
-      prediction.displayProjectedSpread != null && prediction.marketProjectedSpread != null
-        ? Math.abs(prediction.displayProjectedSpread - prediction.marketProjectedSpread)
+      prediction.marketProjectedSpread != null
+        ? Math.abs(displaySummary.spread - prediction.marketProjectedSpread)
         : null;
 
     marchGames.push({
@@ -87,7 +90,7 @@ export function buildScheduledNcaaMarchData(
       favoriteTeamName: prediction.modelWinnerName,
       favoriteWinProb,
       rawProjectedSpread: prediction.rawProjectedSpread ?? prediction.projectedSpread,
-      displayProjectedSpread: prediction.displayProjectedSpread ?? prediction.projectedSpread,
+      displayProjectedSpread: displaySummary.spread,
       modelSpreadHome: prediction.modelSpreadHome ?? null,
       displayModelSpreadHome: prediction.displayModelSpreadHome ?? null,
       predSigma: prediction.predSigma ?? null,

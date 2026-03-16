@@ -5,6 +5,8 @@ export function canonicalMatchupKey(teamAId: number, teamBId: number): string {
   return teamAId < teamBId ? `${teamAId}::${teamBId}` : `${teamBId}::${teamAId}`;
 }
 
+const MARGIN_EPSILON = 1e-6;
+
 function favoredFromMargin(
   marginForA: number | null | undefined,
   teamAId: number,
@@ -23,6 +25,50 @@ function favoredFromMargin(
     return { favoriteId: teamAId, favoriteName: teamAName, spread: Math.abs(marginForA) };
   }
   return { favoriteId: teamBId, favoriteName: teamBName, spread: Math.abs(marginForA) };
+}
+
+export function getDisplayFavoriteSummary(prediction: MatchupPrediction): {
+  favoriteTeamId: number;
+  favoriteTeamName: string;
+  spread: number;
+  favoriteWinProb: number;
+} {
+  const marginA = prediction.displayMarginA ?? prediction.rawMarginA ?? 0;
+  const probA = prediction.displayWinProbA ?? prediction.winProbA;
+  const probB = prediction.displayWinProbB ?? prediction.winProbB;
+
+  if (marginA > MARGIN_EPSILON) {
+    return {
+      favoriteTeamId: prediction.teamAId,
+      favoriteTeamName: prediction.teamAName,
+      spread: Math.abs(marginA),
+      favoriteWinProb: probA,
+    };
+  }
+  if (marginA < -MARGIN_EPSILON) {
+    return {
+      favoriteTeamId: prediction.teamBId,
+      favoriteTeamName: prediction.teamBName,
+      spread: Math.abs(marginA),
+      favoriteWinProb: probB,
+    };
+  }
+
+  if (probA >= probB) {
+    return {
+      favoriteTeamId: prediction.teamAId,
+      favoriteTeamName: prediction.teamAName,
+      spread: 0,
+      favoriteWinProb: probA,
+    };
+  }
+
+  return {
+    favoriteTeamId: prediction.teamBId,
+    favoriteTeamName: prediction.teamBName,
+    spread: 0,
+    favoriteWinProb: probB,
+  };
 }
 
 function buildPredictionRecord(base: {

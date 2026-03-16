@@ -1,6 +1,7 @@
 import { CSSProperties, MouseEvent, useEffect, useState } from "react";
 import { displayTeam } from "../../lib/data";
 import { GameComparison } from "../../lib/bracket/comparison";
+import { getDisplayFavoriteSummary } from "../../lib/bracket/predictions";
 import { BracketSource, BracketTeam, GradedGameResult, MatchupPrediction, ResolvedBracketGame } from "../../lib/bracket/types";
 import MatchupPredictionCard from "./MatchupPredictionCard";
 
@@ -53,16 +54,7 @@ function TeamRow({
   isMissedPick: boolean;
   onSelect: () => void;
 }) {
-  const displayFavoriteId = prediction?.displayFavoredTeamId ?? prediction?.favoredTeamId;
-  const displaySpread = prediction?.displayProjectedSpread ?? prediction?.projectedSpread;
-  const displayWinProb =
-    prediction == null
-      ? null
-      : team?.id === prediction.teamAId
-        ? prediction.displayWinProbA ?? prediction.winProbA
-        : team?.id === prediction.teamBId
-          ? prediction.displayWinProbB ?? prediction.winProbB
-          : null;
+  const displaySummary = prediction ? getDisplayFavoriteSummary(prediction) : null;
   if (!team) {
     return (
       <div
@@ -156,7 +148,7 @@ function TeamRow({
             <span style={{ ...mono, fontSize: compact ? 10 : 11, opacity: isSelected ? 0.82 : 0.95, flexShrink: 0 }}>
               #{team.rank}
             </span>
-            {prediction && displayFavoriteId === team.id && displaySpread != null ? (
+            {displaySummary && displaySummary.favoriteTeamId === team.id ? (
               <span
                 style={{
                   ...mono,
@@ -167,8 +159,7 @@ function TeamRow({
                   flexShrink: 0,
                 }}
               >
-                {displayWinProb != null ? `${mlPct(displayWinProb)} • ` : ""}
-                -{displaySpread.toFixed(1)}
+                {mlPct(displaySummary.favoriteWinProb)} • -{displaySummary.spread.toFixed(1)}
               </span>
             ) : null}
           </div>
@@ -287,7 +278,7 @@ export default function BracketGame({
 }) {
   const teamA = game.teamA;
   const teamB = game.teamB;
-  const displayFavoriteId = prediction?.displayFavoredTeamId ?? prediction?.favoredTeamId;
+  const displaySummary = prediction ? getDisplayFavoriteSummary(prediction) : null;
   const isResolved = Boolean(teamA && teamB);
   const selectedWinnerId = game.selectedWinnerId;
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -365,7 +356,7 @@ export default function BracketGame({
             compact={compact}
             isSelected={selectedWinnerId === teamA?.id}
             isClickable={Boolean(teamA)}
-            isFavorite={displayFavoriteId === teamA?.id}
+            isFavorite={displaySummary?.favoriteTeamId === teamA?.id}
             isUpset={selectedWinnerId === teamA?.id ? comparison?.isUpset ?? false : false}
             isMajorUpset={selectedWinnerId === teamA?.id ? comparison?.isMajorUpset ?? false : false}
             isFadingModel={selectedWinnerId === teamA?.id ? comparison?.agreesWithModel === false : false}
@@ -381,7 +372,7 @@ export default function BracketGame({
             compact={compact}
             isSelected={selectedWinnerId === teamB?.id}
             isClickable={Boolean(teamB)}
-            isFavorite={displayFavoriteId === teamB?.id}
+            isFavorite={displaySummary?.favoriteTeamId === teamB?.id}
             isUpset={selectedWinnerId === teamB?.id ? comparison?.isUpset ?? false : false}
             isMajorUpset={selectedWinnerId === teamB?.id ? comparison?.isMajorUpset ?? false : false}
             isFadingModel={selectedWinnerId === teamB?.id ? comparison?.agreesWithModel === false : false}
