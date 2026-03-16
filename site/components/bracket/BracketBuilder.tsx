@@ -54,6 +54,8 @@ const CENTER_GAP = 118;
 const CENTER_CONNECTOR_WIDTH = 24;
 const CENTER_SEMIFINAL_WIDTH = 340;
 const CENTER_CHAMPIONSHIP_WIDTH = 360;
+const FEEDER_TOP_ROW_OFFSET = -12;
+const FEEDER_BOTTOM_ROW_OFFSET = 28;
 
 function sortGames(list: ResolvedBracketGame[]): ResolvedBracketGame[] {
   return [...list].sort((a, b) => a.matchupOrder - b.matchupOrder || a.roundOrder - b.roundOrder);
@@ -703,9 +705,17 @@ export default function BracketBuilder({
           (targetGame.sourceA.type === "winner" && targetGame.sourceA.gameId === game.id) ||
           (targetGame.sourceB.type === "winner" && targetGame.sourceB.gameId === game.id),
       );
+      const targetGame = targetIndex >= 0 ? roundOf64Games[targetIndex] : null;
+      const feedOffset =
+        targetGame?.sourceA.type === "winner" && targetGame.sourceA.gameId === game.id
+          ? FEEDER_TOP_ROW_OFFSET
+          : FEEDER_BOTTOM_ROW_OFFSET;
       return {
         game,
-        top: targetIndex >= 0 ? REGION_BOARD.positions["round-of-64"][targetIndex] : index * (REGION_CARD_HEIGHT + 12),
+        top:
+          targetIndex >= 0
+            ? (REGION_BOARD.positions["round-of-64"][targetIndex] ?? 0) + feedOffset
+            : index * (REGION_CARD_HEIGHT + 12),
       };
     });
 
