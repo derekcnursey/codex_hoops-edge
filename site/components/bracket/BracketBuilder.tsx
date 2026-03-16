@@ -54,6 +54,9 @@ const CENTER_GAP = 118;
 const CENTER_CONNECTOR_WIDTH = 24;
 const CENTER_SEMIFINAL_WIDTH = 380;
 const CENTER_CHAMPIONSHIP_WIDTH = 400;
+const CENTER_BOARD_WIDTH =
+  CENTER_SEMIFINAL_WIDTH + CENTER_CONNECTOR_WIDTH + CENTER_CHAMPIONSHIP_WIDTH;
+const CENTER_SECTION_WIDTH = CENTER_BOARD_WIDTH + 24;
 const FEEDER_TOP_ROW_OFFSET = -12;
 const FEEDER_BOTTOM_ROW_OFFSET = 28;
 const MATCHUP_API_VERSION = "2026-03-16-display-v2";
@@ -1611,11 +1614,11 @@ export default function BracketBuilder({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "minmax(0, 1fr) 624px minmax(0, 1fr)",
+              gridTemplateColumns: `minmax(0, 1fr) ${CENTER_SECTION_WIDTH}px minmax(0, 1fr)`,
               gridTemplateRows: "auto auto",
               gap: 10,
               alignItems: "start",
-              minWidth: 3040,
+              minWidth: 3040 + (CENTER_SECTION_WIDTH - 624),
               width: "max-content",
             }}
           >
