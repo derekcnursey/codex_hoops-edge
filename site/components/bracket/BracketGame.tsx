@@ -12,6 +12,12 @@ function mlPct(value: number): string {
   return `${(value * 100).toFixed(1)}%`;
 }
 
+function favoriteSummary(team: BracketTeam, prediction?: MatchupPrediction): string | null {
+  if (!prediction || prediction.favoredTeamId !== team.id) return null;
+  const winProb = team.id === prediction.teamAId ? prediction.winProbA : prediction.winProbB;
+  return `-${prediction.projectedSpread.toFixed(1)} • ${mlPct(winProb)}`;
+}
+
 function gameHeading(game: ResolvedBracketGame): string {
   if (game.roundId === "final-four" || game.roundId === "national-championship") {
     return game.title;
@@ -79,9 +85,11 @@ function TeamRow({
           : "#0f172a"
     : isActualWinner
       ? "#86efac"
-      : isFavorite
-        ? "#93c5fd"
-        : "#e2e8f0";
+    : isFavorite
+      ? "#93c5fd"
+      : "#e2e8f0";
+  const summary = favoriteSummary(team, prediction);
+  const summaryWidth = compact ? 92 : 100;
 
   return (
     <button
@@ -109,17 +117,23 @@ function TeamRow({
       }}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        <div style={{ minWidth: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            gap: 8,
+            minWidth: 0,
+            whiteSpace: "nowrap",
+          }}
+        >
           <div
-              style={{
-                fontSize: compact ? 12 : 13,
-                fontWeight: 700,
-                lineHeight: 1.2,
-                display: "flex",
-              gap: 4,
-              alignItems: "baseline",
+            style={{
               minWidth: 0,
-              whiteSpace: "nowrap",
+              flex: "1 1 auto",
+              display: "flex",
+              alignItems: "baseline",
+              gap: 4,
+              overflow: "hidden",
             }}
           >
             <span
@@ -134,33 +148,42 @@ function TeamRow({
             </span>
             <span
               style={{
-                overflow: "visible",
-                whiteSpace: "nowrap",
+                fontSize: compact ? 12 : 13,
+                fontWeight: 700,
                 lineHeight: 1.2,
-                minWidth: "max-content",
-                flexShrink: 0,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                minWidth: 0,
+                flex: "1 1 auto",
               }}
             >
               {displayTeam(team.name)}
             </span>
-            <span style={{ ...mono, fontSize: compact ? 10 : 11, opacity: isSelected ? 0.82 : 0.95, flexShrink: 0 }}>
+            <span
+              style={{
+                ...mono,
+                fontSize: compact ? 10 : 11,
+                opacity: isSelected ? 0.82 : 0.95,
+                flexShrink: 0,
+              }}
+            >
               #{team.rank}
             </span>
-            {prediction && isFavorite ? (
-              <span
-                style={{
-                  ...mono,
-                  fontSize: compact ? 10 : 11,
-                  fontWeight: 600,
-                  whiteSpace: "nowrap",
-                  marginLeft: "auto",
-                  flexShrink: 0,
-                }}
-              >
-                -{prediction.projectedSpread.toFixed(1)} •{" "}
-                {team.id === prediction.teamAId ? mlPct(prediction.winProbA) : mlPct(prediction.winProbB)}
-              </span>
-            ) : null}
+          </div>
+          <div
+            style={{
+              ...mono,
+              fontSize: compact ? 10 : 11,
+              fontWeight: 600,
+              textAlign: "right",
+              whiteSpace: "nowrap",
+              flex: `0 0 ${summaryWidth}px`,
+              width: summaryWidth,
+              visibility: summary ? "visible" : "hidden",
+            }}
+          >
+            {summary ?? "0"}
           </div>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 4, justifyContent: "flex-end" }}>
