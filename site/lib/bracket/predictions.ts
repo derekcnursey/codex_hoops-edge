@@ -33,15 +33,31 @@ export function getDisplayFavoriteSummary(prediction: MatchupPrediction): {
   spread: number;
   favoriteWinProb: number;
 } {
-  const marginA = prediction.displayMarginA ?? prediction.rawMarginA ?? 0;
+  const displaySpread =
+    prediction.displayProjectedSpread ??
+    prediction.rawProjectedSpread ??
+    prediction.projectedSpread ??
+    0;
   const probA = prediction.displayWinProbA ?? prediction.winProbA;
   const probB = prediction.displayWinProbB ?? prediction.winProbB;
+  const explicitFavoriteId =
+    prediction.displayFavoredTeamId ??
+    prediction.favoredTeamId ??
+    (probA >= probB ? prediction.teamAId : prediction.teamBId);
+  const explicitFavoriteName =
+    prediction.displayFavoredTeamName ??
+    prediction.favoredTeamName ??
+    (explicitFavoriteId === prediction.teamAId ? prediction.teamAName : prediction.teamBName);
+  const marginA =
+    prediction.displayMarginA ??
+    prediction.rawMarginA ??
+    (explicitFavoriteId === prediction.teamAId ? displaySpread : -displaySpread);
 
   if (marginA > MARGIN_EPSILON) {
     return {
       favoriteTeamId: prediction.teamAId,
       favoriteTeamName: prediction.teamAName,
-      spread: Math.abs(marginA),
+      spread: displaySpread || Math.abs(marginA),
       favoriteWinProb: probA,
     };
   }
@@ -49,25 +65,25 @@ export function getDisplayFavoriteSummary(prediction: MatchupPrediction): {
     return {
       favoriteTeamId: prediction.teamBId,
       favoriteTeamName: prediction.teamBName,
-      spread: Math.abs(marginA),
+      spread: displaySpread || Math.abs(marginA),
       favoriteWinProb: probB,
     };
   }
 
-  if (probA >= probB) {
+  if (displaySpread > MARGIN_EPSILON) {
     return {
-      favoriteTeamId: prediction.teamAId,
-      favoriteTeamName: prediction.teamAName,
-      spread: 0,
-      favoriteWinProb: probA,
+      favoriteTeamId: explicitFavoriteId,
+      favoriteTeamName: explicitFavoriteName,
+      spread: displaySpread,
+      favoriteWinProb: explicitFavoriteId === prediction.teamAId ? probA : probB,
     };
   }
 
   return {
-    favoriteTeamId: prediction.teamBId,
-    favoriteTeamName: prediction.teamBName,
+    favoriteTeamId: explicitFavoriteId,
+    favoriteTeamName: explicitFavoriteName,
     spread: 0,
-    favoriteWinProb: probB,
+    favoriteWinProb: explicitFavoriteId === prediction.teamAId ? probA : probB,
   };
 }
 
