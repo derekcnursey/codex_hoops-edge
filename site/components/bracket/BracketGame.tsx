@@ -91,7 +91,7 @@ function TeamRow({
       style={{
         width: "100%",
         textAlign: "left",
-        padding: compact ? "5px 8px" : "8px 10px",
+        padding: compact ? "7px 10px" : "10px 12px",
         borderRadius: 8,
         border: `1px solid ${borderColor}`,
         background: isSelected ? "#0f172a" : isActualWinner ? "#f0fdf4" : "#ffffff",
@@ -111,11 +111,11 @@ function TeamRow({
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <div style={{ minWidth: 0 }}>
           <div
-            style={{
-              fontSize: compact ? 11 : 12,
-              fontWeight: 700,
-              lineHeight: 1.2,
-              display: "flex",
+              style={{
+                fontSize: compact ? 12 : 13,
+                fontWeight: 700,
+                lineHeight: 1.2,
+                display: "flex",
               gap: 4,
               alignItems: "baseline",
               minWidth: 0,
@@ -125,7 +125,7 @@ function TeamRow({
             <span
               style={{
                 ...mono,
-                fontSize: compact ? 9 : 10,
+                fontSize: compact ? 10 : 11,
                 opacity: isSelected ? 0.82 : 0.95,
                 flexShrink: 0,
               }}
@@ -143,14 +143,14 @@ function TeamRow({
             >
               {displayTeam(team.name)}
             </span>
-            <span style={{ ...mono, fontSize: compact ? 9 : 10, opacity: isSelected ? 0.82 : 0.95, flexShrink: 0 }}>
+            <span style={{ ...mono, fontSize: compact ? 10 : 11, opacity: isSelected ? 0.82 : 0.95, flexShrink: 0 }}>
               #{team.rank}
             </span>
             {prediction && isFavorite ? (
               <span
                 style={{
                   ...mono,
-                  fontSize: compact ? 9 : 10,
+                  fontSize: compact ? 10 : 11,
                   fontWeight: 600,
                   whiteSpace: "nowrap",
                   marginLeft: "auto",
@@ -303,15 +303,15 @@ export default function BracketGame({
         background: "#ffffff",
         border: "1px solid #e2e8f0",
         borderRadius: 10,
-        padding: compact ? 8 : 10,
+        padding: compact ? 10 : 12,
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
         height: fixedHeight,
-        minHeight: compact ? 74 : undefined,
+        minHeight: compact ? 94 : undefined,
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: compact ? 6 : 8, alignItems: "center" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: compact ? 8 : 10, alignItems: "center" }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: compact ? 11 : 12, fontWeight: 700, color: "#0f172a", lineHeight: 1.2 }}>{gameHeading(game)}</div>
+          <div style={{ fontSize: compact ? 12 : 13, fontWeight: 700, color: "#0f172a", lineHeight: 1.2 }}>{gameHeading(game)}</div>
           <div style={{ ...mono, fontSize: compact ? 9 : 10, color: "#64748b", marginTop: 2 }}>
             {game.region ?? "National"}
           </div>

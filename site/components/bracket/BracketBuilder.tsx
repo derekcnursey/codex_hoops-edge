@@ -43,17 +43,17 @@ type BoardMetrics = {
   positions: Record<BoardRoundKey, number[]>;
 };
 
-const REGION_CARD_HEIGHT = 100;
-const REGION_BASE_GAP = 10;
+const REGION_CARD_HEIGHT = 120;
+const REGION_BASE_GAP = 12;
 const REGION_CONNECTOR_WIDTH = 22;
-const FIRST_FOUR_RAIL_WIDTH = 260;
-const REGION_LEFT_WIDTHS = [300, 286, 272, 264] as const;
-const REGION_RIGHT_WIDTHS = [264, 272, 286, 300] as const;
-const CENTER_CARD_HEIGHT = 102;
+const FIRST_FOUR_RAIL_WIDTH = 320;
+const REGION_LEFT_WIDTHS = [368, 344, 320, 308] as const;
+const REGION_RIGHT_WIDTHS = [308, 320, 344, 368] as const;
+const CENTER_CARD_HEIGHT = 122;
 const CENTER_GAP = 118;
 const CENTER_CONNECTOR_WIDTH = 24;
-const CENTER_SEMIFINAL_WIDTH = 288;
-const CENTER_CHAMPIONSHIP_WIDTH = 304;
+const CENTER_SEMIFINAL_WIDTH = 340;
+const CENTER_CHAMPIONSHIP_WIDTH = 360;
 
 function sortGames(list: ResolvedBracketGame[]): ResolvedBracketGame[] {
   return [...list].sort((a, b) => a.matchupOrder - b.matchupOrder || a.roundOrder - b.roundOrder);
