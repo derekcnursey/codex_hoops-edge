@@ -63,9 +63,17 @@ export function getBracketTeams(field: NcaaBracketField): BracketTeam[] {
         adjNet: entry.adj_margin,
         adjTempo: entry.adj_tempo,
         modelIndex: entry.model_index,
+        adjOeRank: entry.adj_oe_rank ?? null,
+        adjDeRank: entry.adj_de_rank ?? null,
+        adjNetRank: entry.adj_margin_rank ?? null,
+        adjTempoRank: entry.adj_tempo_rank ?? null,
         ftPct: entry.ft_pct ?? null,
         threePPct: entry.three_p_pct ?? null,
         defThreePPct: entry.def_3p_pct ?? null,
+        ftPctRank: entry.ft_pct_rank ?? null,
+        threePPctRank: entry.three_p_pct_rank ?? null,
+        defThreePPctRank: entry.def_3p_pct_rank ?? null,
+        modelIndexRank: entry.model_index_rank ?? null,
       });
     }
   }
@@ -86,9 +94,17 @@ export function getBracketTeams(field: NcaaBracketField): BracketTeam[] {
         adjNet: team.adj_margin,
         adjTempo: team.adj_tempo,
         modelIndex: team.model_index,
+        adjOeRank: team.adj_oe_rank ?? null,
+        adjDeRank: team.adj_de_rank ?? null,
+        adjNetRank: team.adj_margin_rank ?? null,
+        adjTempoRank: team.adj_tempo_rank ?? null,
         ftPct: team.ft_pct ?? null,
         threePPct: team.three_p_pct ?? null,
         defThreePPct: team.def_3p_pct ?? null,
+        ftPctRank: team.ft_pct_rank ?? null,
+        threePPctRank: team.three_p_pct_rank ?? null,
+        defThreePPctRank: team.def_3p_pct_rank ?? null,
+        modelIndexRank: team.model_index_rank ?? null,
       });
     }
   }

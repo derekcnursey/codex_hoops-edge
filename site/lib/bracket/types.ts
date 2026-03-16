@@ -10,9 +10,17 @@ export type NcaaFieldTeam = {
   adj_margin: number;
   adj_tempo: number;
   model_index: number | null;
+  adj_oe_rank?: number | null;
+  adj_de_rank?: number | null;
+  adj_margin_rank?: number | null;
+  adj_tempo_rank?: number | null;
   ft_pct?: number | null;
   three_p_pct?: number | null;
   def_3p_pct?: number | null;
+  ft_pct_rank?: number | null;
+  three_p_pct_rank?: number | null;
+  def_3p_pct_rank?: number | null;
+  model_index_rank?: number | null;
 };
 
 export type NcaaRegionEntry =
@@ -128,9 +136,17 @@ export type BracketTeam = {
   adjNet: number;
   adjTempo: number;
   modelIndex: number | null;
+  adjOeRank?: number | null;
+  adjDeRank?: number | null;
+  adjNetRank?: number | null;
+  adjTempoRank?: number | null;
   ftPct?: number | null;
   threePPct?: number | null;
   defThreePPct?: number | null;
+  ftPctRank?: number | null;
+  threePPctRank?: number | null;
+  defThreePPctRank?: number | null;
+  modelIndexRank?: number | null;
 };
 
 export type BracketSource =

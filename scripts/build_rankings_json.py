@@ -48,6 +48,17 @@ MODEL_INDEX_DESCRIPTION = (
     "Projected neutral-court spread vs an average D-I team from the current LightGBM mean model."
 )
 
+RANK_COLUMNS: tuple[tuple[str, bool], ...] = (
+    ("adj_oe", False),
+    ("adj_de", True),
+    ("adj_margin", False),
+    ("adj_tempo", False),
+    ("three_p_pct", False),
+    ("def_3p_pct", True),
+    ("ft_pct", False),
+    ("model_index", False),
+)
+
 
 def _normalize_public_tempo(adj_tempo: float) -> float:
     """Map obviously inflated pace values back into a public-facing D-I range."""
@@ -55,6 +66,20 @@ def _normalize_public_tempo(adj_tempo: float) -> float:
     while tempo > 85:
         tempo /= 2.0
     return min(max(tempo, 45.0), 85.0)
+
+
+def _add_metric_ranks(df: pd.DataFrame) -> pd.DataFrame:
+    """Add public-facing category ranks for the exported team metrics."""
+    ranked = df.copy()
+    for column, ascending in RANK_COLUMNS:
+        if column not in ranked.columns:
+            ranked[f"{column}_rank"] = pd.NA
+            continue
+        values = pd.to_numeric(ranked[column], errors="coerce")
+        ranked[f"{column}_rank"] = (
+            values.rank(method="min", ascending=ascending, na_option="bottom").astype("Int64")
+        )
+    return ranked
 
 
 def _load_latest_ratings(season: int) -> tuple[pd.DataFrame, str]:
@@ -485,6 +510,7 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
         df = df.sort_values(["adj_margin", "barthag"], ascending=[False, False]).reset_index(drop=True)
     else:
         df = df.sort_values("adj_margin", ascending=False).reset_index(drop=True)
+    df = _add_metric_ranks(df)
 
     # Determine as_of_date from the latest rating_date
     as_of = df["rating_date"].max()
@@ -517,6 +543,14 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
             if "def_3p_pct" in row.index and pd.notna(row["def_3p_pct"])
             else None
         )
+        adj_oe_rank = int(row["adj_oe_rank"]) if pd.notna(row.get("adj_oe_rank")) else None
+        adj_de_rank = int(row["adj_de_rank"]) if pd.notna(row.get("adj_de_rank")) else None
+        adj_margin_rank = int(row["adj_margin_rank"]) if pd.notna(row.get("adj_margin_rank")) else None
+        adj_tempo_rank = int(row["adj_tempo_rank"]) if pd.notna(row.get("adj_tempo_rank")) else None
+        three_p_pct_rank = int(row["three_p_pct_rank"]) if pd.notna(row.get("three_p_pct_rank")) else None
+        def_3p_pct_rank = int(row["def_3p_pct_rank"]) if pd.notna(row.get("def_3p_pct_rank")) else None
+        ft_pct_rank = int(row["ft_pct_rank"]) if pd.notna(row.get("ft_pct_rank")) else None
+        model_index_rank = int(row["model_index_rank"]) if pd.notna(row.get("model_index_rank")) else None
 
         record = f"{row['W']}-{row['L']}"
         conf_record = f"{row['conf_W']}-{row['conf_L']}"
@@ -536,6 +570,14 @@ def build_rankings(season: int = CURRENT_SEASON) -> dict:
             "ft_pct": ft_pct_value,
             "three_p_pct": three_p_pct_value,
             "def_3p_pct": def_3p_pct_value,
+            "adj_oe_rank": adj_oe_rank,
+            "adj_de_rank": adj_de_rank,
+            "adj_margin_rank": adj_margin_rank,
+            "adj_tempo_rank": adj_tempo_rank,
+            "three_p_pct_rank": three_p_pct_rank,
+            "def_3p_pct_rank": def_3p_pct_rank,
+            "ft_pct_rank": ft_pct_rank,
+            "model_index_rank": model_index_rank,
         })
 
     payload = {

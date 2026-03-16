@@ -20,16 +20,20 @@ function percentValue(value: number | null | undefined, digits = 1): string {
   return value == null ? "--" : `${(value * 100).toFixed(digits)}%`;
 }
 
+function rankValue(value: number | null | undefined): string | null {
+  return value == null ? null : `#${value}`;
+}
+
 function metricGrid(team: BracketTeam) {
   return [
-    { label: "Adj OE", value: metricValue(team.adjOe) },
-    { label: "Adj DE", value: metricValue(team.adjDe) },
-    { label: "Adj Net", value: metricValue(team.adjNet) },
-    { label: "Adj Pace", value: metricValue(team.adjTempo) },
-    { label: "3PT%", value: percentValue(team.threePPct) },
-    { label: "Def 3PT%", value: percentValue(team.defThreePPct) },
-    { label: "FT%", value: percentValue(team.ftPct) },
-    { label: "Ballin' Index", value: metricValue(team.modelIndex, 2) },
+    { label: "Adj OE", value: metricValue(team.adjOe), rank: rankValue(team.adjOeRank) },
+    { label: "Adj DE", value: metricValue(team.adjDe), rank: rankValue(team.adjDeRank) },
+    { label: "Adj Net", value: metricValue(team.adjNet), rank: rankValue(team.adjNetRank) },
+    { label: "Adj Pace", value: metricValue(team.adjTempo), rank: rankValue(team.adjTempoRank) },
+    { label: "3PT%", value: percentValue(team.threePPct), rank: rankValue(team.threePPctRank) },
+    { label: "Def 3PT%", value: percentValue(team.defThreePPct), rank: rankValue(team.defThreePPctRank) },
+    { label: "FT%", value: percentValue(team.ftPct), rank: rankValue(team.ftPctRank) },
+    { label: "Ballin' Index", value: metricValue(team.modelIndex, 2), rank: rankValue(team.modelIndexRank) },
   ];
 }
 
@@ -281,7 +285,19 @@ export default function MatchupPredictionCard({
                         }}
                       >
                         <div style={{ ...mono, fontSize: 10, color: "#64748b", marginBottom: 2 }}>{metric.label}</div>
-                        <div style={{ ...mono, fontSize: 12, color: "#0f172a" }}>{metric.value}</div>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "baseline",
+                            justifyContent: "space-between",
+                            gap: 8,
+                          }}
+                        >
+                          <div style={{ ...mono, fontSize: 12, color: "#0f172a" }}>{metric.value}</div>
+                          {metric.rank ? (
+                            <div style={{ ...mono, fontSize: 10, color: "#64748b", fontWeight: 600 }}>{metric.rank}</div>
+                          ) : null}
+                        </div>
                       </div>
                     ))}
                   </div>

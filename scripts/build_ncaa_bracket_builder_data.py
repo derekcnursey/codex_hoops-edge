@@ -401,6 +401,18 @@ def _enrich_entry(
         "model_index": None
         if rankings_row.get("model_index") is None
         else float(rankings_row["model_index"]),
+        "adj_oe_rank": None
+        if rankings_row.get("adj_oe_rank") is None
+        else int(rankings_row["adj_oe_rank"]),
+        "adj_de_rank": None
+        if rankings_row.get("adj_de_rank") is None
+        else int(rankings_row["adj_de_rank"]),
+        "adj_margin_rank": None
+        if rankings_row.get("adj_margin_rank") is None
+        else int(rankings_row["adj_margin_rank"]),
+        "adj_tempo_rank": None
+        if rankings_row.get("adj_tempo_rank") is None
+        else int(rankings_row["adj_tempo_rank"]),
         "ft_pct": None
         if rankings_row.get("ft_pct") is None
         else float(rankings_row["ft_pct"]),
@@ -410,6 +422,18 @@ def _enrich_entry(
         "def_3p_pct": None
         if rankings_row.get("def_3p_pct") is None
         else float(rankings_row["def_3p_pct"]),
+        "three_p_pct_rank": None
+        if rankings_row.get("three_p_pct_rank") is None
+        else int(rankings_row["three_p_pct_rank"]),
+        "def_3p_pct_rank": None
+        if rankings_row.get("def_3p_pct_rank") is None
+        else int(rankings_row["def_3p_pct_rank"]),
+        "ft_pct_rank": None
+        if rankings_row.get("ft_pct_rank") is None
+        else int(rankings_row["ft_pct_rank"]),
+        "model_index_rank": None
+        if rankings_row.get("model_index_rank") is None
+        else int(rankings_row["model_index_rank"]),
     }
 
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-16T17:04:39.068198Z",
+  "generated_at": "2026-03-16T19:33:02.610628Z",
   "season": 2026,
   "neutral_site": true,
   "source": "production_matchup_model",
@@ -2642,7 +2642,7 @@
       "market_home_team_id": 5,
       "market_away_team_id": 110,
       "market_home_moneyline": -750.0,
-      "market_away_moneyline": 525.0,
+      "market_away_moneyline": 500.0,
       "market_line_source": "Hard Rock Bet"
     },
     "5::113": {
@@ -6832,8 +6832,8 @@
       "market_spread_home": -15.5,
       "market_home_team_id": 12,
       "market_away_team_id": 108,
-      "market_home_moneyline": -1100.0,
-      "market_away_moneyline": 650.0,
+      "market_home_moneyline": -1400.0,
+      "market_away_moneyline": 800.0,
       "market_line_source": "Hard Rock Bet"
     },
     "12::109": {
@@ -20329,8 +20329,8 @@
       "market_spread_home": -20.5,
       "market_home_team_id": 314,
       "market_away_team_id": 93,
-      "market_home_moneyline": -5000.0,
-      "market_away_moneyline": 1600.0,
+      "market_home_moneyline": null,
+      "market_away_moneyline": null,
       "market_line_source": "Hard Rock Bet"
     },
     "93::317": {
@@ -21716,7 +21716,7 @@
       "market_home_team_id": 98,
       "market_away_team_id": 252,
       "market_home_moneyline": -150.0,
-      "market_away_moneyline": 115.0,
+      "market_away_moneyline": 120.0,
       "market_line_source": "Hard Rock Bet"
     },
     "98::253": {
@@ -32836,8 +32836,8 @@
       "market_spread_home": -1.5,
       "market_home_team_id": 317,
       "market_away_team_id": 114,
-      "market_home_moneyline": -125.0,
-      "market_away_moneyline": 105.0,
+      "market_home_moneyline": -115.0,
+      "market_away_moneyline": -105.0,
       "market_line_source": "Hard Rock Bet"
     },
     "114::329": {
@@ -35443,8 +35443,8 @@
       "market_spread_home": -24.5,
       "market_home_team_id": 118,
       "market_away_team_id": 227,
-      "market_home_moneyline": -10000.0,
-      "market_away_moneyline": 2000.0,
+      "market_home_moneyline": null,
+      "market_away_moneyline": null,
       "market_line_source": "Hard Rock Bet"
     },
     "118::232": {
@@ -43231,8 +43231,8 @@
       "market_spread_home": -3.5,
       "market_home_team_id": 135,
       "market_away_team_id": 261,
-      "market_home_moneyline": -170.0,
-      "market_away_moneyline": 145.0,
+      "market_home_moneyline": -165.0,
+      "market_away_moneyline": 140.0,
       "market_line_source": "Hard Rock Bet"
     },
     "135::264": {
@@ -44486,7 +44486,7 @@
       "market_home_team_id": 232,
       "market_away_team_id": 141,
       "market_home_moneyline": 122.5,
-      "market_away_moneyline": -145.0,
+      "market_away_moneyline": -147.5,
       "market_line_source": "consensus"
     },
     "141::236": {
@@ -49874,7 +49874,7 @@
       "team2_id": 248,
       "team2_name": "SMU",
       "mu_team1_minus_team2": -1.1476372780578572,
-      "display_mu_team1_minus_team2": -0.5164367751260357,
+      "display_mu_team1_minus_team2": -0.24143677512603567,
       "win_prob_team1": 0.4542045412602203,
       "pred_sigma": 12.435524463292937,
       "scheduled_game_id": 372512,
@@ -49886,19 +49886,19 @@
       "home_team_name": "Miami (OH)",
       "away_team_name": "SMU",
       "model_mu_home": -1.1476372780578572,
-      "display_model_mu_home": -0.5164367751260357,
-      "edge_home_points": -1.1476372780578572,
-      "display_edge_home_points": -0.5164367751260357,
+      "display_model_mu_home": -0.24143677512603567,
+      "edge_home_points": -1.6476372780578572,
+      "display_edge_home_points": -0.7414367751260357,
       "pick_side": "AWAY",
-      "pick_cover_prob": 0.5367649926257003,
-      "pick_prob_edge": 0.012955468816176485,
-      "pick_fair_odds": -115.87314949882177,
-      "market_mu_team1_minus_team2": -0.0,
-      "market_spread_home": 0.0,
+      "pick_cover_prob": 0.552703371569473,
+      "pick_prob_edge": 0.028893847759949187,
+      "pick_fair_odds": -123.56528899151262,
+      "market_mu_team1_minus_team2": 0.5,
+      "market_spread_home": -0.5,
       "market_home_team_id": 167,
       "market_away_team_id": 248,
-      "market_home_moneyline": 265.0,
-      "market_away_moneyline": -347.5,
+      "market_home_moneyline": 260.0,
+      "market_away_moneyline": -335.0,
       "market_line_source": "consensus"
     },
     "167::252": {
@@ -50821,8 +50821,8 @@
       "market_spread_home": -1.5,
       "market_home_team_id": 168,
       "market_away_team_id": 177,
-      "market_home_moneyline": -130.0,
-      "market_away_moneyline": 110.0,
+      "market_home_moneyline": -135.0,
+      "market_away_moneyline": 105.0,
       "market_line_source": "Hard Rock Bet"
     },
     "168::185": {
@@ -60193,8 +60193,8 @@
       "market_spread_home": -10.5,
       "market_home_team_id": 279,
       "market_away_team_id": 209,
-      "market_home_moneyline": -525.0,
-      "market_away_moneyline": 375.0,
+      "market_home_moneyline": -600.0,
+      "market_away_moneyline": 400.0,
       "market_line_source": "Hard Rock Bet"
     },
     "209::287": {
@@ -64450,8 +64450,8 @@
       "market_spread_home": -25.5,
       "market_home_team_id": 236,
       "market_away_team_id": 362,
-      "market_home_moneyline": -2500.0,
-      "market_away_moneyline": 2250.0,
+      "market_home_moneyline": -10000.0,
+      "market_away_moneyline": 2000.0,
       "market_line_source": "Hard Rock Bet"
     },
     "248::252": {
@@ -74350,8 +74350,8 @@
       "market_spread_home": 2.5,
       "market_home_team_id": 338,
       "market_away_team_id": 329,
-      "market_home_moneyline": 110.0,
-      "market_away_moneyline": -135.0,
+      "market_home_moneyline": 120.0,
+      "market_away_moneyline": -150.0,
       "market_line_source": "Hard Rock Bet"
     },
     "329::339": {
@@ -75043,8 +75043,8 @@
       "market_spread_home": -17.5,
       "market_home_team_id": 339,
       "market_away_team_id": 357,
-      "market_home_moneyline": -2500.0,
-      "market_away_moneyline": 1000.0,
+      "market_home_moneyline": -3000.0,
+      "market_away_moneyline": 1200.0,
       "market_line_source": "Hard Rock Bet"
     },
     "339::362": {
