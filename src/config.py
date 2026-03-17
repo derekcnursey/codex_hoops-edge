@@ -14,6 +14,17 @@ PREDICTIONS_DIR = PROJECT_ROOT / "predictions"
 SITE_DATA_DIR = PROJECT_ROOT / "site" / "public" / "data"
 TREE_REGRESSOR_PATH = CHECKPOINTS_DIR / "regressor_lgbm_l2.pkl"
 TORVIK_TREE_REGRESSOR_PATH = CHECKPOINTS_DIR / "regressor_lgbm_l2_torvik.pkl"
+TREE_REGRESSOR_TEAM_AB_ELITE_TAIL_ROUND64_V1_PATH = (
+    CHECKPOINTS_DIR / "regressor_lgbm_l2_team_ab_elite_tail_round64_v1.pkl"
+)
+TORVIK_TREE_REGRESSOR_TEAM_AB_ELITE_TAIL_ROUND64_V1_PATH = (
+    CHECKPOINTS_DIR / "regressor_lgbm_l2_torvik_team_ab_elite_tail_round64_v1.pkl"
+)
+MEAN_MODEL_VARIANT = os.getenv("HOOPS_MEAN_MODEL_VARIANT", "legacy_home_slot").strip().lower()
+BRACKET_MATCHUP_MODEL_VARIANT = os.getenv(
+    "HOOPS_BRACKET_MATCHUP_MODEL_VARIANT",
+    "team_ab_elite_tail_round64_v1",
+).strip().lower()
 
 # S3 lakehouse
 S3_BUCKET = "hoops-edge"
@@ -53,7 +64,39 @@ NO_GARBAGE = True
 
 # Efficiency source: "gold" (gold-layer adj efficiencies) or "torvik" (Torvik daily ratings)
 EFFICIENCY_SOURCE = "gold"
+SUPPORTED_EFFICIENCY_SOURCES = {"gold", "torvik"}
+GOLD_PRIORREG_K5_V1_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage_priorreg_k5_v1"
 PRODUCTION_GOLD_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage_softkeep25_priorreg_k5_v1"
+TEAM_AB_DEFAULT_EFFICIENCY_SOURCE = "torvik"
+TEAM_AB_EFFICIENCY_SOURCE = os.getenv(
+    "HOOPS_TEAM_AB_EFFICIENCY_SOURCE",
+    TEAM_AB_DEFAULT_EFFICIENCY_SOURCE,
+).strip().lower()
+TEAM_AB_GOLD_RATINGS_TABLE = os.getenv(
+    "HOOPS_TEAM_AB_GOLD_RATINGS_TABLE",
+    PRODUCTION_GOLD_RATINGS_TABLE,
+).strip()
+BRACKET_TEAM_AB_DEFAULT_EFFICIENCY_SOURCE = TEAM_AB_DEFAULT_EFFICIENCY_SOURCE
+BRACKET_TEAM_AB_EFFICIENCY_SOURCE = os.getenv(
+    "HOOPS_BRACKET_TEAM_AB_EFFICIENCY_SOURCE",
+    BRACKET_TEAM_AB_DEFAULT_EFFICIENCY_SOURCE,
+).strip().lower()
+BRACKET_TEAM_AB_GOLD_RATINGS_TABLE = os.getenv(
+    "HOOPS_BRACKET_TEAM_AB_GOLD_RATINGS_TABLE",
+    TEAM_AB_GOLD_RATINGS_TABLE,
+).strip()
+if TEAM_AB_EFFICIENCY_SOURCE not in SUPPORTED_EFFICIENCY_SOURCES:
+    raise ValueError(
+        "Unsupported HOOPS_TEAM_AB_EFFICIENCY_SOURCE "
+        f"{TEAM_AB_EFFICIENCY_SOURCE!r}; expected one of "
+        f"{sorted(SUPPORTED_EFFICIENCY_SOURCES)}."
+    )
+if BRACKET_TEAM_AB_EFFICIENCY_SOURCE not in SUPPORTED_EFFICIENCY_SOURCES:
+    raise ValueError(
+        "Unsupported HOOPS_BRACKET_TEAM_AB_EFFICIENCY_SOURCE "
+        f"{BRACKET_TEAM_AB_EFFICIENCY_SOURCE!r}; expected one of "
+        f"{sorted(SUPPORTED_EFFICIENCY_SOURCES)}."
+    )
 PRODUCTION_MU_BLEND_ENABLED = True
 PRODUCTION_MU_BLEND_START_DAY = 0   # Nov 1
 PRODUCTION_MU_BLEND_END_DAY = 75    # Jan 15
