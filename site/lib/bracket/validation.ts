@@ -169,6 +169,16 @@ export function validateMatchupCache(
     if (entry.win_prob_team1 < 0 || entry.win_prob_team1 > 1) {
       errors.push(`Matchup key ${key} has invalid win probability ${entry.win_prob_team1}`);
     }
+    for (const compareProb of [
+      entry.win_prob_team1_legacy_synthetic,
+      entry.win_prob_team1_team_ab_elite_tail_round64_v1,
+      entry.win_prob_team1_team_ab_internal,
+    ]) {
+      if (compareProb == null) continue;
+      if (compareProb < 0 || compareProb > 1) {
+        errors.push(`Matchup key ${key} has invalid compare win probability ${compareProb}`);
+      }
+    }
   }
 
   return result(errors);

@@ -19,6 +19,7 @@ export default function MarchHub({
   initialPredictionCache,
   marchGames,
   ncaaData,
+  ncaaInternalData,
   hardRockReport,
 }: MarchPageProps) {
   const [tab, setTab] = useState<"builder" | "betting" | "analysis" | "conference">("builder");
@@ -122,7 +123,11 @@ export default function MarchHub({
         ) : tab === "betting" ? (
           <MarchBettingTab games={marchGames} />
         ) : tab === "analysis" ? (
-          <MarchAnalysisTab ncaaData={ncaaData} hardRockReport={hardRockReport} />
+          <MarchAnalysisTab
+            ncaaData={ncaaData}
+            ncaaInternalData={ncaaInternalData}
+            hardRockReport={hardRockReport}
+          />
         ) : (
           <ConferenceBrackets data={conferenceData} />
         )}

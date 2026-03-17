@@ -30,6 +30,7 @@ export type MarchPageProps = {
   initialPredictionCache: Record<string, MatchupPrediction>;
   marchGames: MarchBettingGame[];
   ncaaData: NcaaOddsData | null;
+  ncaaInternalData: NcaaOddsData | null;
   hardRockReport: HardRockComparisonData | null;
 };
 
@@ -64,9 +65,11 @@ export async function loadMarchPageProps(): Promise<MarchPageProps> {
       : { initialPredictionCache: {}, marchGames: [] };
 
   let ncaaData: NcaaOddsData | null = null;
+  let ncaaInternalData: NcaaOddsData | null = null;
   if (ncaaField && matchupCache && matchupValidation?.valid) {
     try {
       ncaaData = buildNcaaOddsData(ncaaField, matchupCache);
+      ncaaInternalData = buildNcaaOddsData(ncaaField, matchupCache, "team_ab_internal");
     } catch (error) {
       console.error("Failed to build NCAA odds data", error);
     }
@@ -83,6 +86,7 @@ export async function loadMarchPageProps(): Promise<MarchPageProps> {
     initialPredictionCache,
     marchGames,
     ncaaData,
+    ncaaInternalData,
     hardRockReport,
   };
 }

@@ -1,6 +1,5 @@
 import {
   formatAmericanOddsFromProb,
-  getSiteHomeWinProbFromValues,
 } from "../data";
 import { buildNcaaBracketGames, getBracketTeams } from "./ncaaBracket";
 import {
@@ -49,6 +48,12 @@ export type NcaaOddsData = {
   summary: NcaaOddsSummary;
   optimalBracket: NcaaOptimalBracketPlan;
 };
+
+export type NcaaOddsProbabilityVariant =
+  | "active"
+  | "legacy_synthetic"
+  | "team_ab_elite_tail_round64_v1"
+  | "team_ab_internal";
 
 export type NcaaExpectedBracketPick = {
   gameId: string;
@@ -137,6 +142,7 @@ function probabilityForMatchup(
   cache: MatchupPredictionCache,
   teamAId: number,
   teamBId: number,
+  variant: NcaaOddsProbabilityVariant,
 ): number {
   const canonicalA = Math.min(teamAId, teamBId);
   const canonicalB = Math.max(teamAId, teamBId);
@@ -147,16 +153,45 @@ function probabilityForMatchup(
   }
 
   const directOrder = entry.team1_id === teamAId && entry.team2_id === teamBId;
-  const marginA = directOrder
-    ? (entry.display_mu_team1_minus_team2 ?? entry.mu_team1_minus_team2)
-    : -(entry.display_mu_team1_minus_team2 ?? entry.mu_team1_minus_team2);
-  const sigma = entry.pred_sigma ?? null;
-  const startTime = entry.start_time ?? DEFAULT_TOURNAMENT_START;
-  const probability = getSiteHomeWinProbFromValues(marginA, sigma, startTime);
-  if (probability == null) {
+  const variantProbability = (() => {
+    if (variant === "team_ab_internal") {
+      return directOrder
+        ? entry.win_prob_team1_team_ab_internal
+        : entry.win_prob_team1_team_ab_internal == null
+          ? null
+          : 1 - entry.win_prob_team1_team_ab_internal;
+    }
+    if (variant === "legacy_synthetic") {
+      return directOrder
+        ? entry.win_prob_team1_legacy_synthetic
+        : entry.win_prob_team1_legacy_synthetic == null
+          ? null
+          : 1 - entry.win_prob_team1_legacy_synthetic;
+    }
+    if (variant === "team_ab_elite_tail_round64_v1") {
+      return directOrder
+        ? entry.win_prob_team1_team_ab_elite_tail_round64_v1
+        : entry.win_prob_team1_team_ab_elite_tail_round64_v1 == null
+          ? null
+          : 1 - entry.win_prob_team1_team_ab_elite_tail_round64_v1;
+    }
     return directOrder ? entry.win_prob_team1 : 1 - entry.win_prob_team1;
+  })();
+  const probability = variantProbability;
+  if (probability != null && Number.isFinite(probability)) {
+    return probability;
   }
-  return probability;
+
+  const legacyProbability = directOrder
+    ? entry.win_prob_team1_legacy_synthetic
+    : entry.win_prob_team1_legacy_synthetic == null
+      ? null
+      : 1 - entry.win_prob_team1_legacy_synthetic;
+  if (legacyProbability != null && Number.isFinite(legacyProbability)) {
+    return legacyProbability;
+  }
+
+  throw new Error(`Missing NCAA matchup probability for ${key}`);
 }
 
 function sourceDistribution(
@@ -250,6 +285,7 @@ function sourcePickOptions(
 function buildTournamentState(
   field: NcaaBracketField,
   cache: MatchupPredictionCache,
+  variant: NcaaOddsProbabilityVariant,
 ): {
   rowsByTeamId: RowMap;
   games: ReturnType<typeof buildNcaaBracketGames>;
@@ -298,7 +334,7 @@ function buildTournamentState(
     for (const [teamAId, probAReach] of distA.entries()) {
       for (const [teamBId, probBReach] of distB.entries()) {
         const meetingProb = probAReach * probBReach;
-        const probAWin = probabilityForMatchup(cache, teamAId, teamBId);
+        const probAWin = probabilityForMatchup(cache, teamAId, teamBId, variant);
         addProbability(winners, teamAId, meetingProb * probAWin);
         addProbability(winners, teamBId, meetingProb * (1 - probAWin));
       }
@@ -430,10 +466,12 @@ function buildOptimalBracketPlan(
 export function buildNcaaOddsData(
   field: NcaaBracketField,
   cache: MatchupPredictionCache,
+  variant: NcaaOddsProbabilityVariant = "active",
 ): NcaaOddsData {
   const { rowsByTeamId, games, winnerByGame, teamsById } = buildTournamentState(
     field,
     cache,
+    variant,
   );
   const rows = sortedRows(Array.from(rowsByTeamId.values()));
   const titleFavorite = rows[0] ?? null;
@@ -447,7 +485,10 @@ export function buildNcaaOddsData(
     season: field.season,
     methodology: {
       type: "exact_bracket",
-      note: "Exact NCAA bracket advancement probabilities using display-adjusted matchup margins run through the site moneyline transform with the cached sigma model.",
+      note:
+        variant === "team_ab_internal"
+          ? "Exact NCAA bracket advancement probabilities using the Team A/B internal-efficiency comparison matchup probabilities from the cache. Sigma remains on the cached legacy path."
+          : "Exact NCAA bracket advancement probabilities using the active cached matchup win probabilities for the selected bracket-model variant. Those matchup probabilities keep the cached sigma path but follow the active bracket mean-model variant.",
     },
     rows,
     summary: {

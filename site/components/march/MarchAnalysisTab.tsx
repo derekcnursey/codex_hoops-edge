@@ -201,9 +201,11 @@ function RegionTopList({
 
 export default function MarchAnalysisTab({
   ncaaData,
+  ncaaInternalData,
   hardRockReport,
 }: {
   ncaaData: NcaaOddsData | null;
+  ncaaInternalData: NcaaOddsData | null;
   hardRockReport: HardRockComparisonData | null;
 }) {
   const [search, setSearch] = useState("");
@@ -235,6 +237,10 @@ export default function MarchAnalysisTab({
         return a.seed - b.seed || a.team.localeCompare(b.team);
       });
   }, [ncaaData, region, search, sortKey]);
+  const comparisonRowsByTeamId = useMemo(
+    () => new Map((ncaaInternalData?.rows ?? []).map((row) => [row.teamId, row])),
+    [ncaaInternalData],
+  );
 
   const filteredComparisonRows = useMemo(() => {
     if (!hardRockReport) return [];
@@ -872,6 +878,11 @@ export default function MarchAnalysisTab({
                 <th style={thStyle}>Seed</th>
                 <th style={{ ...thStyle, textAlign: "left" }}>Team</th>
                 <th style={thStyle}>Region</th>
+                <th style={thStyle}>
+                  Active {ROUND_COLUMNS.find((column) => column.key === sortKey)?.label ?? "Odds"}
+                </th>
+                <th style={thStyle}>Internal</th>
+                <th style={thStyle}>Δ</th>
                 {ROUND_COLUMNS.map((column) => (
                   <th key={column.key} style={thStyle}>
                     <button
@@ -905,6 +916,50 @@ export default function MarchAnalysisTab({
                     <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>{row.conference}</div>
                   </td>
                   <td style={{ ...tdStyle, ...mono, color: "#64748b" }}>{row.region ?? "--"}</td>
+                  <td style={tdStyle}>
+                    <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
+                      {formatPercent(row.roundProbabilities[sortKey])}
+                    </div>
+                    <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+                      {formatRoundOdds(row.roundProbabilities[sortKey]) ?? "--"}
+                    </div>
+                  </td>
+                  <td style={tdStyle}>
+                    <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
+                      {comparisonRowsByTeamId.get(row.teamId)
+                        ? formatPercent(comparisonRowsByTeamId.get(row.teamId)!.roundProbabilities[sortKey])
+                        : "--"}
+                    </div>
+                    <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+                      {comparisonRowsByTeamId.get(row.teamId)
+                        ? formatRoundOdds(comparisonRowsByTeamId.get(row.teamId)!.roundProbabilities[sortKey]) ?? "--"
+                        : "--"}
+                    </div>
+                  </td>
+                  <td style={tdStyle}>
+                    {(() => {
+                      const internalRow = comparisonRowsByTeamId.get(row.teamId);
+                      const delta = internalRow == null
+                        ? null
+                        : (row.roundProbabilities[sortKey] - internalRow.roundProbabilities[sortKey]) * 100;
+                      return (
+                        <>
+                          <div
+                            style={{
+                              ...mono,
+                              fontWeight: 700,
+                              color: delta == null ? "#94a3b8" : deltaColor(delta),
+                            }}
+                          >
+                            {delta == null ? "--" : `${delta > 0 ? "+" : ""}${delta.toFixed(1)} pp`}
+                          </div>
+                          <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+                            {internalRow ? "Act - Int" : "--"}
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </td>
                   {ROUND_COLUMNS.map((column) => {
                     const probability = row.roundProbabilities[column.key];
                     return (

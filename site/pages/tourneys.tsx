@@ -51,7 +51,11 @@ type TourneysData = {
   fades: SummaryRow[];
 };
 
-type Props = { data: TourneysData | null; ncaaData: NcaaOddsData | null };
+type Props = {
+  data: TourneysData | null;
+  ncaaData: NcaaOddsData | null;
+  ncaaInternalData: NcaaOddsData | null;
+};
 
 /* -- server-side -- */
 
@@ -62,18 +66,24 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const rawNcaaCache = readJsonFile("ncaa_matchup_predictions_2026.json");
 
   let ncaaData: NcaaOddsData | null = null;
+  let ncaaInternalData: NcaaOddsData | null = null;
   if (rawNcaaField && rawNcaaCache) {
     try {
       ncaaData = buildNcaaOddsData(
         rawNcaaField as NcaaBracketField,
         rawNcaaCache as MatchupPredictionCache,
       );
+      ncaaInternalData = buildNcaaOddsData(
+        rawNcaaField as NcaaBracketField,
+        rawNcaaCache as MatchupPredictionCache,
+        "team_ab_internal",
+      );
     } catch (error) {
       console.error("Failed to build NCAA odds data", error);
     }
   }
 
-  return { props: { data, ncaaData } };
+  return { props: { data, ncaaData, ncaaInternalData } };
 };
 
 /* -- helpers -- */
@@ -92,6 +102,18 @@ const NCAA_ROUND_COLUMNS: Array<{ key: NcaaOddsRoundKey; label: string }> = [
   { key: "national-championship", label: "Title" },
   { key: "champion", label: "Champ" },
 ];
+
+function formatPercent(value: number): string {
+  return `${(value * 100).toFixed(1)}%`;
+}
+
+function oddsDeltaColor(deltaPctPoints: number): string {
+  if (deltaPctPoints >= 1) return "#15803d";
+  if (deltaPctPoints > 0) return "#16a34a";
+  if (deltaPctPoints <= -1) return "#b91c1c";
+  if (deltaPctPoints < 0) return "#dc2626";
+  return "#64748b";
+}
 
 function flagStyle(flag: string | null | undefined): CSSProperties {
   if (!flag) return {};
@@ -141,7 +163,7 @@ function edgeColor(edge: number | null | undefined): string {
 
 /* -- component -- */
 
-export default function Tourneys({ data, ncaaData }: Props) {
+export default function Tourneys({ data, ncaaData, ncaaInternalData }: Props) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "power" | "mid" | "hrb">("all");
   const [scope, setScope] = useState<"ncaa" | "conference">(
@@ -272,7 +294,7 @@ export default function Tourneys({ data, ncaaData }: Props) {
         </div>
 
         {scope === "ncaa" && ncaaData ? (
-          <NcaaOddsSection data={ncaaData} />
+          <NcaaOddsSection data={ncaaData} comparisonData={ncaaInternalData} />
         ) : (
           <>
             {/* -- Methodology note -- */}
@@ -429,10 +451,20 @@ export default function Tourneys({ data, ncaaData }: Props) {
 
 /* -- NCAA Odds -- */
 
-function NcaaOddsSection({ data }: { data: NcaaOddsData }) {
+function NcaaOddsSection({
+  data,
+  comparisonData,
+}: {
+  data: NcaaOddsData;
+  comparisonData: NcaaOddsData | null;
+}) {
   const [search, setSearch] = useState("");
   const [region, setRegion] = useState<string>("all");
   const [sortKey, setSortKey] = useState<NcaaOddsRoundKey>("champion");
+  const comparisonRowsByTeamId = useMemo(
+    () => new Map((comparisonData?.rows ?? []).map((row) => [row.teamId, row])),
+    [comparisonData],
+  );
 
   const regions = useMemo(
     () =>
@@ -590,6 +622,11 @@ function NcaaOddsSection({ data }: { data: NcaaOddsData }) {
                 <th style={thStyle}>Seed</th>
                 <th style={{ ...thStyle, textAlign: "left" }}>Team</th>
                 <th style={thStyle}>Region</th>
+                <th style={thStyle}>
+                  Active {NCAA_ROUND_COLUMNS.find((column) => column.key === sortKey)?.label ?? "Odds"}
+                </th>
+                <th style={thStyle}>Internal</th>
+                <th style={thStyle}>Δ</th>
                 {NCAA_ROUND_COLUMNS.map((column) => (
                   <th key={column.key} style={thStyle}>
                     <button
@@ -614,7 +651,12 @@ function NcaaOddsSection({ data }: { data: NcaaOddsData }) {
             </thead>
             <tbody>
               {rows.map((row) => (
-                <NcaaOddsRowView key={row.teamId} row={row} />
+                <NcaaOddsRowView
+                  key={row.teamId}
+                  row={row}
+                  comparisonRow={comparisonRowsByTeamId.get(row.teamId) ?? null}
+                  sortKey={sortKey}
+                />
               ))}
             </tbody>
           </table>
@@ -676,7 +718,19 @@ function NcaaSummaryCard({
   );
 }
 
-function NcaaOddsRowView({ row }: { row: NcaaOddsRow }) {
+function NcaaOddsRowView({
+  row,
+  comparisonRow,
+  sortKey,
+}: {
+  row: NcaaOddsRow;
+  comparisonRow: NcaaOddsRow | null;
+  sortKey: NcaaOddsRoundKey;
+}) {
+  const activeProbability = row.roundProbabilities[sortKey];
+  const internalProbability = comparisonRow?.roundProbabilities[sortKey] ?? null;
+  const deltaPctPoints =
+    internalProbability == null ? null : (activeProbability - internalProbability) * 100;
   return (
     <tr style={{ borderBottom: "1px solid #f1f5f9" }}>
       <td style={{ ...tdStyle, ...mono, fontWeight: 600, color: "#64748b" }}>
@@ -690,6 +744,36 @@ function NcaaOddsRowView({ row }: { row: NcaaOddsRow }) {
       </td>
       <td style={{ ...tdStyle, ...mono, color: "#64748b" }}>
         {row.region ?? "--"}
+      </td>
+      <td style={tdStyle}>
+        <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
+          {formatPercent(activeProbability)}
+        </div>
+        <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+          {formatRoundOdds(activeProbability) ?? "--"}
+        </div>
+      </td>
+      <td style={tdStyle}>
+        <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
+          {internalProbability == null ? "--" : formatPercent(internalProbability)}
+        </div>
+        <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+          {internalProbability == null ? "--" : formatRoundOdds(internalProbability) ?? "--"}
+        </div>
+      </td>
+      <td style={tdStyle}>
+        <div
+          style={{
+            ...mono,
+            fontWeight: 700,
+            color: deltaPctPoints == null ? "#94a3b8" : oddsDeltaColor(deltaPctPoints),
+          }}
+        >
+          {deltaPctPoints == null ? "--" : `${deltaPctPoints > 0 ? "+" : ""}${deltaPctPoints.toFixed(1)} pp`}
+        </div>
+        <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+          {comparisonRow ? "Act - Int" : "--"}
+        </div>
       </td>
       {NCAA_ROUND_COLUMNS.map((column) => {
         const probability = row.roundProbabilities[column.key];
