@@ -61,9 +61,16 @@ export type MatchupPredictionCacheEntry = {
   team1_name: string;
   team2_id: number;
   team2_name: string;
+  matchup_model_variant_active?: string | null;
   mu_team1_minus_team2: number;
+  mu_team1_minus_team2_legacy_synthetic?: number | null;
+  mu_team1_minus_team2_team_ab_elite_tail_round64_v1?: number | null;
+  mu_team1_minus_team2_team_ab_internal?: number | null;
   display_mu_team1_minus_team2?: number | null;
   win_prob_team1: number;
+  win_prob_team1_legacy_synthetic?: number | null;
+  win_prob_team1_team_ab_elite_tail_round64_v1?: number | null;
+  win_prob_team1_team_ab_internal?: number | null;
   pred_sigma?: number | null;
   scheduled_game_id?: number | null;
   scheduled_round_id?: BracketRoundId | null;
@@ -74,6 +81,9 @@ export type MatchupPredictionCacheEntry = {
   home_team_name?: string | null;
   away_team_name?: string | null;
   model_mu_home?: number | null;
+  model_mu_home_legacy_synthetic?: number | null;
+  model_mu_home_team_ab_elite_tail_round64_v1?: number | null;
+  model_mu_home_team_ab_internal?: number | null;
   display_model_mu_home?: number | null;
   edge_home_points?: number | null;
   display_edge_home_points?: number | null;
@@ -96,6 +106,8 @@ export type MatchupPredictionCache = {
   neutral_site: boolean;
   source: string;
   note: string;
+  matchup_model_variant_active?: string | null;
+  matchup_model_variants_available?: string[] | null;
   predictions: Record<string, MatchupPredictionCacheEntry>;
 };
 
@@ -184,6 +196,7 @@ export type MatchupPrediction = {
   teamAName: string;
   teamBId: number;
   teamBName: string;
+  activeModelVariant?: string | null;
   favoredTeamId: number;
   favoredTeamName: string;
   underdogTeamId: number;
@@ -226,6 +239,16 @@ export type MatchupPrediction = {
   modelWinnerName: string;
   projectedScoreA?: number | null;
   projectedScoreB?: number | null;
+  comparisonModel?: {
+    variant: string;
+    label: string;
+    favoredTeamId: number | null;
+    favoredTeamName: string | null;
+    winProbA: number;
+    winProbB: number;
+    projectedSpread: number | null;
+    rawMarginA: number | null;
+  } | null;
 };
 
 export type MarchBettingGame = {

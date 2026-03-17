@@ -43,6 +43,22 @@ function lineLabel(teamName: string | null | undefined, spread: number | null | 
   return `${displayTeam(teamName)} ${spreadText}`;
 }
 
+function modelVariantLabel(variant: string | null | undefined): string {
+  if (variant === "team_ab_elite_tail_round64_v1") return "Team A/B";
+  if (variant === "legacy_synthetic") return "Legacy";
+  return "Model";
+}
+
+function modelSummaryLine(
+  favoriteTeamName: string | null | undefined,
+  favoriteWinProb: number | null | undefined,
+  spread: number | null | undefined,
+): string | null {
+  if (!favoriteTeamName || favoriteWinProb == null || spread == null) return null;
+  const spreadText = Math.abs(spread) < 0.05 ? "PK" : `-${spread.toFixed(1)}`;
+  return `${displayTeam(favoriteTeamName)} ${pct(favoriteWinProb, 1)} • ${spreadText}`;
+}
+
 function detailBox(label: string, value: string | null, tone: "slate" | "amber" | "blue" = "slate") {
   const palette = {
     slate: { border: "#dbe4ef", background: "#ffffff", label: "#64748b", value: "#0f172a" },
@@ -120,15 +136,48 @@ export default function MatchupPredictionCard({
   const displayLine = prediction
     ? lineLabel(displaySummary?.favoriteTeamName, displaySummary?.spread)
     : null;
+  const displayModelSummaryLine = displaySummary
+    ? modelSummaryLine(
+        displaySummary.favoriteTeamName,
+        displaySummary.favoriteWinProb,
+        displaySummary.spread,
+      )
+    : null;
   const marketLine = prediction
     ? lineLabel(prediction.marketFavoredTeamName, prediction.marketProjectedSpread)
     : null;
-  const rawModelLine = prediction
-    ? lineLabel(prediction.favoredTeamName, prediction.rawProjectedSpread ?? prediction.projectedSpread)
+  const activeModelLabel = prediction ? modelVariantLabel(prediction.activeModelVariant) : "Model";
+  const activeModelSummaryLine = prediction
+    ? modelSummaryLine(
+        prediction.favoredTeamName,
+        prediction.favoredTeamId === prediction.teamAId ? prediction.winProbA : prediction.winProbB,
+        prediction.rawProjectedSpread ?? prediction.projectedSpread,
+      )
     : null;
-  const displaySummaryLine = prediction
-    ? lineLabel(displaySummary?.favoriteTeamName, displaySummary?.spread)
-    : null;
+  const comparisonModelSummaryLine =
+    prediction?.comparisonModel == null
+      ? null
+      : modelSummaryLine(
+          prediction.comparisonModel.favoredTeamName,
+          prediction.comparisonModel.favoredTeamId === prediction.teamAId
+            ? prediction.comparisonModel.winProbA
+            : prediction.comparisonModel.winProbB,
+          prediction.comparisonModel.projectedSpread,
+        );
+  const comparisonSpreadGap =
+    prediction?.comparisonModel?.projectedSpread == null ||
+    prediction.rawProjectedSpread == null
+      ? null
+      : Math.abs(prediction.rawProjectedSpread - prediction.comparisonModel.projectedSpread);
+  const favorsDifferentTeams =
+    prediction?.comparisonModel?.favoredTeamId != null &&
+    prediction.comparisonModel.favoredTeamId !== prediction.favoredTeamId;
+  const showDisagreement = Boolean(favorsDifferentTeams || (comparisonSpreadGap ?? 0) >= 3);
+  const disagreementLabel = favorsDifferentTeams
+    ? "Model split"
+    : comparisonSpreadGap == null
+      ? null
+      : `Gap ${comparisonSpreadGap.toFixed(1)} pts`;
   const teams = [
     prediction && teamA
       ? {
@@ -193,8 +242,12 @@ export default function MatchupPredictionCard({
       {prediction ? (
         <>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
-            {statusPill(`Model: ${displayTeam(prediction.modelWinnerName)}`, "blue")}
-            {displayLine ? statusPill(`Display: ${displayLine}`, "slate") : null}
+            {statusPill(`Active: ${activeModelLabel}`, "blue")}
+            {prediction.comparisonModel
+              ? statusPill(`Baseline: ${prediction.comparisonModel.label}`, "slate")
+              : null}
+            {showDisagreement && disagreementLabel ? statusPill(disagreementLabel, "amber") : null}
+            {displayLine ? statusPill(`Shown avg: ${displayLine}`, "slate") : null}
             {marketLine ? statusPill(`Market: ${marketLine}`, "amber") : null}
             {comparison?.selectedWinnerName
               ? statusPill(comparison.agreesWithModel ? "Agree" : "Fade", comparison.agreesWithModel ? "green" : "amber")
@@ -215,8 +268,15 @@ export default function MatchupPredictionCard({
               marginBottom: 12,
             }}
           >
-            {detailBox("Display spread", displaySummaryLine, "blue")}
-            {detailBox("Raw model spread", rawModelLine, "slate")}
+            {detailBox("Shown avg", displayModelSummaryLine, "blue")}
+            {detailBox(`Active ${activeModelLabel}`, activeModelSummaryLine, "slate")}
+            {prediction?.comparisonModel
+              ? detailBox(
+                  `${prediction.comparisonModel.label} baseline`,
+                  comparisonModelSummaryLine,
+                  "slate",
+                )
+              : null}
             {detailBox("Market line", marketLine, "amber")}
           </div>
 
@@ -259,7 +319,7 @@ export default function MatchupPredictionCard({
                   </div>
                   {showRawWinProb ? (
                     <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: -4, marginBottom: 10 }}>
-                      Raw model {pct(rawWinProb, 1)}
+                      Active model {pct(rawWinProb, 1)}
                     </div>
                   ) : null}
                   <div style={{ ...mono, fontSize: 12, color: "#475569", marginBottom: 14 }}>

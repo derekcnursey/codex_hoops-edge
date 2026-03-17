@@ -47,13 +47,18 @@ from scripts.rebuild_tourney_jsons import _build_synthetic_rows, _predict_pairwi
 from src import config, s3_reader
 from src.features import load_lines, load_research_lines
 from src.infer import (
+    _fill_nan_with_impute_means,
     _fill_nan_with_scaler_means,
+    _predict_mu_values,
     american_to_breakeven,
     load_regressor,
+    load_mu_regressor,
     normal_cdf,
     prob_to_american,
 )
 from src.line_selection import select_preferred_lines
+from src.mean_model_variants import TEAM_AB_ELITE_TAIL_ROUND64_V1, build_team_ab_elite_tail_round64_contract
+from src.ml_odds import site_home_win_prob_from_mu_sigma
 from src.tournament_adjustments import market_blended_display_margin
 from src.trainer import load_scaler, load_tree_regressor
 
@@ -67,6 +72,12 @@ FIELD_INPUT_TEMPLATE = "ncaa_field_input_{season}.json"
 FIELD_OUTPUT_TEMPLATE = "ncaa_bracket_builder_{season}.json"
 MATCHUPS_OUTPUT_TEMPLATE = "ncaa_matchup_predictions_{season}.json"
 RANKINGS_TEMPLATE = "rankings_{season}.json"
+BRACKET_MODEL_VARIANT_LEGACY_SYNTHETIC = "legacy_synthetic"
+BRACKET_MODEL_VARIANT_TEAM_AB = TEAM_AB_ELITE_TAIL_ROUND64_V1
+SUPPORTED_BRACKET_MODEL_VARIANTS = {
+    BRACKET_MODEL_VARIANT_LEGACY_SYNTHETIC,
+    BRACKET_MODEL_VARIANT_TEAM_AB,
+}
 
 
 def _read_json(path: Path) -> Any:
@@ -104,6 +115,183 @@ def _load_rankings_rows(season: int) -> dict[int, dict[str, Any]]:
     for row in rows:
         by_id[int(row["team_id"])] = row
     return by_id
+
+
+def _normalize_bracket_model_variant(value: str | None) -> str:
+    variant = (value or BRACKET_MODEL_VARIANT_LEGACY_SYNTHETIC).strip().lower()
+    if variant not in SUPPORTED_BRACKET_MODEL_VARIANTS:
+        raise ValueError(
+            f"Unsupported bracket matchup model variant {variant!r}. "
+            f"Expected one of {sorted(SUPPORTED_BRACKET_MODEL_VARIANTS)}."
+        )
+    return variant
+
+
+def _normalize_efficiency_source(value: str | None, *, env_name: str) -> str:
+    source = (value or "gold").strip().lower()
+    if source not in config.SUPPORTED_EFFICIENCY_SOURCES:
+        raise ValueError(
+            f"Unsupported {env_name} {source!r}. "
+            f"Expected one of {sorted(config.SUPPORTED_EFFICIENCY_SOURCES)}."
+        )
+    return source
+
+
+def _build_bracket_ratings_frame(
+    season: int,
+    *,
+    efficiency_source: str,
+    gold_table_name: str | None,
+) -> tuple[pd.DataFrame, dict[str, float], str]:
+    rankings = pd.DataFrame.from_records(list(_load_rankings_rows(season).values()))
+    ratings, ratings_source = _load_latest_ratings(
+        season,
+        efficiency_source=efficiency_source,
+        gold_table_name=gold_table_name,
+    )
+    if ratings.empty:
+        raise ValueError(f"Missing latest ratings rows for NCAA bracket builder season {season}")
+
+    ratings = ratings.copy()
+    ratings["team_id"] = ratings["teamId"].astype(int)
+    ratings["barthag_rank"] = ratings["barthag"].rank(ascending=False, method="first")
+    ratings["adj_net_model"] = pd.to_numeric(ratings["adj_oe"], errors="coerce") - pd.to_numeric(
+        ratings["adj_de"], errors="coerce"
+    )
+    rename_map = {
+        "adj_oe": "adj_oe_model",
+        "adj_de": "adj_de_model",
+        "adj_tempo": "adj_tempo_model",
+        "barthag": "barthag_model",
+        "sos_oe": "sos_oe_model",
+        "sos_de": "sos_de_model",
+    }
+    ratings = ratings.rename(columns=rename_map)
+
+    conf_frame = rankings[["team_id", "conference"]].drop_duplicates("team_id").copy()
+    ratings = ratings.merge(conf_frame, on="team_id", how="left", suffixes=("", "_rankings"))
+    if "conference" not in ratings.columns and "conference_rankings" in ratings.columns:
+        ratings["conference"] = ratings["conference_rankings"]
+    elif "conference_rankings" in ratings.columns:
+        ratings["conference"] = ratings["conference"].fillna(ratings["conference_rankings"])
+    conf_strength_lookup = (
+        ratings.dropna(subset=["conference", "adj_net_model"])
+        .groupby("conference")["adj_net_model"]
+        .mean()
+        .to_dict()
+    )
+    return ratings, conf_strength_lookup, ratings_source
+
+
+def _build_team_ab_bracket_source(
+    team_a: pd.Series,
+    team_b: pd.Series,
+    *,
+    season: int,
+    conf_strength_lookup: dict[str, float],
+    round_label: str | None,
+    start_time: object,
+) -> pd.DataFrame:
+    fallback_ts = pd.Timestamp(year=season, month=3, day=15, tz="UTC")
+    start_ts = pd.to_datetime(start_time, errors="coerce", utc=True)
+    if pd.isna(start_ts):
+        start_ts = fallback_ts
+
+    def _row_value(row: pd.Series, preferred: str, fallback: str | None = None) -> float | None:
+        value = row.get(preferred)
+        if pd.isna(value) and fallback is not None:
+            value = row.get(fallback)
+        if pd.isna(value):
+            return None
+        return float(value)
+
+    def _team_payload(prefix: str, row: pd.Series) -> dict[str, Any]:
+        conf = str(row.get("conference") or "")
+        return {
+            f"{prefix}_team_id": int(row["team_id"]),
+            f"{prefix}_name": str(row.get("team") or row.get("team_name") or ""),
+            f"{prefix}_adj_oe": _row_value(row, "adj_oe_model", "adj_oe"),
+            f"{prefix}_adj_de": _row_value(row, "adj_de_model", "adj_de"),
+            f"{prefix}_barthag": _row_value(row, "barthag_model", "barthag"),
+            f"{prefix}_conf_strength": conf_strength_lookup.get(conf),
+            f"{prefix}_sos_oe": _row_value(row, "sos_oe_model"),
+            f"{prefix}_sos_de": _row_value(row, "sos_de_model"),
+            f"{prefix}_form_delta": np.nan,
+            f"{prefix}_rest_days": np.nan,
+            f"{prefix}_eff_fg_pct": np.nan,
+            f"{prefix}_ft_rate": np.nan,
+            f"{prefix}_off_rebound_pct": np.nan,
+            f"{prefix}_tov_rate": np.nan,
+            f"{prefix}_margin_std": np.nan,
+            f"{prefix}_barthag_rank": _row_value(row, "barthag_rank", "rank"),
+            f"{prefix}_seed": _row_value(row, "seed"),
+        }
+
+    row = {
+        "season": int(season),
+        "gameId": -1,
+        "startDate": start_ts,
+        "actual_margin": np.nan,
+        "target_margin_ab": np.nan,
+        "neutral_site": 1.0,
+        "team_a_is_home_non_neutral": 0.0,
+        "team_a_hca": 0.0,
+        "tournament": "NCAA",
+        "gameType": "TRNMNT",
+        "conferenceGame": False,
+        "gameNotes": round_label,
+        "neutral_subtype": "ncaa_neutral",
+        "round_label": round_label,
+        "pair_augmented": 0,
+    }
+    row.update(_team_payload("team_a", team_a))
+    row.update(_team_payload("team_b", team_b))
+    return pd.DataFrame([row])
+
+
+def _predict_team_ab_pairwise_margin(
+    team_a: pd.Series,
+    team_b: pd.Series,
+    *,
+    season: int,
+    round_label: str | None,
+    start_time: object,
+    conf_strength_lookup: dict[str, float],
+    mu_regressor: object,
+    mu_feature_order: list[str],
+    mu_model_type: str,
+    mu_impute_means: np.ndarray | None,
+) -> float:
+    source = _build_team_ab_bracket_source(
+        team_a,
+        team_b,
+        season=season,
+        conf_strength_lookup=conf_strength_lookup,
+        round_label=round_label,
+        start_time=start_time,
+    )
+    features = build_team_ab_elite_tail_round64_contract(source)
+    X_raw = _fill_nan_with_impute_means(features[mu_feature_order].copy(), mu_impute_means)
+    mu = _predict_mu_values(mu_regressor, mu_model_type, X_raw, X_raw)
+    return float(mu[0])
+
+
+def _site_probability_from_mu_sigma(
+    mu: float,
+    sigma: float,
+    *,
+    month: int = 3,
+    day: int = 15,
+) -> float:
+    return float(
+        site_home_win_prob_from_mu_sigma(
+            float(mu),
+            float(sigma),
+            start_month=month,
+            start_day=day,
+            odds_mode="meta_small_v1",
+        )
+    )
 
 
 def _build_slot_plan() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -702,7 +890,14 @@ def _validate_field_payload(field: dict[str, Any]) -> None:
         raise ValueError(f"Expected 68 field teams, found {len(seen_ids)}")
 
 
-def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]:
+def _build_matchup_payload(
+    field: dict[str, Any],
+    season: int,
+    *,
+    bracket_model_variant: str,
+    team_ab_efficiency_source: str,
+    team_ab_gold_ratings_table: str | None,
+) -> dict[str, Any]:
     print("Collecting selected NCAA teams", flush=True)
     team_rows = []
     for region in field["regions"]:
@@ -717,28 +912,37 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
         unique_rows[int(row["team_id"])] = row
 
     selected_ids = sorted(unique_rows)
-    print("Loading latest ratings", flush=True)
-    ratings, _ = _load_latest_ratings(season)
     selected = pd.DataFrame.from_records(list(unique_rows.values()))
-    merged = selected.merge(
-        ratings,
-        left_on="team_id",
-        right_on="teamId",
-        how="left",
-        suffixes=("_public", ""),
-    )
-    missing = merged.loc[
-        merged["adj_oe_y"].isna() if "adj_oe_y" in merged.columns else merged["adj_oe"].isna(),
-        "team",
-    ].tolist()
-    if missing:
-        raise ValueError(f"Missing ratings rows for selected NCAA teams: {missing[:10]}")
+    print("Loading latest ratings", flush=True)
 
-    if "adj_oe_y" in merged.columns:
-        merged["adj_oe"] = merged["adj_oe_y"]
-        merged["adj_de"] = merged["adj_de_y"]
-        merged["adj_tempo"] = merged["adj_tempo_y"]
-        merged = merged.drop(columns=[col for col in merged.columns if col.endswith("_x") or col.endswith("_y")])
+    def _merge_selected_with_ratings(ratings_frame: pd.DataFrame) -> pd.DataFrame:
+        merged = selected.merge(
+            ratings_frame,
+            on="team_id",
+            how="left",
+            suffixes=("_field", ""),
+        )
+        missing = merged.loc[merged["adj_oe_model"].isna(), "team"].tolist()
+        if missing:
+            raise ValueError(f"Missing ratings rows for selected NCAA teams: {missing[:10]}")
+        for model_col, legacy_col in [
+            ("adj_oe_model", "adj_oe"),
+            ("adj_de_model", "adj_de"),
+            ("adj_tempo_model", "adj_tempo"),
+            ("barthag_model", "barthag"),
+            ("sos_oe_model", "sos_oe"),
+            ("sos_de_model", "sos_de"),
+        ]:
+            if model_col in merged.columns:
+                merged[legacy_col] = merged[model_col]
+        return merged
+
+    legacy_ratings, legacy_conf_strength_lookup, legacy_ratings_source = _build_bracket_ratings_frame(
+        season,
+        efficiency_source="gold",
+        gold_table_name=config.PRODUCTION_GOLD_RATINGS_TABLE,
+    )
+    legacy_merged = _merge_selected_with_ratings(legacy_ratings)
 
     print("Loading model artifacts", flush=True)
     scaler = load_scaler()
@@ -746,18 +950,54 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
     sigma_model, _, sigma_feature_order, sigma_param = load_regressor()
     if sigma_feature_order != feature_order:
         raise ValueError("Tree and sigma feature orders do not match")
+    team_ab_loaded: tuple[object, list[str], str, dict] | None = None
+    try:
+        team_ab_loaded = load_mu_regressor(TEAM_AB_ELITE_TAIL_ROUND64_V1)
+    except FileNotFoundError:
+        if bracket_model_variant == BRACKET_MODEL_VARIANT_TEAM_AB:
+            raise
 
-    team_lookup = {int(row["team_id"]): row for _, row in merged.iterrows()}
+    team_lookup_legacy = {int(row["team_id"]): row for _, row in legacy_merged.iterrows()}
+    team_lookup_team_ab = team_lookup_legacy
+    team_lookup_team_ab_internal = team_lookup_legacy
+    conf_strength_lookup = legacy_conf_strength_lookup
+    team_ab_ratings_source = legacy_ratings_source
+    team_ab_internal_conf_strength_lookup = legacy_conf_strength_lookup
+    team_ab_internal_ratings_source = legacy_ratings_source
+    internal_gold_table_name = team_ab_gold_ratings_table or config.BRACKET_TEAM_AB_GOLD_RATINGS_TABLE
+    if team_ab_loaded is not None and (
+        team_ab_efficiency_source != "gold"
+        or (team_ab_gold_ratings_table or config.PRODUCTION_GOLD_RATINGS_TABLE) != config.PRODUCTION_GOLD_RATINGS_TABLE
+    ):
+        team_ab_ratings, conf_strength_lookup, team_ab_ratings_source = _build_bracket_ratings_frame(
+            season,
+            efficiency_source=team_ab_efficiency_source,
+            gold_table_name=team_ab_gold_ratings_table,
+        )
+        team_ab_merged = _merge_selected_with_ratings(team_ab_ratings)
+        team_lookup_team_ab = {int(row["team_id"]): row for _, row in team_ab_merged.iterrows()}
+    if team_ab_loaded is not None:
+        team_ab_internal_ratings, team_ab_internal_conf_strength_lookup, team_ab_internal_ratings_source = (
+            _build_bracket_ratings_frame(
+                season,
+                efficiency_source="gold",
+                gold_table_name=internal_gold_table_name,
+            )
+        )
+        team_ab_internal_merged = _merge_selected_with_ratings(team_ab_internal_ratings)
+        team_lookup_team_ab_internal = {
+            int(row["team_id"]): row for _, row in team_ab_internal_merged.iterrows()
+        }
     opening_round_lines = _load_opening_round_market_lookup(season)
 
     predictions: dict[str, Any] = {}
     total_pairs = len(selected_ids) * (len(selected_ids) - 1) // 2
     for pair_index, (team_a_id, team_b_id) in enumerate(combinations(selected_ids, 2), start=1):
-        team_a = team_lookup[team_a_id]
-        team_b = team_lookup[team_b_id]
-        mu, sigma, win_prob_a = _predict_pairwise_projection(
-            team_a,
-            team_b,
+        team_a_legacy = team_lookup_legacy[team_a_id]
+        team_b_legacy = team_lookup_legacy[team_b_id]
+        legacy_mu, sigma, _legacy_win_prob_a = _predict_pairwise_projection(
+            team_a_legacy,
+            team_b_legacy,
             feature_order,
             scaler,
             tree_model,
@@ -768,16 +1008,73 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
         )
         canonical_key = f"{team_a_id}::{team_b_id}"
         line_info = opening_round_lines.get(canonical_key)
-        display_mu = float(mu)
+        round_label = None if line_info is None else line_info["scheduled_round_label"]
+        start_time = None if line_info is None else line_info["start_time"]
+        team_ab_mu = None
+        team_ab_internal_mu = None
+        if team_ab_loaded is not None:
+            team_a_team_ab = team_lookup_team_ab[team_a_id]
+            team_b_team_ab = team_lookup_team_ab[team_b_id]
+            team_ab_regressor, team_ab_feature_order, team_ab_model_type, team_ab_meta = team_ab_loaded
+            team_ab_mu = _predict_team_ab_pairwise_margin(
+                team_a_team_ab,
+                team_b_team_ab,
+                season=season,
+                round_label=round_label,
+                start_time=start_time,
+                conf_strength_lookup=conf_strength_lookup,
+                mu_regressor=team_ab_regressor,
+                mu_feature_order=team_ab_feature_order,
+                mu_model_type=team_ab_model_type,
+                mu_impute_means=team_ab_meta.get("impute_means"),
+            )
+            team_a_team_ab_internal = team_lookup_team_ab_internal[team_a_id]
+            team_b_team_ab_internal = team_lookup_team_ab_internal[team_b_id]
+            team_ab_internal_mu = _predict_team_ab_pairwise_margin(
+                team_a_team_ab_internal,
+                team_b_team_ab_internal,
+                season=season,
+                round_label=round_label,
+                start_time=start_time,
+                conf_strength_lookup=team_ab_internal_conf_strength_lookup,
+                mu_regressor=team_ab_regressor,
+                mu_feature_order=team_ab_feature_order,
+                mu_model_type=team_ab_model_type,
+                mu_impute_means=team_ab_meta.get("impute_means"),
+            )
+
+        legacy_win_prob_a = _site_probability_from_mu_sigma(float(legacy_mu), float(sigma))
+        team_ab_win_prob_a = (
+            None if team_ab_mu is None else _site_probability_from_mu_sigma(float(team_ab_mu), float(sigma))
+        )
+        team_ab_internal_win_prob_a = (
+            None
+            if team_ab_internal_mu is None
+            else _site_probability_from_mu_sigma(float(team_ab_internal_mu), float(sigma))
+        )
+        active_mu = (
+            float(team_ab_mu)
+            if bracket_model_variant == BRACKET_MODEL_VARIANT_TEAM_AB and team_ab_mu is not None
+            else float(legacy_mu)
+        )
+        win_prob_a = (
+            float(team_ab_win_prob_a)
+            if bracket_model_variant == BRACKET_MODEL_VARIANT_TEAM_AB and team_ab_win_prob_a is not None
+            else float(legacy_win_prob_a)
+        )
+        display_mu = float(active_mu)
         if config.NCAA_TOURNAMENT_MARKET_BLEND_ENABLED and line_info is not None:
             display_mu = market_blended_display_margin(
-                float(mu),
+                float(active_mu),
                 float(line_info["market_mu_team1_minus_team2"]),
             )
         model_mu_home = None
         display_model_mu_home = None
         edge_home_points = None
         display_edge_home_points = None
+        legacy_model_mu_home = None
+        team_ab_model_mu_home = None
+        team_ab_internal_model_mu_home = None
         pick_side = None
         pick_cover_prob = None
         pick_prob_edge = None
@@ -785,8 +1082,15 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
         if line_info is not None:
             home_team_id = int(line_info["home_team_id"])
             book_spread = float(line_info["market_spread_home"])
-            model_mu_home = float(mu) if home_team_id == team_a_id else -float(mu)
+            model_mu_home = float(active_mu) if home_team_id == team_a_id else -float(active_mu)
             display_model_mu_home = float(display_mu) if home_team_id == team_a_id else -float(display_mu)
+            legacy_model_mu_home = float(legacy_mu) if home_team_id == team_a_id else -float(legacy_mu)
+            if team_ab_mu is not None:
+                team_ab_model_mu_home = float(team_ab_mu) if home_team_id == team_a_id else -float(team_ab_mu)
+            if team_ab_internal_mu is not None:
+                team_ab_internal_model_mu_home = (
+                    float(team_ab_internal_mu) if home_team_id == team_a_id else -float(team_ab_internal_mu)
+                )
             edge_home_points = model_mu_home + book_spread
             display_edge_home_points = display_model_mu_home + book_spread
             sigma_safe = max(float(sigma), 0.5)
@@ -800,12 +1104,25 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
             pick_fair_odds = float(prob_to_american(np.array([pick_cover_prob]))[0])
         predictions[f"{team_a_id}::{team_b_id}"] = {
             "team1_id": int(team_a_id),
-            "team1_name": str(team_a["team"]),
+            "team1_name": str(team_a_legacy["team"]),
             "team2_id": int(team_b_id),
-            "team2_name": str(team_b["team"]),
-            "mu_team1_minus_team2": float(mu),
+            "team2_name": str(team_b_legacy["team"]),
+            "matchup_model_variant_active": bracket_model_variant,
+            "mu_team1_minus_team2": float(active_mu),
+            "mu_team1_minus_team2_legacy_synthetic": float(legacy_mu),
+            "mu_team1_minus_team2_team_ab_elite_tail_round64_v1": None if team_ab_mu is None else float(team_ab_mu),
+            "mu_team1_minus_team2_team_ab_internal": (
+                None if team_ab_internal_mu is None else float(team_ab_internal_mu)
+            ),
             "display_mu_team1_minus_team2": display_mu,
             "win_prob_team1": float(win_prob_a),
+            "win_prob_team1_legacy_synthetic": float(legacy_win_prob_a),
+            "win_prob_team1_team_ab_elite_tail_round64_v1": (
+                None if team_ab_win_prob_a is None else float(team_ab_win_prob_a)
+            ),
+            "win_prob_team1_team_ab_internal": (
+                None if team_ab_internal_win_prob_a is None else float(team_ab_internal_win_prob_a)
+            ),
             "pred_sigma": float(sigma),
             "scheduled_game_id": None if line_info is None else line_info["scheduled_game_id"],
             "scheduled_round_id": None if line_info is None else line_info["scheduled_round_id"],
@@ -816,6 +1133,9 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
             "home_team_name": None if line_info is None else line_info["home_team_name"],
             "away_team_name": None if line_info is None else line_info["away_team_name"],
             "model_mu_home": model_mu_home,
+            "model_mu_home_legacy_synthetic": legacy_model_mu_home,
+            "model_mu_home_team_ab_elite_tail_round64_v1": team_ab_model_mu_home,
+            "model_mu_home_team_ab_internal": team_ab_internal_model_mu_home,
             "display_model_mu_home": display_model_mu_home,
             "edge_home_points": edge_home_points,
             "display_edge_home_points": display_edge_home_points,
@@ -839,10 +1159,28 @@ def _build_matchup_payload(field: dict[str, Any], season: int) -> dict[str, Any]
         "season": season,
         "neutral_site": True,
         "source": "production_matchup_model",
+        "matchup_model_variant_active": bracket_model_variant,
+        "team_ab_efficiency_source_active": team_ab_efficiency_source,
+        "team_ab_gold_ratings_table_active": team_ab_gold_ratings_table,
+        "legacy_ratings_source": legacy_ratings_source,
+        "team_ab_ratings_source": team_ab_ratings_source,
+        "team_ab_internal_ratings_source_compare": team_ab_internal_ratings_source,
+        "team_ab_internal_gold_ratings_table_compare": internal_gold_table_name,
+        "matchup_model_variants_available": sorted(
+            [
+                BRACKET_MODEL_VARIANT_LEGACY_SYNTHETIC,
+                *([BRACKET_MODEL_VARIANT_TEAM_AB] if team_ab_loaded is not None else []),
+            ]
+        ),
         "note": (
-            "Neutral-site pairwise predictions generated from the current promoted "
-            "Hoops Edge production mean model plus sigma model and site ML correction. "
-            "Opening-round NCAA games also carry optional display-spread and market-line metadata."
+            "Neutral-site pairwise predictions generated from the NCAA bracket-builder matchup cache. "
+            "The legacy synthetic tree spread, the active Team A/B tournament-engine spread, and the "
+            "Team A/B internal-efficiency comparison spread are cached side by side when available; "
+            "active spread selection follows the configured bracket matchup "
+            "model variant. Sigma and site win-probability logic remain on the legacy bracket uncertainty path. "
+            f"Legacy ratings source: {legacy_ratings_source}. "
+            f"Team A/B ratings source: {team_ab_ratings_source}. "
+            f"Team A/B internal comparison source: {team_ab_internal_ratings_source}."
         ),
         "predictions": predictions,
     }
@@ -876,6 +1214,15 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--season", type=int, default=CURRENT_SEASON)
     parser.add_argument(
+        "--bracket-model-variant",
+        type=str,
+        default=None,
+        help=(
+            "Bracket matchup mean-model path. Defaults to HOOPS_BRACKET_MATCHUP_MODEL_VARIANT "
+            f"({config.BRACKET_MATCHUP_MODEL_VARIANT})."
+        ),
+    )
+    parser.add_argument(
         "--field-input",
         type=Path,
         default=None,
@@ -898,12 +1245,45 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Dev helper only. Build a temporary field from rankings instead of a canonical field input file.",
     )
+    parser.add_argument(
+        "--team-ab-efficiency-source",
+        type=str,
+        default=None,
+        help=(
+            "Efficiency source for the Team A/B bracket scorer. Defaults to "
+            "HOOPS_BRACKET_TEAM_AB_EFFICIENCY_SOURCE "
+            f"({config.BRACKET_TEAM_AB_EFFICIENCY_SOURCE})."
+        ),
+    )
+    parser.add_argument(
+        "--team-ab-gold-ratings-table",
+        type=str,
+        default=None,
+        help=(
+            "Explicit gold ratings table for the Team A/B bracket scorer when "
+            'the source is "gold". Defaults to '
+            "HOOPS_BRACKET_TEAM_AB_GOLD_RATINGS_TABLE "
+            f"({config.BRACKET_TEAM_AB_GOLD_RATINGS_TABLE})."
+        ),
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = _parse_args()
     season = int(args.season)
+    bracket_model_variant = _normalize_bracket_model_variant(
+        args.bracket_model_variant or config.BRACKET_MATCHUP_MODEL_VARIANT
+    )
+    team_ab_efficiency_source = _normalize_efficiency_source(
+        args.team_ab_efficiency_source or config.BRACKET_TEAM_AB_EFFICIENCY_SOURCE,
+        env_name="Team A/B bracket efficiency source",
+    )
+    team_ab_gold_ratings_table = (
+        (args.team_ab_gold_ratings_table or config.BRACKET_TEAM_AB_GOLD_RATINGS_TABLE).strip()
+        if team_ab_efficiency_source == "gold"
+        else None
+    )
     field_input_path = args.field_input or _season_path(FIELD_INPUT_TEMPLATE, season)
     field_output_path = args.field_output or _season_path(FIELD_OUTPUT_TEMPLATE, season)
     matchups_output_path = args.matchups_output or _season_path(MATCHUPS_OUTPUT_TEMPLATE, season)
@@ -928,7 +1308,13 @@ def main() -> None:
     _validate_field_payload(field)
 
     print("Building matchup payload", flush=True)
-    matchup_payload = _build_matchup_payload(field, season)
+    matchup_payload = _build_matchup_payload(
+        field,
+        season,
+        bracket_model_variant=bracket_model_variant,
+        team_ab_efficiency_source=team_ab_efficiency_source,
+        team_ab_gold_ratings_table=team_ab_gold_ratings_table,
+    )
     _validate_matchup_payload(field, matchup_payload)
 
     _write_json(field_output_path, field)

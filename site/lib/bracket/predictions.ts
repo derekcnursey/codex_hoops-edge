@@ -87,14 +87,45 @@ export function getDisplayFavoriteSummary(prediction: MatchupPrediction): {
   };
 }
 
-function buildPredictionRecord(base: {
+function buildComparisonRecord(base: {
+  variant: string;
+  label: string;
   teamAId: number;
   teamAName: string;
   teamBId: number;
   teamBName: string;
   winProbA: number;
   rawMarginA: number;
+}): NonNullable<MatchupPrediction["comparisonModel"]> {
+  const favorite = favoredFromMargin(
+    base.rawMarginA,
+    base.teamAId,
+    base.teamAName,
+    base.teamBId,
+    base.teamBName,
+  );
+  return {
+    variant: base.variant,
+    label: base.label,
+    favoredTeamId: favorite.favoriteId,
+    favoredTeamName: favorite.favoriteName,
+    winProbA: base.winProbA,
+    winProbB: 1 - base.winProbA,
+    projectedSpread: favorite.spread,
+    rawMarginA: base.rawMarginA,
+  };
+}
+
+function buildPredictionRecord(base: {
+  teamAId: number;
+  teamAName: string;
+  teamBId: number;
+  teamBName: string;
+  activeModelVariant?: string | null;
+  winProbA: number;
+  rawMarginA: number;
   displayMarginA: number;
+  displayWinProbAOverride?: number | null;
   marketMarginA?: number | null;
   marketLineSource?: string | null;
   predSigma?: number | null;
@@ -115,6 +146,7 @@ function buildPredictionRecord(base: {
   scheduledGameId?: number | null;
   scheduledRoundId?: MatchupPrediction["scheduledRoundId"];
   scheduledRoundLabel?: string | null;
+  comparisonModel?: MatchupPrediction["comparisonModel"];
 }): MatchupPrediction {
   const rawFavorite = favoredFromMargin(
     base.rawMarginA,
@@ -140,20 +172,23 @@ function buildPredictionRecord(base: {
   const modelWinnerId = rawFavorite.favoriteId ?? base.teamAId;
   const modelWinnerName = rawFavorite.favoriteName ?? base.teamAName;
   const hasDisplayAdjustment = Math.abs(base.displayMarginA - base.rawMarginA) > 1e-9;
-  const recalculatedDisplayWinProbA = hasDisplayAdjustment
-    ? getSiteHomeWinProbFromValues(
-        base.displayMarginA,
-        base.predSigma ?? null,
-        base.scheduledStartTime ?? null,
-      )
-    : null;
-  const displayWinProbA = recalculatedDisplayWinProbA ?? base.winProbA;
+  const recalculatedDisplayWinProbA =
+    base.displayWinProbAOverride == null && hasDisplayAdjustment
+      ? getSiteHomeWinProbFromValues(
+          base.displayMarginA,
+          base.predSigma ?? null,
+          base.scheduledStartTime ?? null,
+        )
+      : null;
+  const displayWinProbA =
+    base.displayWinProbAOverride ?? recalculatedDisplayWinProbA ?? base.winProbA;
 
   return {
     teamAId: base.teamAId,
     teamAName: base.teamAName,
     teamBId: base.teamBId,
     teamBName: base.teamBName,
+    activeModelVariant: base.activeModelVariant ?? null,
     favoredTeamId: modelWinnerId,
     favoredTeamName: modelWinnerName,
     underdogTeamId: modelWinnerId === base.teamAId ? base.teamBId : base.teamAId,
@@ -196,6 +231,7 @@ function buildPredictionRecord(base: {
     modelWinnerName,
     projectedScoreA: null,
     projectedScoreB: null,
+    comparisonModel: base.comparisonModel ?? null,
   };
 }
 
@@ -205,6 +241,7 @@ export function flipPrediction(prediction: MatchupPrediction): MatchupPrediction
     teamAName: prediction.teamBName,
     teamBId: prediction.teamAId,
     teamBName: prediction.teamAName,
+    activeModelVariant: prediction.activeModelVariant ?? null,
     winProbA: prediction.winProbB,
     rawMarginA: -(prediction.rawMarginA ?? 0),
     displayMarginA: -(prediction.displayMarginA ?? prediction.rawMarginA ?? 0),
@@ -231,6 +268,18 @@ export function flipPrediction(prediction: MatchupPrediction): MatchupPrediction
     scheduledGameId: prediction.scheduledGameId ?? null,
     scheduledRoundId: prediction.scheduledRoundId ?? null,
     scheduledRoundLabel: prediction.scheduledRoundLabel ?? null,
+    comparisonModel: prediction.comparisonModel
+      ? buildComparisonRecord({
+          variant: prediction.comparisonModel.variant,
+          label: prediction.comparisonModel.label,
+          teamAId: prediction.teamBId,
+          teamAName: prediction.teamBName,
+          teamBId: prediction.teamAId,
+          teamBName: prediction.teamAName,
+          winProbA: prediction.comparisonModel.winProbB,
+          rawMarginA: -(prediction.comparisonModel.rawMarginA ?? 0),
+        })
+      : null,
   });
 }
 
@@ -257,6 +306,7 @@ export function buildPredictionFromCacheEntry(
   teamBId: number,
 ): MatchupPrediction {
   const directOrder = entry.team1_id === teamAId && entry.team2_id === teamBId;
+  const activeVariant = entry.matchup_model_variant_active ?? null;
   const rawMarginA = directOrder ? entry.mu_team1_minus_team2 : -entry.mu_team1_minus_team2;
   const displayMu = entry.display_mu_team1_minus_team2 ?? entry.mu_team1_minus_team2;
   const displayMarginA = directOrder ? displayMu : -displayMu;
@@ -266,15 +316,59 @@ export function buildPredictionFromCacheEntry(
   const winProbA = directOrder ? entry.win_prob_team1 : 1 - entry.win_prob_team1;
   const teamAName = directOrder ? entry.team1_name : entry.team2_name;
   const teamBName = directOrder ? entry.team2_name : entry.team1_name;
+  const comparisonModel =
+    activeVariant === "team_ab_elite_tail_round64_v1" &&
+    entry.mu_team1_minus_team2_team_ab_internal != null &&
+    entry.win_prob_team1_team_ab_internal != null
+      ? buildComparisonRecord({
+          variant: "team_ab_internal",
+          label: "Internal",
+          teamAId,
+          teamAName,
+          teamBId,
+          teamBName,
+          winProbA: directOrder
+            ? entry.win_prob_team1_team_ab_internal
+            : 1 - entry.win_prob_team1_team_ab_internal,
+          rawMarginA: directOrder
+            ? entry.mu_team1_minus_team2_team_ab_internal
+            : -entry.mu_team1_minus_team2_team_ab_internal,
+        })
+      : activeVariant === "legacy_synthetic" &&
+          entry.mu_team1_minus_team2_team_ab_elite_tail_round64_v1 != null &&
+          entry.win_prob_team1_team_ab_elite_tail_round64_v1 != null
+        ? buildComparisonRecord({
+            variant: "team_ab_elite_tail_round64_v1",
+            label: "Team A/B",
+            teamAId,
+            teamAName,
+            teamBId,
+            teamBName,
+            winProbA: directOrder
+              ? entry.win_prob_team1_team_ab_elite_tail_round64_v1
+              : 1 - entry.win_prob_team1_team_ab_elite_tail_round64_v1,
+            rawMarginA: directOrder
+              ? entry.mu_team1_minus_team2_team_ab_elite_tail_round64_v1
+              : -entry.mu_team1_minus_team2_team_ab_elite_tail_round64_v1,
+          })
+        : null;
+  const averagedDisplayMarginA =
+    comparisonModel?.rawMarginA == null
+      ? displayMarginA
+      : (rawMarginA + comparisonModel.rawMarginA) / 2;
+  const averagedDisplayWinProbA =
+    comparisonModel == null ? winProbA : (winProbA + comparisonModel.winProbA) / 2;
 
   return buildPredictionRecord({
     teamAId,
     teamAName,
     teamBId,
     teamBName,
+    activeModelVariant: activeVariant,
     winProbA,
     rawMarginA,
-    displayMarginA,
+    displayMarginA: averagedDisplayMarginA,
+    displayWinProbAOverride: averagedDisplayWinProbA,
     marketMarginA,
     marketLineSource: entry.market_line_source ?? null,
     predSigma: entry.pred_sigma ?? null,
@@ -295,5 +389,6 @@ export function buildPredictionFromCacheEntry(
     scheduledGameId: entry.scheduled_game_id ?? null,
     scheduledRoundId: entry.scheduled_round_id ?? null,
     scheduledRoundLabel: entry.scheduled_round_label ?? null,
+    comparisonModel,
   });
 }
