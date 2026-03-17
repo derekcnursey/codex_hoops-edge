@@ -506,8 +506,8 @@ function NcaaOddsSection({
         }}
       >
         Exact bracket advancement odds using the NCAA display-adjusted spread
-        path for moneyline conversion. Raw model margins are unchanged
-        elsewhere.
+        path for moneyline conversion. Active columns use Team A/B with Torvik.
+        Internal columns use the same Team A/B model on Hoops Edge efficiencies.
       </div>
 
       <div
@@ -623,10 +623,23 @@ function NcaaOddsSection({
                 <th style={{ ...thStyle, textAlign: "left" }}>Team</th>
                 <th style={thStyle}>Region</th>
                 <th style={thStyle}>
-                  Active {NCAA_ROUND_COLUMNS.find((column) => column.key === sortKey)?.label ?? "Odds"}
+                  Active
+                  <div style={{ fontSize: 10, fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>
+                    Team A/B Torvik
+                  </div>
                 </th>
-                <th style={thStyle}>Internal</th>
-                <th style={thStyle}>Δ</th>
+                <th style={thStyle}>
+                  Internal
+                  <div style={{ fontSize: 10, fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>
+                    Same model, HE effs
+                  </div>
+                </th>
+                <th style={thStyle}>
+                  Δ
+                  <div style={{ fontSize: 10, fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>
+                    Act - Int
+                  </div>
+                </th>
                 {NCAA_ROUND_COLUMNS.map((column) => (
                   <th key={column.key} style={thStyle}>
                     <button
@@ -777,13 +790,20 @@ function NcaaOddsRowView({
       </td>
       {NCAA_ROUND_COLUMNS.map((column) => {
         const probability = row.roundProbabilities[column.key];
+        const internalRoundProbability = comparisonRow?.roundProbabilities[column.key] ?? null;
         return (
           <td key={column.key} style={tdStyle}>
             <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
-              {(probability * 100).toFixed(1)}%
+              T {formatPercent(probability)}
             </div>
             <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
               {formatRoundOdds(probability) ?? "--"}
+            </div>
+            <div style={{ ...mono, fontWeight: 700, color: "#334155", marginTop: 6 }}>
+              HE {internalRoundProbability == null ? "--" : formatPercent(internalRoundProbability)}
+            </div>
+            <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+              {internalRoundProbability == null ? "--" : formatRoundOdds(internalRoundProbability) ?? "--"}
             </div>
           </td>
         );

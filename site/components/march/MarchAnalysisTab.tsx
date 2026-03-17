@@ -303,7 +303,7 @@ export default function MarchAnalysisTab({
         <ComparisonSummaryCard
           label="Method"
           primary="Display ML"
-          secondary="Exact bracket advancement odds using display-adjusted spreads for ML conversion."
+          secondary="Active columns use Team A/B with Torvik. Internal columns use the same Team A/B model on Hoops Edge efficiencies."
         />
         <ComparisonSummaryCard
           label="Hard Rock Feed"
@@ -854,15 +854,15 @@ export default function MarchAnalysisTab({
             flexWrap: "wrap",
           }}
         >
-          <div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
-              Hoops Edge Round Advancement Odds
-            </div>
-            <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: 4 }}>
-              Exact bracket advancement odds using the NCAA display-adjusted spread path for the ML calc.
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
+                Hoops Edge Round Advancement Odds
+              </div>
+              <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: 4 }}>
+                Active = Team A/B Torvik. Internal = same Team A/B model on Hoops Edge efficiencies. Delta = Active - Internal for the selected round.
+              </div>
             </div>
           </div>
-        </div>
 
         <div style={{ overflowX: "auto" }}>
           <table
@@ -879,10 +879,23 @@ export default function MarchAnalysisTab({
                 <th style={{ ...thStyle, textAlign: "left" }}>Team</th>
                 <th style={thStyle}>Region</th>
                 <th style={thStyle}>
-                  Active {ROUND_COLUMNS.find((column) => column.key === sortKey)?.label ?? "Odds"}
+                  Active
+                  <div style={{ fontSize: 10, fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>
+                    Team A/B Torvik
+                  </div>
                 </th>
-                <th style={thStyle}>Internal</th>
-                <th style={thStyle}>Δ</th>
+                <th style={thStyle}>
+                  Internal
+                  <div style={{ fontSize: 10, fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>
+                    Same model, HE effs
+                  </div>
+                </th>
+                <th style={thStyle}>
+                  Δ
+                  <div style={{ fontSize: 10, fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>
+                    Act - Int
+                  </div>
+                </th>
                 {ROUND_COLUMNS.map((column) => (
                   <th key={column.key} style={thStyle}>
                     <button
@@ -962,13 +975,21 @@ export default function MarchAnalysisTab({
                   </td>
                   {ROUND_COLUMNS.map((column) => {
                     const probability = row.roundProbabilities[column.key];
+                    const internalRoundProbability =
+                      comparisonRowsByTeamId.get(row.teamId)?.roundProbabilities[column.key] ?? null;
                     return (
                       <td key={column.key} style={tdStyle}>
                         <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
-                          {formatPercent(probability)}
+                          T {formatPercent(probability)}
                         </div>
                         <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
                           {formatRoundOdds(probability) ?? "--"}
+                        </div>
+                        <div style={{ ...mono, fontWeight: 700, color: "#334155", marginTop: 6 }}>
+                          HE {internalRoundProbability == null ? "--" : formatPercent(internalRoundProbability)}
+                        </div>
+                        <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+                          {internalRoundProbability == null ? "--" : formatRoundOdds(internalRoundProbability) ?? "--"}
                         </div>
                       </td>
                     );
