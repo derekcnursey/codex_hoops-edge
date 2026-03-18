@@ -176,7 +176,20 @@ def _apply_conference_seed_mapping(root: BracketNode, conf: dict[str, Any]) -> N
 def _load_team_inputs() -> pd.DataFrame:
     rankings = pd.DataFrame(_read_json(RANKINGS_PATH)["teams"])
     ratings, _ = _load_latest_ratings(CURRENT_SEASON)
-    merged = rankings.merge(ratings, left_on="team_id", right_on="teamId", how="left", suffixes=("_rank", ""))
+    merged = rankings.copy()
+    ratings_by_team = ratings.set_index("teamId")
+    metric_cols = [
+        "adj_oe",
+        "adj_de",
+        "adj_tempo",
+        "barthag",
+        "sos_oe",
+        "sos_de",
+    ]
+    merged["teamId"] = merged["team_id"]
+    for col in metric_cols:
+        if col in ratings_by_team.columns:
+            merged[col] = merged["team_id"].map(ratings_by_team[col])
     if merged["adj_oe"].isna().any():
         missing = merged.loc[merged["adj_oe"].isna(), "team"].tolist()
         raise ValueError(f"Missing ratings rows for rankings teams: {missing[:10]}")

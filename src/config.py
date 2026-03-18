@@ -20,7 +20,10 @@ TREE_REGRESSOR_TEAM_AB_ELITE_TAIL_ROUND64_V1_PATH = (
 TORVIK_TREE_REGRESSOR_TEAM_AB_ELITE_TAIL_ROUND64_V1_PATH = (
     CHECKPOINTS_DIR / "regressor_lgbm_l2_torvik_team_ab_elite_tail_round64_v1.pkl"
 )
-MEAN_MODEL_VARIANT = os.getenv("HOOPS_MEAN_MODEL_VARIANT", "legacy_home_slot").strip().lower()
+MEAN_MODEL_VARIANT = os.getenv(
+    "HOOPS_MEAN_MODEL_VARIANT",
+    "team_ab_elite_tail_round64_v1",
+).strip().lower()
 BRACKET_MATCHUP_MODEL_VARIANT = os.getenv(
     "HOOPS_BRACKET_MATCHUP_MODEL_VARIANT",
     "team_ab_elite_tail_round64_v1",
