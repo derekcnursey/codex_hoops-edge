@@ -50,6 +50,7 @@ def _fix_spread_signs(lines_df: pd.DataFrame) -> pd.DataFrame:
 
     spread = lines["spread"]
     majority = lines["_majority_sign"]
+    no_majority = majority.isna() | majority.eq(0)
     mask_majority_flip = (
         spread.notna() & majority.notna() & (majority != 0)
         & (spread.abs() >= 3)
@@ -63,7 +64,7 @@ def _fix_spread_signs(lines_df: pd.DataFrame) -> pd.DataFrame:
         mask_ml_fix = (
             spread.notna() & home_ml.notna()
             & (~mask_majority_flip)
-            & majority.isna()
+            & no_majority
             & (
                 ((spread > 3) & (home_ml < -150))
                 | ((spread < -3) & (home_ml > 150))

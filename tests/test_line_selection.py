@@ -118,6 +118,33 @@ def test_select_preferred_lines_demotes_hrb_when_spread_is_peer_outlier():
     assert selected.loc[0, "book_spread"] == -6.0
 
 
+def test_select_preferred_lines_uses_moneyline_to_break_split_sign_ties():
+    lines = pd.DataFrame(
+        [
+            {
+                "gameId": 5,
+                "provider": "Draft Kings",
+                "spread": -6.5,
+                "homeMoneyline": 310,
+                "awayMoneyline": -395,
+                "spreadOpen": 7.5,
+            },
+            {
+                "gameId": 5,
+                "provider": "Hard Rock Bet",
+                "spread": 6.5,
+                "homeMoneyline": 220,
+                "awayMoneyline": -300,
+            },
+        ]
+    )
+
+    selected = select_preferred_lines(lines)
+
+    assert selected.loc[0, "provider"] == "Hard Rock Bet"
+    assert selected.loc[0, "book_spread"] == 6.5
+
+
 def test_best_provider_rows_prefers_more_complete_snapshot_over_latest():
     rows = pd.DataFrame(
         [
