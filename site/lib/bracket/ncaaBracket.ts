@@ -226,8 +226,8 @@ export function buildNcaaBracketGames(field: NcaaBracketField): BracketGameDefin
   }
 
   const finalFourMatchups = [
-    { id: "final-four-1", left: "east-e8", right: "west-e8", order: 1, title: "East vs West" },
-    { id: "final-four-2", left: "south-e8", right: "midwest-e8", order: 2, title: "South vs Midwest" },
+    { id: "final-four-1", left: "east-e8", right: "south-e8", order: 1, title: "East vs South" },
+    { id: "final-four-2", left: "west-e8", right: "midwest-e8", order: 2, title: "West vs Midwest" },
   ] as const;
 
   for (const matchup of finalFourMatchups) {
