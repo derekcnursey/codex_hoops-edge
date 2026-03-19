@@ -861,10 +861,10 @@ export default function MarchAnalysisTab({
                           {internalRoundProbability == null ? "--" : formatRoundOdds(internalRoundProbability) ?? "--"}
                         </div>
                         <div style={{ ...mono, fontWeight: 700, color: "#334155", marginTop: 6 }}>
-                          {marketLabelForRound(column.key)} {hardRockRow == null ? "--" : hardRockRow.hrbOdds}
+                          {marketLabelForRound(column.key)} {hardRockRow == null ? "--" : formatPercent(hardRockRow.hrbFairProb)}
                         </div>
                         <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
-                          {hardRockRow == null ? "--" : formatPercent(hardRockRow.hrbFairProb)}
+                          {hardRockRow == null ? "--" : hardRockRow.hrbOdds}
                         </div>
                       </td>
                     );

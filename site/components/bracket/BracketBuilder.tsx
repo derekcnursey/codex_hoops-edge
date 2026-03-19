@@ -78,6 +78,78 @@ const DESKTOP_BRACKET_WIDTH =
 const FEEDER_TOP_ROW_OFFSET = -12;
 const FEEDER_BOTTOM_ROW_OFFSET = 28;
 const MATCHUP_API_VERSION = "2026-03-16-display-v2";
+const DEREK_BRACKET_JSON = `{
+  "version": 1,
+  "season": 2026,
+  "picks": {
+    "ff1": 167,
+    "ff2": 295,
+    "ff3": 232,
+    "ff4": 114,
+    "east-r64-1": 72,
+    "east-r64-2": 216,
+    "east-r64-3": 279,
+    "east-r64-4": 131,
+    "east-r64-5": 271,
+    "east-r64-6": 169,
+    "east-r64-7": 312,
+    "east-r64-8": 314,
+    "west-r64-1": 11,
+    "west-r64-2": 338,
+    "west-r64-3": 355,
+    "west-r64-4": 12,
+    "west-r64-5": 295,
+    "west-r64-6": 102,
+    "west-r64-7": 168,
+    "west-r64-8": 236,
+    "south-r64-1": 87,
+    "south-r64-2": 124,
+    "south-r64-3": 336,
+    "south-r64-4": 188,
+    "south-r64-5": 333,
+    "south-r64-6": 118,
+    "south-r64-7": 253,
+    "south-r64-8": 113,
+    "midwest-r64-1": 170,
+    "midwest-r64-2": 98,
+    "midwest-r64-3": 3,
+    "midwest-r64-4": 5,
+    "midwest-r64-5": 292,
+    "midwest-r64-6": 339,
+    "midwest-r64-7": 261,
+    "midwest-r64-8": 125,
+    "east-r32-1": 72,
+    "east-r32-2": 279,
+    "east-r32-3": 169,
+    "east-r32-4": 312,
+    "west-r32-1": 11,
+    "west-r32-2": 12,
+    "west-r32-3": 102,
+    "west-r32-4": 236,
+    "south-r32-1": 87,
+    "south-r32-2": 336,
+    "south-r32-3": 118,
+    "south-r32-4": 113,
+    "midwest-r32-1": 170,
+    "midwest-r32-2": 5,
+    "midwest-r32-3": 339,
+    "midwest-r32-4": 125,
+    "east-s16-1": 72,
+    "east-s16-2": 169,
+    "west-s16-1": 11,
+    "west-s16-2": 102,
+    "south-s16-1": 87,
+    "south-s16-2": 113,
+    "midwest-s16-1": 170,
+    "midwest-s16-2": 125,
+    "east-e8": 169,
+    "west-e8": 11,
+    "south-e8": 113,
+    "midwest-e8": 125,
+    "final-four-1": 113,
+    "final-four-2": 11
+  }
+}`;
 
 function sortGames(list: ResolvedBracketGame[]): ResolvedBracketGame[] {
   return [...list].sort((a, b) => a.matchupOrder - b.matchupOrder || a.roundOrder - b.roundOrder);
@@ -522,6 +594,28 @@ export default function BracketBuilder({
       setShareStatus({ tone: "error", text: "Failed to import bracket file." });
     } finally {
       event.target.value = "";
+    }
+  }
+
+  function handleLoadDerekBracket() {
+    const parsed = deserializeBracketImport(DEREK_BRACKET_JSON, field.season, gameIds);
+    if (!parsed.picks) {
+      setShareStatus({ tone: "error", text: parsed.error ?? "Derek's bracket preset is invalid." });
+      return;
+    }
+
+    disconnectFromSharedUrlIfNeeded();
+    if (!applyValidatedPicks(parsed.picks)) {
+      setShareStatus({
+        tone: "error",
+        text: "Derek's bracket preset has invalid downstream winners for the current field.",
+      });
+      return;
+    }
+
+    setShareStatus({ tone: "success", text: "Loaded Derek's bracket." });
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(storageKey, JSON.stringify(parsed.picks));
     }
   }
 
@@ -1353,6 +1447,21 @@ export default function BracketBuilder({
               }}
             >
               Import JSON
+            </button>
+            <button
+              type="button"
+              onClick={handleLoadDerekBracket}
+              style={{
+                fontFamily: "'IBM Plex Mono', monospace",
+                padding: "8px 11px",
+                borderRadius: 8,
+                border: "1px solid #cbd5e1",
+                background: "#ffffff",
+                color: "#0f172a",
+                cursor: "pointer",
+              }}
+            >
+              Derek&apos;s bracket
             </button>
             <button
               type="button"
