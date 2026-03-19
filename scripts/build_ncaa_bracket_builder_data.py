@@ -45,7 +45,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from scripts.build_rankings_json import _load_latest_ratings
 from scripts.rebuild_tourney_jsons import _build_synthetic_rows, _predict_pairwise_probability
 from src import config, s3_reader
-from src.features import load_lines, load_research_lines
+from src.features import build_features, load_lines, load_research_lines
 from src.infer import (
     _fill_nan_with_impute_means,
     _fill_nan_with_scaler_means,
@@ -57,7 +57,7 @@ from src.infer import (
     prob_to_american,
 )
 from src.line_selection import select_preferred_lines
-from src.mean_model_variants import TEAM_AB_ELITE_TAIL_ROUND64_V1, build_team_ab_elite_tail_round64_contract
+from src.mean_model_variants import TEAM_AB_ELITE_TAIL_ROUND64_V1, build_mean_model_feature_frame
 from src.ml_odds import site_home_win_prob_from_mu_sigma
 from src.tournament_adjustments import market_blended_display_margin
 from src.trainer import load_scaler, load_tree_regressor
@@ -68,6 +68,43 @@ DATA_DIR = ROOT / "site" / "public" / "data"
 
 CURRENT_SEASON = 2026
 REGIONS = ["East", "West", "South", "Midwest"]
+REGION_PAIRINGS = (
+    {"seed_a": 1, "seed_b": 16, "slot": 1},
+    {"seed_a": 8, "seed_b": 9, "slot": 2},
+    {"seed_a": 5, "seed_b": 12, "slot": 3},
+    {"seed_a": 4, "seed_b": 13, "slot": 4},
+    {"seed_a": 6, "seed_b": 11, "slot": 5},
+    {"seed_a": 3, "seed_b": 14, "slot": 6},
+    {"seed_a": 7, "seed_b": 10, "slot": 7},
+    {"seed_a": 2, "seed_b": 15, "slot": 8},
+)
+SEED_TO_REGION_SLOT = {
+    pairing["seed_a"]: pairing["slot"] for pairing in REGION_PAIRINGS
+} | {
+    pairing["seed_b"]: pairing["slot"] for pairing in REGION_PAIRINGS
+}
+FINAL_FOUR_REGION_PAIRS = {
+    frozenset({"East", "South"}),
+    frozenset({"West", "Midwest"}),
+}
+REGIONAL_SWEET_16_DATES = {
+    2026: {
+        "West": "2026-03-26",
+        "South": "2026-03-26",
+        "East": "2026-03-27",
+        "Midwest": "2026-03-27",
+    }
+}
+REGIONAL_ELITE_8_DATES = {
+    2026: {
+        "West": "2026-03-28",
+        "South": "2026-03-28",
+        "East": "2026-03-29",
+        "Midwest": "2026-03-29",
+    }
+}
+FINAL_FOUR_DATES = {2026: "2026-04-04"}
+NATIONAL_TITLE_DATES = {2026: "2026-04-06"}
 FIELD_INPUT_TEMPLATE = "ncaa_field_input_{season}.json"
 FIELD_OUTPUT_TEMPLATE = "ncaa_bracket_builder_{season}.json"
 MATCHUPS_OUTPUT_TEMPLATE = "ncaa_matchup_predictions_{season}.json"
@@ -97,6 +134,25 @@ def _season_path(template: str, season: int) -> Path:
 
 def _region_slug(region: str) -> str:
     return region.lower().replace(" ", "-")
+
+
+def _label_for_round_id(round_id: str | None) -> str | None:
+    mapping = {
+        "first-four": "First Four",
+        "round-of-64": "Round of 64",
+        "round-of-32": "Round of 32",
+        "sweet-16": "Sweet 16",
+        "elite-8": "Elite 8",
+        "final-four": "Final Four",
+        "national-championship": "National Championship",
+    }
+    return mapping.get(round_id)
+
+
+def _round_timestamp_et(date_text: str | None) -> pd.Timestamp | None:
+    if not date_text:
+        return None
+    return pd.Timestamp(f"{date_text} 12:00:00", tz="America/New_York")
 
 
 def _main_bracket_slot(region: str, seed: int) -> str:
@@ -191,6 +247,8 @@ def _build_team_ab_bracket_source(
     conf_strength_lookup: dict[str, float],
     round_label: str | None,
     start_time: object,
+    team_a_rest_days: float | None = None,
+    team_b_rest_days: float | None = None,
 ) -> pd.DataFrame:
     fallback_ts = pd.Timestamp(year=season, month=3, day=15, tz="UTC")
     start_ts = pd.to_datetime(start_time, errors="coerce", utc=True)
@@ -217,7 +275,7 @@ def _build_team_ab_bracket_source(
             f"{prefix}_sos_oe": _row_value(row, "sos_oe_model"),
             f"{prefix}_sos_de": _row_value(row, "sos_de_model"),
             f"{prefix}_form_delta": np.nan,
-            f"{prefix}_rest_days": np.nan,
+            f"{prefix}_rest_days": team_a_rest_days if prefix == "team_a" else team_b_rest_days,
             f"{prefix}_eff_fg_pct": np.nan,
             f"{prefix}_ft_rate": np.nan,
             f"{prefix}_off_rebound_pct": np.nan,
@@ -261,6 +319,8 @@ def _predict_team_ab_pairwise_margin(
     mu_feature_order: list[str],
     mu_model_type: str,
     mu_impute_means: np.ndarray | None,
+    team_a_rest_days: float | None = None,
+    team_b_rest_days: float | None = None,
 ) -> float:
     source = _build_team_ab_bracket_source(
         team_a,
@@ -269,11 +329,335 @@ def _predict_team_ab_pairwise_margin(
         conf_strength_lookup=conf_strength_lookup,
         round_label=round_label,
         start_time=start_time,
+        team_a_rest_days=team_a_rest_days,
+        team_b_rest_days=team_b_rest_days,
     )
-    features = build_team_ab_elite_tail_round64_contract(source)
-    X_raw = _fill_nan_with_impute_means(features[mu_feature_order].copy(), mu_impute_means)
+    feature_frame = build_mean_model_feature_frame(source, TEAM_AB_ELITE_TAIL_ROUND64_V1)
+    X_raw = _fill_nan_with_impute_means(feature_frame[mu_feature_order].copy(), mu_impute_means)
     mu = _predict_mu_values(mu_regressor, mu_model_type, X_raw, X_raw)
     return float(mu[0])
+
+
+def _load_scheduled_feature_lookup(
+    season: int,
+    scheduled_lines: dict[str, dict[str, Any]],
+    *,
+    efficiency_source: str,
+    gold_table_name: str | None = None,
+) -> dict[int, pd.Series]:
+    scheduled_game_ids = sorted(
+        {
+            int(info["scheduled_game_id"])
+            for info in scheduled_lines.values()
+            if info.get("scheduled_game_id") is not None
+        }
+    )
+    if not scheduled_game_ids:
+        return {}
+
+    game_dates = sorted(
+        {
+            pd.to_datetime(info["start_time"], errors="coerce", utc=True)
+            .tz_convert("America/New_York")
+            .strftime("%Y-%m-%d")
+            for info in scheduled_lines.values()
+            if info.get("start_time") is not None and not pd.isna(pd.to_datetime(info["start_time"], errors="coerce", utc=True))
+        }
+    )
+    if not game_dates:
+        return {}
+
+    frames: list[pd.DataFrame] = []
+    for game_date in game_dates:
+        frame = build_features(
+            season,
+            game_date=game_date,
+            no_garbage=True,
+            extra_features=config.EXTRA_FEATURES,
+            adjust_ff=config.ADJUST_FF,
+            adjust_alpha=config.ADJUST_ALPHA,
+            adjust_prior_weight=config.ADJUST_PRIOR,
+            efficiency_source=efficiency_source,
+            gold_table_name=gold_table_name,
+        )
+        if not frame.empty:
+            frames.append(frame)
+    if not frames:
+        return {}
+
+    combined = pd.concat(frames, ignore_index=True)
+    combined = combined[combined["gameId"].isin(scheduled_game_ids)].copy()
+    if combined.empty:
+        return {}
+    combined = combined.drop_duplicates(subset=["gameId"], keep="last")
+    return {int(row["gameId"]): row for _, row in combined.iterrows()}
+
+
+def _predict_team_ab_scheduled_margin(
+    feature_row: pd.Series,
+    *,
+    team_a_id: int,
+    team_b_id: int,
+    mu_regressor: object,
+    mu_feature_order: list[str],
+    mu_model_type: str,
+    mu_impute_means: np.ndarray | None,
+) -> float:
+    if int(feature_row["homeTeamId"]) == team_a_id and int(feature_row["awayTeamId"]) == team_b_id:
+        oriented_row = feature_row.to_dict()
+    elif int(feature_row["homeTeamId"]) == team_b_id and int(feature_row["awayTeamId"]) == team_a_id:
+        oriented_row = feature_row.to_dict()
+        swaps = [
+            (key, key.replace("home", "away", 1))
+            for key in list(oriented_row.keys())
+            if key.startswith("home") and key.replace("home", "away", 1) in oriented_row
+        ]
+        for home_key, away_key in swaps:
+            oriented_row[home_key], oriented_row[away_key] = oriented_row[away_key], oriented_row[home_key]
+    else:
+        raise ValueError(
+            f"Scheduled feature row gameId={feature_row['gameId']} does not match expected teams "
+            f"{team_a_id} vs {team_b_id}"
+        )
+
+    oriented = pd.DataFrame([oriented_row])
+    feature_frame = build_mean_model_feature_frame(oriented, TEAM_AB_ELITE_TAIL_ROUND64_V1)
+    X_raw = _fill_nan_with_impute_means(feature_frame[mu_feature_order].copy(), mu_impute_means)
+    mu = _predict_mu_values(mu_regressor, mu_model_type, X_raw, X_raw)
+    return float(mu[0])
+
+
+def _extract_region_from_game_notes(note: object) -> str | None:
+    value = str(note or "").upper()
+    for region in sorted(REGIONS, key=len, reverse=True):
+        if f"{region.upper()} REGION" in value:
+            return region
+    return None
+
+
+def _build_slot_candidate_lookup(field: dict[str, Any]) -> dict[tuple[str, int], dict[str, Any]]:
+    play_in_team_ids = {
+        str(game["id"]): {int(team["team_id"]) for team in game["teams"]}
+        for game in field["first_four"]
+    }
+    lookup: dict[tuple[str, int], dict[str, Any]] = {}
+    for region in field["regions"]:
+        region_name = str(region["name"])
+        entry_by_seed = {int(entry["seed"]): entry for entry in region["entries"]}
+        for pairing in REGION_PAIRINGS:
+            entry_a = entry_by_seed[pairing["seed_a"]]
+            entry_b = entry_by_seed[pairing["seed_b"]]
+            if entry_a["source"] == "team":
+                side_a_ids = {int(entry_a["team_id"])}
+            else:
+                side_a_ids = play_in_team_ids[str(entry_a["play_in_game_id"])]
+            if entry_b["source"] == "team":
+                side_b_ids = {int(entry_b["team_id"])}
+            else:
+                side_b_ids = play_in_team_ids[str(entry_b["play_in_game_id"])]
+            lookup[(region_name, int(pairing["slot"]))] = {
+                "side_a_ids": side_a_ids,
+                "side_b_ids": side_b_ids,
+            }
+    return lookup
+
+
+def _build_team_bracket_context(field: dict[str, Any]) -> dict[int, dict[str, Any]]:
+    team_context: dict[int, dict[str, Any]] = {}
+    for region in field["regions"]:
+        region_name = str(region["name"])
+        for entry in region["entries"]:
+            seed = int(entry["seed"])
+            slot = SEED_TO_REGION_SLOT[seed]
+            if entry["source"] == "team":
+                team_context[int(entry["team_id"])] = {
+                    "region": region_name,
+                    "seed": seed,
+                    "slot": slot,
+                    "r32_slot": (slot + 1) // 2,
+                    "s16_slot": ((slot + 1) // 2 + 1) // 2,
+                    "first_four_game_id": None,
+                }
+    for game in field["first_four"]:
+        region_name = str(game["region"])
+        seed = int(game["seed"])
+        slot = SEED_TO_REGION_SLOT[seed]
+        for team in game["teams"]:
+            team_context[int(team["team_id"])] = {
+                "region": region_name,
+                "seed": seed,
+                "slot": slot,
+                "r32_slot": (slot + 1) // 2,
+                "s16_slot": ((slot + 1) // 2 + 1) // 2,
+                "first_four_game_id": str(game["id"]),
+            }
+    return team_context
+
+
+def _load_bracket_schedule_context(
+    field: dict[str, Any],
+    season: int,
+) -> tuple[dict[int, dict[str, Any]], dict[int, dict[str, pd.Timestamp]]]:
+    team_context = _build_team_bracket_context(field)
+    slot_candidates = _build_slot_candidate_lookup(field)
+    first_four_candidates = {
+        str(game["id"]): {int(team["team_id"]) for team in game["teams"]}
+        for game in field["first_four"]
+    }
+
+    games_table = s3_reader.read_silver_table(config.TABLE_FCT_GAMES, season=season)
+    if games_table.num_rows == 0:
+        return team_context, {team_id: {} for team_id in team_context}
+    games = games_table.to_pandas()
+    games = games[games["tournament"].eq("NCAA")].copy()
+    if games.empty:
+        return team_context, {team_id: {} for team_id in team_context}
+
+    games["round_info"] = games["gameNotes"].map(_round_from_game_notes)
+    games["scheduled_round_id"] = games["round_info"].map(lambda item: item[0])
+    games["region_name"] = games["gameNotes"].map(_extract_region_from_game_notes)
+    games["start_ts"] = pd.to_datetime(games["startDate"], errors="coerce", utc=True).dt.tz_convert(
+        "America/New_York"
+    )
+
+    first_four_times: dict[str, pd.Timestamp] = {}
+    round64_times: dict[tuple[str, int], pd.Timestamp] = {}
+
+    first_four_games = games[games["scheduled_round_id"].eq("first-four")].copy()
+    for _, row in first_four_games.iterrows():
+        if pd.isna(row.get("start_ts")):
+            continue
+        participants = {int(row["homeTeamId"]), int(row["awayTeamId"])}
+        matches = [
+            game_id for game_id, team_ids in first_four_candidates.items() if team_ids == participants
+        ]
+        if len(matches) != 1:
+            raise ValueError(
+                f"Unable to map NCAA First Four gameId={row['gameId']} "
+                f"{row.get('homeTeam')} vs {row.get('awayTeam')} to a unique bracket play-in"
+            )
+        first_four_times[matches[0]] = row["start_ts"]
+
+    round64_games = games[games["scheduled_round_id"].eq("round-of-64")].copy()
+    for _, row in round64_games.iterrows():
+        region_name = row.get("region_name")
+        if not isinstance(region_name, str) or pd.isna(row.get("start_ts")):
+            continue
+        home_id = int(row["homeTeamId"])
+        away_id = int(row["awayTeamId"])
+        matches: list[int] = []
+        for (candidate_region, slot), candidate in slot_candidates.items():
+            if candidate_region != region_name:
+                continue
+            side_a_ids = candidate["side_a_ids"]
+            side_b_ids = candidate["side_b_ids"]
+            if (home_id in side_a_ids and away_id in side_b_ids) or (
+                home_id in side_b_ids and away_id in side_a_ids
+            ):
+                matches.append(slot)
+        if len(matches) != 1:
+            raise ValueError(
+                f"Unable to map NCAA Round of 64 gameId={row['gameId']} "
+                f"{row.get('homeTeam')} vs {row.get('awayTeam')} to a unique bracket slot"
+            )
+        round64_times[(region_name, matches[0])] = row["start_ts"]
+
+    regional_sweet_16 = REGIONAL_SWEET_16_DATES.get(season, {})
+    regional_elite_8 = REGIONAL_ELITE_8_DATES.get(season, {})
+    final_four_ts = _round_timestamp_et(FINAL_FOUR_DATES.get(season))
+    title_ts = _round_timestamp_et(NATIONAL_TITLE_DATES.get(season))
+
+    team_round_times: dict[int, dict[str, pd.Timestamp]] = {}
+    for team_id, info in team_context.items():
+        region_name = str(info["region"])
+        slot = int(info["slot"])
+        r32_slot = int(info["r32_slot"])
+        round_times: dict[str, pd.Timestamp] = {}
+        first_four_game_id = info.get("first_four_game_id")
+        if isinstance(first_four_game_id, str) and first_four_game_id in first_four_times:
+            round_times["first-four"] = first_four_times[first_four_game_id]
+        round64_ts = round64_times.get((region_name, slot))
+        if round64_ts is not None:
+            round_times["round-of-64"] = round64_ts
+        r32_source_slots = (r32_slot * 2 - 1, r32_slot * 2)
+        r32_source_times = [
+            round64_times[(region_name, source_slot)]
+            for source_slot in r32_source_slots
+            if (region_name, source_slot) in round64_times
+        ]
+        if len(r32_source_times) == 2:
+            round_times["round-of-32"] = max(r32_source_times) + pd.Timedelta(days=2)
+        sweet_16_ts = _round_timestamp_et(regional_sweet_16.get(region_name))
+        if sweet_16_ts is not None:
+            round_times["sweet-16"] = sweet_16_ts
+        elite_8_ts = _round_timestamp_et(regional_elite_8.get(region_name))
+        if elite_8_ts is not None:
+            round_times["elite-8"] = elite_8_ts
+        if final_four_ts is not None:
+            round_times["final-four"] = final_four_ts
+        if title_ts is not None:
+            round_times["national-championship"] = title_ts
+        team_round_times[team_id] = round_times
+    return team_context, team_round_times
+
+
+def _matchup_round_context(
+    team_a_id: int,
+    team_b_id: int,
+    *,
+    team_context: dict[int, dict[str, Any]],
+    team_round_times: dict[int, dict[str, pd.Timestamp]],
+) -> dict[str, Any]:
+    team_a_info = team_context[team_a_id]
+    team_b_info = team_context[team_b_id]
+
+    if (
+        team_a_info.get("first_four_game_id") is not None
+        and team_a_info.get("first_four_game_id") == team_b_info.get("first_four_game_id")
+    ):
+        round_id = "first-four"
+    elif team_a_info["region"] == team_b_info["region"]:
+        if team_a_info["slot"] == team_b_info["slot"]:
+            round_id = "round-of-64"
+        elif team_a_info["r32_slot"] == team_b_info["r32_slot"]:
+            round_id = "round-of-32"
+        elif team_a_info["s16_slot"] == team_b_info["s16_slot"]:
+            round_id = "sweet-16"
+        else:
+            round_id = "elite-8"
+    elif frozenset({team_a_info["region"], team_b_info["region"]}) in FINAL_FOUR_REGION_PAIRS:
+        round_id = "final-four"
+    else:
+        round_id = "national-championship"
+
+    previous_round = {
+        "round-of-64": "first-four",
+        "round-of-32": "round-of-64",
+        "sweet-16": "round-of-32",
+        "elite-8": "sweet-16",
+        "final-four": "elite-8",
+        "national-championship": "final-four",
+    }.get(round_id)
+
+    current_time = team_round_times.get(team_a_id, {}).get(round_id)
+    if current_time is None:
+        current_time = team_round_times.get(team_b_id, {}).get(round_id)
+
+    def _rest_days(team_id: int) -> float | None:
+        if previous_round is None or current_time is None:
+            return None
+        previous_time = team_round_times.get(team_id, {}).get(previous_round)
+        if previous_time is None:
+            return None
+        return float((current_time - previous_time).total_seconds() / 86400.0)
+
+    return {
+        "round_id": round_id,
+        "round_label": _label_for_round_id(round_id),
+        "start_time": None if current_time is None else current_time.isoformat(),
+        "team_a_rest_days": _rest_days(team_a_id),
+        "team_b_rest_days": _rest_days(team_b_id),
+    }
 
 
 def _site_probability_from_mu_sigma(
@@ -988,7 +1372,23 @@ def _build_matchup_payload(
         team_lookup_team_ab_internal = {
             int(row["team_id"]): row for _, row in team_ab_internal_merged.iterrows()
         }
+    team_bracket_context, team_round_times = _load_bracket_schedule_context(field, season)
     opening_round_lines = _load_opening_round_market_lookup(season)
+    scheduled_team_ab_lookup: dict[int, pd.Series] = {}
+    scheduled_team_ab_internal_lookup: dict[int, pd.Series] = {}
+    if team_ab_loaded is not None and opening_round_lines:
+        scheduled_team_ab_lookup = _load_scheduled_feature_lookup(
+            season,
+            opening_round_lines,
+            efficiency_source=team_ab_efficiency_source,
+            gold_table_name=team_ab_gold_ratings_table if team_ab_efficiency_source == "gold" else None,
+        )
+        scheduled_team_ab_internal_lookup = _load_scheduled_feature_lookup(
+            season,
+            opening_round_lines,
+            efficiency_source="gold",
+            gold_table_name=internal_gold_table_name,
+        )
 
     predictions: dict[str, Any] = {}
     total_pairs = len(selected_ids) * (len(selected_ids) - 1) // 2
@@ -1008,40 +1408,84 @@ def _build_matchup_payload(
         )
         canonical_key = f"{team_a_id}::{team_b_id}"
         line_info = opening_round_lines.get(canonical_key)
-        round_label = None if line_info is None else line_info["scheduled_round_label"]
-        start_time = None if line_info is None else line_info["start_time"]
+        matchup_context = _matchup_round_context(
+            team_a_id,
+            team_b_id,
+            team_context=team_bracket_context,
+            team_round_times=team_round_times,
+        )
+        round_id = matchup_context["round_id"]
+        round_label = matchup_context["round_label"]
+        start_time = line_info["start_time"] if line_info is not None else matchup_context["start_time"]
         team_ab_mu = None
         team_ab_internal_mu = None
         if team_ab_loaded is not None:
-            team_a_team_ab = team_lookup_team_ab[team_a_id]
-            team_b_team_ab = team_lookup_team_ab[team_b_id]
             team_ab_regressor, team_ab_feature_order, team_ab_model_type, team_ab_meta = team_ab_loaded
-            team_ab_mu = _predict_team_ab_pairwise_margin(
-                team_a_team_ab,
-                team_b_team_ab,
-                season=season,
-                round_label=round_label,
-                start_time=start_time,
-                conf_strength_lookup=conf_strength_lookup,
-                mu_regressor=team_ab_regressor,
-                mu_feature_order=team_ab_feature_order,
-                mu_model_type=team_ab_model_type,
-                mu_impute_means=team_ab_meta.get("impute_means"),
+            scheduled_game_id = None if line_info is None else line_info.get("scheduled_game_id")
+            scheduled_team_ab_row = (
+                None
+                if scheduled_game_id is None
+                else scheduled_team_ab_lookup.get(int(scheduled_game_id))
             )
-            team_a_team_ab_internal = team_lookup_team_ab_internal[team_a_id]
-            team_b_team_ab_internal = team_lookup_team_ab_internal[team_b_id]
-            team_ab_internal_mu = _predict_team_ab_pairwise_margin(
-                team_a_team_ab_internal,
-                team_b_team_ab_internal,
-                season=season,
-                round_label=round_label,
-                start_time=start_time,
-                conf_strength_lookup=team_ab_internal_conf_strength_lookup,
-                mu_regressor=team_ab_regressor,
-                mu_feature_order=team_ab_feature_order,
-                mu_model_type=team_ab_model_type,
-                mu_impute_means=team_ab_meta.get("impute_means"),
+            scheduled_team_ab_internal_row = (
+                None
+                if scheduled_game_id is None
+                else scheduled_team_ab_internal_lookup.get(int(scheduled_game_id))
             )
+            if scheduled_team_ab_row is not None:
+                team_ab_mu = _predict_team_ab_scheduled_margin(
+                    scheduled_team_ab_row,
+                    team_a_id=team_a_id,
+                    team_b_id=team_b_id,
+                    mu_regressor=team_ab_regressor,
+                    mu_feature_order=team_ab_feature_order,
+                    mu_model_type=team_ab_model_type,
+                    mu_impute_means=team_ab_meta.get("impute_means"),
+                )
+            else:
+                team_a_team_ab = team_lookup_team_ab[team_a_id]
+                team_b_team_ab = team_lookup_team_ab[team_b_id]
+                team_ab_mu = _predict_team_ab_pairwise_margin(
+                    team_a_team_ab,
+                    team_b_team_ab,
+                    season=season,
+                    round_label=round_label,
+                    start_time=start_time,
+                    conf_strength_lookup=conf_strength_lookup,
+                    mu_regressor=team_ab_regressor,
+                    mu_feature_order=team_ab_feature_order,
+                    mu_model_type=team_ab_model_type,
+                    mu_impute_means=team_ab_meta.get("impute_means"),
+                    team_a_rest_days=matchup_context["team_a_rest_days"],
+                    team_b_rest_days=matchup_context["team_b_rest_days"],
+                )
+            if scheduled_team_ab_internal_row is not None:
+                team_ab_internal_mu = _predict_team_ab_scheduled_margin(
+                    scheduled_team_ab_internal_row,
+                    team_a_id=team_a_id,
+                    team_b_id=team_b_id,
+                    mu_regressor=team_ab_regressor,
+                    mu_feature_order=team_ab_feature_order,
+                    mu_model_type=team_ab_model_type,
+                    mu_impute_means=team_ab_meta.get("impute_means"),
+                )
+            else:
+                team_a_team_ab_internal = team_lookup_team_ab_internal[team_a_id]
+                team_b_team_ab_internal = team_lookup_team_ab_internal[team_b_id]
+                team_ab_internal_mu = _predict_team_ab_pairwise_margin(
+                    team_a_team_ab_internal,
+                    team_b_team_ab_internal,
+                    season=season,
+                    round_label=round_label,
+                    start_time=start_time,
+                    conf_strength_lookup=team_ab_internal_conf_strength_lookup,
+                    mu_regressor=team_ab_regressor,
+                    mu_feature_order=team_ab_feature_order,
+                    mu_model_type=team_ab_model_type,
+                    mu_impute_means=team_ab_meta.get("impute_means"),
+                    team_a_rest_days=matchup_context["team_a_rest_days"],
+                    team_b_rest_days=matchup_context["team_b_rest_days"],
+                )
 
         legacy_win_prob_a = _site_probability_from_mu_sigma(float(legacy_mu), float(sigma))
         team_ab_win_prob_a = (
@@ -1125,9 +1569,9 @@ def _build_matchup_payload(
             ),
             "pred_sigma": float(sigma),
             "scheduled_game_id": None if line_info is None else line_info["scheduled_game_id"],
-            "scheduled_round_id": None if line_info is None else line_info["scheduled_round_id"],
-            "scheduled_round_label": None if line_info is None else line_info["scheduled_round_label"],
-            "start_time": None if line_info is None else line_info["start_time"],
+            "scheduled_round_id": round_id,
+            "scheduled_round_label": round_label,
+            "start_time": start_time,
             "home_team_id": None if line_info is None else line_info["home_team_id"],
             "away_team_id": None if line_info is None else line_info["away_team_id"],
             "home_team_name": None if line_info is None else line_info["home_team_name"],
