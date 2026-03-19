@@ -147,7 +147,8 @@ const DEREK_BRACKET_JSON = `{
     "south-e8": 113,
     "midwest-e8": 125,
     "final-four-1": 113,
-    "final-four-2": 11
+    "final-four-2": 11,
+    "national-championship": 11
   }
 }`;
 
