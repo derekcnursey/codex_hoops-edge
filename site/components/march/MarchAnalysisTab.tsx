@@ -364,8 +364,8 @@ export default function MarchAnalysisTab({
       >
         <ComparisonSummaryCard
           label="Method"
-          primary="Display ML"
-          secondary="Active columns use Team A/B with Torvik. Internal columns use the same Team A/B model on Hoops Edge efficiencies."
+          primary="Shown Avg ML"
+          secondary="Shown Avg columns use the same midpoint displayed on the matchup cards: active Team A/B blended with the internal baseline when both exist. Internal columns stay on the pure internal Team A/B path."
         />
         <ComparisonSummaryCard
           label="Hard Rock Feed"
@@ -659,7 +659,7 @@ export default function MarchAnalysisTab({
               Hoops Edge Round Advancement Odds
             </div>
             <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: 4 }}>
-              Active = Team A/B Torvik. Internal = same Team A/B model, Hoops Edge efficiencies. Delta = Active - Internal for the selected round.
+              Shown Avg = the same midpoint displayed on the bracket cards. Internal = pure internal Team A/B model on Hoops Edge efficiencies. Delta = Shown Avg - Internal for the selected round.
             </div>
           </div>
         </div>
@@ -679,9 +679,9 @@ export default function MarchAnalysisTab({
                 <th style={{ ...thStyle, textAlign: "left" }}>Team</th>
                 <th style={thStyle}>Region</th>
                 <th style={thStyle}>
-                  Active
+                  Shown Avg
                   <div style={{ fontSize: 10, fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>
-                    Team A/B Torvik
+                    Modal midpoint
                   </div>
                 </th>
                 <th style={thStyle}>
@@ -693,7 +693,7 @@ export default function MarchAnalysisTab({
                 <th style={thStyle}>
                   Δ
                   <div style={{ fontSize: 10, fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>
-                    Act - Int
+                    Shown - Int
                   </div>
                 </th>
                 {ROUND_COLUMNS.map((column) => (
@@ -768,7 +768,7 @@ export default function MarchAnalysisTab({
                             {delta == null ? "--" : `${delta > 0 ? "+" : ""}${delta.toFixed(1)} pp`}
                           </div>
                           <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
-                            {internalRow ? "Act - Int" : "--"}
+                            {internalRow ? "Shown - Int" : "--"}
                           </div>
                         </>
                       );

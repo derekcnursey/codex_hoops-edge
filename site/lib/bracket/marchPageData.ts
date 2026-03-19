@@ -68,7 +68,12 @@ export async function loadMarchPageProps(): Promise<MarchPageProps> {
   let ncaaInternalData: NcaaOddsData | null = null;
   if (ncaaField && matchupCache && matchupValidation?.valid) {
     try {
-      ncaaData = buildNcaaOddsData(ncaaField, matchupCache, "active", ncaaResultsPayload);
+      ncaaData = buildNcaaOddsData(
+        ncaaField,
+        matchupCache,
+        "display_average",
+        ncaaResultsPayload,
+      );
       ncaaInternalData = buildNcaaOddsData(
         ncaaField,
         matchupCache,

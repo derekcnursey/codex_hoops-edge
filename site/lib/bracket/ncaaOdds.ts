@@ -53,6 +53,7 @@ export type NcaaOddsData = {
 
 export type NcaaOddsProbabilityVariant =
   | "active"
+  | "display_average"
   | "legacy_synthetic"
   | "team_ab_elite_tail_round64_v1"
   | "team_ab_internal";
@@ -155,13 +156,36 @@ function probabilityForMatchup(
   }
 
   const directOrder = entry.team1_id === teamAId && entry.team2_id === teamBId;
+  const activeProbability = directOrder ? entry.win_prob_team1 : 1 - entry.win_prob_team1;
+  const internalProbability = directOrder
+    ? entry.win_prob_team1_team_ab_internal
+    : entry.win_prob_team1_team_ab_internal == null
+      ? null
+      : 1 - entry.win_prob_team1_team_ab_internal;
+  const tailProbability = directOrder
+    ? entry.win_prob_team1_team_ab_elite_tail_round64_v1
+    : entry.win_prob_team1_team_ab_elite_tail_round64_v1 == null
+      ? null
+      : 1 - entry.win_prob_team1_team_ab_elite_tail_round64_v1;
+
   const variantProbability = (() => {
+    if (variant === "display_average") {
+      if (
+        entry.matchup_model_variant_active === "team_ab_elite_tail_round64_v1" &&
+        internalProbability != null
+      ) {
+        return (activeProbability + internalProbability) / 2;
+      }
+      if (
+        entry.matchup_model_variant_active === "legacy_synthetic" &&
+        tailProbability != null
+      ) {
+        return (activeProbability + tailProbability) / 2;
+      }
+      return activeProbability;
+    }
     if (variant === "team_ab_internal") {
-      return directOrder
-        ? entry.win_prob_team1_team_ab_internal
-        : entry.win_prob_team1_team_ab_internal == null
-          ? null
-          : 1 - entry.win_prob_team1_team_ab_internal;
+      return internalProbability;
     }
     if (variant === "legacy_synthetic") {
       return directOrder
@@ -171,13 +195,9 @@ function probabilityForMatchup(
           : 1 - entry.win_prob_team1_legacy_synthetic;
     }
     if (variant === "team_ab_elite_tail_round64_v1") {
-      return directOrder
-        ? entry.win_prob_team1_team_ab_elite_tail_round64_v1
-        : entry.win_prob_team1_team_ab_elite_tail_round64_v1 == null
-          ? null
-          : 1 - entry.win_prob_team1_team_ab_elite_tail_round64_v1;
+      return tailProbability;
     }
-    return directOrder ? entry.win_prob_team1 : 1 - entry.win_prob_team1;
+    return activeProbability;
   })();
   const probability = variantProbability;
   if (probability != null && Number.isFinite(probability)) {
@@ -497,9 +517,11 @@ export function buildNcaaOddsData(
     methodology: {
       type: "exact_bracket",
       note:
-        variant === "team_ab_internal"
-          ? "Exact NCAA bracket advancement probabilities using the Team A/B internal-efficiency comparison matchup probabilities from the cache. Sigma remains on the cached legacy path."
-          : "Exact NCAA bracket advancement probabilities using the active cached matchup win probabilities for the selected bracket-model variant. Those matchup probabilities keep the cached sigma path but follow the active bracket mean-model variant.",
+        variant === "display_average"
+          ? "Exact NCAA bracket advancement probabilities using the same shown-average matchup win probabilities as the bracket cards. When a comparison baseline exists, each matchup probability is the midpoint between the active model and the comparison model."
+          : variant === "team_ab_internal"
+            ? "Exact NCAA bracket advancement probabilities using the Team A/B internal-efficiency comparison matchup probabilities from the cache. Sigma remains on the cached legacy path."
+            : "Exact NCAA bracket advancement probabilities using the active cached matchup win probabilities for the selected bracket-model variant. Those matchup probabilities keep the cached sigma path but follow the active bracket mean-model variant.",
     },
     rows,
     summary: {
