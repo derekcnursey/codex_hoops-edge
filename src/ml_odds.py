@@ -21,6 +21,15 @@ META_SMALL_V1 = {
     },
 }
 
+NEUTRAL_BETA_BLEND_V1 = {
+    "alpha": 0.6,
+    "intercept": -0.3232338741070838,
+    "coefficients": {
+        "log_p": 1.0790706225223776,
+        "log1m_p": -1.6575437915942683,
+    },
+}
+
 
 def normal_cdf(x: np.ndarray | float) -> np.ndarray | float:
     """Standard normal CDF using erf."""
@@ -83,12 +92,47 @@ def logistic(x: np.ndarray | float) -> np.ndarray | float:
     return out
 
 
+def _neutral_site_beta_blend(
+    prob: np.ndarray | float,
+    neutral_site: np.ndarray | float | bool | None,
+) -> np.ndarray | float:
+    """Blend the current site probability toward a neutral-only beta calibrator."""
+    if neutral_site is None:
+        return prob
+
+    prob_arr = np.asarray(prob, dtype=float)
+    neutral_arr = np.asarray(neutral_site)
+    if neutral_arr.shape == ():
+        neutral_mask = np.full_like(prob_arr, bool(neutral_arr), dtype=bool)
+    else:
+        neutral_mask = neutral_arr.astype(bool)
+    if not np.any(neutral_mask):
+        return float(prob_arr) if np.isscalar(prob) else prob_arr
+
+    safe_prob = np.clip(prob_arr, 1e-6, 1.0 - 1e-6)
+    beta_score = (
+        NEUTRAL_BETA_BLEND_V1["intercept"]
+        + NEUTRAL_BETA_BLEND_V1["coefficients"]["log_p"] * np.log(safe_prob)
+        + NEUTRAL_BETA_BLEND_V1["coefficients"]["log1m_p"] * np.log1p(-safe_prob)
+    )
+    beta_prob = np.clip(logistic(beta_score), 1e-6, 1.0 - 1e-6)
+    blended = (
+        (1.0 - NEUTRAL_BETA_BLEND_V1["alpha"]) * safe_prob
+        + NEUTRAL_BETA_BLEND_V1["alpha"] * beta_prob
+    )
+    out = np.where(neutral_mask, blended, safe_prob)
+    if np.isscalar(prob):
+        return float(out)
+    return out
+
+
 def site_home_win_prob_from_mu_sigma(
     mu_home: np.ndarray | float,
     sigma: np.ndarray | float,
     *,
     start_month: int,
     start_day: int,
+    neutral_site: np.ndarray | float | bool | None = None,
     odds_mode: MlOddsMode = "meta_small_v1",
 ) -> np.ndarray | float:
     """Match the site-facing ML probability path.
@@ -116,6 +160,7 @@ def site_home_win_prob_from_mu_sigma(
         + META_SMALL_V1["coefficients"]["abs_mu"] * np.abs(mu_arr)
     )
     prob = np.clip(logistic(score), 1e-6, 1 - 1e-6)
+    prob = _neutral_site_beta_blend(prob, neutral_site)
     if np.isscalar(mu_home) and np.isscalar(sigma):
         return float(prob)
     return prob

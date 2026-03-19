@@ -298,6 +298,7 @@ def _predict_pairwise_probability(
             sigma,
             start_month=month,
             start_day=day,
+            neutral_site=True,
             odds_mode="meta_small_v1",
         )
     )

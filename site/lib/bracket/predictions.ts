@@ -178,6 +178,7 @@ function buildPredictionRecord(base: {
           base.displayMarginA,
           base.predSigma ?? null,
           base.scheduledStartTime ?? null,
+          true,
         )
       : null;
   const displayWinProbA =

@@ -65,6 +65,7 @@ from src.mean_model_variants import (
     swap_team_ab_source,
 )
 from src.ml_odds import site_home_win_prob_from_mu_sigma
+from src.ncaa_synthetic_fallback import synthetic_fallback_margin
 from src.tournament_adjustments import market_blended_display_margin
 from src.trainer import load_scaler, load_tree_regressor
 
@@ -805,6 +806,7 @@ def _site_probability_from_mu_sigma(
             float(sigma),
             start_month=month,
             start_day=day,
+            neutral_site=True,
             odds_mode="meta_small_v1",
         )
     )
@@ -1582,6 +1584,12 @@ def _build_matchup_payload(
         )
         team_ab_mu = None
         team_ab_internal_mu = None
+        active_mu_source_mode = None
+        active_mu_source_detail = None
+        active_mu_base_simple_margin = None
+        team_ab_internal_mu_source_mode = None
+        team_ab_internal_mu_source_detail = None
+        team_ab_internal_mu_base_simple_margin = None
         if team_ab_loaded is not None:
             team_ab_regressor, team_ab_feature_order, team_ab_model_type, team_ab_meta = team_ab_loaded
             scheduled_game_id = None if schedule_info is None else schedule_info.get("scheduled_game_id")
@@ -1605,25 +1613,18 @@ def _build_matchup_payload(
                     mu_model_type=team_ab_model_type,
                     mu_impute_means=team_ab_meta.get("impute_means"),
                 )
+                active_mu_source_mode = "scheduled_team_ab_model"
+                active_mu_source_detail = bracket_model_variant
             else:
                 team_a_team_ab = team_lookup_team_ab[team_a_id]
                 team_b_team_ab = team_lookup_team_ab[team_b_id]
-                team_ab_mu = _predict_team_ab_pairwise_margin(
+                team_ab_mu, active_mu_base_simple_margin, active_mu_source_detail = synthetic_fallback_margin(
                     team_a_team_ab,
                     team_b_team_ab,
-                    season=season,
+                    ratings_source=team_ab_efficiency_source,
                     round_label=round_label,
-                    start_time=start_time,
-                    conf_strength_lookup=conf_strength_lookup,
-                    mu_regressor=team_ab_regressor,
-                    mu_feature_order=team_ab_feature_order,
-                    mu_model_type=team_ab_model_type,
-                    mu_impute_means=team_ab_meta.get("impute_means"),
-                    team_a_rest_days=matchup_context["team_a_rest_days"],
-                    team_b_rest_days=matchup_context["team_b_rest_days"],
-                    team_a_state=team_state_lookup_team_ab.get(team_a_id),
-                    team_b_state=team_state_lookup_team_ab.get(team_b_id),
                 )
+                active_mu_source_mode = "synthetic_ratings_map"
             if scheduled_team_ab_internal_row is not None:
                 team_ab_internal_mu = _predict_team_ab_scheduled_margin(
                     scheduled_team_ab_internal_row,
@@ -1634,25 +1635,18 @@ def _build_matchup_payload(
                     mu_model_type=team_ab_model_type,
                     mu_impute_means=team_ab_meta.get("impute_means"),
                 )
+                team_ab_internal_mu_source_mode = "scheduled_team_ab_model"
+                team_ab_internal_mu_source_detail = internal_gold_table_name
             else:
                 team_a_team_ab_internal = team_lookup_team_ab_internal[team_a_id]
                 team_b_team_ab_internal = team_lookup_team_ab_internal[team_b_id]
-                team_ab_internal_mu = _predict_team_ab_pairwise_margin(
+                team_ab_internal_mu, team_ab_internal_mu_base_simple_margin, team_ab_internal_mu_source_detail = synthetic_fallback_margin(
                     team_a_team_ab_internal,
                     team_b_team_ab_internal,
-                    season=season,
+                    ratings_source="gold",
                     round_label=round_label,
-                    start_time=start_time,
-                    conf_strength_lookup=team_ab_internal_conf_strength_lookup,
-                    mu_regressor=team_ab_regressor,
-                    mu_feature_order=team_ab_feature_order,
-                    mu_model_type=team_ab_model_type,
-                    mu_impute_means=team_ab_meta.get("impute_means"),
-                    team_a_rest_days=matchup_context["team_a_rest_days"],
-                    team_b_rest_days=matchup_context["team_b_rest_days"],
-                    team_a_state=team_state_lookup_team_ab_internal.get(team_a_id),
-                    team_b_state=team_state_lookup_team_ab_internal.get(team_b_id),
                 )
+                team_ab_internal_mu_source_mode = "synthetic_ratings_map"
 
         legacy_win_prob_a = _site_probability_from_mu_sigma(float(legacy_mu), float(sigma))
         team_ab_win_prob_a = (
@@ -1726,6 +1720,18 @@ def _build_matchup_payload(
             "mu_team1_minus_team2_team_ab_internal": (
                 None if team_ab_internal_mu is None else float(team_ab_internal_mu)
             ),
+            "active_mu_source_mode": active_mu_source_mode,
+            "active_mu_source_detail": active_mu_source_detail,
+            "active_mu_base_simple_margin": (
+                None if active_mu_base_simple_margin is None else float(active_mu_base_simple_margin)
+            ),
+            "team_ab_internal_mu_source_mode": team_ab_internal_mu_source_mode,
+            "team_ab_internal_mu_source_detail": team_ab_internal_mu_source_detail,
+            "team_ab_internal_mu_base_simple_margin": (
+                None
+                if team_ab_internal_mu_base_simple_margin is None
+                else float(team_ab_internal_mu_base_simple_margin)
+            ),
             "display_mu_team1_minus_team2": display_mu,
             "win_prob_team1": float(win_prob_a),
             "win_prob_team1_legacy_synthetic": float(legacy_win_prob_a),
@@ -1784,12 +1790,19 @@ def _build_matchup_payload(
                 *([BRACKET_MODEL_VARIANT_TEAM_AB] if team_ab_loaded is not None else []),
             ]
         ),
+        "synthetic_fallback_active": (
+            "source-aware direct ratings mapping for unscheduled NCAA matchups"
+            if team_ab_loaded is not None
+            else None
+        ),
         "note": (
             "Neutral-site pairwise predictions generated from the NCAA bracket-builder matchup cache. "
             "The legacy synthetic tree spread, the active Team A/B tournament-engine spread, and the "
             "Team A/B internal-efficiency comparison spread are cached side by side when available; "
             "active spread selection follows the configured bracket matchup "
-            "model variant. Sigma and site win-probability logic remain on the legacy bracket uncertainty path. "
+            "model variant. Scheduled NCAA games use the active Team A/B model on real feature rows; "
+            "unscheduled NCAA matchups fall back to a source-aware direct ratings map. "
+            "Sigma and site win-probability logic remain on the legacy bracket uncertainty path. "
             f"Legacy ratings source: {legacy_ratings_source}. "
             f"Team A/B ratings source: {team_ab_ratings_source}. "
             f"Team A/B internal comparison source: {team_ab_internal_ratings_source}."

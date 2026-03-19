@@ -704,6 +704,20 @@ def save_predictions(preds: pd.DataFrame, game_date: str | None = None) -> tuple
     site_payload = {
         "date": game_date,
         "generated_at": datetime.now(ZoneInfo("UTC")).isoformat().replace("+00:00", "Z"),
+        "provenance": {
+            "mean_model_variant_active": (
+                str(preds["mean_model_variant_active"].iloc[0])
+                if "mean_model_variant_active" in preds.columns and not preds.empty
+                else active_mean_model_variant()
+            ),
+            "primary_efficiency_source": config.EFFICIENCY_SOURCE,
+            "team_ab_efficiency_source_active": config.TEAM_AB_EFFICIENCY_SOURCE,
+            "live_lines_table": config.TABLE_FCT_LINES,
+            "research_lines_table": config.RESEARCH_LINES_TABLE,
+            "sigma_model": "legacy_mlp_regressor_pt",
+            "stored_probability_model": "legacy_mlp_classifier_pt",
+            "site_probability_surface": "mu_plus_sigma_meta_small_v1_neutral_beta_blend_v1",
+        },
         "games": site_games,
     }
     site_json_path = config.SITE_DATA_DIR / f"predictions_{game_date}.json"

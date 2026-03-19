@@ -18,6 +18,14 @@ const META_SMALL_V1 = {
     abs_mu: 0.004037300255673246,
   },
 } as const;
+const NEUTRAL_BETA_BLEND_V1 = {
+  alpha: 0.6,
+  intercept: -0.3232338741070838,
+  coefficients: {
+    log_p: 1.0790706225223776,
+    log1m_p: -1.6575437915942683,
+  },
+} as const;
 
 function toFiniteNumber(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value)) {
@@ -52,6 +60,16 @@ function logistic(x: number): number {
   }
   const z = Math.exp(x);
   return z / (1 + z);
+}
+
+function toBoolean(value: unknown): boolean {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value !== 0;
+  if (typeof value === "string") {
+    const trimmed = value.trim().toLowerCase();
+    return trimmed === "true" || trimmed === "1";
+  }
+  return false;
 }
 
 function isPostDec15(value: unknown): boolean {
@@ -96,6 +114,7 @@ export function getSiteHomeWinProbFromValues(
   mu: number | null,
   sigma: number | null,
   startTime: string | null,
+  neutralSite?: boolean | null,
 ): number | null {
   const baseline = getCap14MuSigmaHomeWinProbFromValues(mu, sigma);
   if (baseline === null || SITE_ML_ODDS_MODE === "cap14_mu_sigma") return baseline;
@@ -111,7 +130,17 @@ export function getSiteHomeWinProbFromValues(
     META_SMALL_V1.coefficients.z14 * z14 +
     META_SMALL_V1.coefficients.post_dec15 * postDec15 +
     META_SMALL_V1.coefficients.abs_mu * absMu;
-  return Math.min(Math.max(logistic(score), 1e-6), 1 - 1e-6);
+  const currentProb = Math.min(Math.max(logistic(score), 1e-6), 1 - 1e-6);
+  if (!neutralSite) return currentProb;
+  const betaScore =
+    NEUTRAL_BETA_BLEND_V1.intercept +
+    NEUTRAL_BETA_BLEND_V1.coefficients.log_p * Math.log(currentProb) +
+    NEUTRAL_BETA_BLEND_V1.coefficients.log1m_p * Math.log1p(-currentProb);
+  const betaProb = Math.min(Math.max(logistic(betaScore), 1e-6), 1 - 1e-6);
+  return (
+    (1 - NEUTRAL_BETA_BLEND_V1.alpha) * currentProb +
+    NEUTRAL_BETA_BLEND_V1.alpha * betaProb
+  );
 }
 
 export function getSiteHomeWinProb(row: PredictionRow): number | null {
@@ -121,7 +150,8 @@ export function getSiteHomeWinProb(row: PredictionRow): number | null {
       : typeof row.startDate === "string"
         ? row.startDate
         : null;
-  return getSiteHomeWinProbFromValues(getModelMuHome(row), getPredSigma(row), startTime);
+  const neutralSite = toBoolean(row.neutral_site ?? row.neutralSite);
+  return getSiteHomeWinProbFromValues(getModelMuHome(row), getPredSigma(row), startTime, neutralSite);
 }
 
 export function formatAmericanOddsFromProb(prob: number | null): string | null {
