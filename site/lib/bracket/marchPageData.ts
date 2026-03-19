@@ -30,6 +30,7 @@ export type MarchPageProps = {
   initialPredictionCache: Record<string, MatchupPrediction>;
   marchGames: MarchBettingGame[];
   ncaaData: NcaaOddsData | null;
+  ncaaTorvikData: NcaaOddsData | null;
   ncaaInternalData: NcaaOddsData | null;
   hardRockReport: HardRockComparisonData | null;
 };
@@ -65,6 +66,7 @@ export async function loadMarchPageProps(): Promise<MarchPageProps> {
       : { initialPredictionCache: {}, marchGames: [] };
 
   let ncaaData: NcaaOddsData | null = null;
+  let ncaaTorvikData: NcaaOddsData | null = null;
   let ncaaInternalData: NcaaOddsData | null = null;
   if (ncaaField && matchupCache && matchupValidation?.valid) {
     try {
@@ -72,6 +74,12 @@ export async function loadMarchPageProps(): Promise<MarchPageProps> {
         ncaaField,
         matchupCache,
         "display_average",
+        ncaaResultsPayload,
+      );
+      ncaaTorvikData = buildNcaaOddsData(
+        ncaaField,
+        matchupCache,
+        "active",
         ncaaResultsPayload,
       );
       ncaaInternalData = buildNcaaOddsData(
@@ -96,6 +104,7 @@ export async function loadMarchPageProps(): Promise<MarchPageProps> {
     initialPredictionCache,
     marchGames,
     ncaaData,
+    ncaaTorvikData,
     ncaaInternalData,
     hardRockReport,
   };

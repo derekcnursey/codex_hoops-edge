@@ -19,6 +19,7 @@ export default function MarchHub({
   initialPredictionCache,
   marchGames,
   ncaaData,
+  ncaaTorvikData,
   ncaaInternalData,
   hardRockReport,
 }: MarchPageProps) {
@@ -125,6 +126,7 @@ export default function MarchHub({
         ) : tab === "analysis" ? (
           <MarchAnalysisTab
             ncaaData={ncaaData}
+            ncaaTorvikData={ncaaTorvikData}
             ncaaInternalData={ncaaInternalData}
             hardRockReport={hardRockReport}
           />

@@ -1,6 +1,7 @@
 import { CSSProperties, useMemo, useState } from "react";
 import {
   HardRockComparisonData,
+  HardRockMarketKey,
   HardRockMarketReport,
   HardRockMarketRow,
 } from "../../lib/bracket/hardRockComparison";
@@ -278,12 +279,30 @@ function filterMarketRows(
   });
 }
 
+function hardRockMarketKeyForRound(
+  roundKey: NcaaOddsRoundKey,
+): HardRockMarketKey | null {
+  if (roundKey === "sweet-16") return "sweet-16";
+  if (roundKey === "elite-8") return "elite-8";
+  if (roundKey === "final-four") return "final-four";
+  if (roundKey === "champion") return "champion";
+  return null;
+}
+
+function marketLabelForRound(roundKey: NcaaOddsRoundKey): string {
+  if (roundKey === "final-four") return "HR F4";
+  if (roundKey === "champion") return "HR Champ";
+  return "HR";
+}
+
 export default function MarchAnalysisTab({
   ncaaData,
+  ncaaTorvikData,
   ncaaInternalData,
   hardRockReport,
 }: {
   ncaaData: NcaaOddsData | null;
+  ncaaTorvikData: NcaaOddsData | null;
   ncaaInternalData: NcaaOddsData | null;
   hardRockReport: HardRockComparisonData | null;
 }) {
@@ -321,6 +340,24 @@ export default function MarchAnalysisTab({
     () => new Map((ncaaInternalData?.rows ?? []).map((row) => [row.teamId, row])),
     [ncaaInternalData],
   );
+  const torvikRowsByTeamId = useMemo(
+    () => new Map((ncaaTorvikData?.rows ?? []).map((row) => [row.teamId, row])),
+    [ncaaTorvikData],
+  );
+  const hardRockRowsByMarketAndTeam = useMemo(() => {
+    const byMarket = new Map<HardRockMarketKey, Map<number, HardRockMarketRow>>();
+    for (const report of hardRockReport?.reports ?? []) {
+      const marketRows = new Map<number, HardRockMarketRow>();
+      for (const row of report.rows) {
+        const matchedTeam = ncaaData?.rows.find((teamRow) => teamRow.team === row.team);
+        if (matchedTeam) {
+          marketRows.set(matchedTeam.teamId, row);
+        }
+      }
+      byMarket.set(report.key, marketRows);
+    }
+    return byMarket;
+  }, [hardRockReport?.reports, ncaaData?.rows]);
 
   const filteredReports = useMemo(
     () =>
@@ -365,7 +402,7 @@ export default function MarchAnalysisTab({
         <ComparisonSummaryCard
           label="Method"
           primary="Shown Avg ML"
-          secondary="Shown Avg columns use the same midpoint displayed on the matchup cards: active Team A/B blended with the internal baseline when both exist. Internal columns stay on the pure internal Team A/B path."
+          secondary="Shown Avg uses the matchup-card midpoint. The table below now also exposes raw Torvik, internal HE, and Hard Rock for post-R32 rounds."
         />
         <ComparisonSummaryCard
           label="Hard Rock Feed"
@@ -659,7 +696,7 @@ export default function MarchAnalysisTab({
               Hoops Edge Round Advancement Odds
             </div>
             <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: 4 }}>
-              Shown Avg = the same midpoint displayed on the bracket cards. Internal = pure internal Team A/B model on Hoops Edge efficiencies. Delta = Shown Avg - Internal for the selected round.
+              Shown Avg = bracket-card midpoint. Torvik = raw active Team A/B Torvik path. Internal = pure internal Team A/B HE path. Hard Rock rows appear for Sweet 16, Elite 8, Final Four, and Champion.
             </div>
           </div>
         </div>
@@ -682,6 +719,12 @@ export default function MarchAnalysisTab({
                   Shown Avg
                   <div style={{ fontSize: 10, fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>
                     Modal midpoint
+                  </div>
+                </th>
+                <th style={thStyle}>
+                  Torvik
+                  <div style={{ fontSize: 10, fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>
+                    Raw active
                   </div>
                 </th>
                 <th style={thStyle}>
@@ -739,6 +782,18 @@ export default function MarchAnalysisTab({
                   </td>
                   <td style={tdStyle}>
                     <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
+                      {torvikRowsByTeamId.get(row.teamId)
+                        ? formatPercent(torvikRowsByTeamId.get(row.teamId)!.roundProbabilities[sortKey])
+                        : "--"}
+                    </div>
+                    <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+                      {torvikRowsByTeamId.get(row.teamId)
+                        ? formatRoundOdds(torvikRowsByTeamId.get(row.teamId)!.roundProbabilities[sortKey]) ?? "--"
+                        : "--"}
+                    </div>
+                  </td>
+                  <td style={tdStyle}>
+                    <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
                       {comparisonRowsByTeamId.get(row.teamId)
                         ? formatPercent(comparisonRowsByTeamId.get(row.teamId)!.roundProbabilities[sortKey])
                         : "--"}
@@ -776,21 +831,40 @@ export default function MarchAnalysisTab({
                   </td>
                   {ROUND_COLUMNS.map((column) => {
                     const probability = row.roundProbabilities[column.key];
+                    const torvikProbability =
+                      torvikRowsByTeamId.get(row.teamId)?.roundProbabilities[column.key] ?? null;
                     const internalRoundProbability =
                       comparisonRowsByTeamId.get(row.teamId)?.roundProbabilities[column.key] ?? null;
+                    const hardRockRow = (() => {
+                      const marketKey = hardRockMarketKeyForRound(column.key);
+                      if (!marketKey) return null;
+                      return hardRockRowsByMarketAndTeam.get(marketKey)?.get(row.teamId) ?? null;
+                    })();
                     return (
                       <td key={column.key} style={tdStyle}>
                         <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
-                          T {formatPercent(probability)}
+                          Avg {formatPercent(probability)}
                         </div>
                         <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
                           {formatRoundOdds(probability) ?? "--"}
+                        </div>
+                        <div style={{ ...mono, fontWeight: 700, color: "#334155", marginTop: 6 }}>
+                          T {torvikProbability == null ? "--" : formatPercent(torvikProbability)}
+                        </div>
+                        <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+                          {torvikProbability == null ? "--" : formatRoundOdds(torvikProbability) ?? "--"}
                         </div>
                         <div style={{ ...mono, fontWeight: 700, color: "#334155", marginTop: 6 }}>
                           HE {internalRoundProbability == null ? "--" : formatPercent(internalRoundProbability)}
                         </div>
                         <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
                           {internalRoundProbability == null ? "--" : formatRoundOdds(internalRoundProbability) ?? "--"}
+                        </div>
+                        <div style={{ ...mono, fontWeight: 700, color: "#334155", marginTop: 6 }}>
+                          {marketLabelForRound(column.key)} {hardRockRow == null ? "--" : hardRockRow.hrbOdds}
+                        </div>
+                        <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+                          {hardRockRow == null ? "--" : formatPercent(hardRockRow.hrbFairProb)}
                         </div>
                       </td>
                     );
