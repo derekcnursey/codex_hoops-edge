@@ -61,15 +61,20 @@ export async function loadMarchPageProps(): Promise<MarchPageProps> {
 
   const { initialPredictionCache, marchGames } =
     ncaaField && matchupCache && matchupValidation?.valid
-      ? buildScheduledNcaaMarchData(ncaaField, matchupCache)
+      ? buildScheduledNcaaMarchData(ncaaField, matchupCache, ncaaResultsPayload)
       : { initialPredictionCache: {}, marchGames: [] };
 
   let ncaaData: NcaaOddsData | null = null;
   let ncaaInternalData: NcaaOddsData | null = null;
   if (ncaaField && matchupCache && matchupValidation?.valid) {
     try {
-      ncaaData = buildNcaaOddsData(ncaaField, matchupCache);
-      ncaaInternalData = buildNcaaOddsData(ncaaField, matchupCache, "team_ab_internal");
+      ncaaData = buildNcaaOddsData(ncaaField, matchupCache, "active", ncaaResultsPayload);
+      ncaaInternalData = buildNcaaOddsData(
+        ncaaField,
+        matchupCache,
+        "team_ab_internal",
+        ncaaResultsPayload,
+      );
     } catch (error) {
       console.error("Failed to build NCAA odds data", error);
     }

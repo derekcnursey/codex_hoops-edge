@@ -1,8 +1,8 @@
 import { CSSProperties, useMemo, useState } from "react";
 import {
   HardRockComparisonData,
-  HardRockComparisonRow,
-  HardRockRegionWinnerRow,
+  HardRockMarketReport,
+  HardRockMarketRow,
 } from "../../lib/bracket/hardRockComparison";
 import {
   formatRoundOdds,
@@ -68,12 +68,16 @@ function roundExpectedPoints(round: number): string {
   return round.toFixed(2).replace(/\.00$/, "");
 }
 
-function TopList({
+function reportLabelForRow(row: HardRockMarketRow): string {
+  return row.marketLabel === "Region Winner" ? "Model F4" : `Model ${row.marketLabel}`;
+}
+
+function MarketTopList({
   title,
   rows,
 }: {
   title: string;
-  rows: HardRockComparisonRow[];
+  rows: HardRockMarketRow[];
 }) {
   return (
     <div
@@ -98,7 +102,7 @@ function TopList({
       <div style={{ display: "flex", flexDirection: "column" }}>
         {rows.map((row) => (
           <div
-            key={`${title}-${row.team}`}
+            key={`${title}-${row.marketKey}-${row.group}-${row.team}`}
             style={{
               display: "grid",
               gridTemplateColumns: "minmax(0, 1fr) auto",
@@ -109,10 +113,11 @@ function TopList({
           >
             <div>
               <div style={{ fontWeight: 600, color: "#0f172a" }}>
-                ({row.seed}) {row.team}
+                {row.marketKey === "champion" ? "" : `${row.group} · `}({row.seed}) {row.team}
               </div>
               <div style={{ ...mono, fontSize: 11, color: "#64748b" }}>
-                HRB {row.hrbChampOdds} · Model {row.modelChampOdds ?? "--"}
+                HRB {row.hrbOdds} fair {formatPercent(row.hrbFairProb)} · {reportLabelForRow(row)}{" "}
+                {row.modelOdds ?? "--"}
               </div>
             </div>
             <div
@@ -133,12 +138,12 @@ function TopList({
   );
 }
 
-function RegionTopList({
-  title,
+function MarketComparisonTable({
+  report,
   rows,
 }: {
-  title: string;
-  rows: HardRockRegionWinnerRow[];
+  report: HardRockMarketReport;
+  rows: HardRockMarketRow[];
 }) {
   return (
     <div
@@ -154,49 +159,123 @@ function RegionTopList({
         style={{
           padding: "14px 16px",
           borderBottom: "1px solid #f1f5f9",
-          fontWeight: 700,
-          color: "#0f172a",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 12,
+          flexWrap: "wrap",
         }}
       >
-        {title}
-      </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        {rows.map((row) => (
-          <div
-            key={`${title}-${row.region}-${row.team}`}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "minmax(0, 1fr) auto",
-              gap: 12,
-              padding: "12px 16px",
-              borderBottom: "1px solid #f8fafc",
-            }}
-          >
-            <div>
-              <div style={{ fontWeight: 600, color: "#0f172a" }}>
-                {row.region} · ({row.seed}) {row.team}
-              </div>
-              <div style={{ ...mono, fontSize: 11, color: "#64748b" }}>
-                HRB {row.hrbRegionOdds} fair {formatPercent(row.hrbRegionFairProb)} · Model{" "}
-                {row.modelRegionOdds ?? "--"}
-              </div>
-            </div>
-            <div
-              style={{
-                ...mono,
-                fontWeight: 700,
-                color: deltaColor(row.deltaPctPoints),
-                whiteSpace: "nowrap",
-              }}
-            >
-              {row.deltaPctPoints > 0 ? "+" : ""}
-              {row.deltaPctPoints.toFixed(2)} pp
-            </div>
+        <div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
+            Hard Rock {report.label} Comparison
           </div>
-        ))}
+          <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: 4 }}>
+            {report.snapshotLabel}
+          </div>
+          <div style={{ ...mono, fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
+            {report.note}
+          </div>
+        </div>
+        <div style={{ ...mono, fontSize: 11, color: "#64748b", textAlign: "right" }}>
+          {Object.entries(report.groupHoldPct).map(([groupName, holdPct], index, entries) => (
+            <span key={`${report.key}-${groupName}`}>
+              {groupName} hold {holdPct.toFixed(2)}%
+              {index < entries.length - 1 ? " · " : ""}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ overflowX: "auto" }}>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            fontSize: 13,
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          <thead>
+            <tr style={{ background: "#fafbfc", borderBottom: "1px solid #e2e8f0" }}>
+              {report.scope === "region" && <th style={thStyle}>Region</th>}
+              <th style={thStyle}>Seed</th>
+              <th style={{ ...thStyle, textAlign: "left" }}>Team</th>
+              <th style={thStyle}>HRB</th>
+              <th style={thStyle}>HRB Fair %</th>
+              <th style={thStyle}>Model</th>
+              <th style={thStyle}>Delta</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={`${report.key}-${row.group}-${row.team}`} style={{ borderBottom: "1px solid #f8fafc" }}>
+                {report.scope === "region" && (
+                  <td style={{ ...tdStyle, ...mono, color: "#64748b" }}>{row.group}</td>
+                )}
+                <td style={{ ...tdStyle, ...mono, color: "#64748b", fontWeight: 600 }}>{row.seed}</td>
+                <td style={{ ...tdStyle, textAlign: "left" }}>
+                  <div style={{ fontWeight: 600, color: "#0f172a" }}>{row.team}</div>
+                  <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+                    {row.marketKey === "champion" ? row.region ?? "--" : row.hrbTeamName}
+                  </div>
+                </td>
+                <td style={tdStyle}>
+                  <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>{row.hrbOdds}</div>
+                  <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+                    {formatPercent(row.hrbProb)}
+                  </div>
+                </td>
+                <td style={tdStyle}>
+                  <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
+                    {formatPercent(row.hrbFairProb)}
+                  </div>
+                </td>
+                <td style={tdStyle}>
+                  <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
+                    {row.modelOdds ?? "--"}
+                  </div>
+                  <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
+                    {formatPercent(row.modelProb)}
+                  </div>
+                </td>
+                <td style={tdStyle}>
+                  <div
+                    style={{
+                      ...mono,
+                      fontWeight: 700,
+                      color: deltaColor(row.deltaPctPoints),
+                    }}
+                  >
+                    {row.deltaPctPoints > 0 ? "+" : ""}
+                    {row.deltaPctPoints.toFixed(2)} pp
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
+}
+
+function filterMarketRows(
+  report: HardRockMarketReport,
+  search: string,
+  region: string,
+): HardRockMarketRow[] {
+  const query = search.trim().toLowerCase();
+  return report.rows.filter((row) => {
+    if (region !== "all" && row.region !== region) return false;
+    if (!query) return true;
+    return (
+      row.team.toLowerCase().includes(query) ||
+      row.hrbTeamName.toLowerCase().includes(query) ||
+      row.group.toLowerCase().includes(query) ||
+      (row.region ?? "").toLowerCase().includes(query)
+    );
+  });
 }
 
 export default function MarchAnalysisTab({
@@ -237,37 +316,20 @@ export default function MarchAnalysisTab({
         return a.seed - b.seed || a.team.localeCompare(b.team);
       });
   }, [ncaaData, region, search, sortKey]);
+
   const comparisonRowsByTeamId = useMemo(
     () => new Map((ncaaInternalData?.rows ?? []).map((row) => [row.teamId, row])),
     [ncaaInternalData],
   );
 
-  const filteredComparisonRows = useMemo(() => {
-    if (!hardRockReport) return [];
-    const query = search.trim().toLowerCase();
-    return hardRockReport.rows.filter((row) => {
-      if (!query) return true;
-      return (
-        row.team.toLowerCase().includes(query) ||
-        row.hrbTeamName.toLowerCase().includes(query) ||
-        (row.region ?? "").toLowerCase().includes(query)
-      );
-    });
-  }, [hardRockReport, search]);
-
-  const filteredRegionWinnerRows = useMemo(() => {
-    const rows = hardRockReport?.regionWinnerReport?.rows ?? [];
-    const query = search.trim().toLowerCase();
-    return rows.filter((row) => {
-      if (region !== "all" && row.region !== region) return false;
-      if (!query) return true;
-      return (
-        row.team.toLowerCase().includes(query) ||
-        row.hrbTeamName.toLowerCase().includes(query) ||
-        row.region.toLowerCase().includes(query)
-      );
-    });
-  }, [hardRockReport, region, search]);
+  const filteredReports = useMemo(
+    () =>
+      (hardRockReport?.reports ?? []).map((report) => ({
+        report,
+        rows: filterMarketRows(report, search, region),
+      })),
+    [hardRockReport?.reports, search, region],
+  );
 
   if (!ncaaData) {
     return (
@@ -285,10 +347,10 @@ export default function MarchAnalysisTab({
     );
   }
 
-  const bestOverlay = hardRockReport?.topOverlays[0] ?? null;
-  const biggestUnderlay = hardRockReport?.topUnderlays[0] ?? null;
-  const bestRegionOverlay = hardRockReport?.regionWinnerReport?.topOverlays[0] ?? null;
-  const biggestRegionUnderlay = hardRockReport?.regionWinnerReport?.topUnderlays[0] ?? null;
+  const sweet16Overlay = hardRockReport?.sweet16Report?.topOverlays[0] ?? null;
+  const elite8Overlay = hardRockReport?.elite8Report?.topOverlays[0] ?? null;
+  const finalFourOverlay = hardRockReport?.regionWinnerReport?.topOverlays[0] ?? null;
+  const championshipOverlay = hardRockReport?.championshipReport?.topOverlays[0] ?? null;
   const optimalBracket = ncaaData.optimalBracket;
 
   return (
@@ -307,47 +369,43 @@ export default function MarchAnalysisTab({
         />
         <ComparisonSummaryCard
           label="Hard Rock Feed"
-          primary={hardRockReport?.status === "live" ? "Live title feed" : "Unavailable"}
+          primary={hardRockReport?.status === "manual_snapshot" ? "Manual snapshot" : "Unavailable"}
           secondary={hardRockReport?.note ?? "No Hard Rock comparison loaded."}
         />
         <ComparisonSummaryCard
-          label="Best Overlay"
-          primary={bestOverlay ? bestOverlay.team : "--"}
+          label="Best Sweet 16 Overlay"
+          primary={sweet16Overlay ? `${sweet16Overlay.team} (${sweet16Overlay.group})` : "--"}
           secondary={
-            bestOverlay
-              ? `Model ${bestOverlay.modelChampOdds ?? "--"} vs HRB ${bestOverlay.hrbChampOdds}`
-              : "No overlay data"
+            sweet16Overlay
+              ? `Model ${sweet16Overlay.modelOdds ?? "--"} vs HRB ${sweet16Overlay.hrbOdds}`
+              : "No Sweet 16 data"
           }
         />
         <ComparisonSummaryCard
-          label="Biggest Underlay"
-          primary={biggestUnderlay ? biggestUnderlay.team : "--"}
+          label="Best Elite 8 Overlay"
+          primary={elite8Overlay ? `${elite8Overlay.team} (${elite8Overlay.group})` : "--"}
           secondary={
-            biggestUnderlay
-              ? `Model ${biggestUnderlay.modelChampOdds ?? "--"} vs HRB ${biggestUnderlay.hrbChampOdds}`
-              : "No underlay data"
+            elite8Overlay
+              ? `Model ${elite8Overlay.modelOdds ?? "--"} vs HRB ${elite8Overlay.hrbOdds}`
+              : "No Elite 8 data"
           }
         />
         <ComparisonSummaryCard
           label="Best Region Overlay"
-          primary={bestRegionOverlay ? `${bestRegionOverlay.team} (${bestRegionOverlay.region})` : "--"}
+          primary={finalFourOverlay ? `${finalFourOverlay.team} (${finalFourOverlay.group})` : "--"}
           secondary={
-            bestRegionOverlay
-              ? `Model ${bestRegionOverlay.modelRegionOdds ?? "--"} vs HRB ${bestRegionOverlay.hrbRegionOdds}`
+            finalFourOverlay
+              ? `Model ${finalFourOverlay.modelOdds ?? "--"} vs HRB ${finalFourOverlay.hrbOdds}`
               : "No region data"
           }
         />
         <ComparisonSummaryCard
-          label="Biggest Region Underlay"
-          primary={
-            biggestRegionUnderlay
-              ? `${biggestRegionUnderlay.team} (${biggestRegionUnderlay.region})`
-              : "--"
-          }
+          label="Best Title Overlay"
+          primary={championshipOverlay ? championshipOverlay.team : "--"}
           secondary={
-            biggestRegionUnderlay
-              ? `Model ${biggestRegionUnderlay.modelRegionOdds ?? "--"} vs HRB ${biggestRegionUnderlay.hrbRegionOdds}`
-              : "No region data"
+            championshipOverlay
+              ? `Model ${championshipOverlay.modelOdds ?? "--"} vs HRB ${championshipOverlay.hrbOdds}`
+              : "No title data"
           }
         />
         <ComparisonSummaryCard
@@ -559,280 +617,22 @@ export default function MarchAnalysisTab({
         />
       </div>
 
-      {hardRockReport && (
-        <>
-          {hardRockReport.regionWinnerReport && (
-            <>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                  gap: 12,
-                }}
-              >
-                <RegionTopList
-                  title="Top Region Overlays vs Hard Rock"
-                  rows={hardRockReport.regionWinnerReport.topOverlays}
-                />
-                <RegionTopList
-                  title="Top Region Underlays vs Hard Rock"
-                  rows={hardRockReport.regionWinnerReport.topUnderlays}
-                />
-              </div>
-
-              <div
-                style={{
-                  background: "#fff",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-                }}
-              >
-                <div
-                  style={{
-                    padding: "14px 16px",
-                    borderBottom: "1px solid #f1f5f9",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: 12,
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <div>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
-                      Hard Rock Region Winner Comparison
-                    </div>
-                    <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: 4 }}>
-                      {hardRockReport.regionWinnerReport.snapshotLabel}
-                    </div>
-                    <div style={{ ...mono, fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
-                      {hardRockReport.regionWinnerReport.note}
-                    </div>
-                  </div>
-                  <div style={{ ...mono, fontSize: 11, color: "#64748b", textAlign: "right" }}>
-                    {Object.entries(hardRockReport.regionWinnerReport.regionHoldPct).map(
-                      ([regionName, holdPct], index, entries) => (
-                        <span key={regionName}>
-                          {regionName} hold {holdPct.toFixed(2)}%
-                          {index < entries.length - 1 ? " · " : ""}
-                        </span>
-                      ),
-                    )}
-                  </div>
-                </div>
-
-                <div style={{ overflowX: "auto" }}>
-                  <table
-                    style={{
-                      width: "100%",
-                      borderCollapse: "collapse",
-                      fontSize: 13,
-                      fontVariantNumeric: "tabular-nums",
-                    }}
-                  >
-                    <thead>
-                      <tr style={{ background: "#fafbfc", borderBottom: "1px solid #e2e8f0" }}>
-                        <th style={thStyle}>Region</th>
-                        <th style={thStyle}>Seed</th>
-                        <th style={{ ...thStyle, textAlign: "left" }}>Team</th>
-                        <th style={thStyle}>HRB Region</th>
-                        <th style={thStyle}>HRB Fair %</th>
-                        <th style={thStyle}>Model F4</th>
-                        <th style={thStyle}>Delta</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredRegionWinnerRows.map((row) => (
-                        <tr
-                          key={`${row.region}-${row.team}`}
-                          style={{ borderBottom: "1px solid #f8fafc" }}
-                        >
-                          <td style={{ ...tdStyle, ...mono, color: "#64748b" }}>{row.region}</td>
-                          <td
-                            style={{
-                              ...tdStyle,
-                              ...mono,
-                              color: "#64748b",
-                              fontWeight: 600,
-                            }}
-                          >
-                            {row.seed}
-                          </td>
-                          <td style={{ ...tdStyle, textAlign: "left" }}>
-                            <div style={{ fontWeight: 600, color: "#0f172a" }}>{row.team}</div>
-                            <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
-                              {row.hrbTeamName}
-                            </div>
-                          </td>
-                          <td style={tdStyle}>
-                            <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
-                              {row.hrbRegionOdds}
-                            </div>
-                            <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
-                              {formatPercent(row.hrbRegionProb)}
-                            </div>
-                          </td>
-                          <td style={tdStyle}>
-                            <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
-                              {formatPercent(row.hrbRegionFairProb)}
-                            </div>
-                          </td>
-                          <td style={tdStyle}>
-                            <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
-                              {row.modelRegionOdds ?? "--"}
-                            </div>
-                            <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
-                              {formatPercent(row.modelRegionProb)}
-                            </div>
-                          </td>
-                          <td style={tdStyle}>
-                            <div
-                              style={{
-                                ...mono,
-                                fontWeight: 700,
-                                color: deltaColor(row.deltaPctPoints),
-                              }}
-                            >
-                              {row.deltaPctPoints > 0 ? "+" : ""}
-                              {row.deltaPctPoints.toFixed(2)} pp
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </>
-          )}
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: 12,
-            }}
-          >
-            <TopList title="Top Overlays vs Hard Rock" rows={hardRockReport.topOverlays} />
-            <TopList title="Top Underlays vs Hard Rock" rows={hardRockReport.topUnderlays} />
-          </div>
-
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #e2e8f0",
-              borderRadius: 12,
-              overflow: "hidden",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-            }}
-          >
+      {hardRockReport &&
+        filteredReports.map(({ report, rows }) => (
+          <div key={report.key} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div
               style={{
-                padding: "14px 16px",
-                borderBottom: "1px solid #f1f5f9",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
                 gap: 12,
-                flexWrap: "wrap",
               }}
             >
-              <div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
-                  Hard Rock Championship Comparison
-                </div>
-                <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: 4 }}>
-                  {hardRockReport.matchedCount} matched teams · fetched {new Date(hardRockReport.fetchedAt).toLocaleString()}
-                </div>
-              </div>
-              <div style={{ ...mono, fontSize: 11, color: "#64748b" }}>
-                <a href={hardRockReport.sourceUrl} target="_blank" rel="noreferrer">
-                  title feed
-                </a>
-                {" · "}
-                <a href={hardRockReport.sportsbookPageUrl} target="_blank" rel="noreferrer">
-                  sportsbook page
-                </a>
-              </div>
+              <MarketTopList title={`Top ${report.label} Overlays`} rows={report.topOverlays} />
+              <MarketTopList title={`Top ${report.label} Underlays`} rows={report.topUnderlays} />
             </div>
-
-            <div style={{ overflowX: "auto" }}>
-              <table
-                style={{
-                  width: "100%",
-                  borderCollapse: "collapse",
-                  fontSize: 13,
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              >
-                <thead>
-                  <tr style={{ background: "#fafbfc", borderBottom: "1px solid #e2e8f0" }}>
-                    <th style={thStyle}>Seed</th>
-                    <th style={{ ...thStyle, textAlign: "left" }}>Team</th>
-                    <th style={thStyle}>HRB Champ</th>
-                    <th style={thStyle}>Model Champ</th>
-                    <th style={thStyle}>Delta</th>
-                    <th style={thStyle}>Model F4</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredComparisonRows.map((row) => (
-                    <tr key={row.team} style={{ borderBottom: "1px solid #f8fafc" }}>
-                      <td style={{ ...tdStyle, ...mono, color: "#64748b", fontWeight: 600 }}>
-                        {row.seed}
-                      </td>
-                      <td style={{ ...tdStyle, textAlign: "left" }}>
-                        <div style={{ fontWeight: 600, color: "#0f172a" }}>{row.team}</div>
-                        <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
-                          {row.region ?? "--"}
-                        </div>
-                      </td>
-                      <td style={tdStyle}>
-                        <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
-                          {row.hrbChampOdds}
-                        </div>
-                        <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
-                          {formatPercent(row.hrbChampProb)}
-                        </div>
-                      </td>
-                      <td style={tdStyle}>
-                        <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
-                          {row.modelChampOdds ?? "--"}
-                        </div>
-                        <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
-                          {formatPercent(row.modelChampProb)}
-                        </div>
-                      </td>
-                      <td style={tdStyle}>
-                        <div
-                          style={{
-                            ...mono,
-                            fontWeight: 700,
-                            color: deltaColor(row.deltaPctPoints),
-                          }}
-                        >
-                          {row.deltaPctPoints > 0 ? "+" : ""}
-                          {row.deltaPctPoints.toFixed(2)} pp
-                        </div>
-                      </td>
-                      <td style={tdStyle}>
-                        <div style={{ ...mono, fontWeight: 700, color: "#0f172a" }}>
-                          {row.modelFinalFourOdds ?? "--"}
-                        </div>
-                        <div style={{ ...mono, fontSize: 11, color: "#94a3b8" }}>
-                          {formatPercent(row.modelFinalFourProb)}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <MarketComparisonTable report={report} rows={rows} />
           </div>
-        </>
-      )}
+        ))}
 
       <div
         style={{
@@ -854,15 +654,15 @@ export default function MarchAnalysisTab({
             flexWrap: "wrap",
           }}
         >
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
-                Hoops Edge Round Advancement Odds
-              </div>
-              <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: 4 }}>
-                Active = Team A/B Torvik. Internal = same Team A/B model on Hoops Edge efficiencies. Delta = Active - Internal for the selected round.
-              </div>
+          <div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
+              Hoops Edge Round Advancement Odds
+            </div>
+            <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: 4 }}>
+              Active = Team A/B Torvik. Internal = same Team A/B model, Hoops Edge efficiencies. Delta = Active - Internal for the selected round.
             </div>
           </div>
+        </div>
 
         <div style={{ overflowX: "auto" }}>
           <table
@@ -952,9 +752,10 @@ export default function MarchAnalysisTab({
                   <td style={tdStyle}>
                     {(() => {
                       const internalRow = comparisonRowsByTeamId.get(row.teamId);
-                      const delta = internalRow == null
-                        ? null
-                        : (row.roundProbabilities[sortKey] - internalRow.roundProbabilities[sortKey]) * 100;
+                      const delta =
+                        internalRow == null
+                          ? null
+                          : (row.roundProbabilities[sortKey] - internalRow.roundProbabilities[sortKey]) * 100;
                       return (
                         <>
                           <div

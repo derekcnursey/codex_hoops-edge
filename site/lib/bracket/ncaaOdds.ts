@@ -2,11 +2,13 @@ import {
   formatAmericanOddsFromProb,
 } from "../data";
 import { buildNcaaBracketGames, getBracketTeams } from "./ncaaBracket";
+import { buildFinalResultsMap } from "./results";
 import {
   BracketRoundId,
   BracketSource,
   MatchupPredictionCache,
   NcaaBracketField,
+  NcaaTournamentResults,
 } from "./types";
 
 const DEFAULT_TOURNAMENT_START = "2026-03-20T00:00:00.000Z";
@@ -286,6 +288,7 @@ function buildTournamentState(
   field: NcaaBracketField,
   cache: MatchupPredictionCache,
   variant: NcaaOddsProbabilityVariant,
+  results: NcaaTournamentResults | null = null,
 ): {
   rowsByTeamId: RowMap;
   games: ReturnType<typeof buildNcaaBracketGames>;
@@ -314,6 +317,7 @@ function buildTournamentState(
     ]),
   );
   const winnerByGame = new Map<string, ProbabilityMap>();
+  const finalResults = buildFinalResultsMap(results);
 
   for (const game of games) {
     const distA = sourceDistribution(game.sourceA, winnerByGame);
@@ -330,13 +334,18 @@ function buildTournamentState(
       }
     }
 
+    const finalResult = finalResults[game.id];
     const winners = new Map<number, number>();
-    for (const [teamAId, probAReach] of distA.entries()) {
-      for (const [teamBId, probBReach] of distB.entries()) {
-        const meetingProb = probAReach * probBReach;
-        const probAWin = probabilityForMatchup(cache, teamAId, teamBId, variant);
-        addProbability(winners, teamAId, meetingProb * probAWin);
-        addProbability(winners, teamBId, meetingProb * (1 - probAWin));
+    if (finalResult?.winner_team_id != null) {
+      winners.set(finalResult.winner_team_id, 1);
+    } else {
+      for (const [teamAId, probAReach] of distA.entries()) {
+        for (const [teamBId, probBReach] of distB.entries()) {
+          const meetingProb = probAReach * probBReach;
+          const probAWin = probabilityForMatchup(cache, teamAId, teamBId, variant);
+          addProbability(winners, teamAId, meetingProb * probAWin);
+          addProbability(winners, teamBId, meetingProb * (1 - probAWin));
+        }
       }
     }
     winnerByGame.set(game.id, winners);
@@ -467,11 +476,13 @@ export function buildNcaaOddsData(
   field: NcaaBracketField,
   cache: MatchupPredictionCache,
   variant: NcaaOddsProbabilityVariant = "active",
+  results: NcaaTournamentResults | null = null,
 ): NcaaOddsData {
   const { rowsByTeamId, games, winnerByGame, teamsById } = buildTournamentState(
     field,
     cache,
     variant,
+    results,
   );
   const rows = sortedRows(Array.from(rowsByTeamId.values()));
   const titleFavorite = rows[0] ?? null;

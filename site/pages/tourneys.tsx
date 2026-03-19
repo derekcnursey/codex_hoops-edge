@@ -8,7 +8,11 @@ import {
   NcaaOddsRoundKey,
   NcaaOddsRow,
 } from "../lib/bracket/ncaaOdds";
-import { MatchupPredictionCache, NcaaBracketField } from "../lib/bracket/types";
+import {
+  MatchupPredictionCache,
+  NcaaBracketField,
+  NcaaTournamentResults,
+} from "../lib/bracket/types";
 import { readJsonFile } from "../lib/server-data";
 
 /* -- types -- */
@@ -64,6 +68,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const data = raw as TourneysData | null;
   const rawNcaaField = readJsonFile("ncaa_bracket_builder_2026.json");
   const rawNcaaCache = readJsonFile("ncaa_matchup_predictions_2026.json");
+  const rawNcaaResults = readJsonFile("ncaa_results_2026.json");
 
   let ncaaData: NcaaOddsData | null = null;
   let ncaaInternalData: NcaaOddsData | null = null;
@@ -72,11 +77,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
       ncaaData = buildNcaaOddsData(
         rawNcaaField as NcaaBracketField,
         rawNcaaCache as MatchupPredictionCache,
+        "active",
+        rawNcaaResults as NcaaTournamentResults | null,
       );
       ncaaInternalData = buildNcaaOddsData(
         rawNcaaField as NcaaBracketField,
         rawNcaaCache as MatchupPredictionCache,
         "team_ab_internal",
+        rawNcaaResults as NcaaTournamentResults | null,
       );
     } catch (error) {
       console.error("Failed to build NCAA odds data", error);

@@ -1,4 +1,5 @@
 import { buildNcaaBracketGames, getBracketTeams } from "./ncaaBracket";
+import { buildFinalResultsMap } from "./results";
 import {
   buildPredictionFromCacheEntry,
   canonicalMatchupKey,
@@ -12,16 +13,26 @@ import {
   MatchupPrediction,
   MatchupPredictionCache,
   NcaaBracketField,
+  NcaaTournamentResults,
 } from "./types";
 
-function resolveSource(source: BracketSource, teamById: Record<number, BracketTeam>): BracketTeam | null {
-  if (source.type !== "team") return null;
-  return teamById[source.teamId] ?? null;
+function resolveSource(
+  source: BracketSource,
+  teamById: Record<number, BracketTeam>,
+  finalResults: Record<string, { winner_team_id?: number | null }>,
+): BracketTeam | null {
+  if (source.type === "team") {
+    return teamById[source.teamId] ?? null;
+  }
+  const winnerId = finalResults[source.gameId]?.winner_team_id;
+  if (winnerId == null) return null;
+  return teamById[winnerId] ?? null;
 }
 
 export function buildScheduledNcaaMarchData(
   field: NcaaBracketField,
   cache: MatchupPredictionCache,
+  results: NcaaTournamentResults | null = null,
 ): {
   initialPredictionCache: Record<string, MatchupPrediction>;
   marchGames: MarchBettingGame[];
@@ -31,14 +42,18 @@ export function buildScheduledNcaaMarchData(
   const teamById = Object.fromEntries(
     getBracketTeams(field).map((team) => [team.id, team]),
   ) as Record<number, BracketTeam>;
+  const finalResults = buildFinalResultsMap(results);
 
   const scheduledGames = buildNcaaBracketGames(field)
     .filter((game) => game.roundId === "first-four" || game.roundId === "round-of-64")
     .sort((a, b) => a.roundOrder - b.roundOrder || a.matchupOrder - b.matchupOrder);
 
   for (const game of scheduledGames) {
-    const teamA = resolveSource(game.sourceA, teamById);
-    const teamB = resolveSource(game.sourceB, teamById);
+    const gameResult = finalResults[game.id];
+    if (gameResult?.winner_team_id != null) continue;
+
+    const teamA = resolveSource(game.sourceA, teamById, finalResults);
+    const teamB = resolveSource(game.sourceB, teamById, finalResults);
     if (!teamA || !teamB) continue;
 
     const matchupKey = canonicalMatchupKey(teamA.id, teamB.id);
