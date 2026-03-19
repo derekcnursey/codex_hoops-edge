@@ -16,6 +16,19 @@ from . import config
 from .architecture import MLPClassifier, MLPRegressor, MLPRegressorSplit
 from .efficiency_blend import blend_enabled
 from .line_selection import select_preferred_lines
+from .mean_model_variants import (
+    LEGACY_HOME_SLOT,
+    TEAM_AB_ELITE_TAIL_ROUND64_V1,
+    active_mean_model_variant,
+    build_mean_model_feature_frame,
+    build_team_ab_elite_tail_round64_contract,
+    build_team_ab_source,
+    legacy_variant_field,
+    normalize_mean_model_variant,
+    swap_team_ab_source,
+    variant_prediction_field,
+    variant_spec,
+)
 from .sigma_calibration import apply_sigma_transform
 from .tournament_adjustments import (
     add_tournament_market_display_columns,
@@ -119,28 +132,48 @@ def load_classifier(path: Path | None = None) -> tuple[MLPClassifier, dict, list
     return model, hp, feature_order
 
 
-def load_mu_regressor() -> tuple[object, list[str], str]:
+def load_mu_regressor(
+    variant: str | None = None,
+    *,
+    secondary: bool = False,
+) -> tuple[object, list[str], str, dict]:
     """Load the preferred point regressor for mu.
 
     Prefers the production HistGradientBoosting artifact when present, falling
     back to the legacy MLP regressor checkpoint otherwise.
     """
-    tree_path = config.TREE_REGRESSOR_PATH
+    spec = variant_spec(variant or active_mean_model_variant())
+    tree_path = spec.torvik_checkpoint_path if secondary else spec.checkpoint_path
+    if tree_path is None:
+        raise FileNotFoundError(
+            f"No {'secondary ' if secondary else ''}mu artifact configured for variant {spec.name}"
+        )
     if tree_path.exists():
         model, feature_order, meta = load_tree_regressor(tree_path)
-        return model, feature_order, meta.get("model_type", "hist_gradient_boosting")
+        return model, feature_order, meta.get("model_type", "hist_gradient_boosting"), meta
+
+    if spec.name != "legacy_home_slot" or secondary:
+        raise FileNotFoundError(
+            f"Missing {'secondary ' if secondary else ''}mu artifact for variant {spec.name}: {tree_path}"
+        )
 
     regressor, _, feature_order, _ = load_regressor()
-    return regressor, feature_order, "mlp"
+    return regressor, feature_order, "mlp", {}
 
 
-def load_torvik_mu_regressor() -> tuple[object, list[str], str] | None:
+def load_torvik_mu_regressor(
+    variant: str | None = None,
+) -> tuple[object, list[str], str, dict] | None:
     """Load the secondary Torvik-backed point regressor when available."""
-    tree_path = config.TORVIK_TREE_REGRESSOR_PATH
-    if not tree_path.exists():
+    try:
+        spec = variant_spec(variant or active_mean_model_variant())
+    except ValueError:
+        return None
+    tree_path = spec.torvik_checkpoint_path
+    if tree_path is None or not tree_path.exists():
         return None
     model, feature_order, meta = load_tree_regressor(tree_path)
-    return model, feature_order, meta.get("model_type", "hist_gradient_boosting")
+    return model, feature_order, meta.get("model_type", "hist_gradient_boosting"), meta
 
 
 def _swap_feature_frame(features_df: pd.DataFrame, feature_order: list[str]) -> pd.DataFrame:
@@ -200,6 +233,19 @@ def _fill_nan_with_scaler_means(X_df: pd.DataFrame, scaler) -> np.ndarray:
     return X
 
 
+def _fill_nan_with_impute_means(X_df: pd.DataFrame, impute_means: np.ndarray | None) -> np.ndarray:
+    """Fill missing values with persisted tree-training means when available."""
+    X = X_df.values.astype(np.float32)
+    if impute_means is None:
+        return X
+    means = np.asarray(impute_means, dtype=np.float32)
+    nan_mask = np.isnan(X)
+    if nan_mask.any():
+        for j in range(X.shape[1]):
+            X[nan_mask[:, j], j] = means[j]
+    return X
+
+
 def _predict_mu_values(mu_regressor: object, mu_model_type: str, X_raw: np.ndarray, X_scaled: np.ndarray) -> np.ndarray:
     """Run the configured mean model on raw/scaled features."""
     if mu_model_type != "mlp":
@@ -207,6 +253,79 @@ def _predict_mu_values(mu_regressor: object, mu_model_type: str, X_raw: np.ndarr
     X_tensor = torch.tensor(X_scaled, dtype=torch.float32)
     mu_raw, _ = mu_regressor(X_tensor)
     return mu_raw.numpy()
+
+
+def _predict_mu_branch(
+    features_df: pd.DataFrame,
+    *,
+    variant: str,
+    scaler,
+    secondary_mu_features_df: pd.DataFrame | None = None,
+) -> np.ndarray:
+    """Predict mu for a specific mean-model variant."""
+    normalized = normalize_mean_model_variant(variant)
+    spec = variant_spec(normalized)
+    mu_regressor, mu_feature_order, mu_model_type, mu_meta = load_mu_regressor(normalized)
+
+    if normalized == TEAM_AB_ELITE_TAIL_ROUND64_V1:
+        source = build_team_ab_source(features_df)
+        mu_frame = build_team_ab_elite_tail_round64_contract(source)
+        X_df = mu_frame[mu_feature_order].copy()
+        X_raw = _fill_nan_with_impute_means(X_df, mu_meta.get("impute_means"))
+        mu = _predict_mu_values(mu_regressor, mu_model_type, X_raw, X_raw)
+        neutral_mask = (
+            pd.to_numeric(source["neutral_site"], errors="coerce").fillna(0.0).to_numpy()
+            == 1.0
+        )
+        if neutral_mask.any():
+            neutral_idx = np.flatnonzero(neutral_mask)
+            swap_source = swap_team_ab_source(source.iloc[neutral_idx].reset_index(drop=True))
+            swap_frame = build_team_ab_elite_tail_round64_contract(swap_source)
+            swap_X_df = swap_frame[mu_feature_order].copy()
+            swap_X_raw = _fill_nan_with_impute_means(swap_X_df, mu_meta.get("impute_means"))
+            mu_swap = _predict_mu_values(mu_regressor, mu_model_type, swap_X_raw, swap_X_raw)
+            mu = np.asarray(mu, dtype=np.float32)
+            mu[neutral_idx] = (mu[neutral_idx] - mu_swap) / 2.0
+    else:
+        mu_frame = build_mean_model_feature_frame(features_df, normalized)
+        X_df = mu_frame[mu_feature_order].copy()
+        X_raw = _fill_nan_with_scaler_means(X_df, scaler)
+        X_scaled = scaler.transform(X_raw)
+        mu_primary_raw = _predict_mu_values(mu_regressor, mu_model_type, X_raw, X_scaled)
+        mu = _symmetrize_neutral_mu(
+            mu_primary_raw,
+            features_df,
+            mu_feature_order,
+            scaler,
+            mu_regressor,
+            mu_model_type,
+        ) if spec.use_legacy_full_sym else mu_primary_raw
+
+        if spec.use_mu_blend and blend_enabled() and secondary_mu_features_df is not None:
+            secondary_loaded = load_torvik_mu_regressor(normalized)
+            if secondary_loaded is not None:
+                sec_regressor, sec_feature_order, sec_model_type, _sec_meta = secondary_loaded
+                sec_aligned = (
+                    secondary_mu_features_df.set_index("gameId")
+                    .reindex(features_df["gameId"])
+                    .reset_index()
+                )
+                sec_df = sec_aligned[sec_feature_order].copy()
+                sec_X = _fill_nan_with_scaler_means(sec_df, scaler)
+                sec_X_scaled = scaler.transform(sec_X)
+                mu_torvik = _predict_mu_values(sec_regressor, sec_model_type, sec_X, sec_X_scaled)
+                if spec.use_legacy_full_sym:
+                    mu_torvik = _symmetrize_neutral_mu(
+                        mu_torvik,
+                        sec_aligned,
+                        sec_feature_order,
+                        scaler,
+                        sec_regressor,
+                        sec_model_type,
+                    )
+                gold_w = tournament_primary_weights(features_df)
+                mu = gold_w * mu + (1.0 - gold_w) * mu_torvik
+    return np.asarray(mu, dtype=np.float32)
 
 
 def _symmetrize_neutral_mu(
@@ -277,6 +396,7 @@ def predict(
     features_df: pd.DataFrame,
     lines_df: pd.DataFrame | None = None,
     secondary_mu_features_df: pd.DataFrame | None = None,
+    team_ab_features_df: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     """Generate predictions for a feature DataFrame.
 
@@ -289,20 +409,17 @@ def predict(
     """
     _configure_torch_inference_threads()
     scaler = load_scaler()
-    mu_regressor, mu_feature_order, mu_model_type = load_mu_regressor()
     regressor, _, reg_feature_order, sigma_param = load_regressor()
     classifier, _, cls_feature_order = load_classifier()
 
-    # Validate all loaded models use the same feature contract.
-    assert cls_feature_order == reg_feature_order == mu_feature_order, (
-        f"Feature order mismatch: mu regressor={len(mu_feature_order)}, "
-        f"sigma regressor={len(reg_feature_order)}, classifier={len(cls_feature_order)}. "
-        f"Models must be trained together on the same feature set."
+    # Sigma and classifier remain on the legacy shared contract.
+    assert cls_feature_order == reg_feature_order, (
+        f"Feature order mismatch: sigma regressor={len(reg_feature_order)}, "
+        f"classifier={len(cls_feature_order)}. "
+        f"Legacy sigma/probability heads must be trained together."
     )
 
-    # Use the feature order embedded in the checkpoint — ensures compatibility
-    # even if config.FEATURE_ORDER has changed since the model was trained.
-    feature_order = mu_feature_order
+    feature_order = reg_feature_order
     X_df = features_df[feature_order].copy()
 
     # Validate feature count matches model input dimension
@@ -314,38 +431,44 @@ def predict(
     X_scaled = scaler.transform(X)
     X_tensor = torch.tensor(X_scaled, dtype=torch.float32)
 
-    mu_primary_raw = _predict_mu_values(mu_regressor, mu_model_type, X, X_scaled)
-    mu = _symmetrize_neutral_mu(
-        mu_primary_raw,
+    legacy_mu = _predict_mu_branch(
         features_df,
-        feature_order,
-        scaler,
-        mu_regressor,
-        mu_model_type,
+        variant="legacy_home_slot",
+        scaler=scaler,
+        secondary_mu_features_df=secondary_mu_features_df,
     )
+    active_variant = active_mean_model_variant()
+    variant_predictions: dict[str, np.ndarray] = {legacy_variant_field(): legacy_mu}
+    team_ab_field = variant_prediction_field(TEAM_AB_ELITE_TAIL_ROUND64_V1)
+    try:
+        team_ab_input_df = features_df
+        if team_ab_features_df is not None:
+            aligned = (
+                team_ab_features_df.set_index("gameId")
+                .reindex(features_df["gameId"])
+                .reset_index()
+            )
+            payload_cols = [col for col in aligned.columns if col != "gameId"]
+            missing_mask = aligned[payload_cols].isna().all(axis=1) if payload_cols else pd.Series(False, index=aligned.index)
+            if bool(missing_mask.any()):
+                missing = aligned.loc[missing_mask, "gameId"].tolist()
+                raise ValueError(
+                    "team_ab_features_df is missing rows for one or more gameIds "
+                    f"from the primary feature frame: {missing}"
+                )
+            team_ab_input_df = aligned
+        variant_predictions[team_ab_field] = _predict_mu_branch(
+            team_ab_input_df,
+            variant=TEAM_AB_ELITE_TAIL_ROUND64_V1,
+            scaler=scaler,
+            secondary_mu_features_df=secondary_mu_features_df,
+        )
+    except FileNotFoundError:
+        if active_variant == TEAM_AB_ELITE_TAIL_ROUND64_V1:
+            raise
 
-    if blend_enabled() and secondary_mu_features_df is not None:
-        secondary_loaded = load_torvik_mu_regressor()
-        if secondary_loaded is not None:
-            sec_regressor, sec_feature_order, sec_model_type = secondary_loaded
-            assert sec_feature_order == feature_order, (
-                "Torvik mu regressor feature order does not match production feature order"
-            )
-            sec_aligned = secondary_mu_features_df.set_index("gameId").reindex(features_df["gameId"]).reset_index()
-            sec_df = sec_aligned[feature_order].copy()
-            sec_X = _fill_nan_with_scaler_means(sec_df, scaler)
-            sec_X_scaled = scaler.transform(sec_X)
-            mu_torvik = _predict_mu_values(sec_regressor, sec_model_type, sec_X, sec_X_scaled)
-            mu_torvik = _symmetrize_neutral_mu(
-                mu_torvik,
-                sec_aligned,
-                feature_order,
-                scaler,
-                sec_regressor,
-                sec_model_type,
-            )
-            gold_w = tournament_primary_weights(features_df)
-            mu = gold_w * mu + (1.0 - gold_w) * mu_torvik
+    active_field = variant_prediction_field(active_variant)
+    mu = variant_predictions.get(active_field, legacy_mu)
 
     # MLP regressor remains the uncertainty model for sigma.
     _, log_sigma_raw = regressor(X_tensor)
@@ -376,7 +499,8 @@ def predict(
             X_swap_scaled = scaler.transform(X_swap)
             X_swap_tensor = torch.tensor(X_swap_scaled, dtype=torch.float32)
 
-            mu_swap = _predict_mu_values(mu_regressor, mu_model_type, X_swap, X_swap_scaled)
+            legacy_regressor, _legacy_feature_order, legacy_model_type, _legacy_meta = load_mu_regressor(LEGACY_HOME_SLOT)
+            mu_swap = _predict_mu_values(legacy_regressor, legacy_model_type, X_swap, X_swap_scaled)
 
             _, log_sigma_swap_raw = regressor(X_swap_tensor)
             if sigma_param == "exp":
@@ -396,7 +520,7 @@ def predict(
             home_win_prob[neutral_idx] = (p_orig + (1.0 - home_win_prob_swap)) / 2.0
 
             # Symmetric mixture of A-vs-B and mirrored B-vs-A distributions.
-            mu_orig = mu_primary_raw[neutral_idx].copy()
+            mu_orig = legacy_mu[neutral_idx].copy()
             sigma_var = 0.5 * (sigma_orig ** 2 + sigma_swap ** 2) + ((mu_orig + mu_swap) ** 2) / 4.0
             sigma[neutral_idx] = np.sqrt(np.maximum(sigma_var, 0.25)).astype(np.float32)
 
@@ -415,6 +539,10 @@ def predict(
     out = features_df[meta_cols].copy()
     if "neutralSite" in out.columns:
         out = out.rename(columns={"neutralSite": "neutral_site"})
+    out[legacy_variant_field()] = legacy_mu
+    if team_ab_field in variant_predictions:
+        out[team_ab_field] = variant_predictions[team_ab_field]
+    out["mean_model_variant_active"] = active_variant
     out["predicted_spread"] = mu
     out["spread_sigma"] = sigma
     out["home_win_prob"] = home_win_prob
