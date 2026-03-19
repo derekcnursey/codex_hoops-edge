@@ -57,7 +57,13 @@ from src.infer import (
     prob_to_american,
 )
 from src.line_selection import select_preferred_lines
-from src.mean_model_variants import TEAM_AB_ELITE_TAIL_ROUND64_V1, build_mean_model_feature_frame
+from src.mean_model_variants import (
+    TEAM_AB_ELITE_TAIL_ROUND64_V1,
+    build_mean_model_feature_frame,
+    build_team_ab_elite_tail_round64_contract,
+    build_team_ab_source,
+    swap_team_ab_source,
+)
 from src.ml_odds import site_home_win_prob_from_mu_sigma
 from src.tournament_adjustments import market_blended_display_margin
 from src.trainer import load_scaler, load_tree_regressor
@@ -249,6 +255,8 @@ def _build_team_ab_bracket_source(
     start_time: object,
     team_a_rest_days: float | None = None,
     team_b_rest_days: float | None = None,
+    team_a_state: dict[str, Any] | None = None,
+    team_b_state: dict[str, Any] | None = None,
 ) -> pd.DataFrame:
     fallback_ts = pd.Timestamp(year=season, month=3, day=15, tz="UTC")
     start_ts = pd.to_datetime(start_time, errors="coerce", utc=True)
@@ -263,37 +271,62 @@ def _build_team_ab_bracket_source(
             return None
         return float(value)
 
-    def _team_payload(prefix: str, row: pd.Series) -> dict[str, Any]:
+    def _state_value(
+        state: dict[str, Any] | None,
+        key: str,
+    ) -> Any:
+        if state is None:
+            return None
+        value = state.get(key)
+        if value is None or pd.isna(value):
+            return None
+        return value
+
+    def _coalesce(*values: Any) -> Any:
+        for value in values:
+            if value is None:
+                continue
+            if isinstance(value, float) and pd.isna(value):
+                continue
+            return value
+        return None
+
+    def _team_payload(prefix: str, row: pd.Series, state: dict[str, Any] | None) -> dict[str, Any]:
         conf = str(row.get("conference") or "")
         return {
-            f"{prefix}_team_id": int(row["team_id"]),
-            f"{prefix}_name": str(row.get("team") or row.get("team_name") or ""),
-            f"{prefix}_adj_oe": _row_value(row, "adj_oe_model", "adj_oe"),
-            f"{prefix}_adj_de": _row_value(row, "adj_de_model", "adj_de"),
-            f"{prefix}_barthag": _row_value(row, "barthag_model", "barthag"),
-            f"{prefix}_conf_strength": conf_strength_lookup.get(conf),
-            f"{prefix}_sos_oe": _row_value(row, "sos_oe_model"),
-            f"{prefix}_sos_de": _row_value(row, "sos_de_model"),
-            f"{prefix}_form_delta": np.nan,
+            f"{prefix}_team_id": int(_coalesce(_state_value(state, "team_id"), row["team_id"])),
+            f"{prefix}_name": str(_coalesce(_state_value(state, "name"), row.get("team"), row.get("team_name"), "")),
+            f"{prefix}_adj_oe": _coalesce(_state_value(state, "adj_oe"), _row_value(row, "adj_oe_model", "adj_oe")),
+            f"{prefix}_adj_de": _coalesce(_state_value(state, "adj_de"), _row_value(row, "adj_de_model", "adj_de")),
+            f"{prefix}_barthag": _coalesce(_state_value(state, "barthag"), _row_value(row, "barthag_model", "barthag")),
+            f"{prefix}_conf_strength": _coalesce(_state_value(state, "conf_strength"), conf_strength_lookup.get(conf)),
+            f"{prefix}_sos_oe": _coalesce(_state_value(state, "sos_oe"), _row_value(row, "sos_oe_model")),
+            f"{prefix}_sos_de": _coalesce(_state_value(state, "sos_de"), _row_value(row, "sos_de_model")),
+            f"{prefix}_form_delta": _state_value(state, "form_delta"),
             f"{prefix}_rest_days": team_a_rest_days if prefix == "team_a" else team_b_rest_days,
-            f"{prefix}_eff_fg_pct": np.nan,
-            f"{prefix}_ft_rate": np.nan,
-            f"{prefix}_off_rebound_pct": np.nan,
-            f"{prefix}_tov_rate": np.nan,
-            f"{prefix}_margin_std": np.nan,
-            f"{prefix}_barthag_rank": _row_value(row, "barthag_rank", "rank"),
-            f"{prefix}_seed": _row_value(row, "seed"),
+            f"{prefix}_eff_fg_pct": _state_value(state, "eff_fg_pct"),
+            f"{prefix}_ft_rate": _state_value(state, "ft_rate"),
+            f"{prefix}_off_rebound_pct": _state_value(state, "off_rebound_pct"),
+            f"{prefix}_tov_rate": _state_value(state, "tov_rate"),
+            f"{prefix}_margin_std": _state_value(state, "margin_std"),
+            f"{prefix}_barthag_rank": _coalesce(_state_value(state, "barthag_rank"), _row_value(row, "barthag_rank", "rank")),
+            f"{prefix}_seed": _coalesce(_state_value(state, "seed"), _row_value(row, "seed")),
         }
 
+    team_a_payload = _team_payload("team_a", team_a, team_a_state)
+    team_b_payload = _team_payload("team_b", team_b, team_b_state)
     row = {
         "season": int(season),
         "gameId": -1,
         "startDate": start_ts,
         "actual_margin": np.nan,
+        "homeScore": np.nan,
+        "awayScore": np.nan,
         "target_margin_ab": np.nan,
         "neutral_site": 1.0,
         "team_a_is_home_non_neutral": 0.0,
         "team_a_hca": 0.0,
+        "home_team_hca": 0.0,
         "tournament": "NCAA",
         "gameType": "TRNMNT",
         "conferenceGame": False,
@@ -301,9 +334,43 @@ def _build_team_ab_bracket_source(
         "neutral_subtype": "ncaa_neutral",
         "round_label": round_label,
         "pair_augmented": 0,
+        "homeTeamId": team_a_payload["team_a_team_id"],
+        "awayTeamId": team_b_payload["team_b_team_id"],
+        "homeTeam": team_a_payload["team_a_name"],
+        "awayTeam": team_b_payload["team_b_name"],
+        "home_team_adj_oe": team_a_payload["team_a_adj_oe"],
+        "away_team_adj_oe": team_b_payload["team_b_adj_oe"],
+        "home_team_adj_de": team_a_payload["team_a_adj_de"],
+        "away_team_adj_de": team_b_payload["team_b_adj_de"],
+        "home_team_BARTHAG": team_a_payload["team_a_barthag"],
+        "away_team_BARTHAG": team_b_payload["team_b_barthag"],
+        "home_conf_strength": team_a_payload["team_a_conf_strength"],
+        "away_conf_strength": team_b_payload["team_b_conf_strength"],
+        "home_sos_oe": team_a_payload["team_a_sos_oe"],
+        "away_sos_oe": team_b_payload["team_b_sos_oe"],
+        "home_sos_de": team_a_payload["team_a_sos_de"],
+        "away_sos_de": team_b_payload["team_b_sos_de"],
+        "home_form_delta": team_a_payload["team_a_form_delta"],
+        "away_form_delta": team_b_payload["team_b_form_delta"],
+        "home_rest_days": team_a_payload["team_a_rest_days"],
+        "away_rest_days": team_b_payload["team_b_rest_days"],
+        "home_eff_fg_pct": team_a_payload["team_a_eff_fg_pct"],
+        "away_eff_fg_pct": team_b_payload["team_b_eff_fg_pct"],
+        "home_ft_rate": team_a_payload["team_a_ft_rate"],
+        "away_ft_rate": team_b_payload["team_b_ft_rate"],
+        "home_off_rebound_pct": team_a_payload["team_a_off_rebound_pct"],
+        "away_off_rebound_pct": team_b_payload["team_b_off_rebound_pct"],
+        "home_tov_rate": team_a_payload["team_a_tov_rate"],
+        "away_tov_rate": team_b_payload["team_b_tov_rate"],
+        "home_margin_std": team_a_payload["team_a_margin_std"],
+        "away_margin_std": team_b_payload["team_b_margin_std"],
+        "home_barthag_rank": team_a_payload["team_a_barthag_rank"],
+        "away_barthag_rank": team_b_payload["team_b_barthag_rank"],
+        "homeSeed": team_a_payload["team_a_seed"],
+        "awaySeed": team_b_payload["team_b_seed"],
     }
-    row.update(_team_payload("team_a", team_a))
-    row.update(_team_payload("team_b", team_b))
+    row.update(team_a_payload)
+    row.update(team_b_payload)
     return pd.DataFrame([row])
 
 
@@ -321,6 +388,8 @@ def _predict_team_ab_pairwise_margin(
     mu_impute_means: np.ndarray | None,
     team_a_rest_days: float | None = None,
     team_b_rest_days: float | None = None,
+    team_a_state: dict[str, Any] | None = None,
+    team_b_state: dict[str, Any] | None = None,
 ) -> float:
     source = _build_team_ab_bracket_source(
         team_a,
@@ -331,16 +400,30 @@ def _predict_team_ab_pairwise_margin(
         start_time=start_time,
         team_a_rest_days=team_a_rest_days,
         team_b_rest_days=team_b_rest_days,
+        team_a_state=team_a_state,
+        team_b_state=team_b_state,
     )
-    feature_frame = build_mean_model_feature_frame(source, TEAM_AB_ELITE_TAIL_ROUND64_V1)
+    team_ab_source = build_team_ab_source(source)
+    feature_frame = build_team_ab_elite_tail_round64_contract(team_ab_source)
     X_raw = _fill_nan_with_impute_means(feature_frame[mu_feature_order].copy(), mu_impute_means)
     mu = _predict_mu_values(mu_regressor, mu_model_type, X_raw, X_raw)
+    neutral_mask = (
+        pd.to_numeric(team_ab_source["neutral_site"], errors="coerce").fillna(0.0).to_numpy()
+        == 1.0
+    )
+    if neutral_mask.any():
+        swap_source = swap_team_ab_source(team_ab_source.iloc[np.flatnonzero(neutral_mask)].reset_index(drop=True))
+        swap_frame = build_team_ab_elite_tail_round64_contract(swap_source)
+        swap_X_raw = _fill_nan_with_impute_means(swap_frame[mu_feature_order].copy(), mu_impute_means)
+        mu_swap = _predict_mu_values(mu_regressor, mu_model_type, swap_X_raw, swap_X_raw)
+        mu = np.asarray(mu, dtype=np.float32)
+        mu[np.flatnonzero(neutral_mask)] = (mu[np.flatnonzero(neutral_mask)] - mu_swap) / 2.0
     return float(mu[0])
 
 
 def _load_scheduled_feature_lookup(
     season: int,
-    scheduled_lines: dict[str, dict[str, Any]],
+    scheduled_lookup: dict[str, dict[str, Any]],
     *,
     efficiency_source: str,
     gold_table_name: str | None = None,
@@ -348,7 +431,7 @@ def _load_scheduled_feature_lookup(
     scheduled_game_ids = sorted(
         {
             int(info["scheduled_game_id"])
-            for info in scheduled_lines.values()
+            for info in scheduled_lookup.values()
             if info.get("scheduled_game_id") is not None
         }
     )
@@ -360,7 +443,7 @@ def _load_scheduled_feature_lookup(
             pd.to_datetime(info["start_time"], errors="coerce", utc=True)
             .tz_convert("America/New_York")
             .strftime("%Y-%m-%d")
-            for info in scheduled_lines.values()
+            for info in scheduled_lookup.values()
             if info.get("start_time") is not None and not pd.isna(pd.to_datetime(info["start_time"], errors="coerce", utc=True))
         }
     )
@@ -393,6 +476,43 @@ def _load_scheduled_feature_lookup(
     return {int(row["gameId"]): row for _, row in combined.iterrows()}
 
 
+def _build_team_state_lookup(feature_lookup: dict[int, pd.Series]) -> dict[int, dict[str, Any]]:
+    latest: dict[int, dict[str, Any]] = {}
+
+    def _extract(row: pd.Series, side: str) -> dict[str, Any]:
+        prefix = "home" if side == "home" else "away"
+        return {
+            "team_id": int(row[f"{prefix}TeamId"]),
+            "name": row.get(f"{prefix}Team"),
+            "adj_oe": row.get(f"{prefix}_team_adj_oe"),
+            "adj_de": row.get(f"{prefix}_team_adj_de"),
+            "barthag": row.get(f"{prefix}_team_BARTHAG"),
+            "conf_strength": row.get(f"{prefix}_conf_strength"),
+            "sos_oe": row.get(f"{prefix}_sos_oe"),
+            "sos_de": row.get(f"{prefix}_sos_de"),
+            "form_delta": row.get(f"{prefix}_form_delta"),
+            "rest_days": row.get(f"{prefix}_rest_days"),
+            "eff_fg_pct": row.get(f"{prefix}_eff_fg_pct"),
+            "ft_rate": row.get(f"{prefix}_ft_rate"),
+            "off_rebound_pct": row.get(f"{prefix}_off_rebound_pct"),
+            "tov_rate": row.get(f"{prefix}_tov_rate"),
+            "margin_std": row.get(f"{prefix}_margin_std"),
+            "barthag_rank": row.get(f"{prefix}_barthag_rank"),
+            "seed": row.get(f"{prefix}Seed"),
+            "start_time": row.get("startDate"),
+        }
+
+    ordered_rows = sorted(
+        feature_lookup.values(),
+        key=lambda row: pd.to_datetime(row.get("startDate"), errors="coerce", utc=True),
+    )
+    for row in ordered_rows:
+        for side in ("home", "away"):
+            state = _extract(row, side)
+            latest[int(state["team_id"])] = state
+    return latest
+
+
 def _predict_team_ab_scheduled_margin(
     feature_row: pd.Series,
     *,
@@ -421,9 +541,21 @@ def _predict_team_ab_scheduled_margin(
         )
 
     oriented = pd.DataFrame([oriented_row])
-    feature_frame = build_mean_model_feature_frame(oriented, TEAM_AB_ELITE_TAIL_ROUND64_V1)
+    source = build_team_ab_source(oriented)
+    feature_frame = build_team_ab_elite_tail_round64_contract(source)
     X_raw = _fill_nan_with_impute_means(feature_frame[mu_feature_order].copy(), mu_impute_means)
     mu = _predict_mu_values(mu_regressor, mu_model_type, X_raw, X_raw)
+    neutral_mask = (
+        pd.to_numeric(source["neutral_site"], errors="coerce").fillna(0.0).to_numpy()
+        == 1.0
+    )
+    if neutral_mask.any():
+        swap_source = swap_team_ab_source(source.iloc[np.flatnonzero(neutral_mask)].reset_index(drop=True))
+        swap_frame = build_team_ab_elite_tail_round64_contract(swap_source)
+        swap_X_raw = _fill_nan_with_impute_means(swap_frame[mu_feature_order].copy(), mu_impute_means)
+        mu_swap = _predict_mu_values(mu_regressor, mu_model_type, swap_X_raw, swap_X_raw)
+        mu = np.asarray(mu, dtype=np.float32)
+        mu[np.flatnonzero(neutral_mask)] = (mu[np.flatnonzero(neutral_mask)] - mu_swap) / 2.0
     return float(mu[0])
 
 
@@ -1104,10 +1236,10 @@ def _preferred_ncaa_lines(season: int) -> pd.DataFrame:
     return combined.drop_duplicates("gameId", keep="first").drop(columns=["_provider_rank"])
 
 
-def _load_opening_round_market_lookup(season: int) -> dict[str, dict[str, Any]]:
+def _load_opening_round_schedule_frame(season: int) -> pd.DataFrame:
     games_table = s3_reader.read_silver_table(config.TABLE_FCT_GAMES, season=season)
     if games_table.num_rows == 0:
-        return {}
+        return pd.DataFrame()
     games = games_table.to_pandas()
     keep = [
         c
@@ -1126,12 +1258,41 @@ def _load_opening_round_market_lookup(season: int) -> dict[str, dict[str, Any]]:
     games = games[keep].drop_duplicates("gameId").copy()
     games = games[games["tournament"].eq("NCAA")].copy()
     if games.empty:
-        return {}
+        return games
 
     round_info = games["gameNotes"].map(_round_from_game_notes)
     games["scheduled_round_id"] = round_info.map(lambda item: item[0])
     games["scheduled_round_label"] = round_info.map(lambda item: item[1])
     games = games[games["scheduled_round_id"].isin(["first-four", "round-of-64"])].copy()
+    return games
+
+
+def _load_opening_round_schedule_lookup(season: int) -> dict[str, dict[str, Any]]:
+    games = _load_opening_round_schedule_frame(season)
+    if games.empty:
+        return {}
+
+    lookup: dict[str, dict[str, Any]] = {}
+    for _, row in games.iterrows():
+        home_id = int(row["homeTeamId"])
+        away_id = int(row["awayTeamId"])
+        team1_id, team2_id = sorted([home_id, away_id])
+        key = f"{team1_id}::{team2_id}"
+        lookup[key] = {
+            "scheduled_game_id": int(row["gameId"]),
+            "scheduled_round_id": row["scheduled_round_id"],
+            "scheduled_round_label": row["scheduled_round_label"],
+            "start_time": row.get("startDate"),
+            "home_team_id": home_id,
+            "away_team_id": away_id,
+            "home_team_name": row.get("homeTeam"),
+            "away_team_name": row.get("awayTeam"),
+        }
+    return lookup
+
+
+def _load_opening_round_market_lookup(season: int) -> dict[str, dict[str, Any]]:
+    games = _load_opening_round_schedule_frame(season)
     if games.empty:
         return {}
 
@@ -1169,14 +1330,6 @@ def _load_opening_round_market_lookup(season: int) -> dict[str, dict[str, Any]]:
         market_margin = -float(row["book_spread"]) if team1_id == home_id else float(row["book_spread"])
         key = f"{team1_id}::{team2_id}"
         lookup[key] = {
-            "scheduled_game_id": int(row["gameId"]),
-            "scheduled_round_id": row["scheduled_round_id"],
-            "scheduled_round_label": row["scheduled_round_label"],
-            "start_time": row.get("startDate"),
-            "home_team_id": home_id,
-            "away_team_id": away_id,
-            "home_team_name": row.get("homeTeam"),
-            "away_team_name": row.get("awayTeam"),
             "market_mu_team1_minus_team2": market_margin,
             "market_spread_home": float(row["book_spread"]),
             "market_home_team_id": home_id,
@@ -1373,22 +1526,27 @@ def _build_matchup_payload(
             int(row["team_id"]): row for _, row in team_ab_internal_merged.iterrows()
         }
     team_bracket_context, team_round_times = _load_bracket_schedule_context(field, season)
+    opening_round_schedule = _load_opening_round_schedule_lookup(season)
     opening_round_lines = _load_opening_round_market_lookup(season)
     scheduled_team_ab_lookup: dict[int, pd.Series] = {}
     scheduled_team_ab_internal_lookup: dict[int, pd.Series] = {}
-    if team_ab_loaded is not None and opening_round_lines:
+    team_state_lookup_team_ab: dict[int, dict[str, Any]] = {}
+    team_state_lookup_team_ab_internal: dict[int, dict[str, Any]] = {}
+    if team_ab_loaded is not None and opening_round_schedule:
         scheduled_team_ab_lookup = _load_scheduled_feature_lookup(
             season,
-            opening_round_lines,
+            opening_round_schedule,
             efficiency_source=team_ab_efficiency_source,
             gold_table_name=team_ab_gold_ratings_table if team_ab_efficiency_source == "gold" else None,
         )
         scheduled_team_ab_internal_lookup = _load_scheduled_feature_lookup(
             season,
-            opening_round_lines,
+            opening_round_schedule,
             efficiency_source="gold",
             gold_table_name=internal_gold_table_name,
         )
+        team_state_lookup_team_ab = _build_team_state_lookup(scheduled_team_ab_lookup)
+        team_state_lookup_team_ab_internal = _build_team_state_lookup(scheduled_team_ab_internal_lookup)
 
     predictions: dict[str, Any] = {}
     total_pairs = len(selected_ids) * (len(selected_ids) - 1) // 2
@@ -1407,6 +1565,7 @@ def _build_matchup_payload(
             15,
         )
         canonical_key = f"{team_a_id}::{team_b_id}"
+        schedule_info = opening_round_schedule.get(canonical_key)
         line_info = opening_round_lines.get(canonical_key)
         matchup_context = _matchup_round_context(
             team_a_id,
@@ -1416,12 +1575,16 @@ def _build_matchup_payload(
         )
         round_id = matchup_context["round_id"]
         round_label = matchup_context["round_label"]
-        start_time = line_info["start_time"] if line_info is not None else matchup_context["start_time"]
+        start_time = (
+            schedule_info["start_time"]
+            if schedule_info is not None
+            else matchup_context["start_time"]
+        )
         team_ab_mu = None
         team_ab_internal_mu = None
         if team_ab_loaded is not None:
             team_ab_regressor, team_ab_feature_order, team_ab_model_type, team_ab_meta = team_ab_loaded
-            scheduled_game_id = None if line_info is None else line_info.get("scheduled_game_id")
+            scheduled_game_id = None if schedule_info is None else schedule_info.get("scheduled_game_id")
             scheduled_team_ab_row = (
                 None
                 if scheduled_game_id is None
@@ -1458,6 +1621,8 @@ def _build_matchup_payload(
                     mu_impute_means=team_ab_meta.get("impute_means"),
                     team_a_rest_days=matchup_context["team_a_rest_days"],
                     team_b_rest_days=matchup_context["team_b_rest_days"],
+                    team_a_state=team_state_lookup_team_ab.get(team_a_id),
+                    team_b_state=team_state_lookup_team_ab.get(team_b_id),
                 )
             if scheduled_team_ab_internal_row is not None:
                 team_ab_internal_mu = _predict_team_ab_scheduled_margin(
@@ -1485,6 +1650,8 @@ def _build_matchup_payload(
                     mu_impute_means=team_ab_meta.get("impute_means"),
                     team_a_rest_days=matchup_context["team_a_rest_days"],
                     team_b_rest_days=matchup_context["team_b_rest_days"],
+                    team_a_state=team_state_lookup_team_ab_internal.get(team_a_id),
+                    team_b_state=team_state_lookup_team_ab_internal.get(team_b_id),
                 )
 
         legacy_win_prob_a = _site_probability_from_mu_sigma(float(legacy_mu), float(sigma))
@@ -1523,9 +1690,8 @@ def _build_matchup_payload(
         pick_cover_prob = None
         pick_prob_edge = None
         pick_fair_odds = None
-        if line_info is not None:
-            home_team_id = int(line_info["home_team_id"])
-            book_spread = float(line_info["market_spread_home"])
+        if schedule_info is not None:
+            home_team_id = int(schedule_info["home_team_id"])
             model_mu_home = float(active_mu) if home_team_id == team_a_id else -float(active_mu)
             display_model_mu_home = float(display_mu) if home_team_id == team_a_id else -float(display_mu)
             legacy_model_mu_home = float(legacy_mu) if home_team_id == team_a_id else -float(legacy_mu)
@@ -1535,6 +1701,8 @@ def _build_matchup_payload(
                 team_ab_internal_model_mu_home = (
                     float(team_ab_internal_mu) if home_team_id == team_a_id else -float(team_ab_internal_mu)
                 )
+        if line_info is not None and schedule_info is not None:
+            book_spread = float(line_info["market_spread_home"])
             edge_home_points = model_mu_home + book_spread
             display_edge_home_points = display_model_mu_home + book_spread
             sigma_safe = max(float(sigma), 0.5)
@@ -1568,14 +1736,14 @@ def _build_matchup_payload(
                 None if team_ab_internal_win_prob_a is None else float(team_ab_internal_win_prob_a)
             ),
             "pred_sigma": float(sigma),
-            "scheduled_game_id": None if line_info is None else line_info["scheduled_game_id"],
+            "scheduled_game_id": None if schedule_info is None else schedule_info["scheduled_game_id"],
             "scheduled_round_id": round_id,
             "scheduled_round_label": round_label,
             "start_time": start_time,
-            "home_team_id": None if line_info is None else line_info["home_team_id"],
-            "away_team_id": None if line_info is None else line_info["away_team_id"],
-            "home_team_name": None if line_info is None else line_info["home_team_name"],
-            "away_team_name": None if line_info is None else line_info["away_team_name"],
+            "home_team_id": None if schedule_info is None else schedule_info["home_team_id"],
+            "away_team_id": None if schedule_info is None else schedule_info["away_team_id"],
+            "home_team_name": None if schedule_info is None else schedule_info["home_team_name"],
+            "away_team_name": None if schedule_info is None else schedule_info["away_team_name"],
             "model_mu_home": model_mu_home,
             "model_mu_home_legacy_synthetic": legacy_model_mu_home,
             "model_mu_home_team_ab_elite_tail_round64_v1": team_ab_model_mu_home,
