@@ -129,16 +129,16 @@
     },
     {
       "away_team": "Miami (OH)",
-      "edge_home_points": -1.6844120025634766,
+      "edge_home_points": -0.6844120025634766,
       "game_id": "2026_03_20_miami_oh_tennessee",
       "home_team": "Tennessee",
-      "market_spread_home": -11.5,
+      "market_spread_home": -10.5,
       "model_mu_home": 9.815587997436523,
       "neutral_site": true,
-      "pick_cover_prob": 0.5397340787064391,
-      "pick_ev_per_1": 0.03040142298502002,
-      "pick_fair_odds": -117.26570526654152,
-      "pick_prob_edge": 0.015924554896915244,
+      "pick_cover_prob": 0.5161671491307734,
+      "pick_ev_per_1": -0.014589988023068878,
+      "pick_fair_odds": -106.6829480890884,
+      "pick_prob_edge": -0.0076423746787503966,
       "pick_side": "AWAY",
       "pick_spread_odds": -110,
       "pred_home_win_prob": 0.8399502038955688,
@@ -290,17 +290,17 @@
       "start_time": "2026-03-21T02:10:00.000Z"
     }
   ],
-  "generated_at": "2026-03-20T01:16:02.942022Z",
+  "generated_at": "2026-03-20T03:59:49.521116Z",
   "provenance": {
     "live_lines_table": "fct_lines",
     "mean_model_variant_active": "team_ab_elite_tail_round64_v1",
-    "neutral_probability_calibration_active": true,
+    "neutral_probability_calibration_active": false,
     "primary_efficiency_source": "gold",
     "research_lines_table": "fct_lines_repaired_v1",
     "sigma_contract": "legacy_53_feature_home_slot_contract_with_legacy_mu_neutral_mix",
     "sigma_model": "legacy_mlp_regressor_pt",
     "sigma_rebuild_status": "research_only_not_shipped",
-    "site_probability_surface": "mu_plus_sigma_meta_small_v1_neutral_beta_blend_v1",
+    "site_probability_surface": "mu_plus_sigma_active_meta_market_v1",
     "stored_probability_model": "legacy_mlp_classifier_pt",
     "team_ab_efficiency_source_active": "torvik"
   }
