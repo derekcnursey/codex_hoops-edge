@@ -807,7 +807,9 @@ def _site_probability_from_mu_sigma(
             start_month=month,
             start_day=day,
             neutral_site=True,
-            odds_mode="meta_small_v1",
+            tournament="NCAA",
+            game_type="TRNMNT",
+            odds_mode="active_meta_market_v1",
         )
     )
 
@@ -1787,8 +1789,8 @@ def _build_matchup_payload(
         "sigma_model": "legacy_mlp_regressor_pt",
         "sigma_contract": "legacy_53_feature_home_slot_contract_with_legacy_mu_neutral_mix",
         "sigma_rebuild_status": "research_only_not_shipped",
-        "site_probability_surface": "mu_plus_sigma_meta_small_v1_neutral_beta_blend_v1",
-        "neutral_probability_calibration_active": True,
+        "site_probability_surface": "mu_plus_sigma_active_meta_market_v1",
+        "neutral_probability_calibration_active": False,
         "matchup_model_variants_available": sorted(
             [
                 BRACKET_MODEL_VARIANT_LEGACY_SYNTHETIC,
@@ -1808,8 +1810,8 @@ def _build_matchup_payload(
             "model variant. Scheduled NCAA games use the active Team A/B model on real feature rows; "
             "unscheduled NCAA matchups fall back to a source-aware direct ratings map. "
             "Sigma remains on the current live legacy bracket uncertainty path; the active-mu sigma rebuild "
-            "study exists as research only and is not shipped. Site win probability uses the live "
-            "mu-plus-sigma meta_small_v1 surface with the neutral-site beta blend calibration patch. "
+            "study exists as research only and is not shipped. Site win probability uses the active-stack "
+            "Vegas-refit mu-plus-sigma transform with no separate neutral beta patch. "
             f"Legacy ratings source: {legacy_ratings_source}. "
             f"Team A/B ratings source: {team_ab_ratings_source}. "
             f"Team A/B internal comparison source: {team_ab_internal_ratings_source}."

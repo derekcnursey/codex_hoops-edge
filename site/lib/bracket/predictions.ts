@@ -179,6 +179,8 @@ function buildPredictionRecord(base: {
           base.predSigma ?? null,
           base.scheduledStartTime ?? null,
           true,
+          "NCAA",
+          "TRNMNT",
         )
       : null;
   const displayWinProbA =

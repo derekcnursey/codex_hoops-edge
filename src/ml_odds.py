@@ -8,7 +8,7 @@ from typing import Literal
 import numpy as np
 
 MlSigmaMode = Literal["raw", "cap14", "cap17", "const14"]
-MlOddsMode = Literal["cap14_mu_sigma", "meta_small_v1"]
+MlOddsMode = Literal["cap14_mu_sigma", "meta_small_v1", "active_meta_market_v1"]
 
 META_SMALL_V1 = {
     "intercept": 0.020175630994879585,
@@ -18,6 +18,22 @@ META_SMALL_V1 = {
         "z14": 0.08477442454897068,
         "post_dec15": 0.0740213341463982,
         "abs_mu": 0.004037300255673246,
+    },
+}
+
+ACTIVE_META_MARKET_V1 = {
+    "intercept": -0.18675979905995527,
+    "coefficients": {
+        "mu": 0.18755201340181407,
+        "sigma_cap14": -0.012885112289999442,
+        "z14": 0.015086341337058993,
+        "post_dec15": 0.13567630966774843,
+        "abs_mu": -0.006603733530789919,
+        "neutral_site": 0.32053952078525805,
+        "is_ncaa_neutral": 0.09064642441577572,
+        "is_conf_tourney_neutral": -0.0302441719256531,
+        "z14_x_neutral": -0.4503689240309741,
+        "abs_mu_x_neutral": 0.013861108094857246,
     },
 }
 
@@ -126,6 +142,68 @@ def _neutral_site_beta_blend(
     return out
 
 
+def _market_transform_score(
+    mu_home: np.ndarray | float,
+    sigma: np.ndarray | float,
+    *,
+    start_month: int,
+    start_day: int,
+    neutral_site: np.ndarray | float | bool | None,
+    tournament: np.ndarray | str | None,
+    game_type: np.ndarray | str | None,
+    coeffs: dict[str, object],
+) -> np.ndarray | float:
+    sigma_cap14 = stabilize_sigma_for_ml(sigma, mode="cap14")
+    mu_arr = np.asarray(mu_home, dtype=float)
+    sigma_arr = np.asarray(sigma_cap14, dtype=float)
+    z14 = mu_arr / sigma_arr
+    post_dec15 = 1.0 if (start_month > 12 or start_month < 11 or (start_month == 12 and start_day >= 15) or start_month in (1, 2, 3)) else 0.0
+    neutral_arr = np.asarray(False if neutral_site is None else neutral_site)
+    if neutral_arr.shape == ():
+        neutral_mask = np.full_like(mu_arr, float(bool(neutral_arr)), dtype=float)
+    else:
+        neutral_mask = neutral_arr.astype(float)
+    tournament_arr = np.asarray("" if tournament is None else tournament)
+    if tournament_arr.shape == ():
+        tournament_mask = np.full_like(mu_arr, str(tournament_arr), dtype=object)
+    else:
+        tournament_mask = tournament_arr.astype(object)
+    game_type_arr = np.asarray("" if game_type is None else game_type)
+    if game_type_arr.shape == ():
+        game_type_mask = np.full_like(mu_arr, str(game_type_arr), dtype=object)
+    else:
+        game_type_mask = game_type_arr.astype(object)
+    is_march = float(start_month == 3)
+    is_ncaa_neutral = neutral_mask * (tournament_mask == "NCAA").astype(float)
+    is_conf_tourney_neutral = (
+        neutral_mask
+        * (game_type_mask == "TRNMNT").astype(float)
+        * (tournament_mask != "NCAA").astype(float)
+        * is_march
+    )
+    score = (
+        float(coeffs["intercept"])
+        + float(coeffs["coefficients"]["mu"]) * mu_arr
+        + float(coeffs["coefficients"]["sigma_cap14"]) * sigma_arr
+        + float(coeffs["coefficients"]["z14"]) * z14
+        + float(coeffs["coefficients"]["post_dec15"]) * post_dec15
+        + float(coeffs["coefficients"]["abs_mu"]) * np.abs(mu_arr)
+    )
+    if "neutral_site" in coeffs["coefficients"]:
+        score = (
+            score
+            + float(coeffs["coefficients"]["neutral_site"]) * neutral_mask
+            + float(coeffs["coefficients"].get("is_ncaa_neutral", 0.0)) * is_ncaa_neutral
+            + float(coeffs["coefficients"].get("is_conf_tourney_neutral", 0.0)) * is_conf_tourney_neutral
+            + float(coeffs["coefficients"].get("z14_x_neutral", 0.0)) * (z14 * neutral_mask)
+            + float(coeffs["coefficients"].get("abs_mu_x_neutral", 0.0)) * (np.abs(mu_arr) * neutral_mask)
+        )
+    out = logistic(score)
+    if np.isscalar(mu_home) and np.isscalar(sigma):
+        return float(out)
+    return out
+
+
 def site_home_win_prob_from_mu_sigma(
     mu_home: np.ndarray | float,
     sigma: np.ndarray | float,
@@ -133,34 +211,44 @@ def site_home_win_prob_from_mu_sigma(
     start_month: int,
     start_day: int,
     neutral_site: np.ndarray | float | bool | None = None,
-    odds_mode: MlOddsMode = "meta_small_v1",
+    tournament: np.ndarray | str | None = None,
+    game_type: np.ndarray | str | None = None,
+    odds_mode: MlOddsMode = "active_meta_market_v1",
 ) -> np.ndarray | float:
     """Match the site-facing ML probability path.
 
-    The current site starts from the cap14 mu+sigma baseline and optionally
-    applies the small logistic correction layer (``meta_small_v1``).
+    The site starts from the cap14 mu+sigma baseline and then applies the
+    configured public probability transform.
     """
     baseline = mu_sigma_home_win_prob(mu_home, sigma, sigma_mode="cap14")
     if odds_mode == "cap14_mu_sigma":
         return baseline
-    if odds_mode != "meta_small_v1":
+    if odds_mode == "meta_small_v1":
+        prob = _market_transform_score(
+            mu_home,
+            sigma,
+            start_month=start_month,
+            start_day=start_day,
+            neutral_site=neutral_site,
+            tournament=tournament,
+            game_type=game_type,
+            coeffs=META_SMALL_V1,
+        )
+        prob = _neutral_site_beta_blend(prob, neutral_site)
+    elif odds_mode == "active_meta_market_v1":
+        prob = _market_transform_score(
+            mu_home,
+            sigma,
+            start_month=start_month,
+            start_day=start_day,
+            neutral_site=neutral_site,
+            tournament=tournament,
+            game_type=game_type,
+            coeffs=ACTIVE_META_MARKET_V1,
+        )
+    else:
         raise ValueError(f"Unsupported ML odds mode: {odds_mode}")
-
-    sigma_cap14 = stabilize_sigma_for_ml(sigma, mode="cap14")
-    mu_arr = np.asarray(mu_home, dtype=float)
-    sigma_arr = np.asarray(sigma_cap14, dtype=float)
-    z14 = mu_arr / sigma_arr
-    post_dec15 = 1.0 if (start_month > 12 or start_month < 11 or (start_month == 12 and start_day >= 15) or start_month in (1, 2, 3)) else 0.0
-    score = (
-        META_SMALL_V1["intercept"]
-        + META_SMALL_V1["coefficients"]["mu"] * mu_arr
-        + META_SMALL_V1["coefficients"]["sigma_cap14"] * sigma_arr
-        + META_SMALL_V1["coefficients"]["z14"] * z14
-        + META_SMALL_V1["coefficients"]["post_dec15"] * post_dec15
-        + META_SMALL_V1["coefficients"]["abs_mu"] * np.abs(mu_arr)
-    )
-    prob = np.clip(logistic(score), 1e-6, 1 - 1e-6)
-    prob = _neutral_site_beta_blend(prob, neutral_site)
+    prob = np.clip(prob, 1e-6, 1 - 1e-6)
     if np.isscalar(mu_home) and np.isscalar(sigma):
         return float(prob)
     return prob

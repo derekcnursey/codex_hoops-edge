@@ -6,8 +6,8 @@ export type DataFile = {
 };
 
 const SITE_ML_SIGMA_CAP = 14;
-type MlOddsMode = "cap14_mu_sigma" | "meta_small_v1";
-const SITE_ML_ODDS_MODE: MlOddsMode = "meta_small_v1";
+type MlOddsMode = "cap14_mu_sigma" | "meta_small_v1" | "active_meta_market_v1";
+const SITE_ML_ODDS_MODE: MlOddsMode = "active_meta_market_v1";
 const META_SMALL_V1 = {
   intercept: 0.020175630994879585,
   coefficients: {
@@ -16,6 +16,21 @@ const META_SMALL_V1 = {
     z14: 0.08477442454897068,
     post_dec15: 0.0740213341463982,
     abs_mu: 0.004037300255673246,
+  },
+} as const;
+const ACTIVE_META_MARKET_V1 = {
+  intercept: -0.18675979905995527,
+  coefficients: {
+    mu: 0.18755201340181407,
+    sigma_cap14: -0.012885112289999442,
+    z14: 0.015086341337058993,
+    post_dec15: 0.13567630966774843,
+    abs_mu: -0.006603733530789919,
+    neutral_site: 0.32053952078525805,
+    is_ncaa_neutral: 0.09064642441577572,
+    is_conf_tourney_neutral: -0.0302441719256531,
+    z14_x_neutral: -0.4503689240309741,
+    abs_mu_x_neutral: 0.013861108094857246,
   },
 } as const;
 const NEUTRAL_BETA_BLEND_V1 = {
@@ -115,6 +130,8 @@ export function getSiteHomeWinProbFromValues(
   sigma: number | null,
   startTime: string | null,
   neutralSite?: boolean | null,
+  tournament?: string | null,
+  gameType?: string | null,
 ): number | null {
   const baseline = getCap14MuSigmaHomeWinProbFromValues(mu, sigma);
   if (baseline === null || SITE_ML_ODDS_MODE === "cap14_mu_sigma") return baseline;
@@ -123,24 +140,46 @@ export function getSiteHomeWinProbFromValues(
   const absMu = Math.abs(mu as number);
   const z14 = (mu as number) / sigmaCap14;
   const postDec15 = isPostDec15(startTime) ? 1 : 0;
+  if (SITE_ML_ODDS_MODE === "meta_small_v1") {
+    const score =
+      META_SMALL_V1.intercept +
+      META_SMALL_V1.coefficients.mu * (mu as number) +
+      META_SMALL_V1.coefficients.sigma_cap14 * sigmaCap14 +
+      META_SMALL_V1.coefficients.z14 * z14 +
+      META_SMALL_V1.coefficients.post_dec15 * postDec15 +
+      META_SMALL_V1.coefficients.abs_mu * absMu;
+    const currentProb = Math.min(Math.max(logistic(score), 1e-6), 1 - 1e-6);
+    if (!neutralSite) return currentProb;
+    const betaScore =
+      NEUTRAL_BETA_BLEND_V1.intercept +
+      NEUTRAL_BETA_BLEND_V1.coefficients.log_p * Math.log(currentProb) +
+      NEUTRAL_BETA_BLEND_V1.coefficients.log1m_p * Math.log1p(-currentProb);
+    const betaProb = Math.min(Math.max(logistic(betaScore), 1e-6), 1 - 1e-6);
+    return (
+      (1 - NEUTRAL_BETA_BLEND_V1.alpha) * currentProb +
+      NEUTRAL_BETA_BLEND_V1.alpha * betaProb
+    );
+  }
+
+  const isNeutral = Boolean(neutralSite);
+  const isNcaaNeutral = isNeutral && tournament === "NCAA" ? 1 : 0;
+  const isConfTourneyNeutral =
+    isNeutral && tournament !== "NCAA" && gameType === "TRNMNT" && startTime != null
+      ? 1
+      : 0;
   const score =
-    META_SMALL_V1.intercept +
-    META_SMALL_V1.coefficients.mu * (mu as number) +
-    META_SMALL_V1.coefficients.sigma_cap14 * sigmaCap14 +
-    META_SMALL_V1.coefficients.z14 * z14 +
-    META_SMALL_V1.coefficients.post_dec15 * postDec15 +
-    META_SMALL_V1.coefficients.abs_mu * absMu;
-  const currentProb = Math.min(Math.max(logistic(score), 1e-6), 1 - 1e-6);
-  if (!neutralSite) return currentProb;
-  const betaScore =
-    NEUTRAL_BETA_BLEND_V1.intercept +
-    NEUTRAL_BETA_BLEND_V1.coefficients.log_p * Math.log(currentProb) +
-    NEUTRAL_BETA_BLEND_V1.coefficients.log1m_p * Math.log1p(-currentProb);
-  const betaProb = Math.min(Math.max(logistic(betaScore), 1e-6), 1 - 1e-6);
-  return (
-    (1 - NEUTRAL_BETA_BLEND_V1.alpha) * currentProb +
-    NEUTRAL_BETA_BLEND_V1.alpha * betaProb
-  );
+    ACTIVE_META_MARKET_V1.intercept +
+    ACTIVE_META_MARKET_V1.coefficients.mu * (mu as number) +
+    ACTIVE_META_MARKET_V1.coefficients.sigma_cap14 * sigmaCap14 +
+    ACTIVE_META_MARKET_V1.coefficients.z14 * z14 +
+    ACTIVE_META_MARKET_V1.coefficients.post_dec15 * postDec15 +
+    ACTIVE_META_MARKET_V1.coefficients.abs_mu * absMu +
+    ACTIVE_META_MARKET_V1.coefficients.neutral_site * (isNeutral ? 1 : 0) +
+    ACTIVE_META_MARKET_V1.coefficients.is_ncaa_neutral * isNcaaNeutral +
+    ACTIVE_META_MARKET_V1.coefficients.is_conf_tourney_neutral * isConfTourneyNeutral +
+    ACTIVE_META_MARKET_V1.coefficients.z14_x_neutral * z14 * (isNeutral ? 1 : 0) +
+    ACTIVE_META_MARKET_V1.coefficients.abs_mu_x_neutral * absMu * (isNeutral ? 1 : 0);
+  return Math.min(Math.max(logistic(score), 1e-6), 1 - 1e-6);
 }
 
 export function getSiteHomeWinProb(row: PredictionRow): number | null {
@@ -151,7 +190,17 @@ export function getSiteHomeWinProb(row: PredictionRow): number | null {
         ? row.startDate
         : null;
   const neutralSite = toBoolean(row.neutral_site ?? row.neutralSite);
-  return getSiteHomeWinProbFromValues(getModelMuHome(row), getPredSigma(row), startTime, neutralSite);
+  const tournament =
+    typeof row.tournament === "string"
+      ? row.tournament
+      : null;
+  const gameType =
+    typeof row.gameType === "string"
+      ? row.gameType
+      : typeof row.game_type === "string"
+        ? row.game_type
+        : null;
+  return getSiteHomeWinProbFromValues(getModelMuHome(row), getPredSigma(row), startTime, neutralSite, tournament, gameType);
 }
 
 export function formatAmericanOddsFromProb(prob: number | null): string | null {
