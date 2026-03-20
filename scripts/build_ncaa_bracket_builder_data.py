@@ -814,6 +814,35 @@ def _site_probability_from_mu_sigma(
     )
 
 
+def _symmetrized_neutral_team1_probability(
+    mu_team1_minus_team2: float,
+    sigma: float,
+) -> float:
+    """Remove arbitrary slot bias when a neutral matchup has no real home team."""
+    team1_as_home = _site_probability_from_mu_sigma(mu_team1_minus_team2, sigma)
+    team2_as_home = _site_probability_from_mu_sigma(-mu_team1_minus_team2, sigma)
+    return float(np.clip(0.5 * (team1_as_home + (1.0 - team2_as_home)), 1e-6, 1.0 - 1e-6))
+
+
+def _cache_team1_probability(
+    mu_team1_minus_team2: float,
+    sigma: float,
+    *,
+    team1_id: int,
+    schedule_info: dict[str, Any] | None,
+) -> float:
+    """Convert the live home-win helper into the cache's team1/team2 contract."""
+    if schedule_info is None:
+        return _symmetrized_neutral_team1_probability(mu_team1_minus_team2, sigma)
+
+    home_team_id = int(schedule_info["home_team_id"])
+    mu_home = float(mu_team1_minus_team2) if home_team_id == team1_id else -float(mu_team1_minus_team2)
+    home_win_prob = _site_probability_from_mu_sigma(mu_home, sigma)
+    if home_team_id == team1_id:
+        return float(home_win_prob)
+    return float(1.0 - home_win_prob)
+
+
 def _build_slot_plan() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     reserved = {
         ("East", 11): "ff1",
@@ -1690,24 +1719,10 @@ def _build_matchup_payload(
                 )
                 team_ab_internal_mu_source_mode = "synthetic_team_ab_model"
 
-        legacy_win_prob_a = _site_probability_from_mu_sigma(float(legacy_mu), float(sigma))
-        team_ab_win_prob_a = (
-            None if team_ab_mu is None else _site_probability_from_mu_sigma(float(team_ab_mu), float(sigma))
-        )
-        team_ab_internal_win_prob_a = (
-            None
-            if team_ab_internal_mu is None
-            else _site_probability_from_mu_sigma(float(team_ab_internal_mu), float(sigma))
-        )
         active_mu = (
             float(team_ab_mu)
             if bracket_model_variant == BRACKET_MODEL_VARIANT_TEAM_AB and team_ab_mu is not None
             else float(legacy_mu)
-        )
-        win_prob_a = (
-            float(team_ab_win_prob_a)
-            if bracket_model_variant == BRACKET_MODEL_VARIANT_TEAM_AB and team_ab_win_prob_a is not None
-            else float(legacy_win_prob_a)
         )
         display_mu = float(active_mu)
         if config.NCAA_TOURNAMENT_MARKET_BLEND_ENABLED and line_info is not None:
@@ -1750,6 +1765,37 @@ def _build_matchup_payload(
             pick_breakeven = float(american_to_breakeven(np.array([-110.0]))[0])
             pick_prob_edge = pick_cover_prob - pick_breakeven
             pick_fair_odds = float(prob_to_american(np.array([pick_cover_prob]))[0])
+        legacy_win_prob_a = _cache_team1_probability(
+            float(legacy_mu),
+            float(sigma),
+            team1_id=int(team_a_id),
+            schedule_info=schedule_info,
+        )
+        team_ab_win_prob_a = (
+            None
+            if team_ab_mu is None
+            else _cache_team1_probability(
+                float(team_ab_mu),
+                float(sigma),
+                team1_id=int(team_a_id),
+                schedule_info=schedule_info,
+            )
+        )
+        team_ab_internal_win_prob_a = (
+            None
+            if team_ab_internal_mu is None
+            else _cache_team1_probability(
+                float(team_ab_internal_mu),
+                float(sigma),
+                team1_id=int(team_a_id),
+                schedule_info=schedule_info,
+            )
+        )
+        win_prob_a = (
+            float(team_ab_win_prob_a)
+            if bracket_model_variant == BRACKET_MODEL_VARIANT_TEAM_AB and team_ab_win_prob_a is not None
+            else float(legacy_win_prob_a)
+        )
         predictions[f"{team_a_id}::{team_b_id}"] = {
             "team1_id": int(team_a_id),
             "team1_name": str(team_a_legacy["team"]),
@@ -1851,7 +1897,9 @@ def _build_matchup_payload(
             "unscheduled NCAA matchups use the same Team A/B bracket contract on bracket-derived neutral feature rows. "
             "Sigma remains on the current live legacy bracket uncertainty path; the active-mu sigma rebuild "
             "study exists as research only and is not shipped. Site win probability uses the active-stack "
-            "Vegas-refit mu-plus-sigma transform with no separate neutral beta patch. "
+            "Vegas-refit mu-plus-sigma transform with no separate neutral beta patch; scheduled rows map "
+            "that home-win helper back onto team1/team2 via the real scheduled home team, while unscheduled "
+            "neutral rows symmetrize the home slot before caching team1/team2 win probabilities. "
             f"Legacy ratings source: {legacy_ratings_source}. "
             f"Team A/B ratings source: {team_ab_ratings_source}. "
             f"Team A/B internal comparison source: {team_ab_internal_ratings_source}."
