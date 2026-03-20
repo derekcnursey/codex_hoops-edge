@@ -1213,10 +1213,18 @@ def _build_field_payload(
 
 def _round_from_game_notes(note: object) -> tuple[str | None, str | None]:
     value = str(note or "").upper()
-    if "FIRST FOUR" in value:
-        return "first-four", "First Four"
-    if "1ST ROUND" in value:
-        return "round-of-64", "Round of 64"
+    mapping = [
+        ("FIRST FOUR", "first-four", "First Four"),
+        ("1ST ROUND", "round-of-64", "Round of 64"),
+        ("2ND ROUND", "round-of-32", "Round of 32"),
+        ("SWEET 16", "sweet-16", "Sweet 16"),
+        ("ELITE 8", "elite-8", "Elite 8"),
+        ("FINAL FOUR", "final-four", "Final Four"),
+        ("NATIONAL CHAMPIONSHIP", "national-championship", "National Championship"),
+    ]
+    for needle, round_id, round_label in mapping:
+        if needle in value:
+            return round_id, round_label
     return None, None
 
 
@@ -1267,7 +1275,7 @@ def _load_opening_round_schedule_frame(season: int) -> pd.DataFrame:
     round_info = games["gameNotes"].map(_round_from_game_notes)
     games["scheduled_round_id"] = round_info.map(lambda item: item[0])
     games["scheduled_round_label"] = round_info.map(lambda item: item[1])
-    games = games[games["scheduled_round_id"].isin(["first-four", "round-of-64"])].copy()
+    games = games[games["scheduled_round_id"].notna()].copy()
     return games
 
 
@@ -1620,13 +1628,29 @@ def _build_matchup_payload(
             else:
                 team_a_team_ab = team_lookup_team_ab[team_a_id]
                 team_b_team_ab = team_lookup_team_ab[team_b_id]
-                team_ab_mu, active_mu_base_simple_margin, active_mu_source_detail = synthetic_fallback_margin(
+                team_ab_mu = _predict_team_ab_pairwise_margin(
+                    team_a_team_ab,
+                    team_b_team_ab,
+                    season=season,
+                    round_label=round_label,
+                    start_time=start_time,
+                    conf_strength_lookup=conf_strength_lookup,
+                    mu_regressor=team_ab_regressor,
+                    mu_feature_order=team_ab_feature_order,
+                    mu_model_type=team_ab_model_type,
+                    mu_impute_means=team_ab_meta.get("impute_means"),
+                    team_a_rest_days=matchup_context.get("team_a_rest_days"),
+                    team_b_rest_days=matchup_context.get("team_b_rest_days"),
+                    team_a_state=team_state_lookup_team_ab.get(team_a_id),
+                    team_b_state=team_state_lookup_team_ab.get(team_b_id),
+                )
+                _, active_mu_base_simple_margin, active_mu_source_detail = synthetic_fallback_margin(
                     team_a_team_ab,
                     team_b_team_ab,
                     ratings_source=team_ab_efficiency_source,
                     round_label=round_label,
                 )
-                active_mu_source_mode = "synthetic_ratings_map"
+                active_mu_source_mode = "synthetic_team_ab_model"
             if scheduled_team_ab_internal_row is not None:
                 team_ab_internal_mu = _predict_team_ab_scheduled_margin(
                     scheduled_team_ab_internal_row,
@@ -1642,13 +1666,29 @@ def _build_matchup_payload(
             else:
                 team_a_team_ab_internal = team_lookup_team_ab_internal[team_a_id]
                 team_b_team_ab_internal = team_lookup_team_ab_internal[team_b_id]
-                team_ab_internal_mu, team_ab_internal_mu_base_simple_margin, team_ab_internal_mu_source_detail = synthetic_fallback_margin(
+                team_ab_internal_mu = _predict_team_ab_pairwise_margin(
+                    team_a_team_ab_internal,
+                    team_b_team_ab_internal,
+                    season=season,
+                    round_label=round_label,
+                    start_time=start_time,
+                    conf_strength_lookup=team_ab_internal_conf_strength_lookup,
+                    mu_regressor=team_ab_regressor,
+                    mu_feature_order=team_ab_feature_order,
+                    mu_model_type=team_ab_model_type,
+                    mu_impute_means=team_ab_meta.get("impute_means"),
+                    team_a_rest_days=matchup_context.get("team_a_rest_days"),
+                    team_b_rest_days=matchup_context.get("team_b_rest_days"),
+                    team_a_state=team_state_lookup_team_ab_internal.get(team_a_id),
+                    team_b_state=team_state_lookup_team_ab_internal.get(team_b_id),
+                )
+                _, team_ab_internal_mu_base_simple_margin, team_ab_internal_mu_source_detail = synthetic_fallback_margin(
                     team_a_team_ab_internal,
                     team_b_team_ab_internal,
                     ratings_source="gold",
                     round_label=round_label,
                 )
-                team_ab_internal_mu_source_mode = "synthetic_ratings_map"
+                team_ab_internal_mu_source_mode = "synthetic_team_ab_model"
 
         legacy_win_prob_a = _site_probability_from_mu_sigma(float(legacy_mu), float(sigma))
         team_ab_win_prob_a = (
@@ -1798,7 +1838,7 @@ def _build_matchup_payload(
             ]
         ),
         "synthetic_fallback_active": (
-            "source-aware direct ratings mapping for unscheduled NCAA matchups"
+            "source-aware direct ratings mapping retained for diagnostics; active unscheduled NCAA matchups use the Team A/B bracket contract"
             if team_ab_loaded is not None
             else None
         ),
@@ -1808,7 +1848,7 @@ def _build_matchup_payload(
             "Team A/B internal-efficiency comparison spread are cached side by side when available; "
             "active spread selection follows the configured bracket matchup "
             "model variant. Scheduled NCAA games use the active Team A/B model on real feature rows; "
-            "unscheduled NCAA matchups fall back to a source-aware direct ratings map. "
+            "unscheduled NCAA matchups use the same Team A/B bracket contract on bracket-derived neutral feature rows. "
             "Sigma remains on the current live legacy bracket uncertainty path; the active-mu sigma rebuild "
             "study exists as research only and is not shipped. Site win probability uses the active-stack "
             "Vegas-refit mu-plus-sigma transform with no separate neutral beta patch. "
