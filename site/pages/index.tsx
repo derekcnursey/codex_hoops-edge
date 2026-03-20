@@ -10,6 +10,8 @@ import {
 import {
   getLatestPredictionFile,
   getPredictionRowsByFilename,
+  getPredictionRowsByDate,
+  todayET,
 } from "../lib/server-data";
 import { getTeamRank, getTeamRankMapForDate } from "../lib/team-rankings";
 
@@ -19,22 +21,52 @@ type RankedPredictionRow = PredictionRow & {
 };
 
 type HomeProps = {
-  date: string | null;
-  rows: RankedPredictionRow[];
+  todayDate: string | null;
+  todayRows: RankedPredictionRow[];
+  tomorrowDate: string;
+  tomorrowRows: RankedPredictionRow[];
 };
 
-export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  const latest = getLatestPredictionFile();
-  if (!latest) {
-    return { props: { date: null, rows: [] } };
-  }
-  const teamRanks = getTeamRankMapForDate(latest.date);
-  const rows = getPredictionRowsByFilename(latest.filename).map((row) => ({
+function nextDateIso(dateStr: string): string {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const dt = new Date(Date.UTC(year, month - 1, day));
+  dt.setUTCDate(dt.getUTCDate() + 1);
+  return dt.toISOString().slice(0, 10);
+}
+
+function rankRows(date: string, rows: PredictionRow[]): RankedPredictionRow[] {
+  const teamRanks = getTeamRankMapForDate(date);
+  return rows.map((row) => ({
     ...row,
     away_team_rank: getTeamRank(str(row.away_team), teamRanks),
     home_team_rank: getTeamRank(str(row.home_team), teamRanks),
   }));
-  return { props: { date: latest.date, rows } };
+}
+
+export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
+  const today = todayET();
+  const tomorrow = nextDateIso(today);
+  const latest = getLatestPredictionFile();
+  if (!latest) {
+    return {
+      props: {
+        todayDate: null,
+        todayRows: [],
+        tomorrowDate: tomorrow,
+        tomorrowRows: [],
+      },
+    };
+  }
+  const todayRows = rankRows(latest.date, getPredictionRowsByFilename(latest.filename));
+  const tomorrowRows = rankRows(tomorrow, getPredictionRowsByDate(tomorrow));
+  return {
+    props: {
+      todayDate: latest.date,
+      todayRows,
+      tomorrowDate: tomorrow,
+      tomorrowRows,
+    },
+  };
 };
 
 /* -- helpers -- */
@@ -208,20 +240,26 @@ const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
 
 /* -- component -- */
 
-export default function Home({ date, rows }: HomeProps) {
+export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows }: HomeProps) {
+  const [activeTab, setActiveTab] = useState<"today" | "tomorrow">("today");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "edge10">("all");
   const [diffMin, setDiffMin] = useState(0);
   const [sort, setSort] = useState<SortState>({ key: "edge", dir: "desc" });
+  const activeDate = activeTab === "today" ? todayDate : tomorrowDate;
+  const activeRows = activeTab === "today" ? todayRows : tomorrowRows;
+  const tomorrowReady = tomorrowRows.length > 0;
+  const title = activeTab === "today" ? "Today\u2019s Picks" : "Tomorrow\u2019s Board";
+  const slateLabel = activeTab === "today" ? "Today" : tomorrowReady ? "Tomorrow" : "Tomorrow TBA";
 
   const maxDiff = useMemo(() => {
-    if (!rows.length) return 20;
-    const diffs = rows.map((r) => diff(r)).filter((d): d is number => d !== null);
+    if (!activeRows.length) return 20;
+    const diffs = activeRows.map((r) => diff(r)).filter((d): d is number => d !== null);
     return diffs.length > 0 ? Math.ceil(Math.max(...diffs)) : 20;
-  }, [rows]);
+  }, [activeRows]);
 
   const tableRows = useMemo(() => {
-    let list = [...rows];
+    let list = [...activeRows];
 
     if (search.trim()) {
       const q = search.trim().toLowerCase();
@@ -259,7 +297,7 @@ export default function Home({ date, rows }: HomeProps) {
     });
 
     return list;
-  }, [rows, search, filter, diffMin, sort]);
+  }, [activeRows, search, filter, diffMin, sort]);
 
   function handleSort(key: SortKey) {
     setSort((prev) =>
@@ -269,11 +307,11 @@ export default function Home({ date, rows }: HomeProps) {
     );
   }
 
-  if (!rows.length) {
+  if (!activeRows.length) {
     return (
       <Layout>
         <div style={{ padding: 24, color: "#94a3b8", textAlign: "center" }}>
-          No games found for today.
+          {activeTab === "today" ? "No games found for today." : "Tomorrow TBA."}
         </div>
       </Layout>
     );
@@ -283,6 +321,47 @@ export default function Home({ date, rows }: HomeProps) {
     <Layout>
       {/* single wrapper so .content gap doesn't add extra spacing */}
       <div>
+        <div
+          style={{
+            display: "inline-flex",
+            gap: 8,
+            padding: 4,
+            background: "#f8fafc",
+            border: "1px solid #e2e8f0",
+            borderRadius: 10,
+            marginBottom: 16,
+          }}
+        >
+          {([
+            { key: "today", label: "Today" },
+            { key: "tomorrow", label: tomorrowReady ? "Tomorrow" : "Tomorrow TBA" },
+          ] as const).map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => {
+                setActiveTab(tab.key);
+                setSearch("");
+                setFilter("all");
+                setDiffMin(0);
+              }}
+              style={{
+                ...mono,
+                fontSize: 12,
+                fontWeight: 600,
+                padding: "7px 12px",
+                borderRadius: 8,
+                border: "none",
+                background: activeTab === tab.key ? "#0f172a" : "transparent",
+                color: activeTab === tab.key ? "#fff" : "#475569",
+                cursor: "pointer",
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
         {/* -- Title Row -- */}
         <div
           style={{
@@ -291,8 +370,8 @@ export default function Home({ date, rows }: HomeProps) {
             alignItems: "baseline",
             marginBottom: 24
           }}
-        >
-          <h1
+          >
+            <h1
             style={{
               fontSize: 24,
               fontWeight: 700,
@@ -301,10 +380,10 @@ export default function Home({ date, rows }: HomeProps) {
               color: "#0f172a"
             }}
           >
-            Today&apos;s Picks
+            {title}
           </h1>
           <span style={{ ...mono, fontSize: 13, color: "#64748b" }}>
-            {date ? formatDateDisplay(date) : ""} · {rows.length} games
+            {activeDate ? formatDateDisplay(activeDate) : ""} · {activeRows.length} games
           </span>
         </div>
 
@@ -320,7 +399,7 @@ export default function Home({ date, rows }: HomeProps) {
             }}
           >
             <span style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>
-              All Games
+              {slateLabel}
             </span>
 
             <input
