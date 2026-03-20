@@ -527,10 +527,15 @@ def main() -> None:
     tourneys["methodology"] = {
         "simulations": 0,
         "odds_source": tourneys.get("methodology", {}).get("odds_source", "Hard Rock Bet (Florida)"),
+        "sigma_model": "legacy_mlp_regressor_pt",
+        "sigma_contract": "legacy_53_feature_home_slot_contract_with_legacy_mu_neutral_mix",
+        "sigma_rebuild_status": "research_only_not_shipped",
+        "site_probability_surface": "mu_plus_sigma_meta_small_v1_neutral_beta_blend_v1",
         "note": (
             "Exact bracket probabilities from the current production model using the "
             "current conference bracket structure. Neutral-site synthetic matchup scoring "
-            "with site ML probability correction."
+            "with the current live legacy sigma path and site ML probability correction. "
+            "No active-mu sigma rebuild is shipped."
         ),
     }
     brackets["generated_at"] = datetime.utcnow().isoformat() + "Z"

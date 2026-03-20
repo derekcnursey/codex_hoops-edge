@@ -715,8 +715,11 @@ def save_predictions(preds: pd.DataFrame, game_date: str | None = None) -> tuple
             "live_lines_table": config.TABLE_FCT_LINES,
             "research_lines_table": config.RESEARCH_LINES_TABLE,
             "sigma_model": "legacy_mlp_regressor_pt",
+            "sigma_contract": "legacy_53_feature_home_slot_contract_with_legacy_mu_neutral_mix",
+            "sigma_rebuild_status": "research_only_not_shipped",
             "stored_probability_model": "legacy_mlp_classifier_pt",
             "site_probability_surface": "mu_plus_sigma_meta_small_v1_neutral_beta_blend_v1",
+            "neutral_probability_calibration_active": True,
         },
         "games": site_games,
     }

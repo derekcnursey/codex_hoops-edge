@@ -1,10 +1,14 @@
 {
-  "generated_at": "2026-03-19T20:57:59.300033Z",
+  "generated_at": "2026-03-20T00:17:15.358320Z",
   "season": 2026,
   "methodology": {
     "simulations": 0,
     "odds_source": "Hard Rock Bet (Florida)",
-    "note": "Exact bracket probabilities from the current production model using the current conference bracket structure. Neutral-site synthetic matchup scoring with site ML probability correction."
+    "sigma_model": "legacy_mlp_regressor_pt",
+    "sigma_contract": "legacy_53_feature_home_slot_contract_with_legacy_mu_neutral_mix",
+    "sigma_rebuild_status": "research_only_not_shipped",
+    "site_probability_surface": "mu_plus_sigma_meta_small_v1_neutral_beta_blend_v1",
+    "note": "Exact bracket probabilities from the current production model using the current conference bracket structure. Neutral-site synthetic matchup scoring with the current live legacy sigma path and site ML probability correction. No active-mu sigma rebuild is shipped."
   },
   "conferences": [
     {
