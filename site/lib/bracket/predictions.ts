@@ -248,6 +248,10 @@ export function flipPrediction(prediction: MatchupPrediction): MatchupPrediction
     winProbA: prediction.winProbB,
     rawMarginA: -(prediction.rawMarginA ?? 0),
     displayMarginA: -(prediction.displayMarginA ?? prediction.rawMarginA ?? 0),
+    // Preserve the existing display surface exactly when canonicalizing or
+    // re-orienting a cached matchup. Recomputing from flipped mu/sigma changes
+    // the shown win probability for larger-id slot A teams.
+    displayWinProbAOverride: prediction.displayWinProbB ?? prediction.winProbB,
     marketMarginA:
       prediction.marketMarginA == null || Number.isNaN(prediction.marketMarginA)
         ? null

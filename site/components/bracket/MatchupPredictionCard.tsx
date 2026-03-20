@@ -44,9 +44,14 @@ function lineLabel(teamName: string | null | undefined, spread: number | null | 
 }
 
 function modelVariantLabel(variant: string | null | undefined): string {
-  if (variant === "team_ab_elite_tail_round64_v1") return "Team A/B";
+  if (variant === "team_ab_elite_tail_round64_v1") return "Team A/B Torvik";
   if (variant === "legacy_synthetic") return "Legacy";
   return "Model";
+}
+
+function comparisonModelLabel(label: string | null | undefined): string {
+  if (label === "Internal") return "HE Internal";
+  return label ?? "Baseline";
 }
 
 function modelSummaryLine(
@@ -147,6 +152,7 @@ export default function MatchupPredictionCard({
     ? lineLabel(prediction.marketFavoredTeamName, prediction.marketProjectedSpread)
     : null;
   const activeModelLabel = prediction ? modelVariantLabel(prediction.activeModelVariant) : "Model";
+  const comparisonLabel = comparisonModelLabel(prediction?.comparisonModel?.label);
   const activeModelSummaryLine = prediction
     ? modelSummaryLine(
         prediction.favoredTeamName,
@@ -242,12 +248,12 @@ export default function MatchupPredictionCard({
       {prediction ? (
         <>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
-            {statusPill(`Active: ${activeModelLabel}`, "blue")}
+            {statusPill(`Active path: ${activeModelLabel}`, "blue")}
             {prediction.comparisonModel
-              ? statusPill(`Baseline: ${prediction.comparisonModel.label}`, "slate")
+              ? statusPill(`Baseline: ${comparisonLabel}`, "slate")
               : null}
             {showDisagreement && disagreementLabel ? statusPill(disagreementLabel, "amber") : null}
-            {displayLine ? statusPill(`Shown avg: ${displayLine}`, "slate") : null}
+            {displayLine ? statusPill(`Card view: ${displayLine}`, "slate") : null}
             {marketLine ? statusPill(`Market: ${marketLine}`, "amber") : null}
             {comparison?.selectedWinnerName
               ? statusPill(comparison.agreesWithModel ? "Agree" : "Fade", comparison.agreesWithModel ? "green" : "amber")
@@ -268,11 +274,11 @@ export default function MatchupPredictionCard({
               marginBottom: 12,
             }}
           >
-            {detailBox("Shown avg", displayModelSummaryLine, "blue")}
+            {detailBox("Card view", displayModelSummaryLine, "blue")}
             {detailBox(`Active ${activeModelLabel}`, activeModelSummaryLine, "slate")}
             {prediction?.comparisonModel
               ? detailBox(
-                  `${prediction.comparisonModel.label} baseline`,
+                  `${comparisonLabel} baseline`,
                   comparisonModelSummaryLine,
                   "slate",
                 )
@@ -319,7 +325,7 @@ export default function MatchupPredictionCard({
                   </div>
                   {showRawWinProb ? (
                     <div style={{ ...mono, fontSize: 11, color: "#64748b", marginTop: -4, marginBottom: 10 }}>
-                      Active model {pct(rawWinProb, 1)}
+                      Active path {pct(rawWinProb, 1)}
                     </div>
                   ) : null}
                   <div style={{ ...mono, fontSize: 12, color: "#475569", marginBottom: 14 }}>
