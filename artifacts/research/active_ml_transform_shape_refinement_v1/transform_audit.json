@@ -1,0 +1,29 @@
+{
+  "current_transform": {
+    "intercept": -0.18675979905995527,
+    "mu": 0.18755201340181407,
+    "sigma_cap14": -0.012885112289999442,
+    "z14": 0.015086341337058993,
+    "post_dec15": 0.13567630966774843,
+    "abs_mu": -0.006603733530789919,
+    "neutral_site": 0.32053952078525805,
+    "is_ncaa_neutral": 0.09064642441577572,
+    "is_conf_tourney_neutral": -0.0302441719256531,
+    "z14_x_neutral": -0.4503689240309741,
+    "abs_mu_x_neutral": 0.013861108094857246
+  },
+  "eval_seasons": [
+    2019,
+    2020,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "slice_rows": {
+    "ncaa_tournament_neutral": 335,
+    "conference_tournament_neutral": 1380,
+    "all_neutral": 4079,
+    "all_games": 36557
+  }
+}

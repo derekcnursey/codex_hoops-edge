@@ -8,7 +8,12 @@ from typing import Literal
 import numpy as np
 
 MlSigmaMode = Literal["raw", "cap14", "cap17", "const14"]
-MlOddsMode = Literal["cap14_mu_sigma", "meta_small_v1", "active_meta_market_v1"]
+MlOddsMode = Literal[
+    "cap14_mu_sigma",
+    "meta_small_v1",
+    "active_meta_market_v1",
+    "active_meta_market_taper85_v1",
+]
 
 META_SMALL_V1 = {
     "intercept": 0.020175630994879585,
@@ -36,6 +41,32 @@ ACTIVE_META_MARKET_V1 = {
         "abs_mu_x_neutral": 0.013861108094857246,
     },
 }
+
+
+def _taper_context_coefficients(coeffs: dict[str, object], scale: float) -> dict[str, object]:
+    """Return a lighter-touch variant of the active market transform.
+
+    This preserves the active-stack contract while damping the extra neutral and
+    seasonal lift terms that make bracket-facing ML odds look too aggressive.
+    """
+    return {
+        "intercept": float(coeffs["intercept"]),
+        "coefficients": {
+            "mu": float(coeffs["coefficients"]["mu"]),
+            "sigma_cap14": float(coeffs["coefficients"]["sigma_cap14"]),
+            "z14": float(coeffs["coefficients"]["z14"]),
+            "post_dec15": float(coeffs["coefficients"]["post_dec15"]) * scale,
+            "abs_mu": float(coeffs["coefficients"]["abs_mu"]),
+            "neutral_site": float(coeffs["coefficients"]["neutral_site"]) * scale,
+            "is_ncaa_neutral": float(coeffs["coefficients"]["is_ncaa_neutral"]) * scale,
+            "is_conf_tourney_neutral": float(coeffs["coefficients"]["is_conf_tourney_neutral"]) * scale,
+            "z14_x_neutral": float(coeffs["coefficients"]["z14_x_neutral"]),
+            "abs_mu_x_neutral": float(coeffs["coefficients"]["abs_mu_x_neutral"]) * scale,
+        },
+    }
+
+
+ACTIVE_META_MARKET_TAPER85_V1 = _taper_context_coefficients(ACTIVE_META_MARKET_V1, 0.85)
 
 NEUTRAL_BETA_BLEND_V1 = {
     "alpha": 0.6,
@@ -213,7 +244,7 @@ def site_home_win_prob_from_mu_sigma(
     neutral_site: np.ndarray | float | bool | None = None,
     tournament: np.ndarray | str | None = None,
     game_type: np.ndarray | str | None = None,
-    odds_mode: MlOddsMode = "active_meta_market_v1",
+    odds_mode: MlOddsMode = "active_meta_market_taper85_v1",
 ) -> np.ndarray | float:
     """Match the site-facing ML probability path.
 
@@ -245,6 +276,17 @@ def site_home_win_prob_from_mu_sigma(
             tournament=tournament,
             game_type=game_type,
             coeffs=ACTIVE_META_MARKET_V1,
+        )
+    elif odds_mode == "active_meta_market_taper85_v1":
+        prob = _market_transform_score(
+            mu_home,
+            sigma,
+            start_month=start_month,
+            start_day=start_day,
+            neutral_site=neutral_site,
+            tournament=tournament,
+            game_type=game_type,
+            coeffs=ACTIVE_META_MARKET_TAPER85_V1,
         )
     else:
         raise ValueError(f"Unsupported ML odds mode: {odds_mode}")

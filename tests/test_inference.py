@@ -600,7 +600,7 @@ class TestSavePredictions:
         assert len(data["games"]) == 1
         assert data["provenance"]["sigma_model"] == "legacy_mlp_regressor_pt"
         assert data["provenance"]["stored_probability_model"] == "legacy_mlp_classifier_pt"
-        assert data["provenance"]["site_probability_surface"] == "mu_plus_sigma_meta_small_v1_neutral_beta_blend_v1"
+        assert data["provenance"]["site_probability_surface"] == "mu_plus_sigma_active_meta_market_taper85_v1"
 
         game = data["games"][0]
         assert game["home_team"] == "Duke"

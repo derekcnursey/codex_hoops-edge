@@ -36,6 +36,8 @@ def test_neutral_site_probability_calibration_only_applies_to_neutral():
         start_month=3,
         start_day=20,
         neutral_site=True,
+        tournament="NCAA",
+        game_type="TRNMNT",
     )
     assert neutral is not None
     assert non_neutral is not None
@@ -49,5 +51,67 @@ def test_neutral_site_probability_calibration_vectorized_mask():
         start_month=3,
         start_day=20,
         neutral_site=[False, True],
+        tournament=["", "NCAA"],
+        game_type=["STD", "TRNMNT"],
     )
     assert probs[0] != probs[1]
+
+
+def test_active_market_transform_distinguishes_ncaa_and_conference_neutral():
+    ncaa = site_home_win_prob_from_mu_sigma(
+        8.0,
+        12.0,
+        start_month=3,
+        start_day=20,
+        neutral_site=True,
+        tournament="NCAA",
+        game_type="TRNMNT",
+    )
+    conf = site_home_win_prob_from_mu_sigma(
+        8.0,
+        12.0,
+        start_month=3,
+        start_day=12,
+        neutral_site=True,
+        tournament="SEC",
+        game_type="TRNMNT",
+    )
+    assert ncaa is not None
+    assert conf is not None
+    assert ncaa != conf
+
+
+def test_tapered_active_market_transform_softens_ncaa_neutral_anchor_cases():
+    neutral_mu0 = site_home_win_prob_from_mu_sigma(
+        0.0,
+        12.0,
+        start_month=3,
+        start_day=20,
+        neutral_site=True,
+        tournament="NCAA",
+        game_type="TRNMNT",
+    )
+    moderate = site_home_win_prob_from_mu_sigma(
+        3.5,
+        12.5,
+        start_month=3,
+        start_day=20,
+        neutral_site=True,
+        tournament="NCAA",
+        game_type="TRNMNT",
+    )
+    strong = site_home_win_prob_from_mu_sigma(
+        7.0,
+        12.5,
+        start_month=3,
+        start_day=20,
+        neutral_site=True,
+        tournament="NCAA",
+        game_type="TRNMNT",
+    )
+    assert neutral_mu0 is not None
+    assert moderate is not None
+    assert strong is not None
+    assert round(neutral_mu0, 4) == 0.5308
+    assert round(moderate, 4) == 0.6614
+    assert round(strong, 4) == 0.7725

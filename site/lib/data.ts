@@ -6,8 +6,12 @@ export type DataFile = {
 };
 
 const SITE_ML_SIGMA_CAP = 14;
-type MlOddsMode = "cap14_mu_sigma" | "meta_small_v1" | "active_meta_market_v1";
-const SITE_ML_ODDS_MODE: MlOddsMode = "active_meta_market_v1";
+type MlOddsMode =
+  | "cap14_mu_sigma"
+  | "meta_small_v1"
+  | "active_meta_market_v1"
+  | "active_meta_market_taper85_v1";
+const SITE_ML_ODDS_MODE: MlOddsMode = "active_meta_market_taper85_v1";
 const META_SMALL_V1 = {
   intercept: 0.020175630994879585,
   coefficients: {
@@ -31,6 +35,21 @@ const ACTIVE_META_MARKET_V1 = {
     is_conf_tourney_neutral: -0.0302441719256531,
     z14_x_neutral: -0.4503689240309741,
     abs_mu_x_neutral: 0.013861108094857246,
+  },
+} as const;
+const ACTIVE_META_MARKET_TAPER85_V1 = {
+  intercept: ACTIVE_META_MARKET_V1.intercept,
+  coefficients: {
+    mu: ACTIVE_META_MARKET_V1.coefficients.mu,
+    sigma_cap14: ACTIVE_META_MARKET_V1.coefficients.sigma_cap14,
+    z14: ACTIVE_META_MARKET_V1.coefficients.z14,
+    post_dec15: ACTIVE_META_MARKET_V1.coefficients.post_dec15 * 0.85,
+    abs_mu: ACTIVE_META_MARKET_V1.coefficients.abs_mu,
+    neutral_site: ACTIVE_META_MARKET_V1.coefficients.neutral_site * 0.85,
+    is_ncaa_neutral: ACTIVE_META_MARKET_V1.coefficients.is_ncaa_neutral * 0.85,
+    is_conf_tourney_neutral: ACTIVE_META_MARKET_V1.coefficients.is_conf_tourney_neutral * 0.85,
+    z14_x_neutral: ACTIVE_META_MARKET_V1.coefficients.z14_x_neutral,
+    abs_mu_x_neutral: ACTIVE_META_MARKET_V1.coefficients.abs_mu_x_neutral * 0.85,
   },
 } as const;
 const NEUTRAL_BETA_BLEND_V1 = {
@@ -167,18 +186,22 @@ export function getSiteHomeWinProbFromValues(
     isNeutral && tournament !== "NCAA" && gameType === "TRNMNT" && startTime != null
       ? 1
       : 0;
+  const coeffs =
+    SITE_ML_ODDS_MODE === "active_meta_market_taper85_v1"
+      ? ACTIVE_META_MARKET_TAPER85_V1
+      : ACTIVE_META_MARKET_V1;
   const score =
-    ACTIVE_META_MARKET_V1.intercept +
-    ACTIVE_META_MARKET_V1.coefficients.mu * (mu as number) +
-    ACTIVE_META_MARKET_V1.coefficients.sigma_cap14 * sigmaCap14 +
-    ACTIVE_META_MARKET_V1.coefficients.z14 * z14 +
-    ACTIVE_META_MARKET_V1.coefficients.post_dec15 * postDec15 +
-    ACTIVE_META_MARKET_V1.coefficients.abs_mu * absMu +
-    ACTIVE_META_MARKET_V1.coefficients.neutral_site * (isNeutral ? 1 : 0) +
-    ACTIVE_META_MARKET_V1.coefficients.is_ncaa_neutral * isNcaaNeutral +
-    ACTIVE_META_MARKET_V1.coefficients.is_conf_tourney_neutral * isConfTourneyNeutral +
-    ACTIVE_META_MARKET_V1.coefficients.z14_x_neutral * z14 * (isNeutral ? 1 : 0) +
-    ACTIVE_META_MARKET_V1.coefficients.abs_mu_x_neutral * absMu * (isNeutral ? 1 : 0);
+    coeffs.intercept +
+    coeffs.coefficients.mu * (mu as number) +
+    coeffs.coefficients.sigma_cap14 * sigmaCap14 +
+    coeffs.coefficients.z14 * z14 +
+    coeffs.coefficients.post_dec15 * postDec15 +
+    coeffs.coefficients.abs_mu * absMu +
+    coeffs.coefficients.neutral_site * (isNeutral ? 1 : 0) +
+    coeffs.coefficients.is_ncaa_neutral * isNcaaNeutral +
+    coeffs.coefficients.is_conf_tourney_neutral * isConfTourneyNeutral +
+    coeffs.coefficients.z14_x_neutral * z14 * (isNeutral ? 1 : 0) +
+    coeffs.coefficients.abs_mu_x_neutral * absMu * (isNeutral ? 1 : 0);
   return Math.min(Math.max(logistic(score), 1e-6), 1 - 1e-6);
 }
 

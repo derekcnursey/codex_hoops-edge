@@ -300,7 +300,7 @@ def _predict_pairwise_probability(
             start_day=day,
             neutral_site=True,
             game_type="TRNMNT",
-            odds_mode="active_meta_market_v1",
+            odds_mode="active_meta_market_taper85_v1",
         )
     )
     return mu, prob_home
@@ -531,7 +531,7 @@ def main() -> None:
         "sigma_model": "legacy_mlp_regressor_pt",
         "sigma_contract": "legacy_53_feature_home_slot_contract_with_legacy_mu_neutral_mix",
         "sigma_rebuild_status": "research_only_not_shipped",
-        "site_probability_surface": "mu_plus_sigma_active_meta_market_v1",
+        "site_probability_surface": "mu_plus_sigma_active_meta_market_taper85_v1",
         "note": (
             "Exact bracket probabilities from the current production model using the "
             "current conference bracket structure. Neutral-site synthetic matchup scoring "

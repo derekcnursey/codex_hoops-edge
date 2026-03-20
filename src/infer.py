@@ -718,7 +718,7 @@ def save_predictions(preds: pd.DataFrame, game_date: str | None = None) -> tuple
             "sigma_contract": "legacy_53_feature_home_slot_contract_with_legacy_mu_neutral_mix",
             "sigma_rebuild_status": "research_only_not_shipped",
             "stored_probability_model": "legacy_mlp_classifier_pt",
-            "site_probability_surface": "mu_plus_sigma_active_meta_market_v1",
+            "site_probability_surface": "mu_plus_sigma_active_meta_market_taper85_v1",
             "neutral_probability_calibration_active": False,
         },
         "games": site_games,

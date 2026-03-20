@@ -1,0 +1,8 @@
+name,family,description,live_safety
+cap14_baseline,baseline,Plain cap14 mu/sigma conversion.,audit_only
+current_active_market_v1,current,Current live active market-refit transform.,current_live
+tapered_context_85_v1,taper,Current transform with positive NCAA-neutral/context lift terms tapered to 85%.,safe_live_candidate
+tapered_context_75_v1,taper,Current transform with positive NCAA-neutral/context lift terms tapered to 75%.,research_only
+bounded_anchor_v1,constrained,Current family refit with bounded NCAA-neutral/context lift and anchor penalty.,safe_live_candidate
+reduced_context_v1,reduced,Smaller active transform keeping only neutral_site and z14_x_neutral context.,safe_live_candidate
+shape_penalized_v1,penalized,Current family refit with NCAA-neutral shape penalties on zero/mid/heavy zones.,safe_live_candidate
