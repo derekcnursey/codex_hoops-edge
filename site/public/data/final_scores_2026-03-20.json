@@ -1,0 +1,118 @@
+{
+  "date": "2026-03-20",
+  "games": [
+    {
+      "away_score": 84,
+      "away_team": "Santa Clara",
+      "game_id": "2026_03_20_santa_clara_kentucky",
+      "home_score": 89,
+      "home_team": "Kentucky"
+    },
+    {
+      "away_score": 71,
+      "away_team": "Akron",
+      "game_id": "2026_03_20_akron_texas_tech",
+      "home_score": 91,
+      "home_team": "Texas Tech"
+    },
+    {
+      "away_score": 58,
+      "away_team": "Long Island University",
+      "game_id": "2026_03_20_long_island_university_arizona",
+      "home_score": 92,
+      "home_team": "Arizona"
+    },
+    {
+      "away_score": 73,
+      "away_team": "Wright State",
+      "game_id": "2026_03_20_wright_state_virginia",
+      "home_score": 82,
+      "home_team": "Virginia"
+    },
+    {
+      "away_score": 74,
+      "away_team": "Tennessee State",
+      "game_id": "2026_03_20_tennessee_state_iowa_state",
+      "home_score": 108,
+      "home_team": "Iowa State"
+    },
+    {
+      "away_score": 70,
+      "away_team": "Hofstra",
+      "game_id": "2026_03_20_hofstra_alabama",
+      "home_score": 90,
+      "home_team": "Alabama"
+    },
+    {
+      "away_score": 86,
+      "away_team": "Utah State",
+      "game_id": "2026_03_20_utah_state_villanova",
+      "home_score": 76,
+      "home_team": "Villanova"
+    },
+    {
+      "away_score": 56,
+      "away_team": "Miami (OH)",
+      "game_id": "2026_03_20_miami_oh_tennessee",
+      "home_score": 78,
+      "home_team": "Tennessee"
+    },
+    {
+      "away_score": 67,
+      "away_team": "Iowa",
+      "game_id": "2026_03_20_iowa_clemson",
+      "home_score": 61,
+      "home_team": "Clemson"
+    },
+    {
+      "away_score": 53,
+      "away_team": "Northern Iowa",
+      "game_id": "2026_03_20_northern_iowa_st_john_s",
+      "home_score": 79,
+      "home_team": "St. John's"
+    },
+    {
+      "away_score": 71,
+      "away_team": "UCF",
+      "game_id": "2026_03_20_ucf_ucla",
+      "home_score": 75,
+      "home_team": "UCLA"
+    },
+    {
+      "away_score": 71,
+      "away_team": "Queens University",
+      "game_id": "2026_03_20_queens_university_purdue",
+      "home_score": 104,
+      "home_team": "Purdue"
+    },
+    {
+      "away_score": 55,
+      "away_team": "Prairie View A&M",
+      "game_id": "2026_03_20_prairie_view_a_m_florida",
+      "home_score": 114,
+      "home_team": "Florida"
+    },
+    {
+      "away_score": 60,
+      "away_team": "California Baptist",
+      "game_id": "2026_03_20_california_baptist_kansas",
+      "home_score": 68,
+      "home_team": "Kansas"
+    },
+    {
+      "away_score": 71,
+      "away_team": "Furman",
+      "game_id": "2026_03_20_furman_uconn",
+      "home_score": 82,
+      "home_team": "UConn"
+    },
+    {
+      "away_score": 66,
+      "away_team": "Missouri",
+      "game_id": "2026_03_20_missouri_miami",
+      "home_score": 80,
+      "home_team": "Miami"
+    }
+  ],
+  "generated_at": "2026-03-21T14:56:47.796678Z"
+}
