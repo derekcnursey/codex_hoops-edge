@@ -613,6 +613,7 @@ _SITE_FIELD_MAP = {
     "neutral_site": "neutral_site",
     "book_spread": "market_spread_home",
     "predicted_spread": "model_mu_home",
+    "predicted_spread_legacy": "model_mu_home_legacy",
     "spread_sigma": "pred_sigma",
     "edge_home_points": "edge_home_points",
     "home_win_prob": "pred_home_win_prob",

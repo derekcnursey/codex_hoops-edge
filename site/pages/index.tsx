@@ -170,6 +170,11 @@ function modelSpread(row: PredictionRow): number | null {
   return v !== null ? -v : null; // Negate: model_mu_home is home-away, display as book convention
 }
 
+function otherModelSpread(row: PredictionRow): number | null {
+  const v = num(row.model_mu_home_legacy);
+  return v !== null ? -v : null;
+}
+
 function sigma(row: PredictionRow): number | null {
   return num(row.pred_sigma);
 }
@@ -199,7 +204,7 @@ function pickSpread(row: PredictionRow): number | null {
 
 /* -- sort -- */
 
-type SortKey = "matchup" | "time" | "book" | "model" | "sigma" | "diff" | "edge";
+type SortKey = "matchup" | "time" | "book" | "he" | "other" | "sigma" | "diff" | "edge";
 
 type SortState = { key: SortKey; dir: "asc" | "desc" };
 
@@ -215,8 +220,10 @@ function sortVal(row: PredictionRow, key: SortKey): string | number {
     }
     case "book":
       return bookSpread(row) ?? -Infinity;
-    case "model":
+    case "he":
       return modelSpread(row) ?? -Infinity;
+    case "other":
+      return otherModelSpread(row) ?? -Infinity;
     case "sigma":
       return sigma(row) ?? -Infinity;
     case "diff":
@@ -231,8 +238,9 @@ function sortVal(row: PredictionRow, key: SortKey): string | number {
 const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
   { key: "matchup", label: "MATCHUP", align: "left" },
   { key: "time", label: "TIME", align: "center" },
-  { key: "book", label: "HOME SPREAD", align: "center" },
-  { key: "model", label: "MODEL", align: "center" },
+  { key: "book", label: "MARKET", align: "center" },
+  { key: "he", label: "HE", align: "center" },
+  { key: "other", label: "TORVIK", align: "center" },
   { key: "sigma", label: "SIGMA", align: "center" },
   { key: "diff", label: "DIFF", align: "center" },
   { key: "edge", label: "EDGE", align: "center" }
@@ -521,7 +529,8 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                   ) : (
                     tableRows.map((row, i) => {
                       const bk = bookSpread(row);
-                      const md = modelSpread(row);
+                      const he = modelSpread(row);
+                      const other = otherModelSpread(row);
                       const sg = sigma(row);
                       const df = diff(row);
                       const eg = edge(row);
@@ -583,7 +592,7 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                             {formatGameTime(row) ?? "—"}
                           </td>
 
-                          {/* HOME SPREAD */}
+                          {/* MARKET */}
                           <td
                             style={{
                               ...mono,
@@ -597,7 +606,7 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                             {hb && bk !== null ? formatSpread(bk) : "\u2014"}
                           </td>
 
-                          {/* MODEL */}
+                          {/* HE */}
                           <td
                             style={{
                               ...mono,
@@ -609,7 +618,21 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                               borderBottom: "1px solid #f1f5f9"
                             }}
                           >
-                            {md !== null ? formatSpread(md) : "\u2014"}
+                            {he !== null ? formatSpread(he) : "\u2014"}
+                          </td>
+
+                          {/* OTHER */}
+                          <td
+                            style={{
+                              ...mono,
+                              padding: "10px 14px",
+                              textAlign: "center",
+                              fontSize: 13,
+                              color: "#334155",
+                              borderBottom: "1px solid #f1f5f9"
+                            }}
+                          >
+                            {other !== null ? formatSpread(other) : "\u2014"}
                           </td>
 
                           {/* SIGMA */}
