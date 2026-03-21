@@ -327,6 +327,42 @@ def _build_secondary_mu_features_if_needed(
     return secondary_df
 
 
+def _team_ab_feature_source_matches_primary() -> bool:
+    if config.TEAM_AB_EFFICIENCY_SOURCE != config.EFFICIENCY_SOURCE:
+        return False
+    if config.TEAM_AB_EFFICIENCY_SOURCE == "gold":
+        return config.TEAM_AB_GOLD_RATINGS_TABLE == config.PRODUCTION_GOLD_RATINGS_TABLE
+    return True
+
+
+def _build_team_ab_mu_features_if_needed(
+    season: int,
+    primary_df: pd.DataFrame,
+    game_date: str | None = None,
+) -> pd.DataFrame | None:
+    """Build a Team A/B-only feature frame when its efficiency source differs."""
+    if primary_df.empty or _team_ab_feature_source_matches_primary():
+        return None
+    team_ab_df = build_features(
+        season,
+        game_date=game_date,
+        no_garbage=True,
+        extra_features=config.EXTRA_FEATURES,
+        adjust_ff=config.ADJUST_FF,
+        adjust_alpha=config.ADJUST_ALPHA,
+        adjust_prior_weight=config.ADJUST_PRIOR,
+        efficiency_source=config.TEAM_AB_EFFICIENCY_SOURCE,
+        gold_table_name=(
+            config.TEAM_AB_GOLD_RATINGS_TABLE
+            if config.TEAM_AB_EFFICIENCY_SOURCE == "gold"
+            else None
+        ),
+    )
+    if team_ab_df.empty:
+        return None
+    return team_ab_df
+
+
 # ── 1. build-features ──────────────────────────────────────────────
 
 
@@ -619,7 +655,13 @@ def predict_today(season: int, game_date: str | None):
 
     click.echo(f"  Games: {len(df)}")
     secondary_df = _build_secondary_mu_features_if_needed(season, df, game_date=game_date)
-    preds = predict(df, lines_df=lines, secondary_mu_features_df=secondary_df)
+    team_ab_df = _build_team_ab_mu_features_if_needed(season, df, game_date=game_date)
+    preds = predict(
+        df,
+        lines_df=lines,
+        secondary_mu_features_df=secondary_df,
+        team_ab_features_df=team_ab_df,
+    )
 
     json_path, csv_path = save_predictions(preds, game_date=game_date)
     click.echo(f"  JSON: {json_path}")
@@ -681,7 +723,13 @@ def predict_season(season: int):
 
     lines = load_lines(season)
     secondary_df = _build_secondary_mu_features_if_needed(season, df)
-    preds = predict(df, lines_df=lines, secondary_mu_features_df=secondary_df)
+    team_ab_df = _build_team_ab_mu_features_if_needed(season, df)
+    preds = predict(
+        df,
+        lines_df=lines,
+        secondary_mu_features_df=secondary_df,
+        team_ab_features_df=team_ab_df,
+    )
 
     json_path, csv_path = save_predictions(preds, game_date=f"season_{season}")
     click.echo(f"  JSON: {json_path}")
@@ -828,7 +876,8 @@ def backfill_season(season: int, start_date: str, end_date: str | None,
             continue
 
         # Predict and save (includes site JSON)
-        preds = predict(df, lines_df=lines)
+        team_ab_df = _build_team_ab_mu_features_if_needed(season, df, game_date=game_date)
+        preds = predict(df, lines_df=lines, team_ab_features_df=team_ab_df)
         save_predictions(preds, game_date=game_date)
 
         processed += 1
@@ -1068,7 +1117,13 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
         else:
             click.echo(f"  Games: {len(df)}")
             secondary_df = _build_secondary_mu_features_if_needed(season, df, game_date=game_date)
-            preds = predict(df, lines_df=lines, secondary_mu_features_df=secondary_df)
+            team_ab_df = _build_team_ab_mu_features_if_needed(season, df, game_date=game_date)
+            preds = predict(
+                df,
+                lines_df=lines,
+                secondary_mu_features_df=secondary_df,
+                team_ab_features_df=team_ab_df,
+            )
             json_path, csv_path = save_predictions(preds, game_date=game_date)
             click.echo(f"  JSON: {json_path}")
             click.echo(f"  CSV:  {csv_path}")
@@ -1087,6 +1142,23 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
         if finals_script.exists():
             _run([sys.executable, str(finals_script), "--date", game_date],
                  cwd=config.PROJECT_ROOT, label="s3_finals_to_json")
+
+        bracket_builder_script = script_dir / "build_ncaa_bracket_builder_data.py"
+        ncaa_field_input = config.PROJECT_ROOT / "site" / "public" / "data" / f"ncaa_field_input_{season}.json"
+        if bracket_builder_script.exists() and ncaa_field_input.exists():
+            click.echo("  Refreshing NCAA bracket-builder artifacts...")
+            _run(
+                [
+                    sys.executable,
+                    str(bracket_builder_script),
+                    "--season",
+                    str(season),
+                ],
+                cwd=config.PROJECT_ROOT,
+                label="build_ncaa_bracket_builder_data",
+            )
+        elif bracket_builder_script.exists():
+            click.echo(f"  NCAA bracket-builder refresh skipped: missing {ncaa_field_input.name}")
 
         internal_bet_script = script_dir / "build_daily_internal_bet_filter_report.py"
         if internal_bet_script.exists():
