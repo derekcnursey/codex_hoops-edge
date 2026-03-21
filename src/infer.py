@@ -440,6 +440,7 @@ def predict(
     active_variant = active_mean_model_variant()
     variant_predictions: dict[str, np.ndarray] = {legacy_variant_field(): legacy_mu}
     team_ab_field = variant_prediction_field(TEAM_AB_ELITE_TAIL_ROUND64_V1)
+    team_ab_internal_field = "predicted_spread_team_ab_internal"
     try:
         team_ab_input_df = features_df
         if team_ab_features_df is not None:
@@ -459,6 +460,12 @@ def predict(
             team_ab_input_df = aligned
         variant_predictions[team_ab_field] = _predict_mu_branch(
             team_ab_input_df,
+            variant=TEAM_AB_ELITE_TAIL_ROUND64_V1,
+            scaler=scaler,
+            secondary_mu_features_df=secondary_mu_features_df,
+        )
+        variant_predictions[team_ab_internal_field] = _predict_mu_branch(
+            features_df,
             variant=TEAM_AB_ELITE_TAIL_ROUND64_V1,
             scaler=scaler,
             secondary_mu_features_df=secondary_mu_features_df,
@@ -542,6 +549,8 @@ def predict(
     out[legacy_variant_field()] = legacy_mu
     if team_ab_field in variant_predictions:
         out[team_ab_field] = variant_predictions[team_ab_field]
+    if team_ab_internal_field in variant_predictions:
+        out[team_ab_internal_field] = variant_predictions[team_ab_internal_field]
     out["mean_model_variant_active"] = active_variant
     out["predicted_spread"] = mu
     out["spread_sigma"] = sigma
@@ -613,6 +622,7 @@ _SITE_FIELD_MAP = {
     "neutral_site": "neutral_site",
     "book_spread": "market_spread_home",
     "predicted_spread": "model_mu_home",
+    "predicted_spread_team_ab_internal": "model_mu_home_team_ab_internal",
     "predicted_spread_legacy": "model_mu_home_legacy",
     "spread_sigma": "pred_sigma",
     "edge_home_points": "edge_home_points",

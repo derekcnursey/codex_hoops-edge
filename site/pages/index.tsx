@@ -166,13 +166,22 @@ function bookSpread(row: PredictionRow): number | null {
 }
 
 function modelSpread(row: PredictionRow): number | null {
+  const internal = num(row.model_mu_home_team_ab_internal);
+  if (internal !== null) return -internal;
   const v = num(row.model_mu_home);
   return v !== null ? -v : null; // Negate: model_mu_home is home-away, display as book convention
 }
 
-function otherModelSpread(row: PredictionRow): number | null {
-  const v = num(row.model_mu_home_legacy);
+function torvikModelSpread(row: PredictionRow): number | null {
+  const v = num(row.model_mu_home);
   return v !== null ? -v : null;
+}
+
+function averageModelSpread(row: PredictionRow): number | null {
+  const he = modelSpread(row);
+  const torvik = torvikModelSpread(row);
+  if (he !== null && torvik !== null) return (he + torvik) / 2;
+  return he ?? torvik;
 }
 
 function sigma(row: PredictionRow): number | null {
@@ -190,7 +199,7 @@ function homeMlFair(row: PredictionRow): string | null {
 }
 
 function diff(row: PredictionRow): number | null {
-  const m = modelSpread(row);
+  const m = averageModelSpread(row);
   const b = bookSpread(row);
   if (m === null || b === null) return null;
   return Math.abs(m - b);
@@ -204,7 +213,7 @@ function pickSpread(row: PredictionRow): number | null {
 
 /* -- sort -- */
 
-type SortKey = "matchup" | "time" | "book" | "he" | "other" | "sigma" | "diff" | "edge";
+type SortKey = "matchup" | "time" | "book" | "he" | "torvik" | "avg" | "sigma" | "diff" | "edge";
 
 type SortState = { key: SortKey; dir: "asc" | "desc" };
 
@@ -222,8 +231,10 @@ function sortVal(row: PredictionRow, key: SortKey): string | number {
       return bookSpread(row) ?? -Infinity;
     case "he":
       return modelSpread(row) ?? -Infinity;
-    case "other":
-      return otherModelSpread(row) ?? -Infinity;
+    case "torvik":
+      return torvikModelSpread(row) ?? -Infinity;
+    case "avg":
+      return averageModelSpread(row) ?? -Infinity;
     case "sigma":
       return sigma(row) ?? -Infinity;
     case "diff":
@@ -240,7 +251,8 @@ const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
   { key: "time", label: "TIME", align: "center" },
   { key: "book", label: "MARKET", align: "center" },
   { key: "he", label: "HE", align: "center" },
-  { key: "other", label: "TORVIK", align: "center" },
+  { key: "torvik", label: "TORVIK", align: "center" },
+  { key: "avg", label: "AVG", align: "center" },
   { key: "sigma", label: "SIGMA", align: "center" },
   { key: "diff", label: "DIFF", align: "center" },
   { key: "edge", label: "EDGE", align: "center" }
@@ -530,7 +542,8 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                     tableRows.map((row, i) => {
                       const bk = bookSpread(row);
                       const he = modelSpread(row);
-                      const other = otherModelSpread(row);
+                      const torvik = torvikModelSpread(row);
+                      const avg = averageModelSpread(row);
                       const sg = sigma(row);
                       const df = diff(row);
                       const eg = edge(row);
@@ -621,7 +634,7 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                             {he !== null ? formatSpread(he) : "\u2014"}
                           </td>
 
-                          {/* OTHER */}
+                          {/* TORVIK */}
                           <td
                             style={{
                               ...mono,
@@ -632,7 +645,21 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                               borderBottom: "1px solid #f1f5f9"
                             }}
                           >
-                            {other !== null ? formatSpread(other) : "\u2014"}
+                            {torvik !== null ? formatSpread(torvik) : "\u2014"}
+                          </td>
+
+                          {/* AVG */}
+                          <td
+                            style={{
+                              ...mono,
+                              padding: "10px 14px",
+                              textAlign: "center",
+                              fontSize: 13,
+                              color: "#334155",
+                              borderBottom: "1px solid #f1f5f9"
+                            }}
+                          >
+                            {avg !== null ? formatSpread(avg) : "\u2014"}
                           </td>
 
                           {/* SIGMA */}
