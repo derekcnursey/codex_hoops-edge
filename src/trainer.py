@@ -91,6 +91,8 @@ def save_tree_regressor(
     feature_order: list[str] | None = None,
     hparams: dict | None = None,
     model_type: str | None = None,
+    impute_means: np.ndarray | None = None,
+    metadata: dict | None = None,
 ) -> Path:
     """Persist the production tree mu regressor with feature metadata."""
     out_path = path or config.TREE_REGRESSOR_PATH
@@ -105,6 +107,10 @@ def save_tree_regressor(
         "model_type": inferred_model_type,
         "hparams": hparams or default_hparams,
     }
+    if impute_means is not None:
+        payload["impute_means"] = np.asarray(impute_means, dtype=np.float32)
+    if metadata:
+        payload["metadata"] = dict(metadata)
     with open(out_path, "wb") as f:
         pickle.dump(payload, f)
     return out_path
@@ -118,6 +124,8 @@ def load_tree_regressor(path: Path | None = None) -> tuple[object, list[str], di
     return payload["model"], payload["feature_order"], {
         **payload.get("hparams", {}),
         "model_type": payload.get("model_type", "hist_gradient_boosting"),
+        "impute_means": payload.get("impute_means"),
+        **(payload.get("metadata", {}) or {}),
     }
 
 

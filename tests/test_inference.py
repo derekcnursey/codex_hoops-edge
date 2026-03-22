@@ -13,10 +13,26 @@ import torch
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.preprocessing import StandardScaler
 
+import src.infer as infer_module
 from src import config
 from src.architecture import MLPClassifier, MLPRegressor
 from src.efficiency_blend import gold_weight_for_start_dates
 from src.infer import _swap_feature_frame
+from src.mean_model_variants import ensure_team_ab_metadata
+
+
+def _legacy_only_mu_branch(real_impl):
+    def _patched(features_df, *, variant, scaler, secondary_mu_features_df=None):
+        if variant == "legacy_home_slot":
+            return real_impl(
+                features_df,
+                variant=variant,
+                scaler=scaler,
+                secondary_mu_features_df=secondary_mu_features_df,
+            )
+        raise FileNotFoundError("team_ab branch disabled for legacy unit test")
+
+    return _patched
 
 
 class TestModelArchitecture:
@@ -53,6 +69,18 @@ class TestModelArchitecture:
         probs = torch.sigmoid(logits)
         assert probs.min() >= 0.0
         assert probs.max() <= 1.0
+
+    def test_ensure_team_ab_metadata_derives_nullable_season_series(self):
+        frame = pd.DataFrame(
+            {
+                "gameId": [1],
+                "startDate": ["2026-03-21T18:00:00.000Z"],
+                "neutralSite": [0],
+            }
+        )
+        out = ensure_team_ab_metadata(frame)
+        assert str(out["season"].dtype) == "Int64"
+        assert out.loc[0, "season"] == 2026
 
 
 class TestGaussianNLL:
@@ -202,8 +230,11 @@ class TestPredictPipeline:
 
         expected_mu = tree.predict(features[feature_order].values.astype(np.float32))
 
-        with patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+        with patch.object(config, "MEAN_MODEL_VARIANT", "legacy_home_slot"), \
+             patch.object(config, "FEATURE_ORDER", feature_order), \
+             patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
              patch.object(config, "ARTIFACTS_DIR", tmp_path), \
+             patch("src.infer._predict_mu_branch", side_effect=_legacy_only_mu_branch(infer_module._predict_mu_branch)), \
              patch.object(config, "TREE_REGRESSOR_PATH", tmp_path / "regressor_hgbr.pkl"):
             out = predict(features)
 
@@ -233,10 +264,13 @@ class TestPredictPipeline:
         expected_w = gold_weight_for_start_dates(features_df["startDate"])
         expected_mu = expected_w * 10.0 + (1.0 - expected_w) * 2.0
 
-        with patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+        with patch.object(config, "MEAN_MODEL_VARIANT", "legacy_home_slot"), \
+             patch.object(config, "FEATURE_ORDER", feature_order), \
+             patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
              patch.object(config, "ARTIFACTS_DIR", tmp_path), \
-             patch("src.infer.load_mu_regressor", return_value=(ConstantTree(10.0), feature_order, "hist_gradient_boosting")), \
-             patch("src.infer.load_torvik_mu_regressor", return_value=(ConstantTree(2.0), feature_order, "hist_gradient_boosting")):
+             patch("src.infer._predict_mu_branch", side_effect=_legacy_only_mu_branch(infer_module._predict_mu_branch)), \
+             patch("src.infer.load_mu_regressor", return_value=(ConstantTree(10.0), feature_order, "hist_gradient_boosting", {})), \
+             patch("src.infer.load_torvik_mu_regressor", return_value=(ConstantTree(2.0), feature_order, "hist_gradient_boosting", {})):
             out = predict(features_df, secondary_mu_features_df=secondary_df)
 
         np.testing.assert_allclose(out["predicted_spread"].values, expected_mu, rtol=1e-6, atol=1e-6)
@@ -287,8 +321,11 @@ class TestPredictPipeline:
             }
         )
 
-        with patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+        with patch.object(config, "MEAN_MODEL_VARIANT", "legacy_home_slot"), \
+             patch.object(config, "FEATURE_ORDER", feature_order), \
+             patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
              patch.object(config, "ARTIFACTS_DIR", tmp_path), \
+             patch("src.infer._predict_mu_branch", side_effect=_legacy_only_mu_branch(infer_module._predict_mu_branch)), \
              patch.object(config, "TREE_REGRESSOR_PATH", tmp_path / "regressor_hgbr.pkl"):
             out = predict(features, lines)
 
@@ -309,8 +346,11 @@ class TestPredictPipeline:
         features_df["awayTeamId"] = [200, 201, 202, 203]
         features_df["startDate"] = "2025-01-15"
 
-        with patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+        with patch.object(config, "MEAN_MODEL_VARIANT", "legacy_home_slot"), \
+             patch.object(config, "FEATURE_ORDER", feature_order), \
+             patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
              patch.object(config, "ARTIFACTS_DIR", tmp_path), \
+             patch("src.infer._predict_mu_branch", side_effect=_legacy_only_mu_branch(infer_module._predict_mu_branch)), \
              patch.object(config, "TREE_REGRESSOR_PATH", tmp_path / "missing_hgbr.pkl"):
             out = predict(features_df)
 
@@ -334,8 +374,11 @@ class TestPredictPipeline:
         features_df["awayTeamId"] = list(range(200, 210))
         features_df["startDate"] = "2025-01-15"
 
-        with patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+        with patch.object(config, "MEAN_MODEL_VARIANT", "legacy_home_slot"), \
+             patch.object(config, "FEATURE_ORDER", feature_order), \
+             patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
              patch.object(config, "ARTIFACTS_DIR", tmp_path), \
+             patch("src.infer._predict_mu_branch", side_effect=_legacy_only_mu_branch(infer_module._predict_mu_branch)), \
              patch.object(config, "TREE_REGRESSOR_PATH", tmp_path / "missing_hgbr.pkl"):
             out = predict(features_df)
 
@@ -449,7 +492,10 @@ class TestPredictPipeline:
         swapped["awayTeamId"] = 10
         swapped[feature_order] = _swap_feature_frame(original[feature_order], feature_order)
 
-        with patch("src.infer.load_mu_regressor", return_value=(DummyTree(), feature_order, "hist_gradient_boosting")), \
+        with patch.object(config, "MEAN_MODEL_VARIANT", "legacy_home_slot"), \
+             patch.object(config, "FEATURE_ORDER", feature_order), \
+             patch("src.infer._predict_mu_branch", side_effect=_legacy_only_mu_branch(infer_module._predict_mu_branch)), \
+             patch("src.infer.load_mu_regressor", return_value=(DummyTree(), feature_order, "hist_gradient_boosting", {})), \
              patch("src.infer.load_regressor", return_value=(DummyReg(), {}, feature_order, "exp")), \
              patch("src.infer.load_classifier", return_value=(DummyCls(), {}, feature_order)), \
              patch("src.infer.load_scaler", return_value=scaler):
@@ -480,14 +526,20 @@ class TestPredictPipeline:
         features_df["awayTeamId"] = list(range(200, 206))
         features_df["startDate"] = "2025-01-15"
 
-        with patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+        with patch.object(config, "MEAN_MODEL_VARIANT", "legacy_home_slot"), \
+             patch.object(config, "FEATURE_ORDER", feature_order), \
+             patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
              patch.object(config, "ARTIFACTS_DIR", tmp_path), \
+             patch("src.infer._predict_mu_branch", side_effect=_legacy_only_mu_branch(infer_module._predict_mu_branch)), \
              patch.object(config, "TREE_REGRESSOR_PATH", tmp_path / "missing_hgbr.pkl"), \
              patch.object(config, "SIGMA_CAP_MAX", None):
             uncapped = predict(features_df)
 
-        with patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+        with patch.object(config, "MEAN_MODEL_VARIANT", "legacy_home_slot"), \
+             patch.object(config, "FEATURE_ORDER", feature_order), \
+             patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
              patch.object(config, "ARTIFACTS_DIR", tmp_path), \
+             patch("src.infer._predict_mu_branch", side_effect=_legacy_only_mu_branch(infer_module._predict_mu_branch)), \
              patch.object(config, "TREE_REGRESSOR_PATH", tmp_path / "missing_hgbr.pkl"), \
              patch.object(config, "SIGMA_CAP_MAX", 5.0):
             capped = predict(features_df)
@@ -517,8 +569,11 @@ class TestPredictPipeline:
         features_df["awayTeamId"] = [200, 201, 202]
         features_df["startDate"] = "2025-01-15"
 
-        with patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+        with patch.object(config, "MEAN_MODEL_VARIANT", "legacy_home_slot"), \
+             patch.object(config, "FEATURE_ORDER", feature_order), \
+             patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
              patch.object(config, "ARTIFACTS_DIR", tmp_path), \
+             patch("src.infer._predict_mu_branch", side_effect=_legacy_only_mu_branch(infer_module._predict_mu_branch)), \
              patch.object(config, "TREE_REGRESSOR_PATH", tmp_path / "missing_hgbr.pkl"):
             out = predict(features_df)
 
@@ -549,7 +604,9 @@ class TestPredictPipeline:
         features_df["awayTeamId"] = [200, 201]
         features_df["startDate"] = "2025-01-15"
 
-        with patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+        with patch.object(config, "MEAN_MODEL_VARIANT", "legacy_home_slot"), \
+             patch.object(config, "FEATURE_ORDER", feature_order), \
+             patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
              patch.object(config, "ARTIFACTS_DIR", tmp_path), \
              patch.object(config, "TREE_REGRESSOR_PATH", tmp_path / "missing_hgbr.pkl"):
             with pytest.raises(AssertionError, match="Feature order mismatch"):
@@ -638,6 +695,146 @@ class TestSavePredictions:
         # Dated CSV
         dated_csv = tmp_path / "predictions" / "csv" / "preds_2025_1_15_edge.csv"
         assert dated_csv.exists()
+
+    def test_predict_with_source_specific_family_frames(self, tmp_path):
+        from src.infer import predict
+        features = pd.DataFrame(
+            {
+                "gameId": [1, 2, 3],
+                "homeTeamId": [100, 101, 102],
+                "awayTeamId": [200, 201, 202],
+                "homeTeam": ["Duke", "Houston", "Florida"],
+                "awayTeam": ["UNC", "Arizona", "Auburn"],
+                "startDate": ["2025-01-15T18:00:00.000Z"] * 3,
+                "base_feature": [0.0, 1.0, 2.0],
+                "predicted_spread": [0.0, 0.0, 0.0],
+                "spread_sigma": [8.0, 8.0, 8.0],
+                "home_win_prob": [0.55, 0.55, 0.55],
+                "away_win_prob": [0.45, 0.45, 0.45],
+            }
+        )
+
+        class IdentityScaler:
+            mean_ = np.array([0.0], dtype=np.float32)
+
+            def transform(self, X):
+                return np.asarray(X, dtype=np.float32)
+
+        class DummyReg(torch.nn.Module):
+            def forward(self, x):
+                mu = torch.zeros(x.shape[0], dtype=torch.float32)
+                log_sigma = torch.log(torch.full((x.shape[0],), 8.0, dtype=torch.float32))
+                return mu, log_sigma
+
+        class DummyCls(torch.nn.Module):
+            def forward(self, x):
+                return torch.zeros(x.shape[0], dtype=torch.float32)
+
+        with patch.object(config, "FEATURE_ORDER", ["base_feature"]), \
+             patch.object(config, "CHECKPOINTS_DIR", tmp_path), \
+             patch.object(config, "ARTIFACTS_DIR", tmp_path), \
+             patch("src.infer.load_scaler", return_value=IdentityScaler()), \
+             patch("src.infer.load_regressor", return_value=(DummyReg(), {}, ["base_feature"], "exp")), \
+             patch("src.infer.load_classifier", return_value=(DummyCls(), {}, ["base_feature"])), \
+             patch("src.infer._predict_mu_branch", return_value=np.zeros(len(features), dtype=np.float32)), \
+             patch("src.infer._predict_source_surface", side_effect=[
+                 (np.array([6.0, 6.0, 6.0], dtype=np.float32), {"prediction_source": "he", "checkpoint_stem": "he_ckpt", "efficiency_source": "gold"}),
+                 (np.array([4.0, 4.0, 4.0], dtype=np.float32), {"prediction_source": "torvik", "checkpoint_stem": "torvik_ckpt", "efficiency_source": "torvik"}),
+                 (np.array([2.0, 2.0, 2.0], dtype=np.float32), {"prediction_source": "kenpom", "checkpoint_stem": "kenpom_ckpt", "efficiency_source": "kenpom"}),
+             ]):
+            out = predict(
+                features,
+                family_feature_frames={
+                    "he": features,
+                    "torvik": features,
+                    "kenpom": features,
+                },
+            )
+
+        assert "predicted_spread_he" in out.columns
+        assert "predicted_spread_torvik" in out.columns
+        assert "predicted_spread_kenpom" in out.columns
+        assert "model_mu_home_he" in out.columns
+        np.testing.assert_allclose(out["predicted_spread_he"].values[:2], [6.0, 6.0], rtol=1e-6)
+        np.testing.assert_allclose(out["predicted_spread_torvik"].values[:2], [4.0, 4.0], rtol=1e-6)
+        np.testing.assert_allclose(out["predicted_spread_kenpom"].values[:2], [2.0, 2.0], rtol=1e-6)
+        np.testing.assert_allclose(out["predicted_spread"].values[:2], [6.0, 6.0], rtol=1e-6)
+        assert out.attrs["prediction_source_default"] == "he"
+
+    def test_save_predictions_includes_prediction_family_metadata(self, tmp_path):
+        from src.infer import save_predictions
+
+        preds = pd.DataFrame([{
+            "gameId": 1,
+            "homeTeamId": 100,
+            "awayTeamId": 200,
+            "homeTeam": "Duke",
+            "awayTeam": "UNC",
+            "startDate": "2025-01-15T18:00:00.000Z",
+            "neutral_site": False,
+            "predicted_spread": 5.3,
+            "predicted_spread_he": 5.3,
+            "predicted_spread_torvik": 4.8,
+            "predicted_spread_kenpom": 4.5,
+            "model_mu_home_he": 5.3,
+            "model_mu_home_torvik": 4.8,
+            "model_mu_home_kenpom": 4.5,
+            "spread_sigma": 8.2,
+            "home_win_prob": 0.7,
+            "away_win_prob": 0.3,
+            "book_spread": -3.5,
+            "edge_home_points": 1.8,
+            "edge_home_points_he": 1.8,
+            "edge_home_points_torvik": 1.3,
+            "edge_home_points_kenpom": 1.0,
+            "pick_side": "HOME",
+            "pick_side_he": "HOME",
+            "pick_side_torvik": "HOME",
+            "pick_side_kenpom": "HOME",
+            "pick_cover_prob": 0.58,
+            "pick_cover_prob_he": 0.58,
+            "pick_cover_prob_torvik": 0.56,
+            "pick_cover_prob_kenpom": 0.55,
+            "pick_prob_edge": 0.056,
+            "pick_prob_edge_he": 0.056,
+            "pick_prob_edge_torvik": 0.036,
+            "pick_prob_edge_kenpom": 0.026,
+            "pick_ev_per_1": 0.04,
+            "pick_ev_per_1_he": 0.04,
+            "pick_ev_per_1_torvik": 0.03,
+            "pick_ev_per_1_kenpom": 0.02,
+            "pick_fair_odds": -140.0,
+            "pick_fair_odds_he": -140.0,
+            "pick_fair_odds_torvik": -132.0,
+            "pick_fair_odds_kenpom": -126.0,
+            "pred_home_win_prob_he": 0.71,
+            "pred_home_win_prob_torvik": 0.68,
+            "pred_home_win_prob_kenpom": 0.66,
+            "spread_diff_he": -1.8,
+            "spread_diff_torvik": -1.3,
+            "spread_diff_kenpom": -1.0,
+            "mean_model_variant_active": "team_ab_elite_tail_round64_v1",
+            "prediction_source_active": "he",
+        }])
+        preds.attrs["prediction_family_metadata"] = {
+            "he": {"prediction_source": "he", "checkpoint_stem": "he_ckpt"},
+            "torvik": {"prediction_source": "torvik", "checkpoint_stem": "torvik_ckpt"},
+            "kenpom": {"prediction_source": "kenpom", "checkpoint_stem": "kenpom_ckpt"},
+        }
+        preds.attrs["prediction_source_default"] = "he"
+
+        with patch.object(config, "PREDICTIONS_DIR", tmp_path / "predictions"), \
+             patch.object(config, "SITE_DATA_DIR", tmp_path / "site_data"):
+            save_predictions(preds, game_date="2025-01-15")
+
+        payload = json.loads((tmp_path / "site_data" / "predictions_2025-01-15.json").read_text())
+        assert payload["provenance"]["prediction_source_default"] == "he"
+        assert payload["prediction_family_metadata"]["kenpom"]["prediction_source"] == "kenpom"
+        game = payload["games"][0]
+        assert game["model_mu_home"] == 5.3
+        assert game["model_mu_home_he"] == 5.3
+        assert game["model_mu_home_torvik"] == 4.8
+        assert game["model_mu_home_kenpom"] == 4.5
 
 
 class TestBettingMathHelpers:

@@ -23,6 +23,7 @@ from src import config
 from src.efficiency_blend import blend_enabled
 from src.features import build_features, load_research_lines
 from src.infer import predict, save_predictions
+from src.prediction_sources import prediction_source_spec, public_prediction_sources
 from src.tournament_adjustments import needs_secondary_mu_features
 
 
@@ -121,6 +122,35 @@ def _build_secondary_season_features_if_needed(
     return secondary, _feature_dates(secondary)
 
 
+def _build_public_surface_feature_frames(
+    season: int,
+    primary_df: pd.DataFrame,
+    feature_dates: pd.Series,
+    dates: list[str],
+) -> dict[str, pd.DataFrame]:
+    frames: dict[str, pd.DataFrame] = {"he": primary_df.reset_index(drop=True)}
+    for source in public_prediction_sources():
+        if source == "he":
+            continue
+        spec = prediction_source_spec(source)
+        frame = build_features(
+            season,
+            no_garbage=True,
+            extra_features=config.EXTRA_FEATURES,
+            adjust_ff=config.ADJUST_FF,
+            adjust_alpha=config.ADJUST_ALPHA,
+            adjust_prior_weight=config.ADJUST_PRIOR,
+            efficiency_source=spec.efficiency_source,
+            gold_table_name=spec.gold_table_name if spec.efficiency_source == "gold" else None,
+        )
+        if frame.empty:
+            raise RuntimeError(f"No feature rows returned for prediction source {source}.")
+        source_dates = _feature_dates(frame)
+        mask = source_dates.isin(dates)
+        frames[source] = frame[mask].reset_index(drop=True)
+    return frames
+
+
 def main() -> int:
     args = _parse_args()
 
@@ -163,14 +193,19 @@ def main() -> int:
             secondary_features_df = secondary_features_df[secondary_mask].reset_index(drop=True)
             secondary_feature_dates = secondary_feature_dates[secondary_mask].reset_index(drop=True)
 
-        season_secondary_df = None
-        if secondary_features_df is not None:
-            season_secondary_df = secondary_features_df
+        season_secondary_df = secondary_features_df if secondary_features_df is not None else None
+        family_feature_frames = _build_public_surface_feature_frames(
+            season,
+            features_df,
+            feature_dates,
+            dates,
+        )
 
         preds_df = predict(
             features_df,
             lines_df=lines_df,
             secondary_mu_features_df=season_secondary_df,
+            family_feature_frames=family_feature_frames,
         )
 
         for game_date in dates:

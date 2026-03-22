@@ -29,6 +29,7 @@ from .mean_model_variants import (
     variant_prediction_field,
     variant_spec,
 )
+from .prediction_sources import prediction_source_spec, public_prediction_sources
 from .sigma_calibration import apply_sigma_transform
 from .tournament_adjustments import (
     add_tournament_market_display_columns,
@@ -173,6 +174,44 @@ def load_torvik_mu_regressor(
     if tree_path is None or not tree_path.exists():
         return None
     model, feature_order, meta = load_tree_regressor(tree_path)
+    return model, feature_order, meta.get("model_type", "hist_gradient_boosting"), meta
+
+
+def prediction_source_field(source: str) -> str:
+    return f"predicted_spread_{source}"
+
+
+def prediction_source_site_field(source: str) -> str:
+    return f"model_mu_home_{source}"
+
+
+def _validate_prediction_source_checkpoint(meta: dict, *, source: str, variant: str, path: Path) -> None:
+    trained_source = meta.get("prediction_source")
+    trained_variant = meta.get("mean_model_variant")
+    trained_efficiency_source = meta.get("training_efficiency_source")
+    expected_efficiency_source = prediction_source_spec(source).efficiency_source
+    if trained_source != source or trained_variant != variant or trained_efficiency_source != expected_efficiency_source:
+        raise ValueError(
+            "Prediction source checkpoint mismatch: "
+            f"path={path}, expected source={source}, expected efficiency_source={expected_efficiency_source}, "
+            f"expected variant={variant}, got source={trained_source}, "
+            f"got efficiency_source={trained_efficiency_source}, got variant={trained_variant}."
+        )
+
+
+def load_prediction_source_mu_regressor(
+    source: str,
+    *,
+    variant: str = TEAM_AB_ELITE_TAIL_ROUND64_V1,
+) -> tuple[object, list[str], str, dict]:
+    spec = prediction_source_spec(source)
+    path = spec.checkpoint_path
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Missing source-specific checkpoint for prediction source {source}: {path}"
+        )
+    model, feature_order, meta = load_tree_regressor(path)
+    _validate_prediction_source_checkpoint(meta, source=spec.name, variant=variant, path=path)
     return model, feature_order, meta.get("model_type", "hist_gradient_boosting"), meta
 
 
@@ -328,6 +367,56 @@ def _predict_mu_branch(
     return np.asarray(mu, dtype=np.float32)
 
 
+def _align_feature_frame(primary_df: pd.DataFrame, candidate_df: pd.DataFrame | None) -> pd.DataFrame:
+    if candidate_df is None:
+        raise ValueError("Missing feature frame for source-specific prediction surface.")
+    aligned = candidate_df.set_index("gameId").reindex(primary_df["gameId"]).reset_index()
+    payload_cols = [col for col in aligned.columns if col != "gameId"]
+    if payload_cols:
+        missing_mask = aligned[payload_cols].isna().all(axis=1)
+        if bool(missing_mask.any()):
+            missing = aligned.loc[missing_mask, "gameId"].tolist()
+            raise ValueError(
+                "Source-specific feature frame is missing one or more gameIds "
+                f"from the primary slate: {missing}"
+            )
+    return aligned
+
+
+def _predict_source_surface(
+    source: str,
+    features_df: pd.DataFrame,
+) -> tuple[np.ndarray, dict]:
+    mu_regressor, feature_order, model_type, meta = load_prediction_source_mu_regressor(source)
+    contract_source = build_team_ab_source(features_df)
+    contract_frame = build_team_ab_elite_tail_round64_contract(contract_source)
+    X_df = contract_frame[feature_order].copy()
+    X_raw = _fill_nan_with_impute_means(X_df, meta.get("impute_means"))
+    mu = _predict_mu_values(mu_regressor, model_type, X_raw, X_raw)
+    neutral_mask = (
+        pd.to_numeric(contract_source["neutral_site"], errors="coerce").fillna(0.0).to_numpy()
+        == 1.0
+    )
+    if neutral_mask.any():
+        neutral_idx = np.flatnonzero(neutral_mask)
+        swap_source = swap_team_ab_source(contract_source.iloc[neutral_idx].reset_index(drop=True))
+        swap_frame = build_team_ab_elite_tail_round64_contract(swap_source)
+        swap_X_df = swap_frame[feature_order].copy()
+        swap_X_raw = _fill_nan_with_impute_means(swap_X_df, meta.get("impute_means"))
+        mu_swap = _predict_mu_values(mu_regressor, model_type, swap_X_raw, swap_X_raw)
+        mu = np.asarray(mu, dtype=np.float32)
+        mu[neutral_idx] = (mu[neutral_idx] - mu_swap) / 2.0
+    runtime_meta = {
+        "prediction_source": source,
+        "efficiency_source": prediction_source_spec(source).efficiency_source,
+        "mean_model_variant": TEAM_AB_ELITE_TAIL_ROUND64_V1,
+        "checkpoint_path": str(prediction_source_spec(source).checkpoint_path),
+        "checkpoint_stem": prediction_source_spec(source).checkpoint_path.stem,
+        "training_efficiency_source": meta.get("training_efficiency_source"),
+    }
+    return np.asarray(mu, dtype=np.float32), runtime_meta
+
+
 def _symmetrize_neutral_mu(
     mu: np.ndarray,
     features_df: pd.DataFrame,
@@ -397,6 +486,7 @@ def predict(
     lines_df: pd.DataFrame | None = None,
     secondary_mu_features_df: pd.DataFrame | None = None,
     team_ab_features_df: pd.DataFrame | None = None,
+    family_feature_frames: dict[str, pd.DataFrame] | None = None,
 ) -> pd.DataFrame:
     """Generate predictions for a feature DataFrame.
 
@@ -441,41 +531,44 @@ def predict(
     variant_predictions: dict[str, np.ndarray] = {legacy_variant_field(): legacy_mu}
     team_ab_field = variant_prediction_field(TEAM_AB_ELITE_TAIL_ROUND64_V1)
     team_ab_internal_field = "predicted_spread_team_ab_internal"
+    family_predictions: dict[str, np.ndarray] = {}
+    family_metadata: dict[str, dict] = {}
+    if family_feature_frames is not None:
+        for source in public_prediction_sources():
+            aligned_frame = _align_feature_frame(features_df, family_feature_frames.get(source))
+            family_mu, runtime_meta = _predict_source_surface(source, aligned_frame)
+            family_predictions[source] = family_mu
+            family_metadata[source] = runtime_meta
+        variant_predictions[team_ab_field] = family_predictions["torvik"]
+        variant_predictions[team_ab_internal_field] = family_predictions["he"]
+        active_field = prediction_source_field(config.PUBLIC_DEFAULT_PREDICTION_SOURCE)
+        mu = family_predictions[config.PUBLIC_DEFAULT_PREDICTION_SOURCE]
+    else:
+        active_field = variant_prediction_field(active_variant)
+        mu = None
     try:
-        team_ab_input_df = features_df
-        if team_ab_features_df is not None:
-            aligned = (
-                team_ab_features_df.set_index("gameId")
-                .reindex(features_df["gameId"])
-                .reset_index()
+        if family_feature_frames is None:
+            team_ab_input_df = features_df
+            if team_ab_features_df is not None:
+                team_ab_input_df = _align_feature_frame(features_df, team_ab_features_df)
+            variant_predictions[team_ab_field] = _predict_mu_branch(
+                team_ab_input_df,
+                variant=TEAM_AB_ELITE_TAIL_ROUND64_V1,
+                scaler=scaler,
+                secondary_mu_features_df=secondary_mu_features_df,
             )
-            payload_cols = [col for col in aligned.columns if col != "gameId"]
-            missing_mask = aligned[payload_cols].isna().all(axis=1) if payload_cols else pd.Series(False, index=aligned.index)
-            if bool(missing_mask.any()):
-                missing = aligned.loc[missing_mask, "gameId"].tolist()
-                raise ValueError(
-                    "team_ab_features_df is missing rows for one or more gameIds "
-                    f"from the primary feature frame: {missing}"
-                )
-            team_ab_input_df = aligned
-        variant_predictions[team_ab_field] = _predict_mu_branch(
-            team_ab_input_df,
-            variant=TEAM_AB_ELITE_TAIL_ROUND64_V1,
-            scaler=scaler,
-            secondary_mu_features_df=secondary_mu_features_df,
-        )
-        variant_predictions[team_ab_internal_field] = _predict_mu_branch(
-            features_df,
-            variant=TEAM_AB_ELITE_TAIL_ROUND64_V1,
-            scaler=scaler,
-            secondary_mu_features_df=secondary_mu_features_df,
-        )
+            variant_predictions[team_ab_internal_field] = _predict_mu_branch(
+                features_df,
+                variant=TEAM_AB_ELITE_TAIL_ROUND64_V1,
+                scaler=scaler,
+                secondary_mu_features_df=secondary_mu_features_df,
+            )
+            mu = variant_predictions.get(active_field, legacy_mu)
     except FileNotFoundError:
         if active_variant == TEAM_AB_ELITE_TAIL_ROUND64_V1:
             raise
-
-    active_field = variant_prediction_field(active_variant)
-    mu = variant_predictions.get(active_field, legacy_mu)
+    if mu is None:
+        mu = variant_predictions.get(active_field, legacy_mu)
 
     # MLP regressor remains the uncertainty model for sigma.
     _, log_sigma_raw = regressor(X_tensor)
@@ -552,10 +645,15 @@ def predict(
     if team_ab_internal_field in variant_predictions:
         out[team_ab_internal_field] = variant_predictions[team_ab_internal_field]
     out["mean_model_variant_active"] = active_variant
+    out["prediction_source_active"] = config.PUBLIC_DEFAULT_PREDICTION_SOURCE
     out["predicted_spread"] = mu
     out["spread_sigma"] = sigma
     out["home_win_prob"] = home_win_prob
     out["away_win_prob"] = 1.0 - home_win_prob
+    if family_predictions:
+        for source, source_mu in family_predictions.items():
+            out[prediction_source_field(source)] = source_mu
+            out[prediction_source_site_field(source)] = source_mu
 
     # Attach lines if available
     if lines_df is not None and not lines_df.empty:
@@ -595,7 +693,39 @@ def predict(
             out["pick_ev_per_1"] = out["pick_cover_prob"] * pick_profit - (1.0 - out["pick_cover_prob"])
             out["pick_fair_odds"] = prob_to_american(out["pick_cover_prob"].values)
 
-    return add_tournament_market_display_columns(out)
+            if family_predictions:
+                for source in family_predictions:
+                    pred_col = prediction_source_field(source)
+                    edge_col = f"edge_home_points_{source}"
+                    pick_side_col = f"pick_side_{source}"
+                    pick_cover_col = f"pick_cover_prob_{source}"
+                    pick_prob_edge_col = f"pick_prob_edge_{source}"
+                    pick_ev_col = f"pick_ev_per_1_{source}"
+                    pick_fair_odds_col = f"pick_fair_odds_{source}"
+                    prob_col = f"pred_home_win_prob_{source}"
+                    model_spread_col = f"model_spread_{source}"
+                    spread_diff_col = f"spread_diff_{source}"
+
+                    out[model_spread_col] = -out[pred_col]
+                    out[spread_diff_col] = out[model_spread_col] - out["book_spread"]
+                    out[edge_col] = out[pred_col] + out["book_spread"]
+                    source_prob = normal_cdf(out[pred_col] / sigma_safe)
+                    out[prob_col] = source_prob
+                    source_edge_z = out[edge_col] / sigma_safe
+                    source_home_cover = normal_cdf(source_edge_z)
+                    source_away_cover = 1.0 - source_home_cover
+                    out[pick_side_col] = np.where(out[edge_col] >= 0, "HOME", "AWAY")
+                    out[pick_cover_col] = np.where(
+                        out[edge_col] >= 0, source_home_cover, source_away_cover
+                    )
+                    out[pick_prob_edge_col] = out[pick_cover_col] - pick_breakeven
+                    out[pick_ev_col] = out[pick_cover_col] * pick_profit - (1.0 - out[pick_cover_col])
+                    out[pick_fair_odds_col] = prob_to_american(out[pick_cover_col].values)
+
+    result = add_tournament_market_display_columns(out)
+    result.attrs["prediction_family_metadata"] = family_metadata
+    result.attrs["prediction_source_default"] = config.PUBLIC_DEFAULT_PREDICTION_SOURCE
+    return result
 
 
 def _slugify(text: str) -> str:
@@ -622,6 +752,7 @@ _SITE_FIELD_MAP = {
     "neutral_site": "neutral_site",
     "book_spread": "market_spread_home",
     "predicted_spread": "model_mu_home",
+    "prediction_source_active": "prediction_source",
     "predicted_spread_team_ab_internal": "model_mu_home_team_ab_internal",
     "predicted_spread_legacy": "model_mu_home_legacy",
     "spread_sigma": "pred_sigma",
@@ -700,12 +831,36 @@ def save_predictions(preds: pd.DataFrame, game_date: str | None = None) -> tuple
 
     # Site-compatible JSON (replaces csv_to_json.py pipeline)
     config.SITE_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    generated_at = datetime.now(ZoneInfo("UTC")).isoformat().replace("+00:00", "Z")
+    family_metadata = {
+        source: {**meta, "generated_at": generated_at, "date": game_date}
+        for source, meta in (preds.attrs.get("prediction_family_metadata", {}) or {}).items()
+    }
+    prediction_source_default = preds.attrs.get(
+        "prediction_source_default",
+        config.PUBLIC_DEFAULT_PREDICTION_SOURCE,
+    )
     site_games = []
     for rec in records:
         game = {}
         for src_col, dst_col in site_field_map.items():
             if src_col in rec:
                 game[dst_col] = rec[src_col]
+        for source in public_prediction_sources():
+            for field in [
+                "model_mu_home",
+                "edge_home_points",
+                "pick_side",
+                "pick_cover_prob",
+                "pick_prob_edge",
+                "pick_ev_per_1",
+                "pick_fair_odds",
+                "pred_home_win_prob",
+                "spread_diff",
+            ]:
+                key = f"{field}_{source}"
+                if key in rec:
+                    game[key] = rec[key]
         # Generate stable game_id from date + team names
         away = str(game.get("away_team") or "")
         home = str(game.get("home_team") or "")
@@ -714,8 +869,9 @@ def save_predictions(preds: pd.DataFrame, game_date: str | None = None) -> tuple
 
     site_payload = {
         "date": game_date,
-        "generated_at": datetime.now(ZoneInfo("UTC")).isoformat().replace("+00:00", "Z"),
+        "generated_at": generated_at,
         "provenance": {
+            "prediction_source_default": prediction_source_default,
             "mean_model_variant_active": (
                 str(preds["mean_model_variant_active"].iloc[0])
                 if "mean_model_variant_active" in preds.columns and not preds.empty
@@ -732,6 +888,7 @@ def save_predictions(preds: pd.DataFrame, game_date: str | None = None) -> tuple
             "site_probability_surface": "mu_plus_sigma_active_meta_market_taper85_v1",
             "neutral_probability_calibration_active": False,
         },
+        "prediction_family_metadata": family_metadata,
         "games": site_games,
     }
     site_json_path = config.SITE_DATA_DIR / f"predictions_{game_date}.json"

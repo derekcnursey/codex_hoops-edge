@@ -9,12 +9,13 @@ Combines:
 from __future__ import annotations
 
 from datetime import timedelta
+from functools import lru_cache
 from typing import Optional
 
 import numpy as np
 import pandas as pd
 
-from . import config, s3_reader, torvik_loader
+from . import config, kenpom_loader, s3_reader, torvik_loader
 from .adjusted_four_factors import adjust_four_factors
 from .four_factors import compute_game_four_factors
 from .iterative_four_factors import solve_four_factors
@@ -48,7 +49,8 @@ def _feature_order_for_contract(feature_contract: str) -> list[str]:
     raise ValueError(f"Unknown feature_contract: {feature_contract}")
 
 
-def load_games(season: int) -> pd.DataFrame:
+@lru_cache(maxsize=None)
+def _load_games_cached(season: int) -> pd.DataFrame:
     """Load fct_games for a season, return DataFrame with key columns."""
     tbl = s3_reader.read_silver_table(config.TABLE_FCT_GAMES, season=season)
     if tbl.num_rows == 0:
@@ -69,6 +71,9 @@ def load_games(season: int) -> pd.DataFrame:
         ("gameType", ["gameType"]),
         ("tournament", ["tournament"]),
         ("conferenceGame", ["conferenceGame"]),
+        ("gameNotes", ["gameNotes"]),
+        ("homeSeed", ["homeSeed"]),
+        ("awaySeed", ["awaySeed"]),
     ]:
         for cand in candidates:
             if cand in df.columns:
@@ -80,7 +85,12 @@ def load_games(season: int) -> pd.DataFrame:
     return df
 
 
-def load_efficiency_ratings(
+def load_games(season: int) -> pd.DataFrame:
+    return _load_games_cached(season).copy()
+
+
+@lru_cache(maxsize=None)
+def _load_efficiency_ratings_cached(
     season: int,
     no_garbage: bool = True,
     table_name: str | None = None,
@@ -114,8 +124,29 @@ def load_efficiency_ratings(
         )
     df["rating_date"] = pd.to_datetime(df["rating_date"], errors="coerce")
     df = _dedupe_efficiency_ratings(df)
+    if "barthag_rank" not in df.columns:
+        df["barthag_rank"] = df.groupby("rating_date")["barthag"].rank(
+            ascending=False,
+            method="first",
+        )
+    if "adj_net_rank" not in df.columns:
+        adj_net = pd.to_numeric(df["adj_oe"], errors="coerce") - pd.to_numeric(
+            df["adj_de"], errors="coerce"
+        )
+        df["adj_net_rank"] = adj_net.groupby(df["rating_date"]).rank(
+            ascending=False,
+            method="first",
+        )
     df = df.sort_values(["teamId", "rating_date"]).reset_index(drop=True)
     return df
+
+
+def load_efficiency_ratings(
+    season: int,
+    no_garbage: bool = True,
+    table_name: str | None = None,
+) -> pd.DataFrame:
+    return _load_efficiency_ratings_cached(season, no_garbage, table_name).copy()
 
 
 def _dedupe_efficiency_ratings(df: pd.DataFrame) -> pd.DataFrame:
@@ -155,13 +186,18 @@ def _dedupe_efficiency_ratings(df: pd.DataFrame) -> pd.DataFrame:
     return out.drop(columns=["_tempo_plausible", "_tempo_distance", "_tempo_numeric"])
 
 
-def load_boxscores(season: int) -> pd.DataFrame:
+@lru_cache(maxsize=None)
+def _load_boxscores_cached(season: int) -> pd.DataFrame:
     """Load fct_pbp_game_teams_flat for a season."""
     tbl = s3_reader.read_silver_table(config.TABLE_FCT_GAME_TEAMS, season=season)
     if tbl.num_rows == 0:
         return pd.DataFrame()
     df = tbl.to_pandas()
     return _dedupe_boxscores(df)
+
+
+def load_boxscores(season: int) -> pd.DataFrame:
+    return _load_boxscores_cached(season).copy()
 
 
 def _dedupe_boxscores(df: pd.DataFrame) -> pd.DataFrame:
@@ -282,6 +318,9 @@ def _build_efficiency_lookup(
     if ratings.empty:
         return lookup
     keep_cols = ["rating_date", "adj_oe", "adj_de", "adj_tempo", "barthag"]
+    for col in ["barthag_rank", "adj_net_rank"]:
+        if col in ratings.columns:
+            keep_cols.append(col)
     if include_sos:
         for col in ["sos_oe", "sos_de"]:
             if col in ratings.columns:
@@ -320,6 +359,9 @@ def _get_asof_rating(
         "adj_tempo": row["adj_tempo"],
         "barthag": row["barthag"],
     }
+    for col in ["barthag_rank", "adj_net_rank"]:
+        if col in row.index:
+            result[col] = row[col]
     if include_sos:
         if "sos_oe" in row.index:
             result["sos_oe"] = row["sos_oe"]
@@ -675,7 +717,8 @@ def build_features(
         adjust_ff_method: Method for FF adjustment when adjust_ff=True.
             "multiplicative" (default) or "iterative".
         efficiency_source: "gold" (default) uses gold-layer ratings, "torvik"
-            uses Torvik daily ratings from S3. PBP features are unchanged.
+            uses Torvik daily ratings from S3, and "kenpom" uses KenPom
+            archive ratings from S3. PBP features are unchanged.
         gold_table_name: Optional explicit gold table name when
             ``efficiency_source="gold"``. Defaults to the current production
             gold table selection based on ``no_garbage``.
@@ -693,22 +736,31 @@ def build_features(
         raise ValueError(f"Unknown extra feature groups: {unknown}")
 
     use_torvik = efficiency_source == "torvik"
+    use_kenpom = efficiency_source == "kenpom"
 
     # Load raw data
-    games = load_games(season)
-    if games.empty:
+    all_games = load_games(season)
+    if all_games.empty:
         return pd.DataFrame()
+    games = all_games.copy()
 
     need_sos = "sos" in extra
     if use_torvik:
         eff_ratings = pd.DataFrame()  # Not used when Torvik is the source
         torvik_eff_lookup = torvik_loader.build_torvik_efficiency_lookup(season)
+        kenpom_eff_lookup: dict[int, pd.DataFrame] = {}
+    elif use_kenpom:
+        eff_ratings = pd.DataFrame()  # Not used when KenPom is the source
+        torvik_eff_lookup = {}
+        kenpom_eff_lookup = kenpom_loader.build_kenpom_efficiency_lookup(season)
     else:
         eff_ratings = load_efficiency_ratings(
             season,
             no_garbage=no_garbage,
             table_name=gold_table_name,
         )
+        torvik_eff_lookup = {}
+        kenpom_eff_lookup = {}
     boxscores = load_boxscores(season)
 
     if game_date is not None and "startDate" in games.columns:
@@ -757,8 +809,8 @@ def build_features(
             rolling_team_lookup[int(tid)] = group.sort_values("_date").copy()
 
     # Build date-aware efficiency lookup: teamId -> DataFrame of dated ratings
-    if use_torvik:
-        eff_lookup: dict[int, pd.DataFrame] = {}  # Not used for Torvik path
+    if use_torvik or use_kenpom:
+        eff_lookup: dict[int, pd.DataFrame] = {}
     else:
         eff_lookup = _build_efficiency_lookup(eff_ratings, include_sos=need_sos)
 
@@ -769,14 +821,14 @@ def build_features(
     # Pre-compute Torvik SOS if needed
     torvik_sos_lookup: dict[tuple[int, str], dict[str, float]] = {}
     if use_torvik and need_sos:
-        all_games_for_sos = load_games(season) if game_date is not None else games
+        all_games_for_sos = all_games if game_date is not None else games
         torvik_sos_lookup = torvik_loader.build_torvik_sos_lookup(season, all_games_for_sos)
 
     rest_lookup: dict[tuple[int, int], float] = {}
     if "rest_days" in extra:
         # Use ALL season games for rest computation (not just date-filtered)
         # so future games can see prior games for rest day calculation
-        all_games_for_rest = load_games(season) if game_date is not None else games
+        all_games_for_rest = all_games if game_date is not None else games
         rest_lookup = _compute_rest_days(all_games_for_rest)
 
     tov_lookup: dict[tuple[int, int], dict[str, float]] = {}
@@ -818,6 +870,16 @@ def build_features(
                     team_conf[tid] = conf
             conf_lookup = torvik_loader.build_torvik_conf_strength_lookup(
                 season, list(unique_dates))
+        elif use_kenpom:
+            teams = kenpom_loader.load_kenpom_teams(season)
+            if not teams.empty:
+                for tid, conf in zip(teams["team_id"], teams["conf_short"]):
+                    if pd.notna(conf):
+                        team_conf[int(tid)] = str(conf)
+            conf_lookup = kenpom_loader.build_kenpom_conf_strength_lookup(
+                season,
+                list(unique_dates),
+            )
         else:
             # Build conference mapping from gold layer ratings (has conference col)
             if "conference" in eff_ratings.columns:
@@ -830,7 +892,7 @@ def build_features(
     margin_std_team_lookup: dict[int, pd.DataFrame] = {}
     if "margin_std" in extra:
         # Use ALL season games for margin_std (not just date-filtered)
-        all_games_for_margin = load_games(season) if game_date is not None else games
+        all_games_for_margin = all_games if game_date is not None else games
         margin_std_lookup = _compute_scoring_variance(all_games_for_margin)
         # Build per-team as-of lookup for future games
         if margin_std_lookup:
@@ -853,9 +915,11 @@ def build_features(
     # For Torvik path, build a teamId-keyed lookup compatible with _compute_team_hca
     if use_torvik:
         hca_eff_lookup = _build_torvik_teamid_lookup(season, torvik_eff_lookup)
+    elif use_kenpom:
+        hca_eff_lookup = kenpom_eff_lookup
     else:
         hca_eff_lookup = eff_lookup
-    all_games_for_hca = load_games(season) if game_date is not None else games
+    all_games_for_hca = all_games if game_date is not None else games
     hca_lookup = _compute_team_hca(all_games_for_hca, hca_eff_lookup)
     hca_team_lookup: dict[int, pd.DataFrame] = {}
     if hca_lookup:
@@ -903,21 +967,31 @@ def build_features(
                 torvik_eff_lookup, home_tid, game_dt, season)
             away_eff = torvik_loader.get_torvik_asof_rating(
                 torvik_eff_lookup, away_tid, game_dt, season)
+        elif use_kenpom:
+            home_eff = kenpom_loader.get_kenpom_asof_rating(
+                kenpom_eff_lookup, home_tid, game_dt
+            )
+            away_eff = kenpom_loader.get_kenpom_asof_rating(
+                kenpom_eff_lookup, away_tid, game_dt
+            )
         else:
             home_eff = _get_asof_rating(eff_lookup, home_tid, game_dt, include_sos=need_sos)
             away_eff = _get_asof_rating(eff_lookup, away_tid, game_dt, include_sos=need_sos)
 
         # Group 1: Efficiency features
         feat = {
+            "season": season,
             "neutral_site": int(neutral),
             "away_team_adj_oe": away_eff.get("adj_oe"),
             "away_team_BARTHAG": away_eff.get("barthag"),
+            "away_barthag_rank": away_eff.get("barthag_rank"),
             "away_team_adj_de": away_eff.get("adj_de"),
             "away_team_adj_pace": away_eff.get("adj_tempo"),
             "home_team_adj_oe": home_eff.get("adj_oe"),
             "home_team_adj_de": home_eff.get("adj_de"),
             "home_team_adj_pace": home_eff.get("adj_tempo"),
             "home_team_BARTHAG": home_eff.get("barthag"),
+            "home_barthag_rank": home_eff.get("barthag_rank"),
         }
 
         # Group 2: Rolling four-factor averages (away team)
@@ -986,6 +1060,11 @@ def build_features(
                 feat["home_sos_de"] = h_sos.get("sos_de")
                 feat["away_sos_oe"] = a_sos.get("sos_oe")
                 feat["away_sos_de"] = a_sos.get("sos_de")
+            elif use_kenpom:
+                feat["home_sos_oe"] = None
+                feat["home_sos_de"] = None
+                feat["away_sos_oe"] = None
+                feat["away_sos_de"] = None
             else:
                 feat["home_sos_oe"] = home_eff.get("sos_oe")
                 feat["home_sos_de"] = home_eff.get("sos_de")
@@ -996,8 +1075,14 @@ def build_features(
             if not pd.isna(game_dt):
                 dt_norm = pd.Timestamp(game_dt)
                 if hasattr(dt_norm, 'tz') and dt_norm.tz is not None:
-                    dt_norm = dt_norm.tz_localize(None)
-                date_key = (dt_norm.normalize() - timedelta(days=1)).strftime("%Y-%m-%d")
+                    if use_kenpom:
+                        dt_norm = dt_norm.tz_convert("America/New_York").tz_localize(None)
+                    else:
+                        dt_norm = dt_norm.tz_localize(None)
+                if use_kenpom:
+                    date_key = dt_norm.normalize().strftime("%Y-%m-%d")
+                else:
+                    date_key = (dt_norm.normalize() - timedelta(days=1)).strftime("%Y-%m-%d")
                 h_conf = team_conf.get(home_tid, "")
                 a_conf = team_conf.get(away_tid, "")
                 feat["home_conf_strength"] = conf_lookup.get((date_key, h_conf))
@@ -1061,6 +1146,9 @@ def build_features(
         feat["gameType"] = game.get("gameType")
         feat["tournament"] = game.get("tournament")
         feat["conferenceGame"] = game.get("conferenceGame")
+        feat["gameNotes"] = game.get("gameNotes")
+        feat["homeSeed"] = game.get("homeSeed")
+        feat["awaySeed"] = game.get("awaySeed")
 
         records.append(feat)
 

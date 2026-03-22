@@ -5,7 +5,7 @@ import {
   PredictionRow,
   displayTeam,
   formatAmericanOddsFromProb,
-  getSiteHomeWinProb,
+  getSiteHomeWinProbFromValues,
 } from "../lib/data";
 import {
   getLatestPredictionFile,
@@ -19,6 +19,8 @@ type RankedPredictionRow = PredictionRow & {
   away_team_rank: number | null;
   home_team_rank: number | null;
 };
+
+type PredictionSurface = "he" | "torvik" | "kenpom";
 
 type HomeProps = {
   todayDate: string | null;
@@ -101,8 +103,31 @@ function num(v: unknown): number | null {
   return null;
 }
 
-function getPickTeam(row: PredictionRow): string {
-  const side = str(row.pick_side).toUpperCase();
+function sourceMuHome(row: PredictionRow, source: PredictionSurface): number | null {
+  const sourceKey = `model_mu_home_${source}`;
+  const fallback =
+    source === "he"
+      ? row.model_mu_home_he ?? row.model_mu_home_team_ab_internal ?? row.model_mu_home
+      : source === "torvik"
+        ? row.model_mu_home_torvik ?? row.model_mu_home
+        : null;
+  return num((row as Record<string, unknown>)[sourceKey] ?? fallback);
+}
+
+function getPickSide(row: PredictionRow, source: PredictionSurface): string {
+  const sourceKey = `pick_side_${source}`;
+  const fallback = source === "he" ? row.pick_side : null;
+  return str((row as Record<string, unknown>)[sourceKey] ?? fallback).toUpperCase();
+}
+
+function getPickProbEdge(row: PredictionRow, source: PredictionSurface): number {
+  const sourceKey = `pick_prob_edge_${source}`;
+  const fallback = source === "he" ? row.pick_prob_edge : null;
+  return num((row as Record<string, unknown>)[sourceKey] ?? fallback) ?? 0;
+}
+
+function getPickTeam(row: PredictionRow, source: PredictionSurface): string {
+  const side = getPickSide(row, source);
   return displayTeam(side === "HOME" ? str(row.home_team) : str(row.away_team));
 }
 
@@ -165,41 +190,45 @@ function bookSpread(row: PredictionRow): number | null {
   return num(row.market_spread_home);
 }
 
-function modelSpread(row: PredictionRow): number | null {
-  const internal = num(row.model_mu_home_team_ab_internal);
-  if (internal !== null) return -internal;
-  const v = num(row.model_mu_home);
-  return v !== null ? -v : null; // Negate: model_mu_home is home-away, display as book convention
-}
-
-function torvikModelSpread(row: PredictionRow): number | null {
-  const v = num(row.model_mu_home);
+function modelSpread(row: PredictionRow, source: PredictionSurface): number | null {
+  const v = sourceMuHome(row, source);
   return v !== null ? -v : null;
 }
 
-function averageModelSpread(row: PredictionRow): number | null {
-  const he = modelSpread(row);
-  const torvik = torvikModelSpread(row);
-  if (he !== null && torvik !== null) return (he + torvik) / 2;
-  return he ?? torvik;
+function torvikModelSpread(row: PredictionRow): number | null {
+  return modelSpread(row, "torvik");
+}
+
+function heModelSpread(row: PredictionRow): number | null {
+  return modelSpread(row, "he");
+}
+
+function kenpomModelSpread(row: PredictionRow): number | null {
+  return modelSpread(row, "kenpom");
 }
 
 function sigma(row: PredictionRow): number | null {
   return num(row.pred_sigma);
 }
 
-function edge(row: PredictionRow): number {
-  return num(row.pick_prob_edge) ?? 0;
+function edge(row: PredictionRow, source: PredictionSurface): number {
+  return getPickProbEdge(row, source);
 }
 
-function homeMlFair(row: PredictionRow): string | null {
-  const homeProb = getSiteHomeWinProb(row);
+function homeMlFair(row: PredictionRow, source: PredictionSurface): string | null {
+  const raw = sourceMuHome(row, source);
+  const sigmaValue = sigma(row);
+  const startTime = typeof row.start_time === "string" ? row.start_time : typeof row.startDate === "string" ? row.startDate : null;
+  const neutralSite = row.neutral_site === true || row.neutral_site === 1 || row.neutralSite === true || row.neutralSite === 1;
+  const tournament = typeof row.tournament === "string" ? row.tournament : null;
+  const gameType = typeof row.gameType === "string" ? row.gameType : typeof row.game_type === "string" ? row.game_type : null;
+  const homeProb = getSiteHomeWinProbFromValues(raw, sigmaValue, startTime, neutralSite, tournament, gameType);
   if (homeProb === null) return null;
   return formatAmericanOddsFromProb(homeProb);
 }
 
-function diff(row: PredictionRow): number | null {
-  const m = averageModelSpread(row);
+function diff(row: PredictionRow, source: PredictionSurface): number | null {
+  const m = modelSpread(row, source);
   const b = bookSpread(row);
   if (m === null || b === null) return null;
   return Math.abs(m - b);
@@ -213,11 +242,11 @@ function pickSpread(row: PredictionRow): number | null {
 
 /* -- sort -- */
 
-type SortKey = "matchup" | "time" | "book" | "he" | "torvik" | "avg" | "sigma" | "diff" | "edge";
+type SortKey = "matchup" | "time" | "book" | "he" | "torvik" | "kenpom" | "sigma" | "diff" | "edge";
 
 type SortState = { key: SortKey; dir: "asc" | "desc" };
 
-function sortVal(row: PredictionRow, key: SortKey): string | number {
+function sortVal(row: PredictionRow, key: SortKey, source: PredictionSurface): string | number {
   switch (key) {
     case "matchup":
       return `${displayTeam(str(row.away_team))} @ ${displayTeam(str(row.home_team))}`;
@@ -230,17 +259,17 @@ function sortVal(row: PredictionRow, key: SortKey): string | number {
     case "book":
       return bookSpread(row) ?? -Infinity;
     case "he":
-      return modelSpread(row) ?? -Infinity;
+      return heModelSpread(row) ?? -Infinity;
     case "torvik":
       return torvikModelSpread(row) ?? -Infinity;
-    case "avg":
-      return averageModelSpread(row) ?? -Infinity;
+    case "kenpom":
+      return kenpomModelSpread(row) ?? -Infinity;
     case "sigma":
       return sigma(row) ?? -Infinity;
     case "diff":
-      return diff(row) ?? -Infinity;
+      return diff(row, source) ?? -Infinity;
     case "edge":
-      return edge(row);
+      return edge(row, source);
   }
 }
 
@@ -252,7 +281,7 @@ const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
   { key: "book", label: "MARKET", align: "center" },
   { key: "he", label: "HE", align: "center" },
   { key: "torvik", label: "TORVIK", align: "center" },
-  { key: "avg", label: "AVG", align: "center" },
+  { key: "kenpom", label: "KENPOM", align: "center" },
   { key: "sigma", label: "SIGMA", align: "center" },
   { key: "diff", label: "DIFF", align: "center" },
   { key: "edge", label: "EDGE", align: "center" }
@@ -262,6 +291,7 @@ const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
 
 export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows }: HomeProps) {
   const [activeTab, setActiveTab] = useState<"today" | "tomorrow">("today");
+  const [predictionSource, setPredictionSource] = useState<PredictionSurface>("he");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "edge10">("all");
   const [diffMin, setDiffMin] = useState(0);
@@ -274,9 +304,9 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
 
   const maxDiff = useMemo(() => {
     if (!activeRows.length) return 20;
-    const diffs = activeRows.map((r) => diff(r)).filter((d): d is number => d !== null);
+    const diffs = activeRows.map((r) => diff(r, predictionSource)).filter((d): d is number => d !== null);
     return diffs.length > 0 ? Math.ceil(Math.max(...diffs)) : 20;
-  }, [activeRows]);
+  }, [activeRows, predictionSource]);
 
   const tableRows = useMemo(() => {
     let list = [...activeRows];
@@ -286,18 +316,18 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
       list = list.filter((r) => {
         const a = str(r.away_team).toLowerCase();
         const h = str(r.home_team).toLowerCase();
-        const p = getPickTeam(r).toLowerCase();
+        const p = getPickTeam(r, predictionSource).toLowerCase();
         return a.includes(q) || h.includes(q) || p.includes(q);
       });
     }
 
     if (filter === "edge10") {
-      list = list.filter((r) => hasBook(r) && edge(r) >= 0.10);
+      list = list.filter((r) => hasBook(r) && edge(r, predictionSource) >= 0.10);
     }
 
     if (diffMin > 0) {
       list = list.filter((r) => {
-        const d = diff(r);
+        const d = diff(r, predictionSource);
         return d === null || d >= diffMin;
       });
     }
@@ -307,8 +337,8 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
       const bHas = hasBook(b);
       if (aHas !== bHas) return aHas ? -1 : 1;
 
-      const av = sortVal(a, sort.key);
-      const bv = sortVal(b, sort.key);
+      const av = sortVal(a, sort.key, predictionSource);
+      const bv = sortVal(b, sort.key, predictionSource);
       if (typeof av === "number" && typeof bv === "number") {
         return sort.dir === "asc" ? av - bv : bv - av;
       }
@@ -317,7 +347,7 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
     });
 
     return list;
-  }, [activeRows, search, filter, diffMin, sort]);
+  }, [activeRows, search, filter, diffMin, sort, predictionSource]);
 
   function handleSort(key: SortKey) {
     setSort((prev) =>
@@ -407,6 +437,43 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
           </span>
         </div>
 
+        <div
+          style={{
+            display: "inline-flex",
+            gap: 8,
+            padding: 4,
+            background: "#f8fafc",
+            border: "1px solid #e2e8f0",
+            borderRadius: 10,
+            marginBottom: 14,
+          }}
+        >
+          {([
+            { key: "he", label: "HE" },
+            { key: "torvik", label: "Torvik" },
+            { key: "kenpom", label: "KenPom" },
+          ] as const).map((source) => (
+            <button
+              key={source.key}
+              type="button"
+              onClick={() => setPredictionSource(source.key)}
+              style={{
+                ...mono,
+                fontSize: 12,
+                fontWeight: 600,
+                padding: "7px 12px",
+                borderRadius: 8,
+                border: "none",
+                background: predictionSource === source.key ? "#0f172a" : "transparent",
+                color: predictionSource === source.key ? "#fff" : "#475569",
+                cursor: "pointer",
+              }}
+            >
+              {source.label}
+            </button>
+          ))}
+        </div>
+
         {/* -- All Games Table -- */}
         <div>
           {/* Controls row */}
@@ -419,7 +486,7 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
             }}
           >
             <span style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>
-              {slateLabel}
+              {slateLabel} · Active surface {predictionSource.toUpperCase()}
             </span>
 
             <input
@@ -541,12 +608,13 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                   ) : (
                     tableRows.map((row, i) => {
                       const bk = bookSpread(row);
-                      const he = modelSpread(row);
+                      const he = heModelSpread(row);
                       const torvik = torvikModelSpread(row);
-                      const avg = averageModelSpread(row);
+                      const kenpom = kenpomModelSpread(row);
                       const sg = sigma(row);
-                      const df = diff(row);
-                      const eg = edge(row);
+                      const df = diff(row, predictionSource);
+                      const eg = edge(row, predictionSource);
+                      const pickSide = getPickSide(row, predictionSource);
                       const hb = hasBook(row);
 
                       return (
@@ -569,13 +637,13 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                               borderBottom: "1px solid #f1f5f9"
                             }}
                           >
-                            <span style={{ fontWeight: str(row.pick_side).toUpperCase() === "AWAY" ? 700 : 400 }}>
+                            <span style={{ fontWeight: pickSide === "AWAY" ? 700 : 400 }}>
                               {renderRankedTeam(str(row.away_team), row.away_team_rank)}
                             </span>
                             {renderMatchupSeparator()}
-                            <span style={{ fontWeight: str(row.pick_side).toUpperCase() === "HOME" ? 700 : 400 }}>
+                            <span style={{ fontWeight: pickSide === "HOME" ? 700 : 400 }}>
                               {renderRankedTeam(str(row.home_team), row.home_team_rank)}
-                              {homeMlFair(row) ? (
+                              {homeMlFair(row, predictionSource) ? (
                                 <span
                                   style={{
                                     ...mono,
@@ -585,7 +653,7 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                                     color: "#64748b"
                                   }}
                                 >
-                                  ({homeMlFair(row)})
+                                  ({homeMlFair(row, predictionSource)})
                                 </span>
                               ) : null}
                             </span>
@@ -648,7 +716,7 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                             {torvik !== null ? formatSpread(torvik) : "\u2014"}
                           </td>
 
-                          {/* AVG */}
+                          {/* KENPOM */}
                           <td
                             style={{
                               ...mono,
@@ -659,7 +727,7 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                               borderBottom: "1px solid #f1f5f9"
                             }}
                           >
-                            {avg !== null ? formatSpread(avg) : "\u2014"}
+                            {kenpom !== null ? formatSpread(kenpom) : "\u2014"}
                           </td>
 
                           {/* SIGMA */}

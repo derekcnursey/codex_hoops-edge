@@ -28,6 +28,7 @@ from .features import (
 )
 from .live_audits import audit_hrb_lines, audit_live_feature_drift, audit_ratings_asof
 from .line_selection import select_preferred_lines
+from .prediction_sources import prediction_source_spec, public_prediction_sources
 from .tournament_adjustments import needs_secondary_mu_features
 from .trainer import load_scaler
 
@@ -363,6 +364,45 @@ def _build_team_ab_mu_features_if_needed(
     return team_ab_df
 
 
+def _source_matches_primary_frame(source: str) -> bool:
+    spec = prediction_source_spec(source)
+    if spec.efficiency_source != config.EFFICIENCY_SOURCE:
+        return False
+    if spec.efficiency_source != "gold":
+        return True
+    return (spec.gold_table_name or config.PRODUCTION_GOLD_RATINGS_TABLE) == config.PRODUCTION_GOLD_RATINGS_TABLE
+
+
+def _build_public_surface_feature_frames(
+    season: int,
+    primary_df: pd.DataFrame,
+    game_date: str | None = None,
+) -> dict[str, pd.DataFrame]:
+    frames: dict[str, pd.DataFrame] = {}
+    for source in public_prediction_sources():
+        if _source_matches_primary_frame(source):
+            frames[source] = primary_df
+            continue
+        spec = prediction_source_spec(source)
+        frame = build_features(
+            season,
+            game_date=game_date,
+            no_garbage=True,
+            extra_features=config.EXTRA_FEATURES,
+            adjust_ff=config.ADJUST_FF,
+            adjust_alpha=config.ADJUST_ALPHA,
+            adjust_prior_weight=config.ADJUST_PRIOR,
+            efficiency_source=spec.efficiency_source,
+            gold_table_name=spec.gold_table_name if spec.efficiency_source == "gold" else None,
+        )
+        if frame.empty:
+            raise click.ClickException(
+                f"Feature frame for prediction source {source} returned no rows."
+            )
+        frames[source] = frame
+    return frames
+
+
 # ── 1. build-features ──────────────────────────────────────────────
 
 
@@ -376,15 +416,15 @@ def _build_team_ab_mu_features_if_needed(
               type=click.Choice(["multiplicative", "iterative"]),
               help="FF adjustment method (default: from config)")
 @click.option("--efficiency-source", default=config.EFFICIENCY_SOURCE,
-              type=click.Choice(["gold", "torvik"]),
+              type=click.Choice(["gold", "torvik", "kenpom"]),
               help="Efficiency rating source (default: from config)")
 def build_features_cmd(season: int, upload_s3: bool, no_garbage: bool,
                        adjusted: bool, adjust_ff_method: str,
                        efficiency_source: str):
     """Build the 54-feature matrix for all games in a season."""
     variant = " (no-garbage)" if no_garbage else ""
-    if efficiency_source == "torvik":
-        variant += " (torvik)"
+    if efficiency_source != "gold":
+        variant += f" ({efficiency_source})"
     if adjusted:
         variant += f" ({adjust_ff_method} adj a={config.ADJUST_ALPHA} p={config.ADJUST_PRIOR})"
     click.echo(f"Building features{variant} for season {season}...")
@@ -424,8 +464,8 @@ def build_features_cmd(season: int, upload_s3: bool, no_garbage: bool,
 
     # Save locally
     suffix = "_no_garbage" if no_garbage else ""
-    if efficiency_source == "torvik":
-        suffix += "_torvik"
+    if efficiency_source != "gold":
+        suffix += f"_{efficiency_source}"
     if adjusted:
         if adjust_ff_method == "iterative":
             suffix += f"_adj_iter_p{config.ADJUST_PRIOR}"
@@ -459,7 +499,7 @@ def build_features_cmd(season: int, upload_s3: bool, no_garbage: bool,
 @click.option("--min-date", default="12-01", type=str,
               help="Earliest MM-DD within each season to include (default: 12-01)")
 @click.option("--efficiency-source", default=config.EFFICIENCY_SOURCE,
-              type=click.Choice(["gold", "torvik"]),
+              type=click.Choice(["gold", "torvik", "kenpom"]),
               help="Efficiency rating source (default: from config)")
 def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
           adj_suffix: str | None, min_date: str | None, efficiency_source: str):
@@ -479,8 +519,8 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
     season_list = _exclude_training_seasons(requested_seasons)
     excluded = sorted(set(requested_seasons) - set(season_list))
     variant = " (no-garbage)" if no_garbage else ""
-    if efficiency_source == "torvik":
-        variant += " (torvik)"
+    if efficiency_source != "gold":
+        variant += f" ({efficiency_source})"
     if adj_suffix:
         variant += f" ({adj_suffix})"
     click.echo(f"Loading features{variant} for seasons: {season_list}")
@@ -581,7 +621,7 @@ def train(seasons: str, reg_epochs: int, cls_epochs: int, no_garbage: bool,
 @click.option("--adj-suffix", default="adj_a0.85_p10", type=str,
               help="Adjustment suffix for feature files")
 @click.option("--efficiency-source", default=config.EFFICIENCY_SOURCE,
-              type=click.Choice(["gold", "torvik"]),
+              type=click.Choice(["gold", "torvik", "kenpom"]),
               help="Efficiency rating source (default: from config)")
 def tune(seasons: str, trials: int, min_date: str | None,
          no_garbage: bool, adj_suffix: str | None, efficiency_source: str):
@@ -594,8 +634,8 @@ def tune(seasons: str, trials: int, min_date: str | None,
     season_list = _exclude_training_seasons(requested_seasons)
     excluded = sorted(set(requested_seasons) - set(season_list))
     variant = " (no-garbage)" if no_garbage else ""
-    if efficiency_source == "torvik":
-        variant += " (torvik)"
+    if efficiency_source != "gold":
+        variant += f" ({efficiency_source})"
     if adj_suffix:
         variant += f" ({adj_suffix})"
     click.echo(f"Loading features{variant} for seasons: {season_list}")
@@ -655,12 +695,12 @@ def predict_today(season: int, game_date: str | None):
 
     click.echo(f"  Games: {len(df)}")
     secondary_df = _build_secondary_mu_features_if_needed(season, df, game_date=game_date)
-    team_ab_df = _build_team_ab_mu_features_if_needed(season, df, game_date=game_date)
+    family_feature_frames = _build_public_surface_feature_frames(season, df, game_date=game_date)
     preds = predict(
         df,
         lines_df=lines,
         secondary_mu_features_df=secondary_df,
-        team_ab_features_df=team_ab_df,
+        family_feature_frames=family_feature_frames,
     )
 
     json_path, csv_path = save_predictions(preds, game_date=game_date)
@@ -723,12 +763,12 @@ def predict_season(season: int):
 
     lines = load_lines(season)
     secondary_df = _build_secondary_mu_features_if_needed(season, df)
-    team_ab_df = _build_team_ab_mu_features_if_needed(season, df)
+    family_feature_frames = _build_public_surface_feature_frames(season, df)
     preds = predict(
         df,
         lines_df=lines,
         secondary_mu_features_df=secondary_df,
-        team_ab_features_df=team_ab_df,
+        family_feature_frames=family_feature_frames,
     )
 
     json_path, csv_path = save_predictions(preds, game_date=f"season_{season}")
@@ -876,8 +916,12 @@ def backfill_season(season: int, start_date: str, end_date: str | None,
             continue
 
         # Predict and save (includes site JSON)
-        team_ab_df = _build_team_ab_mu_features_if_needed(season, df, game_date=game_date)
-        preds = predict(df, lines_df=lines, team_ab_features_df=team_ab_df)
+        family_feature_frames = _build_public_surface_feature_frames(season, df, game_date=game_date)
+        preds = predict(
+            df,
+            lines_df=lines,
+            family_feature_frames=family_feature_frames,
+        )
         save_predictions(preds, game_date=game_date)
 
         processed += 1
@@ -1117,12 +1161,12 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
         else:
             click.echo(f"  Games: {len(df)}")
             secondary_df = _build_secondary_mu_features_if_needed(season, df, game_date=game_date)
-            team_ab_df = _build_team_ab_mu_features_if_needed(season, df, game_date=game_date)
+            family_feature_frames = _build_public_surface_feature_frames(season, df, game_date=game_date)
             preds = predict(
                 df,
                 lines_df=lines,
                 secondary_mu_features_df=secondary_df,
-                team_ab_features_df=team_ab_df,
+                family_feature_frames=family_feature_frames,
             )
             json_path, csv_path = save_predictions(preds, game_date=game_date)
             click.echo(f"  JSON: {json_path}")

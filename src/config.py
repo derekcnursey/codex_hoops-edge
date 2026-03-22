@@ -17,6 +17,15 @@ TORVIK_TREE_REGRESSOR_PATH = CHECKPOINTS_DIR / "regressor_lgbm_l2_torvik.pkl"
 TREE_REGRESSOR_TEAM_AB_ELITE_TAIL_ROUND64_V1_PATH = (
     CHECKPOINTS_DIR / "regressor_lgbm_l2_team_ab_elite_tail_round64_v1.pkl"
 )
+TREE_REGRESSOR_TEAM_AB_ELITE_TAIL_ROUND64_V1_HE_PATH = (
+    CHECKPOINTS_DIR / "regressor_lgbm_l2_team_ab_elite_tail_round64_v1_he.pkl"
+)
+TREE_REGRESSOR_TEAM_AB_ELITE_TAIL_ROUND64_V1_TORVIK_PATH = (
+    CHECKPOINTS_DIR / "regressor_lgbm_l2_team_ab_elite_tail_round64_v1_torvik.pkl"
+)
+TREE_REGRESSOR_TEAM_AB_ELITE_TAIL_ROUND64_V1_KENPOM_PATH = (
+    CHECKPOINTS_DIR / "regressor_lgbm_l2_team_ab_elite_tail_round64_v1_kenpom.pkl"
+)
 TORVIK_TREE_REGRESSOR_TEAM_AB_ELITE_TAIL_ROUND64_V1_PATH = (
     CHECKPOINTS_DIR / "regressor_lgbm_l2_torvik_team_ab_elite_tail_round64_v1.pkl"
 )
@@ -65,9 +74,11 @@ EWM_SPAN = 15  # span parameter for pandas ewm (matches ROLLING_WINDOW)
 # Production no-garbage-time flag — must be consistent across train/inference
 NO_GARBAGE = True
 
-# Efficiency source: "gold" (gold-layer adj efficiencies) or "torvik" (Torvik daily ratings)
+# Efficiency source: "gold" (gold-layer adj efficiencies), "torvik" (Torvik daily ratings),
+# or "kenpom" (KenPom daily archive ratings)
 EFFICIENCY_SOURCE = "gold"
-SUPPORTED_EFFICIENCY_SOURCES = {"gold", "torvik"}
+SUPPORTED_EFFICIENCY_SOURCES = {"gold", "torvik", "kenpom"}
+SUPPORTED_PUBLIC_PREDICTION_SOURCES = {"he", "torvik", "kenpom"}
 GOLD_PRIORREG_K5_V1_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage_priorreg_k5_v1"
 PRODUCTION_GOLD_RATINGS_TABLE = "team_adjusted_efficiencies_no_garbage_softkeep25_priorreg_k5_v1"
 TEAM_AB_DEFAULT_EFFICIENCY_SOURCE = "torvik"
@@ -88,6 +99,10 @@ BRACKET_TEAM_AB_GOLD_RATINGS_TABLE = os.getenv(
     "HOOPS_BRACKET_TEAM_AB_GOLD_RATINGS_TABLE",
     TEAM_AB_GOLD_RATINGS_TABLE,
 ).strip()
+PUBLIC_DEFAULT_PREDICTION_SOURCE = os.getenv(
+    "HOOPS_PUBLIC_DEFAULT_PREDICTION_SOURCE",
+    "he",
+).strip().lower()
 if TEAM_AB_EFFICIENCY_SOURCE not in SUPPORTED_EFFICIENCY_SOURCES:
     raise ValueError(
         "Unsupported HOOPS_TEAM_AB_EFFICIENCY_SOURCE "
@@ -99,6 +114,12 @@ if BRACKET_TEAM_AB_EFFICIENCY_SOURCE not in SUPPORTED_EFFICIENCY_SOURCES:
         "Unsupported HOOPS_BRACKET_TEAM_AB_EFFICIENCY_SOURCE "
         f"{BRACKET_TEAM_AB_EFFICIENCY_SOURCE!r}; expected one of "
         f"{sorted(SUPPORTED_EFFICIENCY_SOURCES)}."
+    )
+if PUBLIC_DEFAULT_PREDICTION_SOURCE not in SUPPORTED_PUBLIC_PREDICTION_SOURCES:
+    raise ValueError(
+        "Unsupported HOOPS_PUBLIC_DEFAULT_PREDICTION_SOURCE "
+        f"{PUBLIC_DEFAULT_PREDICTION_SOURCE!r}; expected one of "
+        f"{sorted(SUPPORTED_PUBLIC_PREDICTION_SOURCES)}."
     )
 PRODUCTION_MU_BLEND_ENABLED = True
 PRODUCTION_MU_BLEND_START_DAY = 0   # Nov 1

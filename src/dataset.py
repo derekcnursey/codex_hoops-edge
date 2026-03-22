@@ -58,11 +58,11 @@ def load_season_features(
         season: Season year.
         no_garbage: Use no-garbage-time variant.
         adj_suffix: Optional adjustment suffix (e.g. "adj_a0.85_p10").
-        efficiency_source: "gold" or "torvik" — included in filename.
+        efficiency_source: "gold", "torvik", or "kenpom" — included in filename.
     """
     suffix = "_no_garbage" if no_garbage else ""
-    if efficiency_source == "torvik":
-        suffix += "_torvik"
+    if efficiency_source != "gold":
+        suffix += f"_{efficiency_source}"
     if adj_suffix:
         suffix += f"_{adj_suffix}"
     path = config.FEATURES_DIR / f"season_{season}{suffix}_features.parquet"
@@ -87,7 +87,7 @@ def load_multi_season_features(
         min_month_day: If set (e.g. "12-20"), exclude games before this date
             within each season. For season S, the cutoff is (S-1)-MM-DD.
             This filters out early-season noise from training data.
-        efficiency_source: "gold" or "torvik" — included in filename.
+        efficiency_source: "gold", "torvik", or "kenpom" — included in filename.
     """
     dfs = []
     for s in seasons:
