@@ -20,7 +20,7 @@ type RankedPredictionRow = PredictionRow & {
   home_team_rank: number | null;
 };
 
-type PredictionSurface = "he" | "torvik" | "kenpom";
+type PredictionSurface = "he" | "torvik";
 
 type HomeProps = {
   todayDate: string | null;
@@ -203,10 +203,6 @@ function heModelSpread(row: PredictionRow): number | null {
   return modelSpread(row, "he");
 }
 
-function kenpomModelSpread(row: PredictionRow): number | null {
-  return modelSpread(row, "kenpom");
-}
-
 function sigma(row: PredictionRow): number | null {
   return num(row.pred_sigma);
 }
@@ -242,7 +238,7 @@ function pickSpread(row: PredictionRow): number | null {
 
 /* -- sort -- */
 
-type SortKey = "matchup" | "time" | "book" | "he" | "torvik" | "kenpom" | "sigma" | "diff" | "edge";
+type SortKey = "matchup" | "time" | "book" | "he" | "torvik" | "sigma" | "diff" | "edge";
 
 type SortState = { key: SortKey; dir: "asc" | "desc" };
 
@@ -262,8 +258,6 @@ function sortVal(row: PredictionRow, key: SortKey, source: PredictionSurface): s
       return heModelSpread(row) ?? -Infinity;
     case "torvik":
       return torvikModelSpread(row) ?? -Infinity;
-    case "kenpom":
-      return kenpomModelSpread(row) ?? -Infinity;
     case "sigma":
       return sigma(row) ?? -Infinity;
     case "diff":
@@ -281,7 +275,6 @@ const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
   { key: "book", label: "MARKET", align: "center" },
   { key: "he", label: "HE", align: "center" },
   { key: "torvik", label: "TORVIK", align: "center" },
-  { key: "kenpom", label: "KENPOM", align: "center" },
   { key: "sigma", label: "SIGMA", align: "center" },
   { key: "diff", label: "DIFF", align: "center" },
   { key: "edge", label: "EDGE", align: "center" }
@@ -451,7 +444,6 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
           {([
             { key: "he", label: "HE" },
             { key: "torvik", label: "Torvik" },
-            { key: "kenpom", label: "KenPom" },
           ] as const).map((source) => (
             <button
               key={source.key}
@@ -610,7 +602,6 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                       const bk = bookSpread(row);
                       const he = heModelSpread(row);
                       const torvik = torvikModelSpread(row);
-                      const kenpom = kenpomModelSpread(row);
                       const sg = sigma(row);
                       const df = diff(row, predictionSource);
                       const eg = edge(row, predictionSource);
@@ -714,20 +705,6 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                             }}
                           >
                             {torvik !== null ? formatSpread(torvik) : "\u2014"}
-                          </td>
-
-                          {/* KENPOM */}
-                          <td
-                            style={{
-                              ...mono,
-                              padding: "10px 14px",
-                              textAlign: "center",
-                              fontSize: 13,
-                              color: "#334155",
-                              borderBottom: "1px solid #f1f5f9"
-                            }}
-                          >
-                            {kenpom !== null ? formatSpread(kenpom) : "\u2014"}
                           </td>
 
                           {/* SIGMA */}

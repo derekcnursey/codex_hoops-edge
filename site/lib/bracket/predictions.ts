@@ -314,19 +314,50 @@ export function buildPredictionFromCacheEntry(
 ): MatchupPrediction {
   const directOrder = entry.team1_id === teamAId && entry.team2_id === teamBId;
   const activeVariant = entry.matchup_model_variant_active ?? null;
-  const rawMarginA = directOrder ? entry.mu_team1_minus_team2 : -entry.mu_team1_minus_team2;
-  const displayMu = entry.display_mu_team1_minus_team2 ?? entry.mu_team1_minus_team2;
-  const displayMarginA = directOrder ? displayMu : -displayMu;
+  const activeRawMarginA = directOrder ? entry.mu_team1_minus_team2 : -entry.mu_team1_minus_team2;
+  const activeDisplayMu = entry.display_mu_team1_minus_team2 ?? entry.mu_team1_minus_team2;
+  const activeDisplayMarginA = directOrder ? activeDisplayMu : -activeDisplayMu;
   const marketMu = entry.market_mu_team1_minus_team2;
   const marketMarginA =
     marketMu == null || Number.isNaN(marketMu) ? null : directOrder ? marketMu : -marketMu;
-  const winProbA = directOrder ? entry.win_prob_team1 : 1 - entry.win_prob_team1;
+  const activeWinProbA = directOrder ? entry.win_prob_team1 : 1 - entry.win_prob_team1;
   const teamAName = directOrder ? entry.team1_name : entry.team2_name;
   const teamBName = directOrder ? entry.team2_name : entry.team1_name;
-  const comparisonModel =
-    activeVariant === "team_ab_elite_tail_round64_v1" &&
-    entry.mu_team1_minus_team2_team_ab_internal != null &&
-    entry.win_prob_team1_team_ab_internal != null
+  const internalRawMarginA =
+    entry.mu_team1_minus_team2_team_ab_internal == null
+      ? null
+      : directOrder
+        ? entry.mu_team1_minus_team2_team_ab_internal
+        : -entry.mu_team1_minus_team2_team_ab_internal;
+  const internalWinProbA =
+    entry.win_prob_team1_team_ab_internal == null
+      ? null
+      : directOrder
+        ? entry.win_prob_team1_team_ab_internal
+        : 1 - entry.win_prob_team1_team_ab_internal;
+
+  // Scheduled NCAA games should match the HE surface shown on the today page.
+  // The cache already carries that contract in the *_team_ab_internal fields.
+  const useScheduledHeContract =
+    entry.scheduled_game_id != null &&
+    internalRawMarginA != null &&
+    internalWinProbA != null &&
+    entry.model_mu_home_team_ab_internal != null;
+
+  const comparisonModel = useScheduledHeContract
+    ? buildComparisonRecord({
+        variant: activeVariant ?? "team_ab_elite_tail_round64_v1",
+        label: "Team A/B",
+        teamAId,
+        teamAName,
+        teamBId,
+        teamBName,
+        winProbA: activeWinProbA,
+        rawMarginA: activeRawMarginA,
+      })
+    : activeVariant === "team_ab_elite_tail_round64_v1" &&
+        internalRawMarginA != null &&
+        internalWinProbA != null
       ? buildComparisonRecord({
           variant: "team_ab_internal",
           label: "Internal",
@@ -334,12 +365,8 @@ export function buildPredictionFromCacheEntry(
           teamAName,
           teamBId,
           teamBName,
-          winProbA: directOrder
-            ? entry.win_prob_team1_team_ab_internal
-            : 1 - entry.win_prob_team1_team_ab_internal,
-          rawMarginA: directOrder
-            ? entry.mu_team1_minus_team2_team_ab_internal
-            : -entry.mu_team1_minus_team2_team_ab_internal,
+          winProbA: internalWinProbA,
+          rawMarginA: internalRawMarginA,
         })
       : activeVariant === "legacy_synthetic" &&
           entry.mu_team1_minus_team2_team_ab_elite_tail_round64_v1 != null &&
@@ -359,23 +386,35 @@ export function buildPredictionFromCacheEntry(
               : -entry.mu_team1_minus_team2_team_ab_elite_tail_round64_v1,
           })
         : null;
-  const averagedDisplayMarginA =
-    comparisonModel?.rawMarginA == null
-      ? displayMarginA
-      : (rawMarginA + comparisonModel.rawMarginA) / 2;
-  const averagedDisplayWinProbA =
-    comparisonModel == null ? winProbA : (winProbA + comparisonModel.winProbA) / 2;
+  const primaryRawMarginA = useScheduledHeContract ? internalRawMarginA : activeRawMarginA;
+  const primaryWinProbA = useScheduledHeContract ? internalWinProbA : activeWinProbA;
+  const primaryDisplayMarginA = useScheduledHeContract
+    ? primaryRawMarginA
+    : comparisonModel?.rawMarginA == null
+      ? activeDisplayMarginA
+      : (activeRawMarginA + comparisonModel.rawMarginA) / 2;
+  const primaryDisplayWinProbA = useScheduledHeContract
+    ? primaryWinProbA
+    : comparisonModel == null
+      ? activeWinProbA
+      : (activeWinProbA + comparisonModel.winProbA) / 2;
+  const primaryModelSpreadHome = useScheduledHeContract
+    ? entry.model_mu_home_team_ab_internal
+    : entry.model_mu_home ?? null;
+  const primaryDisplayModelSpreadHome = useScheduledHeContract
+    ? entry.model_mu_home_team_ab_internal
+    : entry.display_model_mu_home ?? null;
 
   return buildPredictionRecord({
     teamAId,
     teamAName,
     teamBId,
     teamBName,
-    activeModelVariant: activeVariant,
-    winProbA,
-    rawMarginA,
-    displayMarginA: averagedDisplayMarginA,
-    displayWinProbAOverride: averagedDisplayWinProbA,
+    activeModelVariant: useScheduledHeContract ? "team_ab_internal" : activeVariant,
+    winProbA: primaryWinProbA,
+    rawMarginA: primaryRawMarginA,
+    displayMarginA: primaryDisplayMarginA,
+    displayWinProbAOverride: primaryDisplayWinProbA,
     marketMarginA,
     marketLineSource: entry.market_line_source ?? null,
     predSigma: entry.pred_sigma ?? null,
@@ -385,8 +424,8 @@ export function buildPredictionFromCacheEntry(
     scheduledHomeTeamName: entry.home_team_name ?? null,
     scheduledAwayTeamName: entry.away_team_name ?? null,
     marketSpreadHome: entry.market_spread_home ?? null,
-    modelSpreadHome: entry.model_mu_home ?? null,
-    displayModelSpreadHome: entry.display_model_mu_home ?? null,
+    modelSpreadHome: primaryModelSpreadHome,
+    displayModelSpreadHome: primaryDisplayModelSpreadHome,
     edgeHomePoints: entry.edge_home_points ?? null,
     displayEdgeHomePoints: entry.display_edge_home_points ?? null,
     pickSide: entry.pick_side ?? null,
