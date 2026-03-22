@@ -203,6 +203,13 @@ function heModelSpread(row: PredictionRow): number | null {
   return modelSpread(row, "he");
 }
 
+function avgModelSpread(row: PredictionRow): number | null {
+  const he = heModelSpread(row);
+  const torvik = torvikModelSpread(row);
+  if (he === null || torvik === null) return null;
+  return (he + torvik) / 2;
+}
+
 function sigma(row: PredictionRow): number | null {
   return num(row.pred_sigma);
 }
@@ -238,7 +245,7 @@ function pickSpread(row: PredictionRow): number | null {
 
 /* -- sort -- */
 
-type SortKey = "matchup" | "time" | "book" | "he" | "torvik" | "sigma" | "diff" | "edge";
+type SortKey = "matchup" | "time" | "book" | "he" | "torvik" | "avg" | "sigma" | "diff" | "edge";
 
 type SortState = { key: SortKey; dir: "asc" | "desc" };
 
@@ -258,6 +265,8 @@ function sortVal(row: PredictionRow, key: SortKey, source: PredictionSurface): s
       return heModelSpread(row) ?? -Infinity;
     case "torvik":
       return torvikModelSpread(row) ?? -Infinity;
+    case "avg":
+      return avgModelSpread(row) ?? -Infinity;
     case "sigma":
       return sigma(row) ?? -Infinity;
     case "diff":
@@ -275,6 +284,7 @@ const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
   { key: "book", label: "MARKET", align: "center" },
   { key: "he", label: "HE", align: "center" },
   { key: "torvik", label: "TORVIK", align: "center" },
+  { key: "avg", label: "AVG", align: "center" },
   { key: "sigma", label: "SIGMA", align: "center" },
   { key: "diff", label: "DIFF", align: "center" },
   { key: "edge", label: "EDGE", align: "center" }
@@ -602,6 +612,7 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                       const bk = bookSpread(row);
                       const he = heModelSpread(row);
                       const torvik = torvikModelSpread(row);
+                      const avg = avgModelSpread(row);
                       const sg = sigma(row);
                       const df = diff(row, predictionSource);
                       const eg = edge(row, predictionSource);
@@ -705,6 +716,21 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                             }}
                           >
                             {torvik !== null ? formatSpread(torvik) : "\u2014"}
+                          </td>
+
+                          {/* AVG */}
+                          <td
+                            style={{
+                              ...mono,
+                              padding: "10px 14px",
+                              textAlign: "center",
+                              fontSize: 13,
+                              fontWeight: 600,
+                              color: "#334155",
+                              borderBottom: "1px solid #f1f5f9"
+                            }}
+                          >
+                            {avg !== null ? formatSpread(avg) : "\u2014"}
                           </td>
 
                           {/* SIGMA */}
