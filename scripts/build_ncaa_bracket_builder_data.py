@@ -53,6 +53,7 @@ from src.infer import (
     american_to_breakeven,
     load_regressor,
     load_mu_regressor,
+    load_prediction_source_mu_regressor,
     normal_cdf,
     prob_to_american,
 )
@@ -66,6 +67,7 @@ from src.mean_model_variants import (
 )
 from src.ml_odds import site_home_win_prob_from_mu_sigma
 from src.ncaa_synthetic_fallback import synthetic_fallback_margin
+from src.prediction_sources import prediction_source_spec
 from src.tournament_adjustments import market_blended_display_margin
 from src.trainer import load_scaler, load_tree_regressor
 
@@ -1522,6 +1524,11 @@ def _build_matchup_payload(
     )
     legacy_merged = _merge_selected_with_ratings(legacy_ratings)
 
+    def _prediction_source_for_efficiency_source(efficiency_source: str) -> str:
+        if efficiency_source == "gold":
+            return "he"
+        return efficiency_source
+
     print("Loading model artifacts", flush=True)
     scaler = load_scaler()
     tree_model, feature_order, _ = load_tree_regressor()
@@ -1529,8 +1536,12 @@ def _build_matchup_payload(
     if sigma_feature_order != feature_order:
         raise ValueError("Tree and sigma feature orders do not match")
     team_ab_loaded: tuple[object, list[str], str, dict] | None = None
+    team_ab_internal_loaded: tuple[object, list[str], str, dict] | None = None
+    active_prediction_source = _prediction_source_for_efficiency_source(team_ab_efficiency_source)
+    internal_prediction_source = "he"
     try:
-        team_ab_loaded = load_mu_regressor(TEAM_AB_ELITE_TAIL_ROUND64_V1)
+        team_ab_loaded = load_prediction_source_mu_regressor(active_prediction_source)
+        team_ab_internal_loaded = load_prediction_source_mu_regressor(internal_prediction_source)
     except FileNotFoundError:
         if bracket_model_variant == BRACKET_MODEL_VARIANT_TEAM_AB:
             raise
@@ -1554,7 +1565,7 @@ def _build_matchup_payload(
         )
         team_ab_merged = _merge_selected_with_ratings(team_ab_ratings)
         team_lookup_team_ab = {int(row["team_id"]): row for _, row in team_ab_merged.iterrows()}
-    if team_ab_loaded is not None:
+    if team_ab_loaded is not None and team_ab_internal_loaded is not None:
         team_ab_internal_ratings, team_ab_internal_conf_strength_lookup, team_ab_internal_ratings_source = (
             _build_bracket_ratings_frame(
                 season,
@@ -1573,7 +1584,7 @@ def _build_matchup_payload(
     scheduled_team_ab_internal_lookup: dict[int, pd.Series] = {}
     team_state_lookup_team_ab: dict[int, dict[str, Any]] = {}
     team_state_lookup_team_ab_internal: dict[int, dict[str, Any]] = {}
-    if team_ab_loaded is not None and opening_round_schedule:
+    if team_ab_loaded is not None and team_ab_internal_loaded is not None and opening_round_schedule:
         scheduled_team_ab_lookup = _load_scheduled_feature_lookup(
             season,
             opening_round_schedule,
@@ -1629,8 +1640,14 @@ def _build_matchup_payload(
         team_ab_internal_mu_source_mode = None
         team_ab_internal_mu_source_detail = None
         team_ab_internal_mu_base_simple_margin = None
-        if team_ab_loaded is not None:
+        if team_ab_loaded is not None and team_ab_internal_loaded is not None:
             team_ab_regressor, team_ab_feature_order, team_ab_model_type, team_ab_meta = team_ab_loaded
+            (
+                team_ab_internal_regressor,
+                team_ab_internal_feature_order,
+                team_ab_internal_model_type,
+                team_ab_internal_meta,
+            ) = team_ab_internal_loaded
             scheduled_game_id = None if schedule_info is None else schedule_info.get("scheduled_game_id")
             scheduled_team_ab_row = (
                 None
@@ -1653,7 +1670,7 @@ def _build_matchup_payload(
                     mu_impute_means=team_ab_meta.get("impute_means"),
                 )
                 active_mu_source_mode = "scheduled_team_ab_model"
-                active_mu_source_detail = bracket_model_variant
+                active_mu_source_detail = prediction_source_spec(active_prediction_source).checkpoint_path.stem
             else:
                 team_a_team_ab = team_lookup_team_ab[team_a_id]
                 team_b_team_ab = team_lookup_team_ab[team_b_id]
@@ -1685,13 +1702,13 @@ def _build_matchup_payload(
                     scheduled_team_ab_internal_row,
                     team_a_id=team_a_id,
                     team_b_id=team_b_id,
-                    mu_regressor=team_ab_regressor,
-                    mu_feature_order=team_ab_feature_order,
-                    mu_model_type=team_ab_model_type,
-                    mu_impute_means=team_ab_meta.get("impute_means"),
+                    mu_regressor=team_ab_internal_regressor,
+                    mu_feature_order=team_ab_internal_feature_order,
+                    mu_model_type=team_ab_internal_model_type,
+                    mu_impute_means=team_ab_internal_meta.get("impute_means"),
                 )
                 team_ab_internal_mu_source_mode = "scheduled_team_ab_model"
-                team_ab_internal_mu_source_detail = internal_gold_table_name
+                team_ab_internal_mu_source_detail = prediction_source_spec(internal_prediction_source).checkpoint_path.stem
             else:
                 team_a_team_ab_internal = team_lookup_team_ab_internal[team_a_id]
                 team_b_team_ab_internal = team_lookup_team_ab_internal[team_b_id]
@@ -1702,10 +1719,10 @@ def _build_matchup_payload(
                     round_label=round_label,
                     start_time=start_time,
                     conf_strength_lookup=team_ab_internal_conf_strength_lookup,
-                    mu_regressor=team_ab_regressor,
-                    mu_feature_order=team_ab_feature_order,
-                    mu_model_type=team_ab_model_type,
-                    mu_impute_means=team_ab_meta.get("impute_means"),
+                    mu_regressor=team_ab_internal_regressor,
+                    mu_feature_order=team_ab_internal_feature_order,
+                    mu_model_type=team_ab_internal_model_type,
+                    mu_impute_means=team_ab_internal_meta.get("impute_means"),
                     team_a_rest_days=matchup_context.get("team_a_rest_days"),
                     team_b_rest_days=matchup_context.get("team_b_rest_days"),
                     team_a_state=team_state_lookup_team_ab_internal.get(team_a_id),
@@ -1868,8 +1885,10 @@ def _build_matchup_payload(
         "matchup_model_variant_active": bracket_model_variant,
         "team_ab_efficiency_source_active": team_ab_efficiency_source,
         "team_ab_gold_ratings_table_active": team_ab_gold_ratings_table,
+        "team_ab_prediction_source_active": active_prediction_source,
         "legacy_ratings_source": legacy_ratings_source,
         "team_ab_ratings_source": team_ab_ratings_source,
+        "team_ab_internal_prediction_source_compare": internal_prediction_source,
         "team_ab_internal_ratings_source_compare": team_ab_internal_ratings_source,
         "team_ab_internal_gold_ratings_table_compare": internal_gold_table_name,
         "sigma_model": "legacy_mlp_regressor_pt",
@@ -1890,8 +1909,8 @@ def _build_matchup_payload(
         ),
         "note": (
             "Neutral-site pairwise predictions generated from the NCAA bracket-builder matchup cache. "
-            "The legacy synthetic tree spread, the active Team A/B tournament-engine spread, and the "
-            "Team A/B internal-efficiency comparison spread are cached side by side when available; "
+            "The legacy synthetic tree spread, the source-specific active Team A/B spread, and the "
+            "source-specific Team A/B HE comparison spread are cached side by side when available; "
             "active spread selection follows the configured bracket matchup "
             "model variant. Scheduled NCAA games use the active Team A/B model on real feature rows; "
             "unscheduled NCAA matchups use the same Team A/B bracket contract on bracket-derived neutral feature rows. "
@@ -1901,8 +1920,8 @@ def _build_matchup_payload(
             "that home-win helper back onto team1/team2 via the real scheduled home team, while unscheduled "
             "neutral rows symmetrize the home slot before caching team1/team2 win probabilities. "
             f"Legacy ratings source: {legacy_ratings_source}. "
-            f"Team A/B ratings source: {team_ab_ratings_source}. "
-            f"Team A/B internal comparison source: {team_ab_internal_ratings_source}."
+            f"Active Team A/B prediction source: {active_prediction_source} using ratings source {team_ab_ratings_source}. "
+            f"Team A/B HE comparison source: {internal_prediction_source} using ratings source {team_ab_internal_ratings_source}."
         ),
         "predictions": predictions,
     }

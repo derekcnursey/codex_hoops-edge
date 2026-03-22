@@ -44,14 +44,13 @@ function lineLabel(teamName: string | null | undefined, spread: number | null | 
 }
 
 function modelVariantLabel(variant: string | null | undefined): string {
-  if (variant === "team_ab_internal") return "HE";
   if (variant === "team_ab_elite_tail_round64_v1") return "Team A/B Torvik";
   if (variant === "legacy_synthetic") return "Legacy";
   return "Model";
 }
 
 function comparisonModelLabel(label: string | null | undefined): string {
-  if (label === "Internal") return "HE Internal";
+  if (label === "Internal") return "Team A/B HE";
   return label ?? "Baseline";
 }
 
