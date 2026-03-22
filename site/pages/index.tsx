@@ -231,7 +231,7 @@ function homeMlFair(row: PredictionRow, source: PredictionSurface): string | nul
 }
 
 function diff(row: PredictionRow, source: PredictionSurface): number | null {
-  const m = modelSpread(row, source);
+  const m = avgModelSpread(row);
   const b = bookSpread(row);
   if (m === null || b === null) return null;
   return Math.abs(m - b);
@@ -695,9 +695,8 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                               ...mono,
                               padding: "10px 14px",
                               textAlign: "center",
-                              fontSize: 14,
-                              fontWeight: 700,
-                              color: "#0f172a",
+                              fontSize: 13,
+                              color: "#334155",
                               borderBottom: "1px solid #f1f5f9"
                             }}
                           >
@@ -724,9 +723,9 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                               ...mono,
                               padding: "10px 14px",
                               textAlign: "center",
-                              fontSize: 13,
-                              fontWeight: 600,
-                              color: "#334155",
+                              fontSize: 14,
+                              fontWeight: 700,
+                              color: "#0f172a",
                               borderBottom: "1px solid #f1f5f9"
                             }}
                           >
