@@ -1156,6 +1156,7 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
         # Step 4: Predict today's games
         click.echo(f"\n[4/6] Predictions for {game_date}...")
         df, lines = _run_prediction_preflight(season, game_date)
+        predictions_generated = not df.empty
         if df.empty:
             click.echo(f"  No games found for {game_date}. Skipping predictions.")
         else:
@@ -1206,18 +1207,21 @@ def daily_update(season: int, game_date: str | None, skip_etl: bool,
 
         internal_bet_script = script_dir / "build_daily_internal_bet_filter_report.py"
         if internal_bet_script.exists():
-            _run(
-                [
-                    sys.executable,
-                    str(internal_bet_script),
-                    "--season",
-                    str(season),
-                    "--date",
-                    game_date,
-                ],
-                cwd=config.PROJECT_ROOT,
-                label="build_daily_internal_bet_filter_report",
-            )
+            if predictions_generated:
+                _run(
+                    [
+                        sys.executable,
+                        str(internal_bet_script),
+                        "--season",
+                        str(season),
+                        "--date",
+                        game_date,
+                    ],
+                    cwd=config.PROJECT_ROOT,
+                    label="build_daily_internal_bet_filter_report",
+                )
+            else:
+                click.echo("  Skipping daily internal bet-filter report: no predictions for this slate.")
 
         internal_tracking_script = script_dir / "build_internal_bet_filter_tracking_report.py"
         if internal_tracking_script.exists():

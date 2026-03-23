@@ -1,0 +1,104 @@
+{
+  "date": "2026-03-22",
+  "games": [
+    {
+      "away_score": 69,
+      "away_team": "Miami",
+      "game_id": "2026_03_22_miami_purdue",
+      "home_score": 79,
+      "home_team": "Purdue"
+    },
+    {
+      "away_score": 63,
+      "away_team": "Kentucky",
+      "game_id": "2026_03_22_kentucky_iowa_state",
+      "home_score": 82,
+      "home_team": "Iowa State"
+    },
+    {
+      "away_score": 78,
+      "away_team": "Illinois State",
+      "game_id": "2026_03_22_illinois_state_wake_forest",
+      "home_score": 75,
+      "home_team": "Wake Forest"
+    },
+    {
+      "away_score": 67,
+      "away_team": "St. John's",
+      "game_id": "2026_03_22_st_john_s_kansas",
+      "home_score": 65,
+      "home_team": "Kansas"
+    },
+    {
+      "away_score": 79,
+      "away_team": "Tennessee",
+      "game_id": "2026_03_22_tennessee_virginia",
+      "home_score": 72,
+      "home_team": "Virginia"
+    },
+    {
+      "away_score": 85,
+      "away_team": "Seattle U",
+      "game_id": "2026_03_22_seattle_u_auburn",
+      "home_score": 91,
+      "home_team": "Auburn"
+    },
+    {
+      "away_score": 66,
+      "away_team": "UNLV",
+      "game_id": "2026_03_22_unlv_tulsa",
+      "home_score": 77,
+      "home_team": "Tulsa"
+    },
+    {
+      "away_score": 73,
+      "away_team": "Iowa",
+      "game_id": "2026_03_22_iowa_florida",
+      "home_score": 72,
+      "home_team": "Florida"
+    },
+    {
+      "away_score": 66,
+      "away_team": "Utah State",
+      "game_id": "2026_03_22_utah_state_arizona",
+      "home_score": 78,
+      "home_team": "Arizona"
+    },
+    {
+      "away_score": 61,
+      "away_team": "George Washington",
+      "game_id": "2026_03_22_george_washington_new_mexico",
+      "home_score": 86,
+      "home_team": "New Mexico"
+    },
+    {
+      "away_score": 96,
+      "away_team": "Wichita State",
+      "game_id": "2026_03_22_wichita_state_oklahoma_state",
+      "home_score": 70,
+      "home_team": "Oklahoma State"
+    },
+    {
+      "away_score": 57,
+      "away_team": "UCLA",
+      "game_id": "2026_03_22_ucla_uconn",
+      "home_score": 73,
+      "home_team": "UConn"
+    },
+    {
+      "away_score": 76,
+      "away_team": "Saint Joseph's",
+      "game_id": "2026_03_22_saint_joseph_s_california",
+      "home_score": 75,
+      "home_team": "California"
+    },
+    {
+      "away_score": 65,
+      "away_team": "Texas Tech",
+      "game_id": "2026_03_22_texas_tech_alabama",
+      "home_score": 90,
+      "home_team": "Alabama"
+    }
+  ],
+  "generated_at": "2026-03-23T17:07:49.295022Z"
+}
