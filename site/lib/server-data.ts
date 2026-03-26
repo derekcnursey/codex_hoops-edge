@@ -19,11 +19,15 @@ export function todayET(): string {
 }
 
 export function getDataDir(): string {
-  const primary = path.join(process.cwd(), "public", "data");
+  const cwd = process.cwd();
+  const primary = path.join(cwd, "public", "data");
   if (fs.existsSync(primary)) {
     return primary;
   }
-  const fallback = path.join(process.cwd(), "site", "public", "data");
+  if (path.basename(cwd) === "site") {
+    return primary;
+  }
+  const fallback = path.join(cwd, "site", "public", "data");
   if (fs.existsSync(fallback)) {
     return fallback;
   }
