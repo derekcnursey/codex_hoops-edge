@@ -22,7 +22,7 @@ _HRB_GRAPHQL_URL = "https://api.hardrocksportsbook.com/java-graphql/graphql?type
 _HRB_EVENT_TREE_URL = (
     "https://api.hardrocksportsbook.com/sportsbook/api/public/events/tree"
 )
-_HRB_NCAAB_COMPETITION_NAME = "NCAAB"
+_HRB_NCAAB_COMPETITION_NAMES = ("NCAAB", "NCAAM")
 _HRB_GRAPHQL_QUERY = """
 query betSync(
   $filters: [Filter]
@@ -152,8 +152,8 @@ def fetch_hrb_lines_for_games(games_df: pd.DataFrame) -> pd.DataFrame:
 
     context = _fetch_context()
     ladder = _fetch_root_ladder()
-    competition_id = _fetch_ncaab_competition_id(context)
-    events = _fetch_event_rows(context, competition_id)
+    competition_ids = _fetch_ncaab_competition_ids(context)
+    events = _fetch_event_rows(context, competition_ids)
     if not events:
         return pd.DataFrame()
 
@@ -243,41 +243,45 @@ def _fetch_root_ladder() -> dict[int, dict[str, Any]]:
     return ladder
 
 
-def _fetch_ncaab_competition_id(context: _HrbContext) -> str:
+def _fetch_ncaab_competition_ids(context: _HrbContext) -> list[str]:
     url = f"{_HRB_EVENT_TREE_URL}?channel={context.channel}&segment={context.segment}"
     payload = _request_json(url)
-    competition_id = _walk_for_competition_id(payload, _HRB_NCAAB_COMPETITION_NAME)
-    if competition_id is None:
-        raise ValueError("Unable to locate NCAAB competition in Hard Rock Bet event tree")
-    return competition_id
+    competition_ids = _walk_for_competition_ids(payload, set(_HRB_NCAAB_COMPETITION_NAMES))
+    if not competition_ids:
+        raise ValueError("Unable to locate NCAAB/NCAAM competition in Hard Rock Bet event tree")
+    return competition_ids
 
 
-def _walk_for_competition_id(node: Any, target_name: str) -> str | None:
+def _walk_for_competition_ids(node: Any, target_names: set[str]) -> list[str]:
+    found: list[str] = []
     if isinstance(node, dict):
         name = node.get("name")
-        if name == target_name and "id" in node:
-            return str(node["id"])
+        if name in target_names and "id" in node:
+            found.append(str(node["id"]))
         for value in node.values():
-            found = _walk_for_competition_id(value, target_name)
-            if found is not None:
-                return found
-        return None
-    if isinstance(node, list):
+            found.extend(_walk_for_competition_ids(value, target_names))
+    elif isinstance(node, list):
         for item in node:
-            found = _walk_for_competition_id(item, target_name)
-            if found is not None:
-                return found
-    return None
+            found.extend(_walk_for_competition_ids(item, target_names))
+
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for competition_id in found:
+        if competition_id in seen:
+            continue
+        seen.add(competition_id)
+        deduped.append(competition_id)
+    return deduped
 
 
-def _fetch_event_rows(context: _HrbContext, competition_id: str) -> list[dict[str, Any]]:
+def _fetch_event_rows(context: _HrbContext, competition_ids: list[str]) -> list[dict[str, Any]]:
     variables = {
         "channel": context.channel,
         "segment": context.segment,
         "region": context.region,
         "language": context.language,
         "filters": [
-            {"field": "compId", "values": [competition_id]},
+            {"field": "compId", "values": competition_ids},
             {"field": "displayed", "value": "true"},
             {"field": "outright", "value": "false"},
         ],
@@ -323,7 +327,7 @@ def _match_event_to_game(event: dict[str, Any], schedule: pd.DataFrame) -> _Matc
     if pd.isna(event_time):
         return None
 
-    best: tuple[int, pd.Timedelta, int, pd.Series, dict[str, str]] | None = None
+    best: tuple[int, pd.Timedelta, str, pd.Series, dict[str, str]] | None = None
     max_diff = pd.Timedelta(hours=config.HRB_MATCH_TIME_TOLERANCE_HOURS)
     for _, game in schedule.iterrows():
         time_diff = abs(game["startDate"] - event_time)
@@ -344,9 +348,10 @@ def _match_event_to_game(event: dict[str, Any], schedule: pd.DataFrame) -> _Matc
             slot_to_side = {"A": "away", "B": "home"}
             name_score = score_ab
 
-        candidate = (name_score, time_diff, int(game["gameId"]), game, slot_to_side)
+        game_sort_key = str(game["gameId"])
+        candidate = (name_score, time_diff, game_sort_key, game, slot_to_side)
         if best is None or (name_score > best[0]) or (
-            name_score == best[0] and (time_diff, int(game["gameId"])) < (best[1], best[2])
+            name_score == best[0] and (time_diff, game_sort_key) < (best[1], best[2])
         ):
             best = candidate
 
@@ -376,7 +381,7 @@ def _build_line_row(
         return None
 
     return {
-        "gameId": int(game["gameId"]),
+        "gameId": game["gameId"],
         "provider": _HRB_PROVIDER,
         "awayTeam": game["awayTeam"],
         "homeTeam": game["homeTeam"],

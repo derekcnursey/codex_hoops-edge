@@ -25,6 +25,23 @@ def test_team_key_variants_include_common_alias_forms():
     assert "saintlouis" in hrb_odds._team_key_variants("Saint Louis")
 
 
+def test_walk_for_competition_ids_accepts_ncaab_and_ncaam_labels():
+    payload = {
+        "sports": [
+            {"name": "NCAAB", "id": "111"},
+            {"name": "NCAAM", "id": "222"},
+            {"name": "NBA", "id": "333"},
+        ]
+    }
+
+    competition_ids = hrb_odds._walk_for_competition_ids(
+        payload,
+        {"NCAAB", "NCAAM"},
+    )
+
+    assert competition_ids == ["111", "222"]
+
+
 def test_match_event_to_game_uses_alias_variants():
     start = pd.Timestamp.now(tz="UTC").floor("min")
     schedule = pd.DataFrame(
@@ -59,6 +76,35 @@ def test_match_event_to_game_uses_alias_variants():
 
     assert matched is not None
     assert int(matched.game["gameId"]) == 2
+    assert matched.slot_to_side == {"A": "home", "B": "away"}
+
+
+def test_match_event_to_game_allows_string_game_ids():
+    start = pd.Timestamp.now(tz="UTC").floor("min")
+    schedule = pd.DataFrame(
+        [
+            {
+                "gameId": "2026_03_28_iowa_illinois",
+                "awayTeam": "Iowa",
+                "homeTeam": "Illinois",
+                "startDate": start,
+                "away_keys": hrb_odds._team_key_variants("Iowa"),
+                "home_keys": hrb_odds._team_key_variants("Illinois"),
+            }
+        ]
+    )
+    event = {
+        "eventTime": start.value / 1_000_000,
+        "participants": [
+            {"name": "3 Illinois", "position": 0},
+            {"name": "9 Iowa", "position": 1},
+        ],
+    }
+
+    matched = hrb_odds._match_event_to_game(event, schedule)
+
+    assert matched is not None
+    assert matched.game["gameId"] == "2026_03_28_iowa_illinois"
     assert matched.slot_to_side == {"A": "home", "B": "away"}
 
 
@@ -124,3 +170,45 @@ def test_build_line_row_maps_hrb_event_to_home_perspective_lines():
     assert row["overUnder"] == 144.5
     assert row["homeMoneyline"] == -125
     assert row["awayMoneyline"] == 110
+
+
+def test_build_line_row_preserves_string_game_id():
+    event = {
+        "id": "evt-2",
+        "eventTime": 1773511200000.0,
+        "participants": [
+            {"name": "Illinois", "position": 0},
+            {"name": "Iowa", "position": 1},
+        ],
+        "markets": [
+            {
+                "type": "BASKETBALL:FTOT:SPRD",
+                "subtype": "M#-6.5",
+                "selection": [
+                    {"name": "Illinois -6.5", "type": "A", "rootIdx": 69},
+                    {"name": "Iowa +6.5", "type": "B", "rootIdx": 71},
+                ],
+            }
+        ],
+    }
+    matched = hrb_odds._MatchedGame(
+        game=pd.Series(
+            {
+                "gameId": "2026_03_28_iowa_illinois",
+                "awayTeam": "Iowa",
+                "homeTeam": "Illinois",
+                "startDate": pd.Timestamp("2026-03-28T22:09:00Z"),
+            }
+        ),
+        slot_to_side={"A": "home", "B": "away"},
+    )
+    ladder = {
+        69: {"decimal": 1.91, "moneyline": -110},
+        71: {"decimal": 1.91, "moneyline": -110},
+    }
+
+    row = hrb_odds._build_line_row(event, matched, ladder)
+
+    assert row is not None
+    assert row["gameId"] == "2026_03_28_iowa_illinois"
+    assert row["spread"] == -6.5
