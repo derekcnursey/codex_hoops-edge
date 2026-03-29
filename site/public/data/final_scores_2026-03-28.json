@@ -1,0 +1,20 @@
+{
+  "date": "2026-03-28",
+  "games": [
+    {
+      "away_score": 59,
+      "away_team": "Iowa",
+      "game_id": "2026_03_28_iowa_illinois",
+      "home_score": 71,
+      "home_team": "Illinois"
+    },
+    {
+      "away_score": 64,
+      "away_team": "Purdue",
+      "game_id": "2026_03_28_purdue_arizona",
+      "home_score": 79,
+      "home_team": "Arizona"
+    }
+  ],
+  "generated_at": "2026-03-29T15:12:18.972811Z"
+}
