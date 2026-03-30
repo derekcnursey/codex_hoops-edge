@@ -27,12 +27,22 @@ type HomeProps = {
   todayRows: RankedPredictionRow[];
   tomorrowDate: string;
   tomorrowRows: RankedPredictionRow[];
+  finalFourDate: string;
+  finalFourRows: RankedPredictionRow[];
 };
 
 function nextDateIso(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number);
   const dt = new Date(Date.UTC(year, month - 1, day));
   dt.setUTCDate(dt.getUTCDate() + 1);
+  return dt.toISOString().slice(0, 10);
+}
+
+function nextWeekdayIso(dateStr: string, targetWeekday: number): string {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const dt = new Date(Date.UTC(year, month - 1, day));
+  const delta = (targetWeekday - dt.getUTCDay() + 7) % 7;
+  dt.setUTCDate(dt.getUTCDate() + delta);
   return dt.toISOString().slice(0, 10);
 }
 
@@ -48,6 +58,7 @@ function rankRows(date: string, rows: PredictionRow[]): RankedPredictionRow[] {
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   const today = todayET();
   const tomorrow = nextDateIso(today);
+  const finalFour = nextWeekdayIso(today, 6);
   const latest = getLatestPredictionFile();
   if (!latest) {
     return {
@@ -56,17 +67,22 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
         todayRows: [],
         tomorrowDate: tomorrow,
         tomorrowRows: [],
+        finalFourDate: finalFour,
+        finalFourRows: [],
       },
     };
   }
   const todayRows = rankRows(latest.date, getPredictionRowsByFilename(latest.filename));
   const tomorrowRows = rankRows(tomorrow, getPredictionRowsByDate(tomorrow));
+  const finalFourRows = rankRows(finalFour, getPredictionRowsByDate(finalFour));
   return {
     props: {
       todayDate: latest.date,
       todayRows,
       tomorrowDate: tomorrow,
       tomorrowRows,
+      finalFourDate: finalFour,
+      finalFourRows,
     },
   };
 };
@@ -292,18 +308,56 @@ const columns: { key: SortKey; label: string; align: "left" | "center" }[] = [
 
 /* -- component -- */
 
-export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows }: HomeProps) {
-  const [activeTab, setActiveTab] = useState<"today" | "tomorrow">("today");
+type ActiveTab = "today" | "tomorrow" | "final4";
+
+type TabMeta = {
+  label: string;
+  title: string;
+  emptyMessage: string;
+  date: string | null;
+  rows: RankedPredictionRow[];
+  slateLabel: string;
+};
+
+export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows, finalFourDate, finalFourRows }: HomeProps) {
+  const [activeTab, setActiveTab] = useState<ActiveTab>("today");
   const [predictionSource, setPredictionSource] = useState<PredictionSurface>("he");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "edge10">("all");
   const [diffMin, setDiffMin] = useState(0);
   const [sort, setSort] = useState<SortState>({ key: "edge", dir: "desc" });
-  const activeDate = activeTab === "today" ? todayDate : tomorrowDate;
-  const activeRows = activeTab === "today" ? todayRows : tomorrowRows;
   const tomorrowReady = tomorrowRows.length > 0;
-  const title = activeTab === "today" ? "Today\u2019s Picks" : "Tomorrow\u2019s Board";
-  const slateLabel = activeTab === "today" ? "Today" : tomorrowReady ? "Tomorrow" : "Tomorrow TBA";
+  const finalFourReady = finalFourRows.length > 0;
+  const tabMeta: Record<ActiveTab, TabMeta> = {
+    today: {
+      label: "Today",
+      title: "Today\u2019s Picks",
+      emptyMessage: "No games found for today.",
+      date: todayDate,
+      rows: todayRows,
+      slateLabel: "Today",
+    },
+    tomorrow: {
+      label: tomorrowReady ? "Tomorrow" : "Tomorrow TBA",
+      title: "Tomorrow\u2019s Board",
+      emptyMessage: "Tomorrow TBA.",
+      date: tomorrowDate,
+      rows: tomorrowRows,
+      slateLabel: tomorrowReady ? "Tomorrow" : "Tomorrow TBA",
+    },
+    final4: {
+      label: finalFourReady ? "Final 4" : "Final 4 TBA",
+      title: "Final 4 Board",
+      emptyMessage: "Final 4 slate not available yet.",
+      date: finalFourDate,
+      rows: finalFourRows,
+      slateLabel: finalFourReady ? "Final 4" : "Final 4 TBA",
+    },
+  };
+  const activeDate = tabMeta[activeTab].date;
+  const activeRows = tabMeta[activeTab].rows;
+  const title = tabMeta[activeTab].title;
+  const slateLabel = tabMeta[activeTab].slateLabel;
 
   const maxDiff = useMemo(() => {
     if (!activeRows.length) return 20;
@@ -360,16 +414,6 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
     );
   }
 
-  if (!activeRows.length) {
-    return (
-      <Layout>
-        <div style={{ padding: 24, color: "#94a3b8", textAlign: "center" }}>
-          {activeTab === "today" ? "No games found for today." : "Tomorrow TBA."}
-        </div>
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
       {/* single wrapper so .content gap doesn't add extra spacing */}
@@ -386,8 +430,9 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
           }}
         >
           {([
-            { key: "today", label: "Today" },
-            { key: "tomorrow", label: tomorrowReady ? "Tomorrow" : "Tomorrow TBA" },
+            { key: "today", label: tabMeta.today.label },
+            { key: "tomorrow", label: tabMeta.tomorrow.label },
+            { key: "final4", label: tabMeta.final4.label },
           ] as const).map((tab) => (
             <button
               key={tab.key}
@@ -439,176 +484,181 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
             {activeDate ? formatDateDisplay(activeDate) : ""} · {activeRows.length} games
           </span>
         </div>
-
-        <div
-          style={{
-            display: "inline-flex",
-            gap: 8,
-            padding: 4,
-            background: "#f8fafc",
-            border: "1px solid #e2e8f0",
-            borderRadius: 10,
-            marginBottom: 14,
-          }}
-        >
-          {([
-            { key: "he", label: "HE" },
-            { key: "torvik", label: "Torvik" },
-          ] as const).map((source) => (
-            <button
-              key={source.key}
-              type="button"
-              onClick={() => setPredictionSource(source.key)}
+        {!activeRows.length ? (
+          <div style={{ padding: 24, color: "#94a3b8", textAlign: "center" }}>
+            {tabMeta[activeTab].emptyMessage}
+          </div>
+        ) : (
+          <>
+            <div
               style={{
-                ...mono,
-                fontSize: 12,
-                fontWeight: 600,
-                padding: "7px 12px",
-                borderRadius: 8,
-                border: "none",
-                background: predictionSource === source.key ? "#0f172a" : "transparent",
-                color: predictionSource === source.key ? "#fff" : "#475569",
-                cursor: "pointer",
+                display: "inline-flex",
+                gap: 8,
+                padding: 4,
+                background: "#f8fafc",
+                border: "1px solid #e2e8f0",
+                borderRadius: 10,
+                marginBottom: 14,
               }}
             >
-              {source.label}
-            </button>
-          ))}
-        </div>
-
-        {/* -- All Games Table -- */}
-        <div>
-          {/* Controls row */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 10
-            }}
-          >
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>
-              {slateLabel} · Active surface {predictionSource.toUpperCase()}
-            </span>
-
-            <input
-              type="text"
-              placeholder="Search team..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                ...mono,
-                width: 180,
-                padding: "6px 10px",
-                border: "1px solid #e2e8f0",
-                borderRadius: 6,
-                fontSize: 13,
-                outline: "none",
-                background: "#fff",
-                color: "#334155"
-              }}
-            />
-
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ ...mono, fontSize: 10, color: "#94a3b8", fontWeight: 500 }}>DIFF</span>
-              <input type="range" min={0} max={maxDiff} step={1} value={diffMin} onChange={(e) => setDiffMin(Number(e.target.value))} style={{ width: 100, accentColor: "#0f172a" }} />
-              <span style={{ ...mono, fontSize: 12, fontWeight: 700, color: "#0f172a", minWidth: 30 }}>{diffMin}</span>
-            </div>
-
-            <div style={{ display: "flex", gap: 6 }}>
-              {(["all", "edge10"] as const).map((f) => (
+              {([
+                { key: "he", label: "HE" },
+                { key: "torvik", label: "Torvik" },
+              ] as const).map((source) => (
                 <button
-                  key={f}
+                  key={source.key}
                   type="button"
-                  onClick={() => setFilter(f)}
+                  onClick={() => setPredictionSource(source.key)}
                   style={{
                     ...mono,
                     fontSize: 12,
-                    fontWeight: 500,
-                    padding: "5px 12px",
-                    borderRadius: 6,
-                    border: `1px solid ${filter === f ? "#0f172a" : "#e2e8f0"}`,
-                    background: filter === f ? "#0f172a" : "#fff",
-                    color: filter === f ? "#fff" : "#64748b",
-                    cursor: "pointer"
+                    fontWeight: 600,
+                    padding: "7px 12px",
+                    borderRadius: 8,
+                    border: "none",
+                    background: predictionSource === source.key ? "#0f172a" : "transparent",
+                    color: predictionSource === source.key ? "#fff" : "#475569",
+                    cursor: "pointer",
                   }}
                 >
-                  {f === "all" ? "All" : "Edge \u2265 10%"}
+                  {source.label}
                 </button>
               ))}
             </div>
-          </div>
 
-          {/* Table container */}
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #e2e8f0",
-              borderRadius: 10,
-              overflow: "hidden",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)"
-            }}
-          >
-            <div style={{ overflowX: "auto" }}>
-              <table
+            {/* -- All Games Table -- */}
+            <div>
+              {/* Controls row */}
+              <div
                 style={{
-                  width: "100%",
-                  borderCollapse: "collapse",
-                  fontVariantNumeric: "tabular-nums"
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 10
                 }}
               >
-                <thead>
-                  <tr>
-                    {columns.map((col) => {
-                      const active = sort.key === col.key;
-                      return (
-                        <th
-                          key={col.key}
-                          onClick={() => handleSort(col.key)}
-                          style={{
-                            ...mono,
-                            fontSize: 10,
-                            fontWeight: 600,
-                            letterSpacing: "0.08em",
-                            padding: "10px 14px",
-                            textAlign: col.align,
-                            background: "#fafbfc",
-                            color: active ? "#0f172a" : "#64748b",
-                            borderBottom: "1px solid #e2e8f0",
-                            cursor: "pointer",
-                            userSelect: "none",
-                            whiteSpace: "nowrap",
-                            ...(col.key === "matchup" ? { width: "1%" } : {})
-                          }}
-                        >
-                          {col.label}
-                          {active && (
-                            <span style={{ marginLeft: 4 }}>
-                              {sort.dir === "desc" ? "\u2193" : "\u2191"}
-                            </span>
-                          )}
-                        </th>
-                      );
-                    })}
-                  </tr>
-                </thead>
-                <tbody>
-                  {tableRows.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={columns.length}
-                        style={{
-                          padding: 24,
-                          textAlign: "center",
-                          color: "#94a3b8",
-                          borderBottom: "none"
-                        }}
-                      >
-                        No games found
-                      </td>
-                    </tr>
-                  ) : (
-                    tableRows.map((row, i) => {
+                <span style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>
+                  {slateLabel} · Active surface {predictionSource.toUpperCase()}
+                </span>
+
+                <input
+                  type="text"
+                  placeholder="Search team..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  style={{
+                    ...mono,
+                    width: 180,
+                    padding: "6px 10px",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: 6,
+                    fontSize: 13,
+                    outline: "none",
+                    background: "#fff",
+                    color: "#334155"
+                  }}
+                />
+
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ ...mono, fontSize: 10, color: "#94a3b8", fontWeight: 500 }}>DIFF</span>
+                  <input type="range" min={0} max={maxDiff} step={1} value={diffMin} onChange={(e) => setDiffMin(Number(e.target.value))} style={{ width: 100, accentColor: "#0f172a" }} />
+                  <span style={{ ...mono, fontSize: 12, fontWeight: 700, color: "#0f172a", minWidth: 30 }}>{diffMin}</span>
+                </div>
+
+                <div style={{ display: "flex", gap: 6 }}>
+                  {(["all", "edge10"] as const).map((f) => (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setFilter(f)}
+                      style={{
+                        ...mono,
+                        fontSize: 12,
+                        fontWeight: 500,
+                        padding: "5px 12px",
+                        borderRadius: 6,
+                        border: `1px solid ${filter === f ? "#0f172a" : "#e2e8f0"}`,
+                        background: filter === f ? "#0f172a" : "#fff",
+                        color: filter === f ? "#fff" : "#64748b",
+                        cursor: "pointer"
+                      }}
+                    >
+                      {f === "all" ? "All" : "Edge \u2265 10%"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Table container */}
+              <div
+                style={{
+                  background: "#fff",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 10,
+                  overflow: "hidden",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.04)"
+                }}
+              >
+                <div style={{ overflowX: "auto" }}>
+                  <table
+                    style={{
+                      width: "100%",
+                      borderCollapse: "collapse",
+                      fontVariantNumeric: "tabular-nums"
+                    }}
+                  >
+                    <thead>
+                      <tr>
+                        {columns.map((col) => {
+                          const active = sort.key === col.key;
+                          return (
+                            <th
+                              key={col.key}
+                              onClick={() => handleSort(col.key)}
+                              style={{
+                                ...mono,
+                                fontSize: 10,
+                                fontWeight: 600,
+                                letterSpacing: "0.08em",
+                                padding: "10px 14px",
+                                textAlign: col.align,
+                                background: "#fafbfc",
+                                color: active ? "#0f172a" : "#64748b",
+                                borderBottom: "1px solid #e2e8f0",
+                                cursor: "pointer",
+                                userSelect: "none",
+                                whiteSpace: "nowrap",
+                                ...(col.key === "matchup" ? { width: "1%" } : {})
+                              }}
+                            >
+                              {col.label}
+                              {active && (
+                                <span style={{ marginLeft: 4 }}>
+                                  {sort.dir === "desc" ? "\u2193" : "\u2191"}
+                                </span>
+                              )}
+                            </th>
+                          );
+                        })}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tableRows.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={columns.length}
+                            style={{
+                              padding: 24,
+                              textAlign: "center",
+                              color: "#94a3b8",
+                              borderBottom: "none"
+                            }}
+                          >
+                            No games found
+                          </td>
+                        </tr>
+                      ) : (
+                        tableRows.map((row, i) => {
                       const bk = bookSpread(row);
                       const he = heModelSpread(row);
                       const torvik = torvikModelSpread(row);
@@ -783,14 +833,15 @@ export default function Home({ todayDate, todayRows, tomorrowDate, tomorrowRows 
                           </td>
                         </tr>
                       );
-                    })
-                  )}
-                </tbody>
-              </table>
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-
+          </>
+        )}
       </div>
     </Layout>
   );
