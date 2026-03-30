@@ -8,8 +8,6 @@ import {
   getSiteHomeWinProbFromValues,
 } from "../lib/data";
 import {
-  getLatestPredictionFile,
-  getPredictionRowsByFilename,
   getPredictionRowsByDate,
   todayET,
 } from "../lib/server-data";
@@ -59,25 +57,12 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   const today = todayET();
   const tomorrow = nextDateIso(today);
   const finalFour = nextWeekdayIso(today, 6);
-  const latest = getLatestPredictionFile();
-  if (!latest) {
-    return {
-      props: {
-        todayDate: null,
-        todayRows: [],
-        tomorrowDate: tomorrow,
-        tomorrowRows: [],
-        finalFourDate: finalFour,
-        finalFourRows: [],
-      },
-    };
-  }
-  const todayRows = rankRows(latest.date, getPredictionRowsByFilename(latest.filename));
+  const todayRows = rankRows(today, getPredictionRowsByDate(today));
   const tomorrowRows = rankRows(tomorrow, getPredictionRowsByDate(tomorrow));
   const finalFourRows = rankRows(finalFour, getPredictionRowsByDate(finalFour));
   return {
     props: {
-      todayDate: latest.date,
+      todayDate: today,
       todayRows,
       tomorrowDate: tomorrow,
       tomorrowRows,
