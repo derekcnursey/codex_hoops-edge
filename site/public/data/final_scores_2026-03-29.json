@@ -1,0 +1,20 @@
+{
+  "date": "2026-03-29",
+  "games": [
+    {
+      "away_score": 62,
+      "away_team": "Tennessee",
+      "game_id": "2026_03_29_tennessee_michigan",
+      "home_score": 95,
+      "home_team": "Michigan"
+    },
+    {
+      "away_score": 73,
+      "away_team": "UConn",
+      "game_id": "2026_03_29_uconn_duke",
+      "home_score": 72,
+      "home_team": "Duke"
+    }
+  ],
+  "generated_at": "2026-03-30T15:02:44.532104Z"
+}
