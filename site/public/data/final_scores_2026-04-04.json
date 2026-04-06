@@ -1,0 +1,20 @@
+{
+  "date": "2026-04-04",
+  "games": [
+    {
+      "away_score": 62,
+      "away_team": "Illinois",
+      "game_id": "2026_04_04_illinois_uconn",
+      "home_score": 71,
+      "home_team": "UConn"
+    },
+    {
+      "away_score": 91,
+      "away_team": "Michigan",
+      "game_id": "2026_04_04_michigan_arizona",
+      "home_score": 73,
+      "home_team": "Arizona"
+    }
+  ],
+  "generated_at": "2026-04-06T17:02:13.203531Z"
+}
